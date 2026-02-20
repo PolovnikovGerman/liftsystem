@@ -1,12 +1,17 @@
 function init_btitemslist_view() {
     $(".btitemnewaddarea").hide();
+    initBtitemsTableHead();
     initItemsListPagination();
+    // Change filter dropdowh - category
     $(".itemcategoryfilter").unbind('change').change(function () {
         var newcat = $(this).val();
         $(".btcategorybtn").removeClass('active');
         $(".btcategorybtn[data-category='"+newcat+"']").addClass('active');
+        $("#btitemsvendor").val('');
+        initBtitemsTableHead();
         search_itemlists();
     });
+    // Change filter - click button category
     $(".btcategorybtn").unbind('click').click(function(){
         if ($(this).hasClass('locked')) {
         } else {
@@ -14,34 +19,76 @@ function init_btitemslist_view() {
             $(".btcategorybtn").removeClass('active');
             $(".btcategorybtn[data-category='"+newcat+"']").addClass('active');
             $(".itemcategoryfilter").val(newcat);
+            $("#btitemsvendor").val('');
+            initBtitemsTableHead();
             search_itemlists();
         }
     })
+    // Free search item
     $(".itemnamesearch").keypress(function(event){
         if (event.which == 13) {
             search_itemlists();
         }
     });
+    // Free search item
     $('.itemsearchbtn').unbind('click').click(function(){
         search_itemlists();
     });
+    // Clear free search
     $('.itemclearsearch').unbind('click').click(function(){
         $(".itemnamesearch").val('');
         search_itemlists();
     })
-
+    // Vendor
     $(".itemvendorfilter").unbind('change').change(function(){
         search_itemlists();
     });
+    // Item Status
     $(".itemstatusfilter").unbind('change').change(function(){
         search_itemlists();
     });
+    // Item completed
     $(".itemmisinfofilter").unbind('change').change(function(){
         search_itemlists();
     });
+    // Sorting by click on table head cell
     $(".tabledataheader").find('div.sortable').unbind('click').click(function (){
         var fld = $(this).data('sortcell');
         sort_btitems(fld);
+    });
+}
+
+function initBtitemsTableHead() {
+    var params = new Array();
+    params.push({name: 'category', value: $(".itemcategoryfilter").val()});
+    params.push({name: 'brand', value: 'BT'});
+    var url = '/dbitems/itemlisthead';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".categoryactivestatistics").empty().html(response.data.totals);
+            $(".tabledatavendorsview").empty().html(response.data.vendors);
+            new SimpleBar(document.getElementById('vendorcategory_tabledat'), { autoHide: false });
+            init_btitem_categoryview();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_btitem_categoryview() {
+    $(".vendorcategory_showall").unbind('click').click(function(){
+        $(".vendorcategory_showall").addClass('active');
+        $("#btitemsvendor").val('');
+        $(".vendorcategory_vendordat").removeClass('active');
+        search_itemlists();
+    });
+    $(".vendorcategory_vendordat").unbind('click').click(function (){
+        var vendor = $(this).data('vendor');
+        $("#btitemsvendor").val(vendor);
+        $(".vendorcategory_showall").removeClass('active')
+        $(".vendorcategory_vendordat").removeClass('active');
+        $(".vendorcategory_vendordat[data-vendor='"+vendor+"']").addClass('active');
+        search_itemlists();
     });
 }
 
@@ -80,10 +127,11 @@ function pageBTItemsListCallback(page_index) {
         if (response.errors=='') {
             $("#loader").hide();
             $('#btitemdata').empty().html(response.data.content);
-            $('#btitemspagenum').val(page_index);
-            $('#btitemdata').find("div.tabledataarea").scrollpanel({
-                'prefix' : 'sp-'
-            });
+            new SimpleBar(document.getElementById('btitemdata'), { autoHide: false });
+            // $('#btitemspagenum').val(page_index);
+            // $('#btitemdata').find("div.tabledataarea").scrollpanel({
+            //     'prefix' : 'sp-'
+            // });
             init_itemlist_content();
             jQuery.balloon.init();
             leftmenu_alignment();
@@ -113,8 +161,8 @@ function search_itemlists() {
 function prepare_search_params() {
     var params = new Array();
     params.push({name: 'search', value: $('.itemnamesearch').val()});
-    params.push({name: 'vendor', value: $('.itemvendorfilter').val()});
-    params.push({name: 'itemstatus',  value: $('.itemstatusfilter').val()});
+    params.push({name: 'vendor', value: $('#btitemsvendor').val()});
+    params.push({name: 'itemstatus', value: $('.itemstatusfilter').val()});
     params.push({name: 'missinfo', value: $(".itemmisinfofilter").val()});
     params.push({name: 'category', value: $(".itemcategoryfilter").val()});
     return params;

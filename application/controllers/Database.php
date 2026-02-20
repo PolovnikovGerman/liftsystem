@@ -40,7 +40,7 @@ class Database extends MY_Controller
 
     public function index() {
         $head = [];
-        // $head['title'] = 'Database';
+        $head['title'] = 'Item Database';
         $getdata = $this->input->get();
         $content_options['start'] = ifset($getdata,'start','');
         $brand = $this->current_brand;
@@ -51,11 +51,11 @@ class Database extends MY_Controller
                 $mastersection=1;
             }
         }
-        if ($brand=='SR') {
-            $head['title'] = 'StressRelievers';
-        } else {
-            $head['title'] = 'Bluetrack/Stressballs';
-        }
+//        if ($brand=='SR') {
+//            $head['title'] = 'StressRelievers';
+//        } else {
+//            $head['title'] = 'Bluetrack/Stressballs';
+//        }
         $pagelnk = '#dbbrand';
         $brandmenu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $pagelnk, $brand);
         if (count($brandmenu) > 0) {
@@ -2301,29 +2301,36 @@ class Database extends MY_Controller
         // Check items
         $idx=0;
         foreach ($categories as $category) {
+            $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $category['category_id'], 'item_active' => 1]);
             if ($category['category_active']==0) {
-                $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $category['category_id']]);
                 if ($cntitems > 0) {
                     $categories[$idx]['category_active'] = 1;
                     // Update categories
                     $this->categories_model->activate_reliver_categories($category['category_id']);
                 }
             }
+            $categories[$idx]['category_items'] = $cntitems;
+            $idx++;
         }
         $activcategory = 0;
         foreach ($categories as $category) {
             if ($category['category_active']==1) {
                 $activcategory = $category['category_id'];
-                $activcategory_label = $category['category_code'].' - '.$category['category_name'];
+//                $activcategory_label = $category['category_code'].' - '.$category['category_name'];
+                $activcategory_label = $category['category_name'];
                 break;
             }
         }
         if ($activcategory == 0) {
             $activcategory = $categories[0]['category_id'];
-            $activcategory_label = $categories[0]['category_code'].' - '.$categories[0]['category_name'];
+//            $activcategory_label = $categories[0]['category_code'].' - '.$categories[0]['category_name'];
+            $activcategory_label = $categories[0]['category_name'];
         }
         $brandtotal = $this->items_model->get_items_count(['brand' => 'BT']);
         $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $activcategory]);
+        $activeitms = $this->items_model->get_items_count(['brand' => 'BT', 'item_active' => 1]);
+        $completed_items = $this->items_model->get_items_fullinfo('BT');
+        $uncompleted_items = $activeitms - $completed_items;
 
         $options = [
             'perpage' => 250,
@@ -2331,11 +2338,16 @@ class Database extends MY_Controller
             'direct' => 'asc',
             'totals' =>  $cntitems,
             'brand' => $brand,
-            'vendors' => $this->vendors_model->get_vendors(),
+            //'vendors' => $this->vendors_model->get_vendors(),
             'categories' => $categories,
             'category_id' => $activcategory,
             'category_label' => $activcategory_label,
             'brandtotal' => $brandtotal,
+            'activeitms' => $activeitms,
+            'completed_items' => $completed_items,
+            'completed_perc' => $activeitms==0 ? 0 : round($completed_items/$activeitms*100,1),
+            'uncompleted_items' => $uncompleted_items,
+            'uncompleted_perc' => $activeitms==0 ? 0 : round($uncompleted_items/$activeitms*100,1),
         ];
         // $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
         $content = $this->load->view('btitems/itemslist_view', $options, TRUE);

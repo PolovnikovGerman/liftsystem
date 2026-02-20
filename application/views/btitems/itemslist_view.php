@@ -3,25 +3,44 @@
 <input type="hidden" id="btitemsorderdirect" value="<?=$direct?>"/>
 <input type="hidden" id="btitemstotals" value="<?=$totals?>"/>
 <input type="hidden" id="btitemspagenum" value="0"/>
+<input type="hidden" id="btitemsvendor" value=""/>
 <div class="itemlistview" data-brand="<?=$brand?>">
     <div class="pageheader">
         <div class="pagetitle">Item Center</div>
-        <div class="pageheadfilter">
-            <select class="itemcategoryfilter">
-                <?php foreach ($categories as $category) { ?>
-                    <option data-categ="<?=$category['category_id']?>" <?=$category['category_active']==1 ? '' : 'disabled="true"'?> value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
-                        <?=$category['category_code'].' - '.$category['category_name']?>
-                    </option>
-                <?php } ?>
-            </select>
-        </div>
-        <div class="pageheadfilter">
-            <input class="itemnamesearch" placeholder="Search"/>
-            <div class="itemsearchbtn">
-                <i class="fa fa-search" aria-hidden="true"></i>
+        <div class="pageitemstatistic">
+            <div class="totalactiveitems">
+                <div class="totalactiveitemslabel">TOTAL ACTIVE:</div>
+                <div class="totalactiveitemsvalue"><?=$activeitms?></div>
+            </div>
+            <div class="totalcompleteditems">
+                <div class="datarow">
+                    <div class="totalcompleteditemslabel">Complete:</div>
+                    <div class="totalcompleteditemsvalue"><?=$completed_items?> - <?=$completed_perc?>%</div>
+                </div>
+                <div class="datarow">
+                    <div class="totalcompleteditemslabel">Incomplete:</div>
+                    <div class="totalcompleteditemsvalue"><?=$uncompleted_items?> - <?=$uncompleted_perc?>%</div>
+                </div>
             </div>
         </div>
-        <div class="itemclearsearch">Clear</div>
+        <div class="pageheadersearcharea">
+            <div class="pageheadfilter">
+                <select class="itemcategoryfilter">
+                    <?php foreach ($categories as $category) { ?>
+                        <option data-categ="<?=$category['category_id']?>" <?=$category['category_active']==1 ? '' : 'disabled="true"'?> value="<?=$category['category_id']?>" <?=$category['category_id']==$category_id ? 'selected="selected"' : ''?>>
+                            <?=$category['category_code'].' - '.$category['category_name']?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="pageheadfilter">
+                <input class="itemnamesearch" placeholder="Search"/>
+                <div class="itemsearchbtn">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="itemclearsearch">Clear</div>
+        </div>
     </div>
     <div class="pageheadcategories">
         <?php $numpp=0;?>
@@ -33,6 +52,9 @@
             <div class="btcategorybtn <?=$category['category_id']==$category_id ? 'active' : ''?> <?=$category['category_active']==0 ? 'locked' : ''?> <?=$category['category_separate']==1 ? ($numsep==0 ? 'separatefirst' : 'separate') : ''?>"
                  data-category="<?=$category['category_id']?>">
                 <?=$category['category_code']?> - <?=$category['category_name']?>
+                <?php if ($category['category_items'] > 0) : ?>
+                <span>(<?=$category['category_items']?>)</span>
+                <?php endif; ?>
             </div>
             <?php $numpp++;?>
             <?php if ($category['category_separate']==1) $numsep++; ?>
@@ -44,42 +66,45 @@
             </div>
         <?php } ?>
     </div>
-    <div class="content-row">
-        <div class="totalitems"><?=number_format($brandtotal,0)?> items</div>
-    </div>
     <div class="datatablearea">
+        <div class="tabledatatitle"><?=$category_label?></div>
         <div class="tabledatatotals">
-            <div class="tabledatatitle"><?=$category_label?></div>
-            <div class="tabledatataotalvalue"><?=$totals==0 ? '' : QTYOutput($totals).' items'?></div>
+            <div class="datarow">
+                <div class="categoryactivestatistics">&nbsp;</div>
+            </div>
+            <div class="datarow">
+                <div class="tabledatafilter">
+                    <select class="itemstatusfilter">
+                        <option value="0">Active & Inactive</option>
+                        <option value="1">Active</option>
+                        <option value="2">Inactive</option>
+                    </select>
+                </div>
+                <div class="tabledatafilter">
+                    <select class="itemmisinfofilter">
+                        <option value="0">Complete & Not</option>
+                        <option value="1">Complete</option>
+                        <option value="2">Not Complete</option>
+                    </select>
+                </div>
+            </div>
+            <div class="datarow">
+                <div class="tabledatataotalvalue"><?=$totals==0 ? '' : 'Displaying '.QTYOutput($totals).' item(s)'?></div>
+            </div>
         </div>
-        <div class="tabledatafilter">
-            <select class="itemstatusfilter">
-                <option value="0">Active & Inactive</option>
-                <option value="1">Active</option>
-                <option value="2">Inactive</option>
-            </select>
-        </div>
-        <div class="tabledatafilter">
-            <select class="itemvendorfilter">
-                <option value="">All Suppliers</option>
-                <?php foreach ($vendors as $vendor) { ?>
-                    <option value="<?=$vendor['vendor_id']?>"><?=$vendor['vendor_name']?></option>
-                <?php } ?>
-            </select>
-        </div>
-        <div class="tabledatafilter">
-            <select class="itemmisinfofilter">
-                <option value="0">Complete & Not</option>
-                <option value="1">Complete</option>
-                <option value="2">Not Complete</option>
-            </select>
+        <div class="tabledatavendorsview">
+            &nbsp;
         </div>
         <div class="tabledataexecute">
-            <div class="tabledataexport">
-                <i class="fa fa-share-square-o" aria-hidden="true"></i>
-                <span>Export Item List</span>
+            <div class="datarow">
+                <div class="tabledataexport">
+                    <i class="fa fa-share-square-o" aria-hidden="true"></i>
+                    <span>Export Item List</span>
+                </div>
             </div>
-            <div class="tabledatapaginator" id="btitemsPaginator"></div>
+            <div class="datarow">
+                <div class="tabledatapaginator" id="btitemsPaginator"></div>
+            </div>
         </div>
         <div class="tabledataheader">
             <div class="numberpp" id="addnewbtitems">
@@ -96,7 +121,6 @@
         </div>
         <div class="btitemnewaddarea"></div>
         <div class="btitemnewsucategarea"></div>
-        <div class="" id="btitemdata">
-        </div>
+        <div class="tabledataarea" id="btitemdata"></div>
     </div>
 </div>
