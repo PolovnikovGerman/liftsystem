@@ -14,6 +14,36 @@ class Dbitems extends MY_Controller
         $this->load->model('sritems_model');
     }
 
+    public function itemlisthead()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $category_id = ifset($postdata, 'category',0);
+            $brand = ifset($postdata, 'brand', 'BT');
+            if (!empty($category_id)) {
+                $activeitms = $this->items_model->get_items_count(['brand' => $brand, 'item_active' => 1, 'category_id' => $category_id]);
+                $completed_items = $this->items_model->get_items_fullinfo($brand, $category_id);
+                $uncompleted_items = $activeitms - $completed_items;
+                $totaloptions = [
+                    'totalactive' => $activeitms,
+                    'completeditm' => $completed_items,
+                    'uncompleteditm' => $uncompleted_items,
+                    'completedprc' => $activeitms==0 ? 0 : round($completed_items/$activeitms*100,1),
+                    'uncompletedprc' => $activeitms==0 ? 0 : round($uncompleted_items/$activeitms*100,1),
+                ];
+                $mdata['totals'] = $this->load->view('btitems/category_totals_view', $totaloptions, true);
+                // Vendors
+                $this->load->model('vendors_model');
+                $vendors = $this->vendors_model->get_active_vendors($brand, $category_id);
+                $mdata['vendors'] = $this->load->view('btitems/vendors_category_view', ['vendors' => $vendors, 'vendcnt' => count($vendors)], true);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Items List
     public function itemlistsearch() {
         if ($this->isAjax()) {
@@ -30,7 +60,7 @@ class Dbitems extends MY_Controller
             $options['missinfo'] = ifset($postdata,'missinfo',0);
             $totals = $this->items_model->count_item_searchres($options);
             $mdata['totals'] = $totals;
-            $mdata['totals_view'] = QTYOutput($totals).' item(s)';
+            $mdata['totals_view'] = 'Displaying '.QTYOutput($totals).' item(s)';
             $category_label = '';
             if ($options['category'] > 0) {
                 $this->load->model('categories_model');

@@ -21,6 +21,16 @@ Class Vendors_model extends My_Model
         return $result;
     }
 
+    public function get_active_vendors($brand, $category_id=0)
+    {
+        $this->db->select('v.vendor_id, v.vendor_name, count(i.item_id) as itmcnt')->from('vendors v');
+        $this->db->join('sb_vendor_items vi', 'vi.vendor_item_vendor = v.vendor_id');
+        $this->db->join('sb_items i', 'i.vendor_item_id = vi.vendor_item_id');
+        $this->db->where(['i.category_id' => $category_id, 'i.brand' => $brand, 'i.item_active' => 1]);
+        $this->db->group_by('v.vendor_id, v.vendor_name')->order_by('itmcnt','desc');
+        return $this->db->get()->result_array();
+    }
+
     public function get_itemseq_vendors() {
         $vend=[
             'Stressballs.com','Ariel','Alpi','Mailine','Pinnacle','Jetline','Hit',

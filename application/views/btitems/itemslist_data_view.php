@@ -1,4 +1,3 @@
-<div class="tabledataarea">
 <?php $numpp=0;?>
 <?php foreach ($items as $item) { ?>
     <div class="tabrow <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?> <?=$expand==1 ? 'expand' : ''?>">
@@ -19,4 +18,3 @@
     </div>
     <?php $numpp++;?>
 <?php } ?>
-</div>

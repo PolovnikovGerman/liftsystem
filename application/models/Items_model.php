@@ -63,13 +63,17 @@ Class Items_model extends My_Model
         return $result['cnt'];
     }
 
-    public function get_items_fullinfo($brand)
+    public function get_items_fullinfo($brand, $category_id = 0)
     {
         $this->db->select('count(v.item_id) as cnt');
         if ($brand=='SR') {
             $this->db->from('v_sritem_missinginfo v');
         } else {
             $this->db->from('v_sbitem_missinginfo v');
+        }
+        if ($category_id) {
+            $this->db->join('sb_items i', 'i.item_id=v.item_id');
+            $this->db->where('i.category_id', $category_id);
         }
         $this->db->where(['v.keyinfo' => 0, 'v.similar' => 0, 'v.prices' => 0, 'v.printing' => 0, 'v.meta' => 0, 'v.shiping'=>0, 'v.imagescolors' => 0, 'v.supplier' => 0, 'v.item_active' => 1]);
         $res = $this->db->get()->row_array();

@@ -2301,26 +2301,30 @@ class Database extends MY_Controller
         // Check items
         $idx=0;
         foreach ($categories as $category) {
+            $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $category['category_id'], 'item_active' => 1]);
             if ($category['category_active']==0) {
-                $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $category['category_id']]);
                 if ($cntitems > 0) {
                     $categories[$idx]['category_active'] = 1;
                     // Update categories
                     $this->categories_model->activate_reliver_categories($category['category_id']);
                 }
             }
+            $categories[$idx]['category_items'] = $cntitems;
+            $idx++;
         }
         $activcategory = 0;
         foreach ($categories as $category) {
             if ($category['category_active']==1) {
                 $activcategory = $category['category_id'];
-                $activcategory_label = $category['category_code'].' - '.$category['category_name'];
+//                $activcategory_label = $category['category_code'].' - '.$category['category_name'];
+                $activcategory_label = $category['category_name'];
                 break;
             }
         }
         if ($activcategory == 0) {
             $activcategory = $categories[0]['category_id'];
-            $activcategory_label = $categories[0]['category_code'].' - '.$categories[0]['category_name'];
+//            $activcategory_label = $categories[0]['category_code'].' - '.$categories[0]['category_name'];
+            $activcategory_label = $categories[0]['category_name'];
         }
         $brandtotal = $this->items_model->get_items_count(['brand' => 'BT']);
         $cntitems = $this->items_model->get_items_count(['brand' => 'BT', 'category_id' => $activcategory]);
@@ -2334,7 +2338,7 @@ class Database extends MY_Controller
             'direct' => 'asc',
             'totals' =>  $cntitems,
             'brand' => $brand,
-            'vendors' => $this->vendors_model->get_vendors(),
+            //'vendors' => $this->vendors_model->get_vendors(),
             'categories' => $categories,
             'category_id' => $activcategory,
             'category_label' => $activcategory_label,
