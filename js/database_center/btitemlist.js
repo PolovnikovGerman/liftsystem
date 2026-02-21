@@ -135,10 +135,16 @@ function initItemsListPagination() {
 }
 function pageBTItemsListCallback(page_index) {
     var params = prepare_search_params();
+    var tabname = $("#btitemtab").val();
+    if (tabname=='complete') {
+        params.push({name: 'order_by', value: $('#btitemsorder').val()});
+        params.push({name: 'direction', value: $('#btitemsorderdirect').val()});
+    } else {
+        params.push({name: 'order_by', value: $('#btipriceorder').val()});
+        params.push({name: 'direction', value: $('#btipriceorderdirect').val()});
+    }
     params.push({name: 'offset', value: page_index});
     params.push({name: 'limit', value: $('#btitemsperpage').val()});
-    params.push({name: 'order_by', value: $('#btitemsorder').val()});
-    params.push({name: 'direction', value: $('#btitemsorderdirect').val()});
     params.push({name: 'maxval', value: $('#btitemstotals').val()});
     $("#loader").show();
     $.post('/dbitems/itemlistsdata', params, function(response){
@@ -351,23 +357,44 @@ function edit_btitem(item) {
 }
 
 function sort_btitems(fld) {
-    var cursort = $('#btitemsorder').val();
-    var curdirec = $('#btitemsorderdirect').val();
-    $(".tabledataheader").find("div.ascsort").remove();
-    $(".tabledataheader").find("div.descsort").remove();
+    var cursort = '';
+    var curdirec = '';
+    var tabname = $("#btitemtab").val();
+    if (tabname=='complete') {
+        cursort = $('#btitemsorder').val();
+        curdirec = $('#btitemsorderdirect').val();
+    } else {
+        cursort = $('#btipriceorder').val();
+        curdirec = $('#btipriceorderdirect').val();
+    }
+    $(".tabledataheader[data-header='"+tabname+"']").find("div.ascsort").remove();
+    $(".tabledataheader[data-header='"+tabname+"']").find("div.descsort").remove();
     if (cursort==fld) {
         // Change direction
         if (curdirec=='asc') {
-            $(".tabledataheader").find('div[data-sortcell="'+fld+'"]').append('<div class="descsort">&nbsp;</div>');
-            $('#btitemsorderdirect').val('desc');
+            $(".tabledataheader[data-header='"+tabname+"']").find('div[data-sortcell="'+fld+'"]').append('<div class="descsort">&nbsp;</div>');
+            if (tabname=='complete') {
+                $('#btitemsorderdirect').val('desc');
+            } else {
+                $('#btipriceorderdirect').val('desc');
+            }
         } else {
-            $(".tabledataheader").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
-            $('#btitemsorderdirect').val('asc');
+            $(".tabledataheader[data-header='"+tabname+"']").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+            if (tabname=='complete') {
+                $('#btitemsorderdirect').val('asc');
+            } else {
+                $('#btipriceorderdirect').val('asc');
+            }
         }
     } else {
-        $(".tabledataheader").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
-        $('#btitemsorderdirect').val('asc');
-        $('#btitemsorder').val(fld);
+        $(".tabledataheader[data-header='"+tabname+"']").find('div[data-sortcell="'+fld+'"]').append('<div class="ascsort">&nbsp;</div>');
+        if (tabname=='complete') {
+            $('#btitemsorderdirect').val('asc');
+            $('#btitemsorder').val(fld);
+        } else {
+            $('#btipriceorder').val(fld);
+            $('#btipriceorderdirect').val('asc');
+        }
     }
     var pageindex = $('#btitemspagenum').val();
     pageBTItemsListCallback(pageindex);
