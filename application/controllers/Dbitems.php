@@ -94,12 +94,14 @@ class Dbitems extends MY_Controller
             $options['category_id'] = ifset($postdata, 'category', 0);
             $options['missinfo'] = ifset($postdata,'missinfo',0);
             $options['brand'] = 'BT';
-            $res = $this->items_model->get_itemlists($options);
-            $expand = 1;
-            if (count($res) > 17) {
-                $expand = 0;
+            $pagetab = ifset($postdata,'pagetab', 'complete');
+            if ($pagetab=='complete') {
+                $res = $this->items_model->get_itemlists($options);
+                $mdata['content'] = $this->load->view('btitems/itemslist_data_view', ['items' => $res, ], TRUE);
+            } else {
+                $res = $this->items_model->get_itempricelists($options);
+                $mdata['content'] = $this->load->view('btitems/itemslistprice_data_view', ['items' => $res, 'prices' => $this->config->item('price_types') ], TRUE);
             }
-            $mdata['content'] = $this->load->view('btitems/itemslist_data_view', ['items' => $res, 'expand' => $expand, ], TRUE);
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

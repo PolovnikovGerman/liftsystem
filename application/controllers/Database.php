@@ -2331,7 +2331,8 @@ class Database extends MY_Controller
         $activeitms = $this->items_model->get_items_count(['brand' => 'BT', 'item_active' => 1]);
         $completed_items = $this->items_model->get_items_fullinfo('BT');
         $uncompleted_items = $activeitms - $completed_items;
-
+        $headercomplet = $this->load->view('btitems/header_completed_view',['sort' => 'item_number', 'direct' => 'asc'], true);
+        $headerpricing = $this->load->view('btitems/header_pricing_view',['sort' => 'item_number', 'direct' => 'asc', 'prices' => $this->config->item('price_types')], true);
         $options = [
             'perpage' => 250,
             'order' => 'item_number',
@@ -2348,6 +2349,8 @@ class Database extends MY_Controller
             'completed_perc' => $activeitms==0 ? 0 : round($completed_items/$activeitms*100,1),
             'uncompleted_items' => $uncompleted_items,
             'uncompleted_perc' => $activeitms==0 ? 0 : round($uncompleted_items/$activeitms*100,1),
+            'headercomplet' => $headercomplet,
+            'headerpricing' => $headerpricing,
         ];
         // $content = $this->load->view('dbitems/itemslist_view', $options, TRUE);
         $content = $this->load->view('btitems/itemslist_view', $options, TRUE);

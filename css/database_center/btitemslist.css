@@ -360,7 +360,70 @@
     right: 8px;
     top: 8px;
 }
-
+.itemlistview .tabledataheader-tabs {}
+.itemlistview .tabledataheader-tabs .tabledataheader-tab {
+    height: 21px;
+    border-top: 1px solid #000000;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    position: relative;
+    cursor: pointer;
+    padding: 3px 10px 0 10px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    background: #00246d;
+    margin-right: 4px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+.itemlistview .tabledataheader-tabs .tabledataheader-tab.active {
+    background: #000040;
+    height: 23px;
+    margin-top: -2px;
+}
+.itemlistview .tabledataheader_profitmap {
+    display: none;
+    height: 20px;
+    line-height: 20px;
+    float: right!important;
+}
+.itemlistview .tabledataheader_profitmap .profitmapview {
+    width: 12px;
+    height: 12px;
+    border: 1px solid #626262;
+    margin-top: 4px;
+}
+.itemlistview .tabledataheader_profitmap .profitmapview.greenhight {
+    background: #17ef00;
+}
+.itemlistview .tabledataheader_profitmap .profitmapview.green {
+    background: #00ef87;
+}
+.itemlistview .tabledataheader_profitmap .profitmapview.white {
+    background: #ffffff;
+}
+.itemlistview .tabledataheader_profitmap .profitmapview.orange {
+    background: #ffa200;
+}
+.itemlistview .tabledataheader_profitmap .profitmapview.red {
+    background: #ff0000;
+}
+.itemlistview .tabledataheader_profitmap .profitmapview.maroon {
+    background: #500000;
+}
+.itemlistview .tabledataheader_profitmap .profitmapview.black {
+    background: #000000;
+}
+.itemlistview .tabledataheader_profitmap .profitmapview.purple {
+    background: #f606ff;
+}
+.itemlistview .tabledataheader_profitmap .profitmaplegend {
+    font-size: 14px;
+    color: #ffffff;
+    margin-left: 4px;
+    margin-right: 8px;
+}
 .itemlistview .tabledataheader .numberpp {
     width: 65px;
 }
@@ -382,11 +445,20 @@
 .itemlistview .tabledataheader .itemname {
     width: 355px;
 }
+.itemlistview .tabledataheader .itemnameprice {
+    width: 318px;
+}
 .itemlistview .tabledataheader .suplier {
     width: 140px;
 }
 .itemlistview .tabledataheader .missinfo {
     width: 384px;
+}
+.itemlistview .tabledataheader .itemprice {
+    width: 44px;
+}
+.itemlistview .tabledataheader .lastupdate {
+    width: 133px;
 }
 .itemlistview .tabledataarea {
     clear: both;
@@ -465,6 +537,12 @@
     width: 354px;
     padding-left: 5px;
 }
+.itemlistview .tabledataarea .tabrow .itemnameprice {
+    border-right: 3px solid #000000;
+    text-align: left;
+    width: 318px;
+    padding-left: 5px;
+}
 .itemlistview .tabledataarea .tabrow .suplier {
     border-right: 1px solid #000000;
     padding-left: 5px;
@@ -504,6 +582,43 @@
     color: #FF0000;
     width: 100%;
     text-align: center;
+}
+.itemlistview .tabledataarea .tabrow .itemprice {
+    width: 44px;
+    border-right: 1px solid #000000;
+}
+.itemlistview .tabledataarea .tabrow .itemprice.greenhight {
+    background: #17ef00;
+}
+.itemlistview .tabledataarea .tabrow .itemprice.green {
+    background: #00ef87;
+}
+.itemlistview .tabledataarea .tabrow .itemprice.white {
+    background: #ffffff;
+}
+.itemlistview .tabledataarea .tabrow .itemprice.orange {
+    background: #ffa200;
+}
+.itemlistview .tabledataarea .tabrow .itemprice.red {
+    background: #ff0000;
+    color: #ffffff!important;
+}
+.itemlistview .tabledataarea .tabrow .itemprice.maroon {
+    background: #500000;
+    color: #ffffff!important;
+}
+.itemlistview .tabledataarea .tabrow .itemprice.black {
+    background: #000000;
+    color: #ffffff!important;
+}
+.itemlistview .tabledataarea .tabrow .lastupdate {
+    width: 133px;
+    text-align: left;
+    padding-left: 5px;
+}
+.itemlistview .tabledataarea .tabrow .lastupdate.needaction {
+    background: #f606ff;
+    color: #ffffff!important;
 }
 /* Paginator */
 .tabledatapaginator {
