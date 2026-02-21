@@ -4,6 +4,7 @@
 <input type="hidden" id="btitemstotals" value="<?=$totals?>"/>
 <input type="hidden" id="btitemspagenum" value="0"/>
 <input type="hidden" id="btitemsvendor" value=""/>
+<input type="hidden" id="btitemtab" value="complete"/>
 <div class="itemlistview" data-brand="<?=$brand?>">
     <div class="pageheader">
         <div class="pagetitle">Item Center</div>
@@ -106,19 +107,30 @@
                 <div class="tabledatapaginator" id="btitemsPaginator"></div>
             </div>
         </div>
-        <div class="tabledataheader">
-            <div class="numberpp" id="addnewbtitems">
-                <img src="/img/masterinvent/addinvitem_bg.png" alt="Add New"/>
-            </div>
-            <div class="status sortable" data-sortcell="item_active">Active</div>
-            <div class="edit">Edit</div>
-            <div class="subcategory sortable" data-sortcell="category">Subcategory</div>
-<!--            <div class="subcategory">Subcategory</div>-->
-            <div class="itemnumber sortable" data-sortcell="item_number">Item # <div class="ascsort">&nbsp;</div></div>
-            <div class="itemname sortable" data-sortcell="item_name">Item Name</div>
-            <div class="suplier sortable" data-sortcell="vendor">Supplier</div>
-            <div class="missinfo">Complete or Missing Info</div>
+        <div class="tabledataheader-tabs">
+            <div class="tabledataheader-tab active" data-tab="complete">Completeness</div>
+            <div class="tabledataheader-tab" data-tab="pricing">Pricing/Profit</div>
         </div>
+        <div class="tabledataheader_profitmap">
+            <div class="profitmapview greenhight">&nbsp;</div>
+            <div class="profitmaplegend">50%+</div>
+            <div class="profitmapview green">&nbsp;</div>
+            <div class="profitmaplegend">40%'s</div>
+            <div class="profitmapview white">&nbsp;</div>
+            <div class="profitmaplegend">30%'s</div>
+            <div class="profitmapview orange">&nbsp;</div>
+            <div class="profitmaplegend">20%'s</div>
+            <div class="profitmapview red">&nbsp;</div>
+            <div class="profitmaplegend">10%'s</div>
+            <div class="profitmapview maroon">&nbsp;</div>
+            <div class="profitmaplegend">0%'s</div>
+            <div class="profitmapview black">&nbsp;</div>
+            <div class="profitmaplegend">Loss</div>
+            <div class="profitmapview purple">&nbsp;</div>
+            <div class="profitmaplegend">Needs Action</div>
+        </div>
+        <?=$headercomplet?>
+        <?=$headerpricing?>
         <div class="btitemnewaddarea"></div>
         <div class="btitemnewsucategarea"></div>
         <div class="tabledataarea" id="btitemdata"></div>

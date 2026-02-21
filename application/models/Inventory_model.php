@@ -2816,4 +2816,20 @@ class Inventory_model extends MY_Model
         return true;
     }
 
+    public function get_inventoryitem_avgprice($inventory_item_id) {
+        $this->db->select('sum(ii.income_price*(ii.income_qty-ii.income_expense)) as totalsum, sum(ii.income_qty-ii.income_expense) as totalqty');
+        $this->db->from('ts_inventory_incomes ii');
+        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id = ii.inventory_color_id');
+        $this->db->where('ic.inventory_item_id', $inventory_item_id);
+        $res = $this->db->get()->row_array();
+        if ($res['totalqty'] > 0) {
+            $price = round($res['totalsum']/$res['totalqty'],3);
+        } else {
+            $this->db->select('avg(ic.avg_price) as price')->from('ts_inventory_colors ic')->where('ic.inventory_item_id', $inventory_item_id);
+            $avgdat = $this->db->get()->row_array();
+            $price = round($avgdat['price'],3);
+        }
+        return $price;
+    }
+
 }

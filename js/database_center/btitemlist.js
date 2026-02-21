@@ -56,6 +56,24 @@ function init_btitemslist_view() {
         var fld = $(this).data('sortcell');
         sort_btitems(fld);
     });
+    // Change tab
+    $(".tabledataheader-tab").unbind('click').click(function(){
+        if ($(this).hasClass('active')) {
+        } else {
+            var tabname = $(this).data('tab');
+            $(".tabledataheader-tab").removeClass('active');
+            $(this).addClass('active');
+            $("#btitemtab").val(tabname);
+            $(".tabledataheader").hide();
+            $(".tabledataheader[data-header='"+tabname+"']").show();
+            if (tabname=='pricing') {
+                $(".tabledataheader_profitmap").show();
+            } else {
+                $(".tabledataheader_profitmap").hide();
+            }
+            search_itemlists();
+        }
+    })
 }
 
 function initBtitemsTableHead() {
@@ -165,6 +183,7 @@ function prepare_search_params() {
     params.push({name: 'itemstatus', value: $('.itemstatusfilter').val()});
     params.push({name: 'missinfo', value: $(".itemmisinfofilter").val()});
     params.push({name: 'category', value: $(".itemcategoryfilter").val()});
+    params.push({name: 'pagetab', value: $("#btitemtab").val()});
     return params;
 }
 

@@ -728,6 +728,115 @@ Class Items_model extends My_Model
         }
         return $out;
     }
+
+    public function get_itempricelists($options)
+    {
+        $timelimit = strtotime('-1 year');
+        $this->db->select('i.item_id, i.item_number, i.item_name, i.item_active, i.printshop_inventory_id');
+        $this->db->select('v.vendor_name as vendor, v.vendor_code, v.vendor_phone, v.vendor_email, v.vendor_website, svi.vendor_item_number');
+        $this->db->select('v.vendor_id as vendor_id, svi.vendor_item_cost');
+        $this->db->select('UNIX_TIMESTAMP(i.update_time) as updtime, u.user_initials, u.first_name');
+        $this->db->from('sb_items i');
+        $this->db->join('sb_vendor_items svi','i.vendor_item_id = svi.vendor_item_id','left');
+        $this->db->join('vendors v','v.vendor_id=svi.vendor_item_vendor','left');
+        $this->db->join('users u','u.user_id=i.update_user');
+        if (ifset($options,'brand', 'ALL')!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('i.brand', $options['brand']);
+            } else {
+                $this->db->where_in('i.brand', ['BT','SB']);
+            }
+        }
+        if (ifset($options, 'search', '')!=='') {
+            $where="lower(concat(i.item_number,i.item_name)) like '%".$options['search']."%'";
+            $this->db->where($where);
+        }
+        if (ifset($options,'vendor', '')!=='') {
+            $this->db->where('v.vendor_id', $options['vendor']);
+        }
+        if (ifset($options, 'itemstatus', 0) > 0) {
+            if ($options['itemstatus']==1) {
+                $this->db->where('i.item_active', 1);
+            } else {
+                $this->db->where('i.item_active', 0);
+            }
+        }
+        if (ifset($options,'category_id',0)>0) {
+            $this->db->where('i.category_id', $options['category_id']);
+        }
+        if (ifset($options,'missinfo',0)>0) {
+            $this->db->select('(vm.keyinfo+vm.prices+vm.printing+vm.meta+vm.shiping+vm.imagescolors+vm.supplier+vm.similar) as missings');
+            $this->db->join('v_sbitem_missinginfo vm','i.item_id=vm.item_id');
+            if ($options['missinfo']==1) {
+                $this->db->having('missings=0');
+            } else {
+                $this->db->having('missings > 0');
+            }
+        }
+        $order_by = ifset($options, 'order_by','item_id');
+        $direc = ifset($options, 'direct','asc');
+        $this->db->order_by($order_by, $direc);
+        $limit = ifset($options, 'limit', 0);
+        $offset = ifset($options, 'offset', 0);
+        if ($limit > 0) {
+            if ($offset>0) {
+                $this->db->limit($limit, $offset);
+            } else {
+                $this->db->limit($limit);
+            }
+        }
+        $res = $this->db->get()->result_array();
+        $out=[];
+        $numpp = $offset + 1;
+        $this->load->model('inventory_model');
+        foreach ($res as $item) {
+            $item['status'] = $item['item_active']==1 ? 'Active' : 'Inactve';
+            $item['rowclass'] = $item['item_active']==1 ? '' : 'inactive';
+            $item['numpp'] = $numpp;
+            // Bluetrack
+            $item['vendorclass'] = '';
+            if ($item['vendor_id']==$this->config->item('inventory_vendor')) {
+                $item['vendor']='INTERNAL';
+                $item['vendorclass']='internal';
+            }
+            // Prices
+            $this->db->select('*')->from('sb_promo_price')->where('item_id', $item['item_id'])->where('sale_price is not NULL')->where('sale_price > ',0);
+            $prices = $this->db->get()->result_array();
+            $baseprofprice = $item['vendor_item_cost'];
+            if (!empty($item['printshop_inventory_id'])) {
+                $baseprofprice = $this->inventory_model->get_inventoryitem_avgprice($item['printshop_inventory_id']);
+            }
+            foreach ($this->config->item('price_types') as $pricetype) {
+                $found = 0;
+                foreach ($prices as $price) {
+                    if ($price['item_qty']==$pricetype['base']) {
+                        $item['price'.$pricetype['base']] = $price['sale_price'];
+                        $item['profit'.$pricetype['base']] = round(($price['sale_price'] - $baseprofprice) * $price['item_qty'],2);
+                        if (floatval($price['sale_price'])>0) {
+                            $item['profitprc'.$pricetype['base']] = round(($price['sale_price'] - $baseprofprice)/$price['sale_price']*100,1);
+                            $item['profitclass'.$pricetype['base']] = $this->_itemlist_profitclass($item['profitprc'.$pricetype['base']]);
+                        } else {
+                            $item['profitprc'.$pricetype['base']] = $item['profitclass'.$pricetype['base']] = '';
+                        }
+                        $found = 1;
+                        break;
+                    }
+                }
+                if ($found==0) {
+                    $item['price'.$pricetype['base']] = $item['profit'.$pricetype['base']] = $item['profitprc'.$pricetype['base']] = '';
+                    $item['profitclass'.$pricetype['base']] = ''; // 'purple';
+                }
+            }
+            $item['updclass'] = '';
+            if ($item['updtime'] <= $timelimit) {
+                $item['updclass'] = 'needaction';
+            }
+            $item['lastupdate'] = date('M j, Y', $item['updtime']).' - '.(empty($item['user_initials']) ? $item['first_name'] : $item['user_initials']);
+            $numpp++;
+            $out[] = $item;
+        }
+        return $out;
+    }
     public function new_itemlist($brand) {
         $out=['result' => $this->success_result, 'msg' => ''];
         // Start
@@ -1707,5 +1816,26 @@ Class Items_model extends My_Model
         } else {
             echo 'Error '.PHP_EOL;
         }
+    }
+
+    private function _itemlist_profitclass($profit)
+    {
+        $profitclass = 'purple';
+        if ($profit>=50) {
+            $profitclass = 'greenhight';
+        } elseif ($profit >= 40) {
+            $profitclass = 'green';
+        } elseif ($profit >= 30) {
+            $profitclass = 'white';
+        } elseif ($profit >= 20) {
+            $profitclass = 'orange';
+        } elseif ($profit >= 10) {
+            $profitclass = 'red';
+        } elseif ($profit >= 0) {
+            $profitclass = 'maroon';
+        } elseif ($profit < 0) {
+            $profitclass = 'black';
+        }
+        return $profitclass;
     }
 }
