@@ -2119,3 +2119,21 @@ select.optimageorderinpt {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+/* Inactive background */
+.inactiveitembackgr {
+    height: 748px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 12;
+}
+.inactiveitemsloagan {
+    margin-top: 245px;
+    margin-left: 396px;
+    color: #ffff00;
+    font-size: 118px;
+    font-weight: 600;
+    writing-mode: horizontal-tb;
+    transform: rotate(-25deg);
+}

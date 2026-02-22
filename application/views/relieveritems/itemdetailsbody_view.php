@@ -32,3 +32,8 @@
         <?=$history?>
     </div>
 <?php } ?>
+<?php if ($inactivehide==1) : ?>
+<div class="inactiveitembackgr">
+    <div class="inactiveitemsloagan">INACTIVE</div>
+</div>
+<?php endif; ?>
