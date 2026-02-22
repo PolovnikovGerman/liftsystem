@@ -144,6 +144,7 @@ class Dbitems extends MY_Controller
             $brand = ifset($postdata,'brand', 'BT');
             $editmode = ifset($postdata,'editmode', 0);
             $this->load->model('items_model');
+            $inactivehide = 0;
             if ($item_id>=0) {
                 // $editmode = 0;
                 if ($item_id==0) {
@@ -156,6 +157,9 @@ class Dbitems extends MY_Controller
                     if ($res['result']==$this->success_result) {
                         $error = '';
                         $data = $res['data'];
+                        if ($editmode==0 && $data['item']['item_active']==0) {
+                            $inactivehide = 1;
+                        }
                     }
                 }
             }
@@ -290,6 +294,7 @@ class Dbitems extends MY_Controller
                     'history' => $history_view,
                     'history_cnt' => $history_count,
                     'missinfo' => $missinfo['supplier'],
+                    'inactivehide' => $inactivehide,
                 ];
                 $mdata['content'] = $this->load->view('relieveritems/itemdetailsbody_view', $body_options, TRUE);;
                 $mdata['editmode'] = $editmode;
