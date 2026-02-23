@@ -722,6 +722,9 @@ class Printcalendar_model extends MY_Model
                 if (empty($data[$idx]['approv']) && $data[$idx]['order_blank'] == 1) {
                     $data[$idx]['approv'] = 1;
                 }
+                if ($data[$idx]['order_num']=='67761') {
+                    log_message('error', '67761 RUSH '.$uns['rush_idx'].'!');
+                }
                 if (empty($uns['rush_idx'])) {
                     $data[$idx]['order_rush'] = 0;
                 } else {
