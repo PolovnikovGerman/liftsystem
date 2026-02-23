@@ -43,8 +43,8 @@
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                 </div>
                 <div class="histrtabl-apprblock">
-                    <div class="histrtabl-td histrtabl-approval <?=$list['approv']==0 ? '' : ''?>">
-                        <?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
+                    <div class="histrtabl-td histrtabl-approval <?=$list['approv']>0 ? '' : $list['order_blank']==1 ? '' : 'notapprv' ?>">
+                        <?=$list['approv'] > 0 ? 'Approved' : $list['order_blank']==1 ? 'Blank' : 'Not Approved'?>
                         <?php if ($list['approv'] > 0 && $list['order_blank']==0)  :?>
                             <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                         <?php endif; ?>

@@ -27,8 +27,8 @@
                     <div class="reschditms-apprblock">
                         <div class="reschditms-td reschditms-prcful <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['fulfillprc']?>%</div>
                         <div class="reschditms-td reschditms-prcship <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['shippedprc']?>%</div>
-                        <div class="reschditms-td reschditms-approval <?=$list['approv']==0 ? 'notapprv' : ''?>">
-                            <?=$list['approv']==0 ? 'Not Approved' : 'Approved'?>
+                        <div class="reschditms-td reschditms-approval <?=$list['approv']>0 ? '' : $list['order_blank']==1 ? '' : 'notapprv' ?>">
+                            <?=$list['approv'] > 0 ? 'Approved' : $list['order_blank']==1 ? 'Blank' : 'Not Approved'?>
                             <?php if ($list['approv'] > 0 && $list['order_blank']==0) : ?>
                                 <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                             <?php endif; ?>
