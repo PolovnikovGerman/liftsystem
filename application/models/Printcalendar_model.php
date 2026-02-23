@@ -633,13 +633,13 @@ class Printcalendar_model extends MY_Model
                     $unsign[$idx]['approv'] = 1;
                 }
                 if (empty($warning['rush_idx'])) {
-                    $warnings[$idx]['order_rush'] = 0;
+                    $unsign[$idx]['order_rush'] = 0;
                 } else {
                     $rushdat = explode('-', $warning['rush_idx']);
                     if (isset($rushdat[1]) && intval($rushdat[1]) > 0) {
-                        $warnings[$idx]['order_rush'] = 1;
+                        $unsign[$idx]['order_rush'] = 1;
                     } else {
-                        $warnings[$idx]['order_rush'] = 0;
+                        $unsign[$idx]['order_rush'] = 0;
                     }
                 }
                 $ordertype = 'ontimeship';
@@ -1793,7 +1793,7 @@ class Printcalendar_model extends MY_Model
         ];
     }
 
-    public function get_reschedule_data($print_date)
+    public function get_reschedule_data($print_date, $newdate)
     {
         $curdate = strtotime(date('Y-m-d'));
         if ($print_date < $curdate) {
