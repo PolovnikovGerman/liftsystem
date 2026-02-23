@@ -632,10 +632,10 @@ class Printcalendar_model extends MY_Model
                 if (empty($unsign[$idx]['approv']) && $unsign[$idx]['order_blank'] == 1) {
                     $unsign[$idx]['approv'] = 1;
                 }
-                if (empty($warning['rush_idx'])) {
+                if (empty($uns['rush_idx'])) {
                     $unsign[$idx]['order_rush'] = 0;
                 } else {
-                    $rushdat = explode('-', $warning['rush_idx']);
+                    $rushdat = explode('-', $uns['rush_idx']);
                     if (isset($rushdat[1]) && intval($rushdat[1]) > 0) {
                         $unsign[$idx]['order_rush'] = 1;
                     } else {
@@ -694,9 +694,11 @@ class Printcalendar_model extends MY_Model
             $this->db->select('ic.color , concat(ii.item_num , \' - \', ii.item_name) as item');
             $this->db->select('ship.shipped, o.brand, o.order_id, o.order_blank, oi.order_item_id, oic.print_ready, oi.plates_ready, oic.ink_ready, amnt.amount_date, amnt.amount_sum');
             $this->db->select('o.shipdate as order_shipdate');
+            $this->db->select('osh.rush_idx');
             $this->db->from('ts_order_itemcolors oic');
             $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
             $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
+            $this->db->join('ts_order_shippings osh', 'osh.order_id = o.order_id','left');
             $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id = oic.inventory_color_id');
             $this->db->join('ts_inventory_items ii', 'ii.inventory_item_id = ic.inventory_item_id');
             $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
