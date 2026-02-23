@@ -45,8 +45,8 @@
             <div class="warntabl-apprblock">
                 <div class="warntabl-td warntabl-prcful pink"><?= $list['fulfillprc'] ?>%</div>
                 <div class="warntabl-td warntabl-prcship pink"><?= $list['shippedprc'] ?>%</div>
-                <div class="warntabl-td warntabl-approval <?= $list['approv'] == 0 ? 'notapprv' : '' ?>">
-                    <?= $list['approv'] == 0 ? 'Not Approved' : 'Approved' ?>
+                <div class="warntabl-td warntabl-approval <?=$list['approv']>0 ? '' : $list['order_blank']==1 ? '' : 'notapprv' ?>">
+                    <?=$list['approv'] > 0 ? 'Approved' : $list['order_blank']==1 ? 'Blank' : 'Not Approved'?>
                     <?php if ($list['approv'] > 0 && $list['order_blank'] == 0) : ?>
                         <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                     <?php endif; ?>

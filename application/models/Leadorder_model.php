@@ -266,7 +266,7 @@ Class Leadorder_model extends My_Model {
             $row['proofstage'] = 'Not Approved';
             if ($row['order_blank']==1) {
                 $row['proofclass'] = 'approved';
-                $row['proofstage'] = 'Approved';
+                $row['proofstage'] = 'Blank'; // 'Approved';
             } else {
                 if (!empty($row['proofdocs'])) {
                     $row['proofclass'] = 'approved';
