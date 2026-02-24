@@ -24,7 +24,7 @@
     </div>
     <?php $order_id=0;?>
     <?php foreach ($lists as $list)  : ?>
-        <div class="warntabl-tr">
+        <div class="warntabl-tr" data-ordercolor="<?=$list['order_itemcolor_id']?>" id="printord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
             <div class="warntabl-apprblock">
                 <div class="warntabl-td warntabl-prcful pink"><?=$list['fulfillprc']?>%</div>
                 <div class="warntabl-td warntabl-prcship pink"><?=$list['shippedprc']?>%</div>

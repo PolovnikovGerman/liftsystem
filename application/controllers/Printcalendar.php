@@ -396,64 +396,74 @@ class Printcalendar extends MY_Controller
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $mdata['message'] = 'Order '.$res['order_num'].' was rescheduled from '.date('D - M, j, Y', $res['olddate']).' to '.date('D - M, j, Y', $printdate);
-                    if ($incomeblock!=$outcomeblock) {
-                        $olddate = $res['olddate'];
-                        $error = '';
-                        $schedul = $this->printcalendar_model->get_reschedule_data($olddate, $printdate);
-                        if ($incomeblock=='fullcalendar') {
-                            $calendres = $this->printcalendar_model->get_calendar_item($printdate);
-                            $mdata['dayorders'] = empty($calendres['dayorders']) ? '-' : QTYOutput($calendres['dayorders']);
-                            $mdata['dayprints'] = empty($calendres['dayprints']) ? '-' : QTYOutput($calendres['dayprints']);
-                            $mdata['week'] = $calendres['week'];
-                            $mdata['total_items'] = empty($calendres['total_items']) ? '-' : QTYOutput($calendres['total_items']);
-                            $mdata['total_prints'] = empty($calendres['total_prints']) ? '-' : QTYOutput($calendres['total_prints']);
-                            $mdata['late'] = $schedul['late'];
-                            $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
-                        } else {
-                            $this->load->model('user_model');
-                            $userlist = $this->user_model->get_printschedul_users();
-                            if ($incomeblock=='left') {
-                                $totals = $this->printcalendar_model->daylatedetails($printdate);
-                                // Warnings
-                                $warnings = $this->printcalendar_model->get_printdate_warnings($printdate);
-                                $regul = $this->printcalendar_model->get_printdate_regulars($printdate);
-                                $mdata['warningscnt'] = count($warnings) > 0 ? 1 : 0;
-                                $warnings_view = '';
-                                if ($mdata['warningscnt']>0) {
-                                    $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
-                                }
-                                $mdata['warnings'] = $warnings_view;
-                                $mdata['income'] = $this->load->view('printcalendar/dayshort_regular_view', ['total'=> $regul['total'], 'lists' => $regul['data'], ], true);
-                                $mdata['late'] = $schedul['late'];
-//                                if ($mdata['late']==1) {
-                                    $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
-//                                } else {
-//                                    $mdata['outcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
-//                                    $mdata['targoutcome'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
-//                                }
-                            } else {
-                                $totals = $this->printcalendar_model->daylatedetails($olddate);
-                                // New version
-                                $warnings = $this->printcalendar_model->get_printdate_warnings($olddate);
-                                $regul = $this->printcalendar_model->get_printdate_regulars($olddate);
-                                $mdata['late'] = $schedul['late'];
-                                $mdata['income'] = $this->load->view('printcalendar/day_schedule_view', ['lists' => $schedul['data'], 'late' => $schedul['late']], true);
-                                $mdata['warningscnt'] = count($warnings) > 0 ? 1 : 0;
-                                $warnings_view = '';
-                                if ($mdata['warningscnt']>0) {
-                                    $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
-                                }
-                                $mdata['warnings'] = $warnings_view;
-                                $mdata['outcome'] = $this->load->view('printcalendar/dayshort_regular_view', ['total'=> $regul['total'], 'lists' => $regul['data'], ], true);
-                            }
-                            $mdata['orders'] = QTYOutput($totals['orders']);
-                            $mdata['items'] = QTYOutput($totals['items']);
-                            $mdata['prints'] = QTYOutput($totals['prints']);
-                        }
-                        $mdata['outdate'] = $olddate;
-                        $mdata['incomedate'] = $printdate;
-                        $mdata['todaytemplate'] = $this->load->view('printcalendar/today_template_view', [], true);
+                    $error = '';
+                    // Build right part
+                    $olddate = $res['olddate'];
+                    $oldlate = $newlate = 1;
+                    if ($olddate >= strtotime(date('Y-m-d'))) {
+                        $oldlate = 0;
                     }
+                    if ($printdate >= strtotime(date('Y-m-d'))) {
+                        $newlate = 0;
+                    }
+                    if ($newlate != $oldlate) {
+                        // Buld full reschedule content
+                        $calend = $this->printcalendar_model->get_reschedule_printdate();
+                        if ($calend['lates']+$calend['ontime'] > 0) {
+                            $calendoptions = [
+                                'lates' => $calend['lates'],
+                                'ontime' => $calend['ontime'],
+                                'calendars' => $calend['calendar'],
+                                'lateorders' => $calend['lateorders'],
+                            ];
+                            $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
+                            $mdata['calendtype'] = 'full';
+                        }
+                    } else {
+                        if ($newlate == 1) {
+                            $calend = $this->printcalendar_model->get_reschedule_late();
+                            $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_lates_view', ['lists' => $calend], true);
+                            $mdata['calendtype'] = 'late';
+                        } else {
+                            $calend = $this->printcalendar_model->get_reschedule_ontime();
+                            $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_ontime_view', ['calendars' => $calend], true);
+                            $mdata['calendtype'] = 'ontime';
+                        }
+                    }
+                    // Build Left part
+                    if ($incomeblock=='fullcalendar') {
+                        $calendres = $this->printcalendar_model->get_calendar_item($printdate);
+                        $mdata['dayorders'] = empty($calendres['dayorders']) ? '-' : QTYOutput($calendres['dayorders']);
+                        $mdata['dayprints'] = empty($calendres['dayprints']) ? '-' : QTYOutput($calendres['dayprints']);
+                        $mdata['week'] = $calendres['week'];
+                        $mdata['total_items'] = empty($calendres['total_items']) ? '-' : QTYOutput($calendres['total_items']);
+                        $mdata['total_prints'] = empty($calendres['total_prints']) ? '-' : QTYOutput($calendres['total_prints']);
+                    } else {
+                        if ($incomeblock=='left') {
+                            $totals = $this->printcalendar_model->daylatedetails($printdate);
+                            $warnings = $this->printcalendar_model->get_printdate_warnings($printdate);
+                            $regul = $this->printcalendar_model->get_printdate_regulars($printdate);
+                        } else {
+                            $totals = $this->printcalendar_model->daylatedetails($olddate);
+                            $warnings = $this->printcalendar_model->get_printdate_warnings($olddate);
+                            $regul = $this->printcalendar_model->get_printdate_regulars($olddate);
+                        }
+                        $mdata['warningscnt'] = count($warnings) > 0 ? 1 : 0;
+                        $warnings_view = '';
+                        if ($mdata['warningscnt']>0) {
+                            $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
+                        }
+                        $mdata['warnings'] = $warnings_view;
+                        $mdata['weekday'] = $this->load->view('printcalendar/dayshort_regular_view', ['total'=> $regul['total'], 'lists' => $regul['data'], ], true);
+
+                        $mdata['orders'] = QTYOutput($totals['orders']);
+                        $mdata['items'] = QTYOutput($totals['items']);
+                        $mdata['prints'] = QTYOutput($totals['prints']);
+                    }
+
+                    $mdata['outdate'] = $olddate;
+                    $mdata['incomedate'] = $printdate;
+                    $mdata['todaytemplate'] = $this->load->view('printcalendar/today_template_view', [], true);
                 }
             }
             $this->ajaxResponse($mdata, $error);
