@@ -771,15 +771,16 @@ function dropHandler(ev) {
                 if (incomeblock==outcomeblock) {
                     $("div[data-printdata='"+newdate+"']").append(document.getElementById(data))
                 } else {
+                    // Update Reschedule part
+                    if (response.data.calendtype=='full') {
+                        $(".reschdl-body").empty().html(response.data.calendview);
+                    } else if (response.data.calendtype=='late') {
+                        $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.calendview);
+                    } else if (response.data.calendtype=='ontime') {
+                        $(".ontime-section").empty().html(response.data.calendview);
+                    }
+                    // Left part
                     if (incomeblock=='right') {
-                        // Update Re Schedule body
-                        if (parseInt(response.data.late)==1) {
-                            $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.income);
-                        } else {
-                            $(".dayschedulearea[data-printdata='"+response.data.incomedate+"']").empty().html(response.data.income);
-                        }
-                        // $("#printshortunassignarea").empty().html(response.data.unassign);
-                        // $("#printshortassignarea").empty().html(response.data.assign);
                         // Left part - warning
                         $(".warning-section").empty().html(response.data.warnings);
                         if (parseInt(response.data.warningscnt)==0) {
@@ -790,7 +791,7 @@ function dropHandler(ev) {
                             $(".maingrey-close").hide();
                         }
                         // Left part - common orders
-                        $(".regular-section").empty().html(response.data.outcome);
+                        $(".regular-section").empty().html(response.data.weekday);
                         // Week Totals
                         $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
                         $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
@@ -798,7 +799,7 @@ function dropHandler(ev) {
                         $(".maingrey-infobox").find('div.maingreyinfo-prints').find('span').empty().html(response.data.prints);
                         $(".maingrey-infobox").find('div.maingreyinfo-items').find('span').empty().html(response.data.items);
                         $(".maingrey-infobox").find('div.maingreyinfo-orders').find('span').empty().html(response.data.orders);
-                    } else if(incomeblock=='left') {
+                    } else if (incomeblock=='left') {
                         // Left part - warning
                         $(".warning-section").empty().html(response.data.warnings);
                         if (parseInt(response.data.warningscnt)==0) {
@@ -808,34 +809,24 @@ function dropHandler(ev) {
                             $(".warning-section").show();
                             $(".maingrey-close").hide();
                         }
-                        // Left part - common orders
-                        $(".regular-section").empty().html(response.data.income);
-                        // Right part - list of orders on Re Schedule
-                        if (parseInt(response.data.late)==1) {
-                            $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.outcome);
-                        } else {
-                            $(".dayschedulearea[data-printdata='"+response.data.outdate+"']").empty().html(response.data.outcome);
-                        }
+                        $(".regular-section").empty().html(response.data.weekday);
                         // Update Calendar
                         $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
                         $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
                         $(".maingrey-infobox").find('div.maingreyinfo-prints').find('span').empty().html(response.data.prints);
                         $(".maingrey-infobox").find('div.maingreyinfo-items').find('span').empty().html(response.data.items);
                         $(".maingrey-infobox").find('div.maingreyinfo-orders').find('span').empty().html(response.data.orders);
-                    } else {
+                    } else if (incomeblock=='fullcalendar') {
                         // Full Calendar
                         $(".psctable-td[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.dayorders);
                         $(".psctable-td[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.dayprints);
                         // Totals
                         $(".summaryweek[data-weeknum='"+response.data.week+"']").find('div.totalboxtprinted-numbers[data-fld="prints"]').empty().html(response.data.total_prints);
                         $(".summaryweek[data-weeknum='"+response.data.week+"']").find('div.totalboxtprinted-numbers[data-fld="items"]').empty().html(response.data.total_items);
-                        // Right part - list of orders on Re Schedule
-                        if (parseInt(response.data.late)==1) {
-                            $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.outcome);
-                        } else {
-                            $(".dayschedulearea[data-printdata='"+response.data.outdate+"']").empty().html(response.data.outcome);
-                        }
                     }
+                    init_reschedule_management();
+                    init_dailydetails_manage();
+                    new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
                 }
                 orderid='';
                 $.flash(response.data.message, {timeout: 5000});

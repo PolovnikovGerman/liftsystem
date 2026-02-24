@@ -682,9 +682,10 @@
 }
 .todayship {
     font-weight: 600;
+    font-size: 10px!important;
 }
 .ontimeship {
-    font-size: 13px!important;
+    font-size: 12px!important;
 }
 .shipclasslabel, .shipclassvalue {
     font-size: 9px!important;
