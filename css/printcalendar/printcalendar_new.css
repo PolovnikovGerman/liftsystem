@@ -189,7 +189,7 @@
 }
 .calnd-daybox .daybox-itemsprinted {
     width: 36px;
-    margin-top: 3px;
+    /*margin-top: 3px;*/
 }
 .dayboxitemsprinted-name {
     width: 100%;
@@ -1251,6 +1251,9 @@
     width: 38px;
     margin-top: 3px;
     margin-left: 2px;
+}
+.pscalendar-daybox .dayboxitemsprinted-name {
+    line-height: 10px!important;
 }
 .pscalendar-daybox .daybox-printsprinted {
     width: 36px;
