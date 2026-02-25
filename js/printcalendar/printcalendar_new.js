@@ -746,6 +746,13 @@ function dropHandler(ev) {
             if (parentElement) {
                 newdate = parentElement.id.replace('caledarbox_','');
                 incomeblock = 'fullcalendar';
+            } else {
+                parentElement = ev.target.closest('.dayschedulearea[data-printdata="lateorders"]');
+                if (parentElement) {
+                    newdate = parentElement.id.replace('printday_','');
+                    incomeblock = 'right';
+                    console.log('Late Order');
+                }
             }
         }
     }
@@ -759,7 +766,7 @@ function dropHandler(ev) {
             outcomeblock = 'left';
             moveorder = orderid.replace('printord_','');
         }
-        // // Send changes to Scheduler
+        // Send changes to Scheduler
         var params = new Array();
         params.push({name: 'print_date', value: newdate});
         params.push({name: 'order_id', value: moveorder});

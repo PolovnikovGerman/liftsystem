@@ -1472,10 +1472,19 @@ class Printcalendar_model extends MY_Model
     public function updateorder_printdate($order_id, $printdate)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
+        if ($printdate=='late') {
+            $order = $this->db->select('o.order_id, o.print_date, o.shipdate')->from('ts_order_items oi')->join('ts_orders o', 'o.order_id=oi.order_id')->where('oi.order_item_id', $order_id)->get()->row_array();
+            if (ifset($order, 'order_id', 0)) {
+                $printdate = $order['shipdate'];
+            } else {
+                return $out;
+            }
+        }
         $order = $this->db->select('order_item_id, order_id, print_date')->from('ts_order_items')->where('order_item_id', $order_id)->get()->row_array();
         if (ifset($order, 'order_item_id', 0)==$order_id) {
             $out['result'] = $this->success_result;
             $out['olddate'] = $order['print_date'];
+            $out['newdate'] = $printdate;
             // Update Order
             $this->db->where('order_id', $order['order_id']);
             $this->db->set('print_date', $printdate);

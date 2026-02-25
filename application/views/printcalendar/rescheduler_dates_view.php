@@ -18,7 +18,7 @@
                 <div class="reschdltabl-td reschdltabl-description">Item / Description</div>
                 <div class="reschdltabl-td reschdltabl-inkcolor">Ink Color/s</div>
             </div>
-            <div class="dayschedulearea" data-printdata="lateorders">
+            <div class="dayschedulearea" data-printdata="lateorders" id="printday_late" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)">
                 <?php $order_id = 0;  ?>
                 <?php $neworderview = 0; ?>
                 <?php foreach ($lateorders as $list) : ?>
