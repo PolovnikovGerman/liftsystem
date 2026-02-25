@@ -31,16 +31,29 @@
             </div>
         </div>
     <?php endforeach; ?>
-        <div class="psctable-totalbox <?=$calendar['readyweek']==1 ? 'readyweek' : ''?>">
+        <div class="psctable-totalbox <?=$calendar['readyweek']==1 ? '' : ''?>"> <!-- readyweek -->
             <!-- Printed -->
-            <div class="totalbox-printed">
-                <div class="totalboxtprinted-name">Prints Printed:</div>
-                <div class="totalboxtprinted-numbers" data-fld="prints"><?=$calendar['total_prints']==0 ? '-' : QTYOutput($calendar['total_prints'])?></div>
+            <div class="totalbox-titlerow">
+                <div class="totalbox-titlename">&nbsp;</div>
+                <div class="totalbox-orders">Orders</div>
+                <div class="totalbox-prints">Prints</div>
             </div>
-            <div class="totalbox-printed">
-                <div class="totalboxtprinted-name">Items Printed:</div>
-                <div class="totalboxtprinted-numbers" data-fld="items"><?=$calendar['total_items']==0 ? '-' : QTYOutput($calendar['total_items'])?></div>
+            <div class="totalbox-ready">
+                <?php if ($calendar['orders_ready']+$calendar['prints_ready']==0) : ?>
+                    <div class="totalbox-titlename">&nbsp;</div>
+                <?php else : ?>
+                    <div class="totalbox-titlename">Printed</div>
+                    <div class="totalbox-orders"><?=$calendar['orders_ready']==0 ? '-' : QTYOutput($calendar['orders_ready'])?></div>
+                    <div class="totalbox-prints"><?=$calendar['prints_ready']==0 ? '-' : QTYOutput($calendar['prints_ready'])?></div>
+                <?php endif; ?>
             </div>
+            <?php if ($calendar['readyweek']==0) : ?>
+            <div class="totalbox-toprint">
+                <div class="totalbox-titlename">To Print</div>
+                <div class="totalbox-orders"><?=$calendar['orders_print']==0 ? '-' : QTYOutput($calendar['orders_print'])?></div>
+                <div class="totalbox-prints"><?=$calendar['prints_print']==0 ? '-' : QTYOutput($calendar['prints_print'])?></div>
+            </div>
+            <?php endif; ?>
         </div>
 
     </div>
