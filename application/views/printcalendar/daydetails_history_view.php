@@ -23,11 +23,11 @@
                 <div class="histrtabl-td histrtabl-inkcolor">Ink Color/s</div>
             </div>
             <div class="histrtabl-fulfblock">
-                <div class="histrtabl-td histrtabl-printed">Printed</div>
+                <div class="histrtabl-td histrtabl-printed">To Cust</div>
                 <div class="histrtabl-td histrtabl-flfkept">Kept</div>
                 <div class="histrtabl-td histrtabl-flfmisprt">Misprt</div>
                 <div class="histrtabl-td histrtabl-flfproc">%</div>
-                <div class="histrtabl-td histrtabl-flftotal">Total</div>
+                <div class="histrtabl-td histrtabl-flftotal">Printed</div>
                 <div class="histrtabl-td histrtabl-flfplates">Plates</div>
             </div>
             <div class="histrtabl-shipblock">

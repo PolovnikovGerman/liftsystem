@@ -821,6 +821,10 @@
 .reschdltabl-prcship.peach {
     background: #f7aa78;
 }
+.reschdltabl-prcful.pink,
+.reschdltabl-prcship.pink {
+    background: #fa89fb;
+}
 .reschdltabl-approval {
     width: 68px;
     font-size: 10px;
