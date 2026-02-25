@@ -1090,7 +1090,8 @@ class Printcalendar_model extends MY_Model
         $this->db->select('o.print_user as user_id, u.first_name as user_name, count(distinct(o.order_id)) as ordercnt');
         // , sum(oic.item_qty) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty,
         // sum(oa.shipped) as fullfill');
-        $this->db->select('sum(oa.shipped) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oa.shipped,0)) as printqty');
+        // $this->db->select('sum(oa.shipped) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oa.shipped,0)) as printqty');
+        $this->db->select('sum(oa.amount_sum) as itemscnt, sum(coalesce(impr.cntprint,0)*coalesce(oa.amount_sum,0)) as printqty');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
         $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
@@ -1160,7 +1161,7 @@ class Printcalendar_model extends MY_Model
             $lateorders[$didx]['shippedprc'] = round($uns['shipped'] / $uns['item_qty'] * 100, 0);
             $lateorders[$didx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
             $lateorders[$didx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
-            $lateorders[$didx]['class'] = ($lateorders[$didx]['fulfillprc'] > $lateorders[$didx]['shippedprc'] ? 'critical' : 'normal');
+            $lateorders[$didx]['class'] = ($lateorders[$didx]['fulfillprc'] > $lateorders[$didx]['shippedprc'] ? 'critical' : ($lateorders[$didx]['fulfillprc'] < $lateorders[$didx]['shippedprc'] ? 'pink' : 'normal'));
             if (empty($lateorders[$didx]['approv']) && $lateorders[$didx]['order_blank'] == 1) {
                 $lateorders[$didx]['approv'] = 1;
             }
@@ -1249,7 +1250,7 @@ class Printcalendar_model extends MY_Model
                 $dats[$didx]['shippedprc'] = round($uns['shipped'] / $uns['item_qty'] * 100, 0);
                 $dats[$didx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
                 $dats[$didx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
-                $dats[$didx]['class'] = ($dats[$didx]['fulfillprc'] > $dats[$didx]['shippedprc'] ? 'critical' : 'normal');
+                $dats[$didx]['class'] = ($dats[$didx]['fulfillprc'] > $dats[$didx]['shippedprc'] ? 'critical' : ($dats[$didx]['fulfillprc'] < $dats[$didx]['shippedprc'] ? 'pink' : 'normal'));
                 if (empty($dats[$didx]['approv']) && $dats[$didx]['order_blank'] == 1) {
                     $dats[$didx]['approv'] = 1;
                 }
