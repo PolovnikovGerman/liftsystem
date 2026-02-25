@@ -395,7 +395,7 @@ class Printcalendar extends MY_Controller
                 $res = $this->printcalendar_model->updateorder_printdate($order_id, $printdate);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
-                    $mdata['message'] = 'Order '.$res['order_num'].' was rescheduled from '.date('D - M, j, Y', $res['olddate']).' to '.date('D - M, j, Y', $printdate);
+                    $mdata['message'] = 'Order '.$res['order_num'].' was rescheduled from '.date('D - M, j, Y', $res['olddate']).' to '.date('D - M, j, Y', $res['newdate']);
                     $error = '';
                     // Build right part
                     $olddate = $res['olddate'];

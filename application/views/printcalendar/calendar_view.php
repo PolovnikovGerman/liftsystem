@@ -20,8 +20,8 @@
                     </div>
                 <?php else : ?>
                     <div class="daybox-itemsprinted">
-                        <div class="dayboxitemsprinted-name">Items Printed:</div>
-                        <div class="dayboxitemsprinted-numbers"><?=$week['printed']==0 ? '-' : QTYOutput($week['printed'])?></div>
+                        <div class="dayboxitemsprinted-name">Orders Printed:</div>
+                        <div class="dayboxitemsprinted-numbers"><?=$week['orders']==0 ? '-' : QTYOutput($week['orders'])?></div>
                     </div>
                     <div class="daybox-printsprinted">
                         <div class="dayboxprintsprinted-name">Prints Printed:</div>
