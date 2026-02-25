@@ -106,10 +106,10 @@
 .calnd-daybox.dayoff {
     border: 1px solid #303030;
     /*width: 108px;*/
-    width: 112px;
-    height: 39px;
+    /*width: 112px;*/
+    /*height: 39px;*/
     background: #d9d9d9;
-    padding: 0 3px;
+    /*padding: 0 3px;*/
 }
 .calnd-daybox:hover,
 .calnd-daybox.today {
@@ -121,7 +121,7 @@
 .calnd-daybox {
     border: 1px solid #303030;
     width: 106px;
-    height: 39px;
+    height: 45px;
     background: #fff;
 }
 .calnd-daybox .daybox-date {
@@ -271,10 +271,47 @@
 .psctable-totalbox {
     border: 1px solid #303030;
     width: 150px; /* 132px; */
-    height: 39px;
+    height: 45px;
     background: #130072;
     color: #fff;
     padding: 0 3px;
+}
+.totalbox-titlerow {
+    width: 100%;
+
+    font-style: italic;
+    color: #a4a4a4;
+    text-align: center;
+}
+.totalbox-titlename {
+    width: 38px;
+    font-style: italic;
+    font-size: 10px;
+}
+.totalbox-orders {
+    width: 39px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+.totalbox-prints {
+    width: 44px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+.totalbox-titlerow .totalbox-orders,  .totalbox-titlerow .totalbox-prints {
+    font-size: 9px!important;
+    font-weight: normal!important;
+}
+.totalbox-ready {
+    width: 100%;
+    color: #ffffff;
+    opacity: 0.5;
+}
+.totalbox-toprint {
+    width: 100%;
+    color: #ffffff;
 }
 .psctable-totalbox.readyweek {
     /*opacity: 0.8;*/
@@ -917,7 +954,7 @@
     max-height: 620px;
     overflow-y: scroll;
     scrollbar-width: none;
-    width: 618px; /* 700px; */
+    width: 598px; /* 618; */
 }
 .reschditms-itemline {
     width: 680px;
@@ -1061,7 +1098,7 @@
     color: #949292 !important;
 }
 .reschditms-itmcolor {
-    width: 125px;
+    width: 105px; /* 125px */
 }
 
 .reschditms-inkcolor {
