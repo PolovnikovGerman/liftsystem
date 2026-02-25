@@ -19,10 +19,10 @@ function init_printcalendar_content() {
     $(".reshedlordr-btn").unbind('click').click(function () {
         init_reshedule_view();
     });
-    $("input[name='reschedulefuture']").datepicker({
-        autoclose: true,
-        todayHighlight: true
-    });
+    // $("input[name='reschedulefuture']").datepicker({
+    //     autoclose: true,
+    //     todayHighlight: true
+    // });
         // // Listen for the standard change event on the input field
         // .change(function(e) {
         //     console.log("Order "+orderid+' assign '+ e.date);
@@ -748,9 +748,18 @@ function dropHandler(ev) {
     if (parentElement) {
         incomeblock = 'future';
         console.log('Future Block');
-        $("input[name='reschedulefuture']").show().datepicker('show');
+        $("input[name='reschedulefuture']").show();
+        $("input[name='reschedulefuture']").datepicker({
+            autoclose: true,
+            todayHighlight: true
+        });
+        $("input[name='reschedulefuture']").datepicker('show');
         $("input[name='reschedulefuture']").unbind('change').change(function (){
             console.log('Change assign date '+$("input[name='reschedulefuture']").val()+' for order '+orderid+'!');
+            var assigndate = $("input[name='reschedulefuture']").val();
+            var order = orderid.replace('printord_','');
+            var order = order.replace('shedulord_','');
+            assignprintdate(order, assigndate);
         });
     } else {
         parentElement = ev.target.closest('.leftsideviewarea');
@@ -869,6 +878,41 @@ function dropHandler(ev) {
             console.log('Income block empty');
         }
     }
+}
+
+function assignprintdate(order, assigndate) {
+    var params = new Array();
+    params.push({name: 'assigndate', value: assigndate});
+    params.push({name: 'order_id', value: order});
+    var url = '/printcalendar/orderassignnewdate';
+    $.post(url, params, function (response) {
+        if (response.errors=='') {
+            $(".reschdl-body").empty().html(response.data.calendview);
+            $("input[name='reschedulefuture']").val(response.data.curdate);
+            $(".warning-section").empty().html(response.data.warnings);
+            if (parseInt(response.data.warningscnt)==0) {
+                $(".warning-section").hide();
+                $(".maingrey-close").show();
+            } else {
+                $(".warning-section").show();
+                $(".maingrey-close").hide();
+            }
+            $(".regular-section").empty().html(response.data.weekday);
+            // Update Calendar
+            $(".pscalendar-daybox[data-printdate='"+response.data.olddate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
+            $(".pscalendar-daybox[data-printdate='"+response.data.olddate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
+            $(".maingrey-infobox").find('div.maingreyinfo-prints').find('span').empty().html(response.data.prints);
+            $(".maingrey-infobox").find('div.maingreyinfo-items').find('span').empty().html(response.data.items);
+            $(".maingrey-infobox").find('div.maingreyinfo-orders').find('span').empty().html(response.data.orders);
+            init_reschedule_management();
+            init_dailydetails_manage();
+            new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            orderid='';
+            $.flash(response.data.message, {timeout: 5000});
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 function show_printschedule_order(order, brand) {

@@ -471,6 +471,57 @@ class Printcalendar extends MY_Controller
         show_404();
     }
 
+    public function orderassignnewdate()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Order Empty';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order_id', 0);
+            $assigndate = ifset($postdata, 'assigndate', '');
+            if (!empty($assigndate) && !empty($order_id)) {
+                $newdate = strtotime($assigndate);
+                $res = $this->printcalendar_model->updateorder_printdate($order_id, $newdate);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['message'] = 'Order '.$res['order_num'].' was rescheduled from '.date('D - M, j, Y', $res['olddate']).' to '.date('D - M, j, Y', $res['newdate']);
+                    $olddate = $res['olddate'];
+                    $mdata['calendview'] = '';
+                    $mdata['curdate'] = date('m/d/Y');
+                    $calend = $this->printcalendar_model->get_reschedule_printdate();
+                    if ($calend['lates']+$calend['ontime'] > 0) {
+                        $calendoptions = [
+                            'lates' => $calend['lates'],
+                            'ontime' => $calend['ontime'],
+                            'calendars' => $calend['calendar'],
+                            'lateorders' => $calend['lateorders'],
+                        ];
+                        $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
+                    }
+                    // Left Part
+                    $totals = $this->printcalendar_model->daylatedetails($olddate);
+                    $warnings = $this->printcalendar_model->get_printdate_warnings($olddate);
+                    $regul = $this->printcalendar_model->get_printdate_regulars($olddate);
+                    $mdata['warningscnt'] = count($warnings) > 0 ? 1 : 0;
+                    $warnings_view = '';
+                    if ($mdata['warningscnt']>0) {
+                        $warnings_view = $this->load->view('printcalendar/dayshort_warnings_view', ['lists' => $warnings], true);
+                    }
+                    $mdata['warnings'] = $warnings_view;
+                    $mdata['weekday'] = $this->load->view('printcalendar/dayshort_regular_view', ['total'=> $regul['total'], 'lists' => $regul['data'], ], true);
+
+                    $mdata['orders'] = QTYOutput($totals['orders']);
+                    $mdata['items'] = QTYOutput($totals['items']);
+                    $mdata['prints'] = QTYOutput($totals['prints']);
+                    $mdata['olddate'] = $olddate;
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function reschedulechangeview()
     {
         if ($this->isAjax()) {
