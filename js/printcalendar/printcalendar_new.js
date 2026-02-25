@@ -5,22 +5,36 @@ function init_printcalendar_content() {
     init_printcalendar(year);
     init_printstatistic();
     init_reshedule_totals(year);
-    $(".psleft-years-box").unbind('click').click(function (){
+    $(".psleft-years-box").unbind('click').click(function () {
         if ($(this).hasClass('active')) {
         } else {
             var newyear = $(this).data('yearprint');
             $(".psleft-years-box").removeClass('active');
-            $(".psleft-years-box[data-yearprint='"+newyear+"']").addClass('active');
+            $(".psleft-years-box[data-yearprint='" + newyear + "']").addClass('active');
             $("#printcaledyear").val(newyear);
             init_printcalendar_content();
             init_reshedule_totals(newyear);
         }
     });
-    $(".reshedlordr-btn").unbind('click').click(function(){
+    $(".reshedlordr-btn").unbind('click').click(function () {
         init_reshedule_view();
     });
-}
+    $("input[name='reschedulefuture']").datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+        // // Listen for the standard change event on the input field
+        // .change(function(e) {
+        //     console.log("Order "+orderid+' assign '+ e.date);
+        //     // Call your main handler function here if needed
+        //     $(this).datepicker('hide');
+        // })
+        // .on('changeDate', function (ev) {
+        //     $(this).datepicker('hide');
+        //     console.log('Change ' + orderid + ' date on ' + ev.date)
+        // })
 
+}
 function init_printcalendar(year) {
     var params = new Array();
     params.push({name: 'year', value: year});
@@ -730,120 +744,130 @@ function dragoverHandler(ev) {
 function dropHandler(ev) {
     ev.preventDefault();
     const data = ev.dataTransfer.getData("text");
-    var parentElement = ev.target.closest('.leftsideviewarea');
-    var newdate = '';
-    var incomeblock = '';
+    var parentElement = ev.target.closest('.reschedular-future-dates');
     if (parentElement) {
-        newdate = parentElement.id.replace('printdate_','')
-        incomeblock = 'left';
+        incomeblock = 'future';
+        console.log('Future Block');
+        $("input[name='reschedulefuture']").show().datepicker('show');
+        $("input[name='reschedulefuture']").unbind('change').change(function (){
+            console.log('Change assign date '+$("input[name='reschedulefuture']").val()+' for order '+orderid+'!');
+        });
     } else {
-        parentElement = ev.target.closest('.rightsideviewarea');
+        parentElement = ev.target.closest('.leftsideviewarea');
+        var newdate = '';
+        var incomeblock = '';
         if (parentElement) {
-            newdate = parentElement.id.replace('printday_','');
-            incomeblock = 'right';
+            newdate = parentElement.id.replace('printdate_','')
+            incomeblock = 'left';
         } else {
-            parentElement = ev.target.closest('.psctable-td');
+            parentElement = ev.target.closest('.rightsideviewarea');
             if (parentElement) {
-                newdate = parentElement.id.replace('caledarbox_','');
-                incomeblock = 'fullcalendar';
+                newdate = parentElement.id.replace('printday_','');
+                incomeblock = 'right';
             } else {
-                parentElement = ev.target.closest('.dayschedulearea[data-printdata="lateorders"]');
+                parentElement = ev.target.closest('.psctable-td');
                 if (parentElement) {
-                    newdate = parentElement.id.replace('printday_','');
-                    incomeblock = 'right';
-                    console.log('Late Order');
-                }
-            }
-        }
-    }
-    if (incomeblock) {
-        var moveorder = '';
-        var outcomeblock = '';
-        if (orderid.substring(0,10)=='shedulord_') {
-            outcomeblock = 'right';
-            moveorder = orderid.replace('shedulord_','');
-        } else {
-            outcomeblock = 'left';
-            moveorder = orderid.replace('printord_','');
-        }
-        // Send changes to Scheduler
-        var params = new Array();
-        params.push({name: 'print_date', value: newdate});
-        params.push({name: 'order_id', value: moveorder});
-        params.push({name: 'incomeblock', value: incomeblock});
-        params.push({name: 'outcomeblock', value: outcomeblock});
-        var url = '/printcalendar/ordernewdate';
-        $.post(url, params, function (response){
-            if (response.errors=='') {
-                if (incomeblock==outcomeblock) {
-                    $("div[data-printdata='"+newdate+"']").append(document.getElementById(data))
+                    newdate = parentElement.id.replace('caledarbox_','');
+                    incomeblock = 'fullcalendar';
                 } else {
-                    // Update Reschedule part
-                    if (response.data.calendtype=='full') {
-                        $(".reschdl-body").empty().html(response.data.calendview);
-                    } else if (response.data.calendtype=='late') {
-                        $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.calendview);
-                    } else if (response.data.calendtype=='ontime') {
-                        $(".ontime-section").empty().html(response.data.calendview);
+                    parentElement = ev.target.closest('.dayschedulearea[data-printdata="lateorders"]');
+                    if (parentElement) {
+                        newdate = parentElement.id.replace('printday_','');
+                        incomeblock = 'right';
+                        console.log('Late Order');
                     }
-                    // Left part
-                    if (incomeblock=='right') {
-                        // Left part - warning
-                        $(".warning-section").empty().html(response.data.warnings);
-                        if (parseInt(response.data.warningscnt)==0) {
-                            $(".warning-section").hide();
-                            $(".maingrey-close").show();
-                        } else {
-                            $(".warning-section").show();
-                            $(".maingrey-close").hide();
-                        }
-                        // Left part - common orders
-                        $(".regular-section").empty().html(response.data.weekday);
-                        // Week Totals
-                        $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
-                        $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
-                        // Day Info
-                        $(".maingrey-infobox").find('div.maingreyinfo-prints').find('span').empty().html(response.data.prints);
-                        $(".maingrey-infobox").find('div.maingreyinfo-items').find('span').empty().html(response.data.items);
-                        $(".maingrey-infobox").find('div.maingreyinfo-orders').find('span').empty().html(response.data.orders);
-                    } else if (incomeblock=='left') {
-                        // Left part - warning
-                        $(".warning-section").empty().html(response.data.warnings);
-                        if (parseInt(response.data.warningscnt)==0) {
-                            $(".warning-section").hide();
-                            $(".maingrey-close").show();
-                        } else {
-                            $(".warning-section").show();
-                            $(".maingrey-close").hide();
-                        }
-                        $(".regular-section").empty().html(response.data.weekday);
-                        // Update Calendar
-                        $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
-                        $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
-                        $(".maingrey-infobox").find('div.maingreyinfo-prints').find('span').empty().html(response.data.prints);
-                        $(".maingrey-infobox").find('div.maingreyinfo-items').find('span').empty().html(response.data.items);
-                        $(".maingrey-infobox").find('div.maingreyinfo-orders').find('span').empty().html(response.data.orders);
-                    } else if (incomeblock=='fullcalendar') {
-                        // Full Calendar
-                        $(".psctable-td[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.dayorders);
-                        $(".psctable-td[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.dayprints);
-                        // Totals
-                        $(".summaryweek[data-weeknum='"+response.data.week+"']").find('div.totalboxtprinted-numbers[data-fld="prints"]').empty().html(response.data.total_prints);
-                        $(".summaryweek[data-weeknum='"+response.data.week+"']").find('div.totalboxtprinted-numbers[data-fld="items"]').empty().html(response.data.total_items);
-                    }
-                    init_reschedule_management();
-                    init_dailydetails_manage();
-                    new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
                 }
-                orderid='';
-                $.flash(response.data.message, {timeout: 5000});
-            } else {
-                // Show error
             }
-        },'json');
-    } else {
-        // Income block empty
-        console.log('Income block empty');
+        }
+        if (incomeblock) {
+            var moveorder = '';
+            var outcomeblock = '';
+            if (orderid.substring(0,10)=='shedulord_') {
+                outcomeblock = 'right';
+                moveorder = orderid.replace('shedulord_','');
+            } else {
+                outcomeblock = 'left';
+                moveorder = orderid.replace('printord_','');
+            }
+            // Send changes to Scheduler
+            var params = new Array();
+            params.push({name: 'print_date', value: newdate});
+            params.push({name: 'order_id', value: moveorder});
+            params.push({name: 'incomeblock', value: incomeblock});
+            params.push({name: 'outcomeblock', value: outcomeblock});
+            var url = '/printcalendar/ordernewdate';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    if (incomeblock==outcomeblock) {
+                        $("div[data-printdata='"+newdate+"']").append(document.getElementById(data))
+                    } else {
+                        // Update Reschedule part
+                        if (response.data.calendtype=='full') {
+                            $(".reschdl-body").empty().html(response.data.calendview);
+                        } else if (response.data.calendtype=='late') {
+                            $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.calendview);
+                        } else if (response.data.calendtype=='ontime') {
+                            $(".ontime-section").empty().html(response.data.calendview);
+                        }
+                        // Left part
+                        if (incomeblock=='right') {
+                            // Left part - warning
+                            $(".warning-section").empty().html(response.data.warnings);
+                            if (parseInt(response.data.warningscnt)==0) {
+                                $(".warning-section").hide();
+                                $(".maingrey-close").show();
+                            } else {
+                                $(".warning-section").show();
+                                $(".maingrey-close").hide();
+                            }
+                            // Left part - common orders
+                            $(".regular-section").empty().html(response.data.weekday);
+                            // Week Totals
+                            $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
+                            $(".pscalendar-daybox[data-printdate='"+response.data.outdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
+                            // Day Info
+                            $(".maingrey-infobox").find('div.maingreyinfo-prints').find('span').empty().html(response.data.prints);
+                            $(".maingrey-infobox").find('div.maingreyinfo-items').find('span').empty().html(response.data.items);
+                            $(".maingrey-infobox").find('div.maingreyinfo-orders').find('span').empty().html(response.data.orders);
+                        } else if (incomeblock=='left') {
+                            // Left part - warning
+                            $(".warning-section").empty().html(response.data.warnings);
+                            if (parseInt(response.data.warningscnt)==0) {
+                                $(".warning-section").hide();
+                                $(".maingrey-close").show();
+                            } else {
+                                $(".warning-section").show();
+                                $(".maingrey-close").hide();
+                            }
+                            $(".regular-section").empty().html(response.data.weekday);
+                            // Update Calendar
+                            $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
+                            $(".pscalendar-daybox[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
+                            $(".maingrey-infobox").find('div.maingreyinfo-prints').find('span').empty().html(response.data.prints);
+                            $(".maingrey-infobox").find('div.maingreyinfo-items').find('span').empty().html(response.data.items);
+                            $(".maingrey-infobox").find('div.maingreyinfo-orders').find('span').empty().html(response.data.orders);
+                        } else if (incomeblock=='fullcalendar') {
+                            // Full Calendar
+                            $(".psctable-td[data-printdate='"+newdate+"']").find('div.dayboxorders-numbers').empty().html(response.data.dayorders);
+                            $(".psctable-td[data-printdate='"+newdate+"']").find('div.dayboxprints-numbers').empty().html(response.data.dayprints);
+                            // Totals
+                            $(".summaryweek[data-weeknum='"+response.data.week+"']").find('div.totalboxtprinted-numbers[data-fld="prints"]').empty().html(response.data.total_prints);
+                            $(".summaryweek[data-weeknum='"+response.data.week+"']").find('div.totalboxtprinted-numbers[data-fld="items"]').empty().html(response.data.total_items);
+                        }
+                        init_reschedule_management();
+                        init_dailydetails_manage();
+                        new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+                    }
+                    orderid='';
+                    $.flash(response.data.message, {timeout: 5000});
+                } else {
+                    // Show error
+                }
+            },'json');
+        } else {
+            // Income block empty
+            console.log('Income block empty');
+        }
     }
 }
 
