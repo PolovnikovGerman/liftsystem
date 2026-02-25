@@ -2441,3 +2441,20 @@
 .assign-popup ul li:hover {
     background: #eae8e8;
 }
+/* Future dates */
+.reschedular-future-dates {
+    margin-top: 10px;
+}
+.reschedular-future-dates input {
+    display: none;
+    width: 5px;
+    height: 3px;
+}
+.btnreschedular-future-dates {
+    background: #969595;
+    color: #fff;
+    font-size: 13px;
+    line-height: 24px;
+    font-weight: 600;
+    padding: 5px;
+}
