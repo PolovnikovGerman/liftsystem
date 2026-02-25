@@ -136,4 +136,10 @@
             </div>
         <?php endif; ?>
     </div>
+    <div class="reschedular-future-dates" id="printday_future" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)" style="display: none; margin-top: 10px;">
+        <input type="text" name="reschedulefuture" value="<?=date('m/d/Y')?>" style="display: none; width: 5px; height: 3px;"/>
+        <div class="btnreschedular-future-dates" style="background: #969595;color: #fff;font-size: 13px;line-height: 24px;font-weight: 600;padding: 5px;">
+            + Add to Future Dates
+        </div>
+    </div>
 </div>
