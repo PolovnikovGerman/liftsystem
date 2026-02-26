@@ -1065,6 +1065,10 @@
 .reschditms-prcship.peach {
     background: #f7aa78;
 }
+.reschditms-prcful.pink,
+.reschditms-prcship.pink {
+    background: #fa89fb;
+}
 .reschditms-approval {
     width: 68px;
     font-size: 10px;

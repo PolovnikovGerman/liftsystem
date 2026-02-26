@@ -25,8 +25,8 @@
             <?php foreach ($lists as $list) : ?>
                 <div class="reschditms-tr">
                     <div class="reschditms-apprblock">
-                        <div class="reschditms-td reschditms-prcful <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['fulfillprc']?>%</div>
-                        <div class="reschditms-td reschditms-prcship <?=$list['class']=='normal' ? '' : 'peach'?>"><?=$list['shippedprc']?>%</div>
+                        <div class="reschditms-td reschditms-prcful <?=$list['class']=='critical' ? 'peach' : $list['class']?>"><?=$list['fulfillprc']?>%</div>
+                        <div class="reschditms-td reschditms-prcship <?=$list['class']=='critical' ? 'peach' : $list['class']?>"><?=$list['shippedprc']?>%</div>
                         <div class="reschditms-td reschditms-approval <?=$list['approv']==0 ? 'notapprv' : '' ?>">
                             <?=$list['approv']==0 ? 'Not Approved' : ($list['order_blank']==1 ? 'Blank' : 'Approved')?>
                             <?php if ($list['approv'] > 0 && $list['order_blank']==0) : ?>

@@ -29,8 +29,8 @@
                     <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
                         <div class="reschdltabl-daylatedata"><?=$list['diffdays']?> d</div>
                         <div class="reschdltabl-apprblock lateordershead">
-                            <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : ($list['class']=='pink' ? 'pink' : '')?>"><?=$list['fulfillprc']?>%</div>
-                            <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : ($list['class']=='pink' ? 'pink' : '')?>"><?=$list['shippedprc']?>%</div>
+                            <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : $list['class']?>"><?=$list['fulfillprc']?>%</div>
+                            <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : $list['class']?>"><?=$list['shippedprc']?>%</div>
                             <div class="reschdltabl-td reschdltabl-approval <?=$list['approv']==0 ? 'notapprv' : '' ?>">
                                 <?=$list['approv'] == 0 ? 'Not Approved' : ($list['order_blank']==1 ? 'Blank' : 'Approved')?>
                                 <?php if ($list['approv'] > 0 && $list['order_blank']==0) : ?>
