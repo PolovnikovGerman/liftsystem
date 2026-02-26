@@ -784,7 +784,7 @@
     line-height: 20px;
 }
 .reschdltabl-apprblock {
-    border: 1px solid #888888;
+    /*border: 1px solid #888888;*/
     margin-right: 16px;
 }
 .reschdltabl-header .reschdltabl-apprblock {
@@ -808,18 +808,21 @@
     width: 24px;
     font-size: 10px;
     color: #ffffff;
-    text-align: right;
-    padding-right: 4px;
+    text-align: center;
 }
 .reschdltabl-daylate {
     width: 28px;
 }
 .reschdltabl-daylatedata {
+    /*width: 32px;*/
+    /*font-size: 10px;*/
+    /*color: #ffffff;*/
+    /*text-align: right;*/
+    /*padding-right: 4px;*/
     width: 32px;
     font-size: 10px;
     color: #ffffff;
-    text-align: right;
-    padding-right: 4px;
+    text-align: center;
 }
 .reschdltabl-prcful {
     width: 33px;
