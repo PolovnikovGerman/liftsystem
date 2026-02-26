@@ -68,6 +68,7 @@ class MY_Model extends CI_Model
     public function __construct()
     {
         date_default_timezone_set('America/New_York');
+        $this->db->query('SET time_zone = "' . date('P') . '"');
         parent::__construct();
     }
 
