@@ -97,23 +97,15 @@ class Printcalendar_model extends MY_Model
             $weeknumber = $newdate->format('W-Y');
             // Week content current date
             $readyweek = 0;
-//            if ($current_date >= $weekstart && $current_date <= $weekfinish) {
+            if ($weekfinish < $current_date) {
+                $readyweek = 1;
+                $results = $this->_late_week_sum($weekstart, $weekfinish);
+            } elseif ($current_date >= $weekstart && $current_date <= $weekfinish) {
                 $results = $this->_current_week_sum($weekstart, $weekfinish);
-                if ($weekfinish < $current_date) {
-                    $readyweek = 1;
-                }
-//            } else {
-//                if ($weekstart >= $current_date) {
-//                    // new orders
-//                    $results = $this->_feature_week_sum($weekstart, $weekfinish);
-//                } else {
-//                    $readyweek = 1;
-//                    // old orders
-//                    $results = $this->_late_week_sum($weekstart, $weekfinish);
-//                }
-//            }
-            // Get data
-            // $total_orders = $total_items = $total_prints = $total_printed = 0;
+            } else {
+                $results = $this->_feature_week_sum($weekstart, $weekfinish);
+            }
+
             $orders_print = $orders_ready = $prints_print = $prints_ready = 0;
             foreach ($results as $result) {
                 $idx = 0;
@@ -124,28 +116,12 @@ class Printcalendar_model extends MY_Model
                             $week[$idx]['items'] = $result['itemscnt'];
                             $week[$idx]['prints'] = $result['printqty'];
                             $week[$idx]['printed'] = $result['fullfill'];
-//                            $total_orders+=$result['ordercnt'];
-//                            $total_items+=$result['itemscnt'];
-//                            $total_prints+=$result['printqty'];
-//                            $total_printed+=$result['fullfill'];
                         } else {
                             $week[$idx]['orders'] = $result['orderready'];
                             $week[$idx]['items'] = $result['itemscnt'];
                             $week[$idx]['prints'] = $result['printready'];
                             $week[$idx]['printed'] = $result['fullfill'];
-//                            $total_orders+=$result['ordercnt'];
-//                            $total_items+=$result['itemscnt'];
-//                            $total_prints+=$result['printqty'];
-//                            $total_printed+=$result['fullfill'];
                         }
-//                        $week[$idx]['orders'] = $result['ordercnt'];
-//                        $week[$idx]['items'] = $result['itemscnt'];
-//                        $week[$idx]['prints'] = $result['printqty'];
-//                        $week[$idx]['printed'] = $result['fullfill'];
-//                        $total_orders+=$result['ordercnt'];
-//                        $total_items+=$result['itemscnt'];
-//                        $total_prints+=$result['printqty'];
-//                        $total_printed+=$result['fullfill'];
                         $orders_print+=$result['ordercnt'];
                         $orders_ready+=$result['orderready'];
                         $prints_print+=$result['printqty'];
@@ -290,7 +266,7 @@ class Printcalendar_model extends MY_Model
             ];
         }
         // Get printed values
-        $this->db->select('order_itemcolor_id, amount_date as amntdate, sum(shipped) as fullfill, sum(shipped+misprint+kepted) as amount_sum');
+        $this->db->select('order_itemcolor_id, UNIX_TIMESTAMP(date_format(FROM_UNIXTIME(amount_date), \'%Y-%m-%d\')) as amntdate, sum(shipped) as fullfill, sum(shipped+misprint+kepted) as amount_sum');
         $this->db->from('ts_order_amounts');
         $this->db->where('amount_date >= ', $weekstart)->where('amount_date < ', $weekfinish);
         $this->db->group_by('order_itemcolor_id, amntdate');
@@ -309,7 +285,8 @@ class Printcalendar_model extends MY_Model
         $this->db->group_by('amnt.amntdate');
         $results = $this->db->get()->result_array();
         foreach ($results as $result) {
-            $printdate = strtotime(date('Y-m-d',$result['amntdate']));
+//            $printdate = strtotime(date('Y-m-d',$result['amntdate']));
+            $printdate = $result['amntdate'];
             $idx = 0;
             $found = 0;
             foreach ($out as $item) {
@@ -338,7 +315,8 @@ class Printcalendar_model extends MY_Model
 
     private function _late_week_sum($weekstart, $weekfinish)
     {
-        $this->db->select('order_itemcolor_id, amount_date as amntdate, sum(shipped) as fullfill, sum(shipped+misprint+kepted) as amount_sum');
+//        $this->db->select('order_itemcolor_id, amount_date as amntdate, sum(shipped) as fullfill, sum(shipped+misprint+kepted) as amount_sum');
+        $this->db->select('order_itemcolor_id, UNIX_TIMESTAMP(date_format(FROM_UNIXTIME(amount_date), \'%Y-%m-%d\')) as amntdate, sum(shipped) as fullfill, sum(shipped+misprint+kepted) as amount_sum');
         $this->db->from('ts_order_amounts');
         $this->db->where('amount_date >= ', $weekstart)->where('amount_date < ', $weekfinish);
         $this->db->group_by('order_itemcolor_id, amntdate');
@@ -360,7 +338,8 @@ class Printcalendar_model extends MY_Model
         $outkeys = [];
         foreach ($results as $result) {
             if (!empty($result['amntdate'])) {
-                $print_date = strtotime(date('Y-m-d', $result['amntdate']));
+//                $print_date = strtotime(date('Y-m-d', $result['amntdate']));
+                $print_date = $result['amntdate'];
                 if (in_array($print_date, $outkeys)) {
                     $idx = array_search($print_date, $outkeys);
                 } else {
