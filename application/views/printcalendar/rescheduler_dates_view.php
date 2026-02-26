@@ -1,13 +1,15 @@
 <div class="reschedular-table">
     <div class="reschdltabl-body" id="reschdltabl-body">
         <?php if ($lates > 0) : ?>
+        <?php $numpp = 1;?>
         <div class="late-section">
             <div class="latesection-title">LATE ORDERS:</div>
             <div class="reschdltabl-tr reschdltabl-header lateordershead">
-                <div class="reschdltabl-td reschdltabl-daylate">Days</div>
+                <div class="reschdltabl-td reschdltabl-sequencenum">#</div>
                 <div class="reschdltabl-td reschdltabl-prcful">%Ful</div>
                 <div class="reschdltabl-td reschdltabl-prcship">%Ship</div>
                 <div class="reschdltabl-td reschdltabl-approval">Approval</div>
+                <div class="reschdltabl-td reschdltabl-daylate">Days</div>
                 <div class="reschdltabl-td reschdltabl-brand">&nbsp;</div>
                 <div class="reschdltabl-td reschdltabl-rush">&nbsp;</div>
                 <div class="reschdltabl-td reschdltabl-order">Order#</div>
@@ -27,8 +29,8 @@
                         <?php $neworderview=1; ?>
                     <?php endif; ?>
                     <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
-                        <div class="reschdltabl-daylatedata"><?=$list['diffdays']?> d</div>
                         <div class="reschdltabl-apprblock lateordershead">
+                            <div class="reschdltabl-sequencenumdata"><?=$numpp?></div>
                             <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : $list['class']?>"><?=$list['fulfillprc']?>%</div>
                             <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : $list['class']?>"><?=$list['shippedprc']?>%</div>
                             <div class="reschdltabl-td reschdltabl-approval <?=$list['approv']==0 ? 'notapprv' : '' ?>">
@@ -37,6 +39,7 @@
                                     <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
                                 <?php endif; ?>
                             </div>
+                            <div class="reschdltabl-daylatedata"><?=$list['diffdays']?> d</div>
                         </div>
                         <div class="reschdltabl-mainblock <?=$neworderview==0 ? 'repeatrow' : ''?>">
                             <?php if ($neworderview==1) :?>
@@ -62,6 +65,7 @@
                             <div class="reschdltabl-td reschdltabl-inkcolor truncateoverflowtext">&nbsp;</div>
                         </div>
                     </div>
+                    <?php $numpp++?>
                 <?php endforeach; ?>
             </div>
         </div>
