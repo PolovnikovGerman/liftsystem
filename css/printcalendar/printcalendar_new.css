@@ -1253,7 +1253,16 @@
     margin-left: 2px;
 }
 .pscalendar-daybox .dayboxitemsprinted-name {
-    line-height: 10px!important;
+    line-height: 9px !important;
+}
+.pscalendar-daybox .dayboxprintsprinted-name {
+    line-height: 9px!important;
+}
+.pscalendar-daybox .dayboxitemsprinted-numbers {
+    line-height: 14px!important;
+}
+.pscalendar-daybox .dayboxprintsprinted-numbers {
+    line-height: 14px!important;
 }
 .pscalendar-daybox .daybox-printsprinted {
     width: 36px;
