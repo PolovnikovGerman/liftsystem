@@ -1104,7 +1104,7 @@ class Printcalendar_model extends MY_Model
 
     }
 
-    public function get_reschedule_printdate()
+    public function get_reschedule_printdate($showneedaction=1, $shownotapproved=1)
     {
         $curdate = strtotime(date('Y-m-d'));
         // Get LATE orders
@@ -1126,23 +1126,47 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
         $this->db->where('o.print_date < ', $curdate)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
-        // $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
-        $this->db->order_by('o.order_rush desc');
+        if ($showneedaction==0) {
+            $this->db->where('coalesce(amnt.fullfill,0) >= ship.shipped');
+        }
+        if ($shownotapproved==0) {
+            $this->db->where('(COALESCE(approv.cnt,0) > 0 or o.order_blank=1)');
+        }
+        // $this->db->order_by('o.order_rush desc');
         $this->db->order_by('oi.print_date asc');
-        $this->db->order_by('order_id asc');
+        $this->db->order_by('o.order_id asc');
         $this->db->order_by('item asc');
         $this->db->order_by('ic.color asc');
         $lateorders = $this->db->get()->result_array();
         $didx = 0;
+        $total_order = $total_prints = $order_needact = $prints_needact = $order_approved = $prints_approved = 0;
+        $curord = 0;
         foreach ($lateorders as $uns) {
+            if ($curord!==$uns['order_id']) {
+                $curord = $uns['order_id'];
+                $total_order++;
+                if ($uns['fulfill'] < $uns['shipped']) {
+                    $order_needact++;
+                }
+                if ($uns['approv']==0 && $uns['order_blank']==0) {
+                    $order_approved++;
+                }
+            }
+            $total_prints+=$uns['prints'];
             $lateorders[$didx]['fulfillprc'] = round($uns['fulfill'] / $uns['item_qty'] * 100, 0);
             $lateorders[$didx]['shippedprc'] = round($uns['shipped'] / $uns['item_qty'] * 100, 0);
             $lateorders[$didx]['notfulfill'] = $uns['item_qty'] - $uns['fulfill'];
             $lateorders[$didx]['notshipp'] = $uns['item_qty'] - $uns['shipped'];
-            $lateorders[$didx]['class'] = ($lateorders[$didx]['fulfillprc'] > $lateorders[$didx]['shippedprc'] ? 'critical' : ($lateorders[$didx]['fulfillprc'] < $lateorders[$didx]['shippedprc'] ? 'pink' : 'normal'));
-            if (empty($lateorders[$didx]['approv']) && $lateorders[$didx]['order_blank'] == 1) {
+            if ($lateorders[$didx]['fulfillprc'] < $lateorders[$didx]['shippedprc']) {
+                $prints_needact+=$uns['prints'];
+                $lateorders[$didx]['class'] = 'pink';
+            } else {
+                $lateorders[$didx]['class'] = ($lateorders[$didx]['fulfillprc'] > $lateorders[$didx]['shippedprc'] ? 'critical' :  'normal');
+            }
+            if (empty($lateorders[$didx]['approv']) && $lateorders[$didx]['order_blank'] == 0) {
                 $lateorders[$didx]['approv'] = 1;
+                $prints_approved+=$uns['prints'];
             }
             if (empty($uns['rush_idx'])) {
                 $lateorders[$didx]['order_rush'] = 0;
@@ -1276,6 +1300,12 @@ class Printcalendar_model extends MY_Model
             'lates' => $lates,
             'ontime' => $ontime,
             'lateorders' => $lateorders,
+            'latetotals' => $total_order,
+            'lateprints' => $total_prints,
+            'order_needact' => $order_needact,
+            'prints_needact' => $prints_needact,
+            'order_approved' => $order_approved,
+            'prints_approved' => $prints_approved,
         ];
     }
 

@@ -4,6 +4,28 @@
         <?php $numpp = 1;?>
         <div class="late-section">
             <div class="latesection-title">LATE ORDERS:</div>
+            <div class="latesection-totals">
+                <div class="latesection-totals-section">
+                    <div class="latesection-totals-label">Displaying:</div>
+                    <div class="latesection-totals-value"><?=QTYOutput($latetotals)?> orders (<?=QTYOutput($lateprints)?>)</div>
+                </div>
+                <div class="latesection-totals-manage">
+                    <input type="checkbox" name="hideneedactionlates" id="hideneedactionlates" <?=$showneedaction==0 ? 'checked="checked"' : ''?>/>
+                    <label for="hideneedactionlates">Hide</label>
+                </div>
+                <div class="latesection-totals-section">
+                    <div class="latesection-totals-label"><div class="keymaps-box lightpink">&nbsp;</div> Print Qty < Ship Qty</div>
+                    <div class="latesection-totals-value"><?=QTYOutput($order_needact)?> orders (<?=QTYOutput($prints_needact)?>)</div>
+                </div>
+                <div class="latesection-totals-manage">
+                    <input type="checkbox" name="hidenotapprovedlates" id="hidenotapprovedlates" <?=$shownotapproved==0 ? 'checked="checked"' : ''?>/>
+                    <label for="hidenotapprovedlates">Hide</label>
+                </div>
+                <div class="latesection-totals-section">
+                    <div class="latesection-totals-label notapprv">Not Approved</div>
+                    <div class="latesection-totals-value"><?=QTYOutput($order_approved)?> orders (<?=QTYOutput($prints_approved)?>)</div>
+                </div>
+            </div>
             <div class="reschdltabl-tr reschdltabl-header lateordershead">
                 <div class="reschdltabl-td reschdltabl-sequencenum">#</div>
                 <div class="reschdltabl-td reschdltabl-prcful">%Ful</div>
