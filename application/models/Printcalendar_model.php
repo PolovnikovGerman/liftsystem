@@ -1166,6 +1166,8 @@ class Printcalendar_model extends MY_Model
             }
             if (empty($lateorders[$didx]['approv']) && $lateorders[$didx]['order_blank'] == 0) {
                 $lateorders[$didx]['approv'] = 1;
+            }
+            if ($lateorders[$didx]['approv']==0) {
                 $prints_approved+=$uns['prints'];
             }
             if (empty($uns['rush_idx'])) {
@@ -2183,6 +2185,8 @@ class Printcalendar_model extends MY_Model
             }
             if (empty($lateorders[$didx]['approv']) && $lateorders[$didx]['order_blank'] == 1) {
                 $lateorders[$didx]['approv'] = 1;
+            }
+            if ($lateorders[$didx]['approv']==0) {
                 $prints_approved+=$uns['prints'];
             }
             if (empty($uns['rush_idx'])) {
