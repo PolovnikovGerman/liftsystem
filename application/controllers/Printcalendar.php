@@ -391,6 +391,8 @@ class Printcalendar extends MY_Controller
             $printdate = ifset($postdata, 'print_date',0);
             $incomeblock = ifset($postdata, 'incomeblock','right');
             $outcomeblock = ifset($postdata, 'outcomeblock','right');
+            $showneedaction = ifset($postdata, 'showneedaction', 1);
+            $shownotapproved = ifset($postdata, 'shownotapproved', 1);
             if (!empty($printdate) && !empty($order_id)) {
                 $res = $this->printcalendar_model->updateorder_printdate($order_id, $printdate);
                 $error = $res['msg'];
@@ -408,13 +410,21 @@ class Printcalendar extends MY_Controller
                     }
                     if ($newlate != $oldlate) {
                         // Buld full reschedule content
-                        $calend = $this->printcalendar_model->get_reschedule_printdate();
+                        $calend = $this->printcalendar_model->get_reschedule_printdate($showneedaction, $shownotapproved);
                         if ($calend['lates']+$calend['ontime'] > 0) {
                             $calendoptions = [
                                 'lates' => $calend['lates'],
                                 'ontime' => $calend['ontime'],
                                 'calendars' => $calend['calendar'],
                                 'lateorders' => $calend['lateorders'],
+                                'latetotals' => $calend['latetotals'],
+                                'lateprints' => $calend['lateprints'],
+                                'order_needact' => $calend['order_needact'],
+                                'prints_needact' => $calend['prints_needact'],
+                                'order_approved' => $calend['order_approved'],
+                                'prints_approved' => $calend['prints_approved'],
+                                'showneedaction' => $showneedaction,
+                                'shownotapproved' => $shownotapproved,
                             ];
                             $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
                             $mdata['calendtype'] = 'full';
@@ -479,6 +489,8 @@ class Printcalendar extends MY_Controller
             $postdata = $this->input->post();
             $order_id = ifset($postdata, 'order_id', 0);
             $assigndate = ifset($postdata, 'assigndate', '');
+            $showneedaction = ifset($postdata, 'showneedaction', 1);
+            $shownotapproved = ifset($postdata, 'shownotapproved', 1);
             if (!empty($assigndate) && !empty($order_id)) {
                 $newdate = strtotime($assigndate);
                 $res = $this->printcalendar_model->updateorder_printdate($order_id, $newdate);
@@ -489,13 +501,21 @@ class Printcalendar extends MY_Controller
                     $olddate = $res['olddate'];
                     $mdata['calendview'] = '';
                     $mdata['curdate'] = date('m/d/Y');
-                    $calend = $this->printcalendar_model->get_reschedule_printdate();
+                    $calend = $this->printcalendar_model->get_reschedule_printdate($showneedaction, $shownotapproved);
                     if ($calend['lates']+$calend['ontime'] > 0) {
                         $calendoptions = [
                             'lates' => $calend['lates'],
                             'ontime' => $calend['ontime'],
                             'calendars' => $calend['calendar'],
                             'lateorders' => $calend['lateorders'],
+                            'latetotals' => $calend['latetotals'],
+                            'lateprints' => $calend['lateprints'],
+                            'order_needact' => $calend['order_needact'],
+                            'prints_needact' => $calend['prints_needact'],
+                            'order_approved' => $calend['order_approved'],
+                            'prints_approved' => $calend['prints_approved'],
+                            'showneedaction' => $showneedaction,
+                            'shownotapproved' => $shownotapproved,
                         ];
                         $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
                     }
@@ -529,17 +549,27 @@ class Printcalendar extends MY_Controller
             $error = 'Empty Sorting Parameter';
             $postdata = $this->input->post();
             $sortfld = ifset($postdata,'sortfld','');
+            $showneedaction = ifset($postdata, 'showneedaction', 1);
+            $shownotapproved = ifset($postdata, 'shownotapproved', 1);
             if (!empty($sortfld)) {
                 $error = '';
                 $calendview = '';
                 if ($sortfld == 'print_date') {
-                    $calend = $this->printcalendar_model->get_reschedule_printdate();
+                    $calend = $this->printcalendar_model->get_reschedule_printdate($showneedaction, $shownotapproved);
                     if ($calend['lates']+$calend['ontime'] > 0) {
                         $calendoptions = [
                             'lates' => $calend['lates'],
                             'ontime' => $calend['ontime'],
                             'calendars' => $calend['calendar'],
                             'lateorders' => $calend['lateorders'],
+                            'latetotals' => $calend['latetotals'],
+                            'lateprints' => $calend['lateprints'],
+                            'order_needact' => $calend['order_needact'],
+                            'prints_needact' => $calend['prints_needact'],
+                            'order_approved' => $calend['order_approved'],
+                            'prints_approved' => $calend['prints_approved'],
+                            'showneedaction' => $showneedaction,
+                            'shownotapproved' => $shownotapproved,
                         ];
                         $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
                     }
@@ -776,15 +806,25 @@ class Printcalendar extends MY_Controller
             $printweek = date('W-Y', $printdate);
             $weekdat = explode("-", $printweek);
             $sortfld = ifset($postdata, 'sortfld', 'print_date');
+            $showneedaction = ifset($postdata, 'showneedaction', 1);
+            $shownotapproved = ifset($postdata, 'shownotapproved', 1);
             $calendview = '';
             if ($sortfld == 'print_date') {
-                $calend = $this->printcalendar_model->get_reschedule_printdate();
+                $calend = $this->printcalendar_model->get_reschedule_printdate($showneedaction, $shownotapproved);
                 if ($calend['lates']+$calend['ontime'] > 0) {
                     $calendoptions = [
                         'lates' => $calend['lates'],
                         'ontime' => $calend['ontime'],
                         'calendars' => $calend['calendar'],
                         'lateorders' => $calend['lateorders'],
+                        'latetotals' => $calend['latetotals'],
+                        'lateprints' => $calend['lateprints'],
+                        'order_needact' => $calend['order_needact'],
+                        'prints_needact' => $calend['prints_needact'],
+                        'order_approved' => $calend['order_approved'],
+                        'prints_approved' => $calend['prints_approved'],
+                        'showneedaction' => $showneedaction,
+                        'shownotapproved' => $shownotapproved,
                     ];
                     $calendview = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
                 }

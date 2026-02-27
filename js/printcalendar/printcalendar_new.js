@@ -19,21 +19,6 @@ function init_printcalendar_content() {
     $(".reshedlordr-btn").unbind('click').click(function () {
         init_reshedule_view();
     });
-    // $("input[name='reschedulefuture']").datepicker({
-    //     autoclose: true,
-    //     todayHighlight: true
-    // });
-        // // Listen for the standard change event on the input field
-        // .change(function(e) {
-        //     console.log("Order "+orderid+' assign '+ e.date);
-        //     // Call your main handler function here if needed
-        //     $(this).datepicker('hide');
-        // })
-        // .on('changeDate', function (ev) {
-        //     $(this).datepicker('hide');
-        //     console.log('Change ' + orderid + ' date on ' + ev.date)
-        // })
-
 }
 function init_printcalendar(year) {
     var params = new Array();
@@ -132,6 +117,8 @@ function init_reshedule_view() {
             sortfld = $(".reschdl-tab.active").data('sortfld');
         }
         params.push({name: 'sortfld', value: sortfld});
+        params.push({name: 'showneedaction', value: $("#calendarlateneedaction").val()});
+        params.push({name: 'shownotapproved', value: $("#calendarlatenotapproved").val()});
         $("#loader").show();
         $.post(url, params, function (response){
             $(".btnreschedular-btn").empty().html('<i class="fa fa-times" aria-hidden="true"></i>');
@@ -257,6 +244,8 @@ function init_reschedule_management() {
             $(".reschdl-tab[data-sortfld='"+sortfld+"']").addClass('active');
             var params = new Array();
             params.push({name: 'sortfld', value: sortfld});
+            params.push({name: 'showneedaction', value: $("#calendarlateneedaction").val()});
+            params.push({name: 'shownotapproved', value: $("#calendarlatenotapproved").val()});
             var url = '/printcalendar/reschedulechangeview';
             $("#loader").show();
             $.post(url, params, function (response){
@@ -804,6 +793,8 @@ function dropHandler(ev) {
             params.push({name: 'order_id', value: moveorder});
             params.push({name: 'incomeblock', value: incomeblock});
             params.push({name: 'outcomeblock', value: outcomeblock});
+            params.push({name: 'showneedaction', value: $("#calendarlateneedaction").val()});
+            params.push({name: 'shownotapproved', value: $("#calendarlatenotapproved").val()});
             var url = '/printcalendar/ordernewdate';
             $.post(url, params, function (response){
                 if (response.errors=='') {
@@ -884,6 +875,8 @@ function assignprintdate(order, assigndate) {
     var params = new Array();
     params.push({name: 'assigndate', value: assigndate});
     params.push({name: 'order_id', value: order});
+    params.push({name: 'showneedaction', value: $("#calendarlateneedaction").val()});
+    params.push({name: 'shownotapproved', value: $("#calendarlatenotapproved").val()});
     var url = '/printcalendar/orderassignnewdate';
     $.post(url, params, function (response) {
         if (response.errors=='') {
