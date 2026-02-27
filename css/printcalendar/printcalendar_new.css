@@ -948,6 +948,7 @@
 }
 .latesection-totals-section {
     margin-right: 10px;
+    margin-top: 2px;
 }
 .latesection-totals-section:last-child {
     margin-right: 0;
@@ -955,7 +956,9 @@
 .latesection-totals-label {
     font-size: 11px;
     color: #ffffff;
-    opacity: 0.7;
+}
+.latesection-totals-label.totaldisplayed {
+    opacity: 0.5;
 }
 .latesection-totals-value {
     clear: both;
@@ -963,17 +966,24 @@
     color: #ffffff;
 }
 .latesection-totals-manage {
-    width: 62px;
+    width: 55px;
     color: #000000;
+    margin-top: 8px;
+    margin-left: 20px;
 }
 .latesection-totals-manage label {
     font-weight: normal;
     font-size: 12px;
     color: #ffffff;
+    margin-bottom: 0;
+}
+.latesection-totals-manage input {
+    margin: 0;
+    position: relative;
+    top: 2px;
 }
 .latesection-totals-label.notapprv {
     color: #000000;
-    opacity: 1;
     padding: 0 5px;
 }
 .latesection-date {
