@@ -289,8 +289,45 @@ function init_reschedule_management() {
             show_approveddocs(order);
         }
     });
+    $("input#hideneedactionlates").unbind('change').change(function(){
+        var newval = 1;
+        if ($(this).prop('checked')==true) {
+            newval = 0;
+        }
+        $("#calendarlateneedaction").val(newval);
+        refresh_late_area();
+    });
+    $("input#hidenotapprovedlates").unbind('change').change(function (){
+        var newval = 1;
+        if ($(this).prop('checked')==true) {
+            newval = 0;
+        }
+        $("#calendarlatenotapproved").val(newval);
+        refresh_late_area();
+    })
 }
 
+function refresh_late_area() {
+    var params = new Array();
+    params.push({name: 'sortfld', value: 'print_date'});
+    params.push({name: 'showneedaction', value: $("#calendarlateneedaction").val()});
+    params.push({name: 'shownotapproved', value: $("#calendarlatenotapproved").val()});
+    var url = '/printcalendar/refreshlatearea';
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.calendview);
+            // Update totals
+            $(".latesection-totals-value[data-content='totaldisplay']").empty().html(response.data.latetotals);
+            $(".latesection-totals-value[data-content='needactions']").empty().html(response.data.needaction);
+            $(".latesection-totals-value[data-content='notaproved']").empty().html(response.data.needaprove);
+            $("#loader").hide();
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
 // Week Calendar
 function init_printdate_details(printdate) {
     var smallview = 0;
@@ -806,6 +843,10 @@ function dropHandler(ev) {
                             $(".reschdl-body").empty().html(response.data.calendview);
                         } else if (response.data.calendtype=='late') {
                             $(".dayschedulearea[data-printdata='lateorders']").empty().html(response.data.calendview);
+                            // Update totals
+                            $(".latesection-totals-value[data-content='totaldisplay']").empty().html(response.data.latetotals);
+                            $(".latesection-totals-value[data-content='needactions']").empty().html(response.data.needaction);
+                            $(".latesection-totals-value[data-content='notaproved']").empty().html(response.data.needaprove);
                         } else if (response.data.calendtype=='ontime') {
                             $(".ontime-section").empty().html(response.data.calendview);
                         }

@@ -435,7 +435,7 @@ class Printcalendar extends MY_Controller
                             $calend = $calendres['lateorders'];
                             $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_lates_view', ['lists' => $calend], true);
                             $mdata['calendtype'] = 'late';
-                            $mdata['latetotals'] = QTYOutput($calendres['total_order']).' orders ('.QTYOutput($calendres['lateprints']).' prints)';
+                            $mdata['latetotals'] = QTYOutput($calendres['latetotals']).' orders ('.QTYOutput($calendres['lateprints']).' prints)';
                             $mdata['needaction'] = $calendres['order_needact']==0 ? '' : QTYOutput($calendres['order_needact']).' orders ('.QTYOutput($calendres['prints_needact']).' prints)';
                             $mdata['needaprove'] = $calendres['order_approved']==0 ? '' : QTYOutput($calendres['order_approved']).' orders ('.QTYOutput($calendres['prints_approved']).' prints)';
                         } else {
@@ -864,6 +864,27 @@ class Printcalendar extends MY_Controller
                     }
                 }
             }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function refreshlatearea()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $sortfld = ifset($postdata, 'sortfld', 'print_date');
+            $showneedaction = ifset($postdata, 'showneedaction', 1);
+            $shownotapproved = ifset($postdata, 'shownotapproved', 1);
+            $calendres = $this->printcalendar_model->get_reschedule_late($showneedaction, $shownotapproved);
+            $calend = $calendres['lateorders'];
+            $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_lates_view', ['lists' => $calend], true);
+            $mdata['calendtype'] = 'late';
+            $mdata['latetotals'] = QTYOutput($calendres['latetotals']).' orders ('.QTYOutput($calendres['lateprints']).' prints)';
+            $mdata['needaction'] = $calendres['order_needact']==0 ? '' : QTYOutput($calendres['order_needact']).' orders ('.QTYOutput($calendres['prints_needact']).' prints)';
+            $mdata['needaprove'] = $calendres['order_approved']==0 ? '' : QTYOutput($calendres['order_approved']).' orders ('.QTYOutput($calendres['prints_approved']).' prints)';
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
