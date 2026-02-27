@@ -6,8 +6,10 @@
             <div class="latesection-title">LATE ORDERS:</div>
             <div class="latesection-totals">
                 <div class="latesection-totals-section">
-                    <div class="latesection-totals-label">Displaying:</div>
-                    <div class="latesection-totals-value"><?=QTYOutput($latetotals)?> orders (<?=QTYOutput($lateprints)?>)</div>
+                    <div class="latesection-totals-label totaldisplayed">Displaying:</div>
+                    <div class="latesection-totals-value" data-content="totaldisplay">
+                        <?=$latetotals==0 ? '&nbsp;' : QTYOutput($latetotals).' orders ('.QTYOutput($lateprints).' prints)'?>
+                    </div>
                 </div>
                 <div class="latesection-totals-manage">
                     <input type="checkbox" name="hideneedactionlates" id="hideneedactionlates" <?=$showneedaction==0 ? 'checked="checked"' : ''?>/>
@@ -15,7 +17,9 @@
                 </div>
                 <div class="latesection-totals-section">
                     <div class="latesection-totals-label"><div class="keymaps-box lightpink">&nbsp;</div> Print Qty < Ship Qty</div>
-                    <div class="latesection-totals-value"><?=QTYOutput($order_needact)?> orders (<?=QTYOutput($prints_needact)?>)</div>
+                    <div class="latesection-totals-value" data-content="needactions">
+                        <?=$order_needact==0 ? '&nbsp;' : QTYOutput($order_needact).' orders ('.QTYOutput($prints_needact).' prints)'?>
+                    </div>
                 </div>
                 <div class="latesection-totals-manage">
                     <input type="checkbox" name="hidenotapprovedlates" id="hidenotapprovedlates" <?=$shownotapproved==0 ? 'checked="checked"' : ''?>/>
@@ -23,7 +27,9 @@
                 </div>
                 <div class="latesection-totals-section">
                     <div class="latesection-totals-label notapprv">Not Approved</div>
-                    <div class="latesection-totals-value"><?=QTYOutput($order_approved)?> orders (<?=QTYOutput($prints_approved)?>)</div>
+                    <div class="latesection-totals-value" data-content="notaproved">
+                        <?=$order_approved==0 ? '&nbsp;' : QTYOutput($order_approved).' orders ('.QTYOutput($prints_approved).' prints)'?>
+                    </div>
                 </div>
             </div>
             <div class="reschdltabl-tr reschdltabl-header lateordershead">

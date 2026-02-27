@@ -431,9 +431,13 @@ class Printcalendar extends MY_Controller
                         }
                     } else {
                         if ($newlate == 1) {
-                            $calend = $this->printcalendar_model->get_reschedule_late();
+                            $calendres = $this->printcalendar_model->get_reschedule_late($showneedaction, $shownotapproved);
+                            $calend = $calendres['lateorders'];
                             $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_lates_view', ['lists' => $calend], true);
                             $mdata['calendtype'] = 'late';
+                            $mdata['latetotals'] = QTYOutput($calendres['total_order']).' orders ('.QTYOutput($calendres['lateprints']).' prints)';
+                            $mdata['needaction'] = $calendres['order_needact']==0 ? '' : QTYOutput($calendres['order_needact']).' orders ('.QTYOutput($calendres['prints_needact']).' prints)';
+                            $mdata['needaprove'] = $calendres['order_approved']==0 ? '' : QTYOutput($calendres['order_approved']).' orders ('.QTYOutput($calendres['prints_approved']).' prints)';
                         } else {
                             $calend = $this->printcalendar_model->get_reschedule_ontime();
                             $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_ontime_view', ['calendars' => $calend], true);
