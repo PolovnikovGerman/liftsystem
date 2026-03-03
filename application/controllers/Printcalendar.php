@@ -76,13 +76,15 @@ class Printcalendar extends MY_Controller
                 $mdata['stil_orders'] = empty($res['leave_orders']) ? '-' : QtyOutput($res['leave_orders']);
                 $mdata['stil_items'] = empty($res['leave_items']) ? '-' : QtyOutput($res['leave_items']);
                 $mdata['stil_prints'] = empty($res['leave_prints']) ? '-' : QtyOutput($res['leave_prints']);
-
-//                $lateoptions = [
-//                    'orders' => $lates['ordercnt'],
-//                    'prints' => $lates['printqty'],
-//                ];
-//                $mdata['latecontent'] = $this->load->view('printcalendar/lateresult_view', $lateoptions, true);
-//                $mdata['statistic'] = $this->load->view('printcalendar/statist_year_view', $res, true);
+                $mdata['ontime_orders'] = empty($res['ontime_orders']) ? '-' : QtyOutput($res['ontime_orders']);
+                $mdata['ontime_items'] = empty($res['ontime_items']) ? '-' : QtyOutput($res['ontime_items']);
+                $mdata['ontime_prints'] = empty($res['ontime_prints']) ? '-' : QtyOutput($res['ontime_prints']);
+                $mdata['late_orders_prc'] = empty($res['late_orders_prc']) ? '-' : round($res['late_orders_prc'],1).'%';
+                $mdata['late_items_prc'] = empty($res['late_items_prc']) ? '-' : round($res['late_items_prc'],1).'%';
+                $mdata['late_prints_prc'] = empty($res['late_prints_prc']) ? '-' : round($res['late_prints_prc'],1).'%';
+                $mdata['ontime_orders_prc'] = empty($res['ontime_orders_prc']) ? '-' : round($res['ontime_orders_prc'],1).'%';
+                $mdata['ontime_items_prc'] = empty($res['ontime_items_prc']) ? '-' : round($res['ontime_items_prc'],1).'%';
+                $mdata['ontime_prints_prc'] = empty($res['ontime_prints_prc']) ? '-' : round($res['ontime_prints_prc'],1).'%';
             }
             $this->ajaxResponse($mdata, $error);
         }

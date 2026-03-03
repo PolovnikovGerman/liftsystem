@@ -473,7 +473,7 @@
     background: #5c5b5b;
     padding-left: 20px;
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 .ps_keymaps {}
 .keymaps-box {
@@ -537,6 +537,15 @@
     color: #fff;
     font-size: 12px; /* 14px; */
     font-weight: 600;
+    margin-top: 7px;
+}
+.ro_stillprint-totals .ro_infotitle {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 7px;
+    width: 100%;
+    text-align: center;
 }
 .stillprint_box {
     background: #fff;
@@ -566,6 +575,11 @@
     font-size: 13px;
     font-weight: 600;
     text-align: center;
+}
+.sprbox-result.proc {
+    font-size: 12px;
+    font-weight: 400;
+    color: #494948;
 }
 .ro_lateorders {
     width: 190px;
@@ -598,6 +612,11 @@
     font-size: 13px;
     font-weight: 600;
     text-align: center;
+}
+.lateordbox-result {
+    font-size: 12px;
+    font-weight: 400;
+    color: #494948;
 }
 /* Statistics Block */
 .statistics-tbl {

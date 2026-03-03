@@ -410,7 +410,7 @@ class Printcalendar_model extends MY_Model
         $this->db->where('coalesce(amnt.fullfill,0) >= oic.item_qty');
         $readyres = $this->db->get()->row_array();
 
-        return [
+        $stat = [
             'late' => $lateres,
             'total_orders' => $statres['ordercnt'],
             'total_items' => $statres['printqty'],
@@ -418,8 +418,21 @@ class Printcalendar_model extends MY_Model
             'leave_orders' => $statres['ordercnt'] - $readyres['ordercnt'] + (ifset($lateres, 'ordercnt',0)),
             'leave_prints' => $statres['imprintqty'] - $readyres['imprintqty'] + (ifset($lateres, 'printqty', 0)),
             'leave_items' => $statres['printqty'] - $readyres['printqty'] + (ifset($lateres ,'itemqty',0)),
+            'ontime_orders' => $statres['ordercnt'] - $readyres['ordercnt'],
+            'ontime_prints' => $statres['imprintqty'] - $readyres['imprintqty'],
+            'ontime_items' => $statres['printqty'] - $readyres['printqty'],
             'year' => $year,
         ];
+        $baseorder = $stat['leave_orders'];
+        $baseitems = $stat['leave_items'];
+        $baseprints = $stat['leave_prints'];
+        $stat['late_orders_prc'] = $lateres['ordercnt'] / $baseorder * 100;
+        $stat['late_items_prc'] = $lateres['itemqty'] / $baseitems * 100;
+        $stat['late_prints_prc'] = $lateres['printqty'] / $baseprints * 100;
+        $stat['ontime_orders_prc'] = $stat['ontime_orders'] / $baseorder * 100;
+        $stat['ontime_items_prc'] = $stat['ontime_items'] / $baseitems * 100;
+        $stat['ontime_prints_prc'] = $stat['ontime_prints'] / $baseprints * 100;
+        return $stat;
     }
 
     public function week_calendar($weeknumber, $year)
