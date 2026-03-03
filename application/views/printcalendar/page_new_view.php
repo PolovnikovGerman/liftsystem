@@ -127,13 +127,13 @@
                             </div>
                             <div class="datarow">
                                 <div class="sprbox-orders">
-                                    <div class="sprbox-result" data-fld="ontimeprcorders">&nbsp;</div>
+                                    <div class="sprbox-result proc" data-fld="ontimeprcorders">&nbsp;</div>
                                 </div>
                                 <div class="sprbox-items">
-                                    <div class="sprbox-result" data-fld="ontimeprcitems">&nbsp;</div>
+                                    <div class="sprbox-result proc" data-fld="ontimeprcitems">&nbsp;</div>
                                 </div>
                                 <div class="sprbox-total">
-                                    <div class="sprbox-result" data-fld="ontimeprcprints">&nbsp;</div>
+                                    <div class="sprbox-result proc" data-fld="ontimeprcprints">&nbsp;</div>
                                 </div>
                             </div>
                         </div>
@@ -157,13 +157,13 @@
                             </div>
                             <div class="datarow">
                                 <div class="lateordbox-orders">
-                                    <div class="lateordbox-result" data-fld="lateprcorders">&nbsp;</div>
+                                    <div class="lateordbox-result proc" data-fld="lateprcorders">&nbsp;</div>
                                 </div>
                                 <div class="lateordbox-items">
-                                    <div class="lateordbox-result" data-fld="lateprcitems">&nbsp;</div>
+                                    <div class="lateordbox-result proc" data-fld="lateprcitems">&nbsp;</div>
                                 </div>
                                 <div class="lateordbox-total">
-                                    <div class="lateordbox-result" data-fld="lateprcprints">&nbsp;</div>
+                                    <div class="lateordbox-result proc" data-fld="lateprcprints">&nbsp;</div>
                                 </div>
                             </div>
                         </div>

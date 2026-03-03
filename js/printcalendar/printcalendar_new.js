@@ -77,12 +77,25 @@ function init_reshedule_totals(year) {
     var url = '/printcalendar/reshedulestatic';
     $.post(url, params, function (response){
         if (response.errors=='') {
+            // Total
             $("div.sprbox-result[data-fld='stilorders']").empty().html(response.data.stil_orders);
             $("div.sprbox-result[data-fld='stilitems']").empty().html(response.data.stil_items);
             $("div.sprbox-result[data-fld='stilprints']").empty().html(response.data.stil_prints);
+            // Late
             $("div.lateordbox-result[data-fld='lateorders']").empty().html(response.data.late_orders);
             $("div.lateordbox-result[data-fld='lateitems']").empty().html(response.data.late_items);
             $("div.lateordbox-result[data-fld='lateprints']").empty().html(response.data.late_prints);
+            $("div.lateordbox-result[data-fld='lateprcorders']").empty().html(response.data.late_orders_prc);
+            $("div.lateordbox-result[data-fld='lateprcitems']").empty().html(response.data.late_items_prc);
+            $("div.lateordbox-result[data-fld='lateprcprints']").empty().html(response.data.late_prints_prc);
+            // On Time
+            $("div.sprbox-result[data-fld='ontimeorders']").empty().html(response.data.ontime_orders);
+            $("div.sprbox-result[data-fld='ontimeitems']").empty().html(response.data.ontime_items);
+            $("div.sprbox-result[data-fld='ontimeprints']").empty().html(response.data.ontime_prints);
+            $("div.sprbox-result[data-fld='ontimeprcorders']").empty().html(response.data.ontime_orders_prc);
+            $("div.sprbox-result[data-fld='ontimeprcitems']").empty().html(response.data.ontime_items_prc);
+            $("div.sprbox-result[data-fld='ontimeprcprints']").empty().html(response.data.ontime_prints_prc);
+
         } else {
             show_error(response);
         }
