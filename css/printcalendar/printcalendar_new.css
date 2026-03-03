@@ -613,7 +613,7 @@
     font-weight: 600;
     text-align: center;
 }
-.lateordbox-result {
+.lateordbox-result.proc {
     font-size: 12px;
     font-weight: 400;
     color: #494948;
