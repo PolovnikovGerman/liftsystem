@@ -88,37 +88,332 @@
         <div class="reshedlordr">
             <div class="reschdl-body">&nbsp;</div>
             <div class="reschdl-infobody">
-                <div class="ro_stillprint">
-                    <div class="ro_infotitle">Still to Print:</div>
-                    <div class="stillprint_box">
-                        <div class="sprbox-orders">
-                            <div class="sprbox-title">Orders:</div>
-                            <div class="sprbox-result" data-fld="stilorders">&nbsp;</div>
-                        </div>
-                        <div class="sprbox-items">
-                            <div class="sprbox-title">Items:</div>
-                            <div class="sprbox-result" data-fld="stilitems">&nbsp;</div>
-                        </div>
-                        <div class="sprbox-total">
-                            <div class="sprbox-title">Total Prints:</div>
-                            <div class="sprbox-result" data-fld="stilprints">&nbsp;</div>
+                <div class="datarow">
+                    <div class="ro_stillprint-totals">
+                        <div class="ro_infotitle">Still to Print:</div>
+                        <div class="stillprint_box">
+                            <div class="sprbox-orders">
+                                <div class="sprbox-title">Orders:</div>
+                                <div class="sprbox-result" data-fld="stilorders">&nbsp;</div>
+                            </div>
+                            <div class="sprbox-items">
+                                <div class="sprbox-title">Items:</div>
+                                <div class="sprbox-result" data-fld="stilitems">&nbsp;</div>
+                            </div>
+                            <div class="sprbox-total">
+                                <div class="sprbox-title">Total Prints:</div>
+                                <div class="sprbox-result" data-fld="stilprints">&nbsp;</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="ro_lateorders">
-                    <div class="ro_infotitle">Late Orders:</div>
-                    <div class="lateorders_box">
-                        <div class="lateordbox-orders">
-                            <div class="lateordbox-title">Orders:</div>
-                            <div class="lateordbox-result" data-fld="lateorders">&nbsp;</div>
+                <div class="datarow">
+                    <div class="ro_stillprint">
+                        <div class="ro_infotitle">On Time:</div>
+                        <div class="stillprint_box">
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-title">Orders:</div>
+                                    <div class="sprbox-result" data-fld="ontimeorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-title">Items:</div>
+                                    <div class="sprbox-result" data-fld="ontimeitems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-title">Total Prints:</div>
+                                    <div class="sprbox-result" data-fld="ontimeprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-result" data-fld="ontimeprcorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-result" data-fld="ontimeprcitems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-result" data-fld="ontimeprcprints">&nbsp;</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="lateordbox-items">
-                            <div class="lateordbox-title">Items:</div>
-                            <div class="lateordbox-result" data-fld="lateitems">&nbsp;</div>
+                    </div>
+                    <div class="ro_lateorders">
+                        <div class="ro_infotitle">Late Orders:</div>
+                        <div class="lateorders_box">
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-title">Orders:</div>
+                                    <div class="lateordbox-result" data-fld="lateorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-title">Items:</div>
+                                    <div class="lateordbox-result" data-fld="lateitems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-title">Total Prints:</div>
+                                    <div class="lateordbox-result" data-fld="lateprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-result" data-fld="lateprcorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-result" data-fld="lateprcitems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-result" data-fld="lateprcprints">&nbsp;</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="lateordbox-total">
-                            <div class="lateordbox-title">Total Prints:</div>
-                            <div class="lateordbox-result" data-fld="lateprints">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="datarow">
+                    <div class="ro_stillprint">
+                        <div class="ro_infotitle">Print Qty  &lt; Ship Qty</div>
+                        <div class="stillprint_box">
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-title">Orders:</div>
+                                    <div class="sprbox-result" data-fld="ontimecriticorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-title">Items:</div>
+                                    <div class="sprbox-result" data-fld="ontimecriticitems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-title">Total Prints:</div>
+                                    <div class="sprbox-result" data-fld="ontimecriticprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-result" data-fld="ontimecriticprcorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-result" data-fld="ontimecriticprcitems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-result" data-fld="ontimecriticprcprints">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ro_lateorders">
+                        <div class="ro_infotitle">Print Qty  &lt; Ship Qty</div>
+                        <div class="lateorders_box">
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-title">Orders:</div>
+                                    <div class="lateordbox-result" data-fld="latecriticorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-title">Items:</div>
+                                    <div class="lateordbox-result" data-fld="latecriticitems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-title">Total Prints:</div>
+                                    <div class="lateordbox-result" data-fld="latecriticprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-result" data-fld="latecriticprcorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-result" data-fld="latecriticprcitems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-result" data-fld="latecriticprcprints">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="datarow">
+                    <div class="ro_stillprint">
+                        <div class="ro_infotitle">Not Approved</div>
+                        <div class="stillprint_box">
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-title">Orders:</div>
+                                    <div class="sprbox-result" data-fld="ontimeapprorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-title">Items:</div>
+                                    <div class="sprbox-result" data-fld="ontimeappritems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-title">Total Prints:</div>
+                                    <div class="sprbox-result" data-fld="ontimeapprprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-result" data-fld="ontimeapprprcorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-result" data-fld="ontimeapprprcitems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-result" data-fld="ontimeapprprcprints">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ro_lateorders">
+                        <div class="ro_infotitle">Not Approved</div>
+                        <div class="lateorders_box">
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-title">Orders:</div>
+                                    <div class="lateordbox-result" data-fld="lateapprorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-title">Items:</div>
+                                    <div class="lateordbox-result" data-fld="lateappritems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-title">Total Prints:</div>
+                                    <div class="lateordbox-result" data-fld="lateapprprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-result" data-fld="lateapprprcorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-result" data-fld="lateapprprcitems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-result" data-fld="lateapprprcprints">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="datarow">
+                    <div class="ro_stillprint">
+                        <div class="ro_infotitle">Approved & Print Qty = Ship Qty</div>
+                        <div class="stillprint_box">
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-title">Orders:</div>
+                                    <div class="sprbox-result" data-fld="ontimenormorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-title">Items:</div>
+                                    <div class="sprbox-result" data-fld="ontimenormitems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-title">Total Prints:</div>
+                                    <div class="sprbox-result" data-fld="ontimenormprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-result" data-fld="ontimenormprcorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-result" data-fld="ontimenormprcitems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-result" data-fld="ontimenormprcprints">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ro_lateorders">
+                        <div class="ro_infotitle">Approved & Print Qty = Ship Qty</div>
+                        <div class="lateorders_box">
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-title">Orders:</div>
+                                    <div class="lateordbox-result" data-fld="latenormorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-title">Items:</div>
+                                    <div class="lateordbox-result" data-fld="latenormitems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-title">Total Prints:</div>
+                                    <div class="lateordbox-result" data-fld="latenormprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-result" data-fld="latenormprcorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-result" data-fld="latenormprcitems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-result" data-fld="latenormprcprints">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="datarow">
+                    <div class="ro_stillprint">
+                        <div class="ro_infotitle">Approved & Print Qty &gt; Ship Qty</div>
+                        <div class="stillprint_box">
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-title">Orders:</div>
+                                    <div class="sprbox-result" data-fld="ontimenormorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-title">Items:</div>
+                                    <div class="sprbox-result" data-fld="ontimenormitems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-title">Total Prints:</div>
+                                    <div class="sprbox-result" data-fld="ontimenormprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="sprbox-orders">
+                                    <div class="sprbox-result" data-fld="ontimenormprcorders">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-items">
+                                    <div class="sprbox-result" data-fld="ontimenormprcitems">&nbsp;</div>
+                                </div>
+                                <div class="sprbox-total">
+                                    <div class="sprbox-result" data-fld="ontimenormprcprints">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ro_lateorders">
+                        <div class="ro_infotitle">Approved & Print Qty &gt; Ship Qty</div>
+                        <div class="lateorders_box">
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-title">Orders:</div>
+                                    <div class="lateordbox-result" data-fld="latenormorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-title">Items:</div>
+                                    <div class="lateordbox-result" data-fld="latenormitems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-title">Total Prints:</div>
+                                    <div class="lateordbox-result" data-fld="latenormprints">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="datarow">
+                                <div class="lateordbox-orders">
+                                    <div class="lateordbox-result" data-fld="latenormprcorders">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-items">
+                                    <div class="lateordbox-result" data-fld="latenormprcitems">&nbsp;</div>
+                                </div>
+                                <div class="lateordbox-total">
+                                    <div class="lateordbox-result" data-fld="latenormprcprints">&nbsp;</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
