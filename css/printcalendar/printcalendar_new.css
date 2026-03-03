@@ -469,10 +469,11 @@
     display: block;
     float: right !important;
     width: 438px;
-    height: 88px;
+    /*height: 88px;*/
     background: #5c5b5b;
     padding-left: 20px;
     padding-top: 10px;
+    padding-bottom: 10px;
 }
 .ps_keymaps {}
 .keymaps-box {
@@ -524,13 +525,17 @@
     border-radius: 3px 3px 0 0;
     margin-top: 0;
 }
+.ro_stillprint-totals {
+    width: 190px;
+    margin-left: 96px;
+}
 .ro_stillprint {
     width: 190px;
     margin-right: 12px;
 }
 .ro_infotitle {
     color: #fff;
-    font-size: 14px;
+    font-size: 12px; /* 14px; */
     font-weight: 600;
 }
 .stillprint_box {
