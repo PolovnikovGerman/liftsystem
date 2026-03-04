@@ -4,7 +4,7 @@ function init_printcalendar_content() {
     var year = $("#printcaledyear").val();
     init_printcalendar(year);
     init_printstatistic();
-    init_reshedule_totals(year);
+    init_reshedule_totals();
     $(".psleft-years-box").unbind('click').click(function () {
         if ($(this).hasClass('active')) {
         } else {
@@ -13,7 +13,7 @@ function init_printcalendar_content() {
             $(".psleft-years-box[data-yearprint='" + newyear + "']").addClass('active');
             $("#printcaledyear").val(newyear);
             init_printcalendar_content();
-            init_reshedule_totals(newyear);
+            // init_reshedule_totals(newyear);
         }
     });
     $(".reshedlordr-btn").unbind('click').click(function () {
@@ -71,9 +71,9 @@ function init_printstatistic() {
     },'json');
 }
 
-function init_reshedule_totals(year) {
+function init_reshedule_totals() {
     var params = new Array();
-    params.push({name: 'year', value: year});
+    // params.push({name: 'year', value: year});
     var url = '/printcalendar/reshedulestatic';
     $.post(url, params, function (response){
         if (response.errors=='') {
@@ -449,7 +449,7 @@ function init_dailydetails_manage() {
         var year = $("#printcaledyear").val();
         init_printcalendar(year);
         init_printstatistic();
-        init_reshedule_totals(year);
+        init_reshedule_totals(); // year
         $(".calendar-week").hide();
         $(".simpltodayblock").hide();
         $(".todayblock").hide();
@@ -479,7 +479,7 @@ function init_dailydetails_manage() {
         var year = $("#printcaledyear").val();
         init_printcalendar(year);
         init_printstatistic();
-        init_reshedule_totals(year);
+        init_reshedule_totals(); // year
         $(".calendar-week").hide();
         $(".simpltodayblock").hide();
         $(".todayblock").hide();
