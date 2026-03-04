@@ -63,29 +63,98 @@ class Printcalendar extends MY_Controller
     {
         if ($this->isAjax()) {
             $mdata = [];
-            $error = 'Empty Year';
-            $postdata = $this->input->post();
-            $year = ifset($postdata, 'year',0);
-            if (!empty($year)) {
+            // $error = 'Empty Year';
+            // $postdata = $this->input->post();
+            // $year = ifset($postdata, 'year',0);
+            // if (!empty($year)) {
                 $error = '';
-                $res = $this->printcalendar_model->year_statistic($year);
-                $lates = $res['late'];
-                $mdata['late_orders'] = empty($lates['ordercnt']) ? '-' : QTYOutput($lates['ordercnt']);
-                $mdata['late_items'] = empty($lates['itemqty']) ? '-' : QTYOutput($lates['itemqty']);
-                $mdata['late_prints'] = empty($lates['printqty']) ? '-' : QTYOutput($lates['printqty']);
-                $mdata['stil_orders'] = empty($res['leave_orders']) ? '-' : QtyOutput($res['leave_orders']);
-                $mdata['stil_items'] = empty($res['leave_items']) ? '-' : QtyOutput($res['leave_items']);
-                $mdata['stil_prints'] = empty($res['leave_prints']) ? '-' : QtyOutput($res['leave_prints']);
-                $mdata['ontime_orders'] = empty($res['ontime_orders']) ? '-' : QtyOutput($res['ontime_orders']);
-                $mdata['ontime_items'] = empty($res['ontime_items']) ? '-' : QtyOutput($res['ontime_items']);
-                $mdata['ontime_prints'] = empty($res['ontime_prints']) ? '-' : QtyOutput($res['ontime_prints']);
-                $mdata['late_orders_prc'] = empty($res['late_orders_prc']) ? '-' : round($res['late_orders_prc'],1).'%';
-                $mdata['late_items_prc'] = empty($res['late_items_prc']) ? '-' : round($res['late_items_prc'],1).'%';
-                $mdata['late_prints_prc'] = empty($res['late_prints_prc']) ? '-' : round($res['late_prints_prc'],1).'%';
-                $mdata['ontime_orders_prc'] = empty($res['ontime_orders_prc']) ? '-' : round($res['ontime_orders_prc'],1).'%';
-                $mdata['ontime_items_prc'] = empty($res['ontime_items_prc']) ? '-' : round($res['ontime_items_prc'],1).'%';
-                $mdata['ontime_prints_prc'] = empty($res['ontime_prints_prc']) ? '-' : round($res['ontime_prints_prc'],1).'%';
-            }
+                // $year,
+                $res = $this->printcalendar_model->year_statistic();
+                $mdata['stil_orders'] = empty($res['orders']) ? '-' : QtyOutput($res['orders']);
+                $mdata['stil_items'] = empty($res['items']) ? '-' : QtyOutput($res['items']);
+                $mdata['stil_prints'] = empty($res['prints']) ? '-' : QtyOutput($res['prints']);
+                $bases = [
+                    'orders' => $res['orders'],
+                    'items' => $res['items'],
+                    'prints' => $res['prints'],
+                ];
+                // $year,
+                $resdet = $this->printcalendar_model->year_statistic_details( $bases);
+                $lates = $resdet['lates'];
+                $ontimes = $resdet['ontimes'];
+                $mdata['late_orders'] = empty($lates['orders']) ? '-' : QTYOutput($lates['orders']);
+                $mdata['late_items'] = empty($lates['items']) ? '-' : QTYOutput($lates['items']);
+                $mdata['late_prints'] = empty($lates['prints']) ? '-' : QTYOutput($lates['prints']);
+                $mdata['ontime_orders'] = empty($ontimes['orders']) ? '-' : QtyOutput($ontimes['orders']);
+                $mdata['ontime_items'] = empty($ontimes['items']) ? '-' : QtyOutput($ontimes['items']);
+                $mdata['ontime_prints'] = empty($ontimes['prints']) ? '-' : QtyOutput($ontimes['prints']);
+                $mdata['late_orders_prc'] = empty($lates['order_prc']) ? '-' : round($lates['order_prc'],1).'%';
+                $mdata['late_items_prc'] = empty($lates['item_prc']) ? '-' : round($lates['item_prc'],1).'%';
+                $mdata['late_prints_prc'] = empty($lates['print_prc']) ? '-' : round($lates['print_prc'],1).'%';
+                $mdata['ontime_orders_prc'] = empty($ontimes['order_prc']) ? '-' : round($ontimes['order_prc'],1).'%';
+                $mdata['ontime_items_prc'] = empty($ontimes['item_prc']) ? '-' : round($ontimes['item_prc'],1).'%';
+                $mdata['ontime_prints_prc'] = empty($ontimes['print_prc']) ? '-' : round($ontimes['print_prc'],1).'%';
+                $late_critic = $resdet['late_critic'];
+                $late_apprv = $resdet['late_apprv'];
+                $late_norm = $resdet['late_norm'];
+                $late_print = $resdet['late_prints'];
+                $ontime_critic = $resdet['ontime_critic'];
+                $ontime_apprv = $resdet['ontime_apprv'];
+                $ontime_norm = $resdet['ontime_norm'];
+                $ontime_print = $resdet['ontime_prints'];
+                // Critical
+                $mdata['late_critic_orders'] = empty($late_critic['orders']) ? '-' : QTYOutput($late_critic['orders']);
+                $mdata['late_critic_items'] = empty($late_critic['items']) ? '-' : QTYOutput($late_critic['items']);
+                $mdata['late_critic_prints'] = empty($late_critic['prints']) ? '-' : QTYOutput($late_critic['prints']);
+                $mdata['late_critic_orderprc'] = empty($late_critic['order_prc']) ? '-' : round($late_critic['order_prc'],1).'%';
+                $mdata['late_critic_itemprc'] = empty($late_critic['item_prc']) ? '-' : round($late_critic['item_prc'],1).'%';
+                $mdata['late_critic_printprc'] = empty($late_critic['print_prc']) ? '-' : round($late_critic['print_prc'],1).'%';
+                $mdata['ontime_critical_orders'] = empty($ontime_critic['orders']) ? '-' : QTYOutput($ontime_critic['orders']);
+                $mdata['ontime_critical_items'] = empty($ontime_critic['items']) ? '-' : QTYOutput($ontime_critic['items']);
+                $mdata['ontime_critical_prints'] = empty($ontime_critic['prints']) ? '-' : QTYOutput($ontime_critic['prints']);
+                $mdata['ontime_critical_orderprc'] = empty($ontime_critic['order_prc']) ? '-' : round($ontime_critic['order_prc'],1).'%';
+                $mdata['ontime_critical_itemprc'] = empty($ontime_critic['item_prc']) ? '-' : round($ontime_critic['item_prc'],1).'%';
+                $mdata['ontime_critical_printprc'] = empty($ontime_critic['print_prc']) ? '-' : round($ontime_critic['print_prc'],1).'%';
+                // Not Approved
+                $mdata['late_appr_orders'] = empty($late_apprv['orders']) ? '-' : QTYOutput($late_apprv['orders']);
+                $mdata['late_appr_items'] = empty($late_apprv['items']) ? '-' : QTYOutput($late_apprv['items']);
+                $mdata['late_appr_prints'] = empty($late_apprv['prints']) ? '-' : QTYOutput($late_apprv['prints']);
+                $mdata['late_appr_orderprc'] = empty($late_apprv['order_prc']) ? '-' : round($late_apprv['order_prc'],1).'%';
+                $mdata['late_appr_itemprc'] = empty($late_apprv['item_prc']) ? '-' : round($late_apprv['item_prc'],1).'%';
+                $mdata['late_appr_printprc'] = empty($late_apprv['print_prc']) ? '-' : round($late_apprv['print_prc'],1).'%';
+                $mdata['ontime_appr_orders'] = empty($ontime_apprv['orders']) ? '-' : QTYOutput($ontime_apprv['orders']);
+                $mdata['ontime_appr_items'] = empty($ontime_apprv['items']) ? '-' : QTYOutput($ontime_apprv['items']);
+                $mdata['ontime_appr_prints'] = empty($ontime_apprv['prints']) ? '-' : QTYOutput($ontime_apprv['prints']);
+                $mdata['ontime_appr_orderprc'] = empty($ontime_apprv['order_prc']) ? '-' : round($ontime_apprv['order_prc'],1).'%';
+                $mdata['ontime_appr_itemprc'] = empty($ontime_apprv['item_prc']) ? '-' : round($ontime_apprv['item_prc'],1).'%';
+                $mdata['ontime_appr_printprc'] = empty($ontime_apprv['print_prc']) ? '-' : round($ontime_apprv['print_prc'],1).'%';
+                // Normal
+                $mdata['late_norm_orders'] = empty($late_norm['orders']) ? '-' : QTYOutput($late_norm['orders']);
+                $mdata['late_norm_items'] = empty($late_norm['items']) ? '-' : QTYOutput($late_norm['items']);
+                $mdata['late_norm_prints'] = empty($late_norm['prints']) ? '-' : QTYOutput($late_norm['prints']);
+                $mdata['late_norm_orderprc'] = empty($late_norm['order_prc']) ? '-' : round($late_norm['order_prc'],1).'%';
+                $mdata['late_norm_itemprc'] = empty($late_norm['item_prc']) ? '-' : round($late_norm['item_prc'],1).'%';
+                $mdata['late_norm_printprc'] = empty($late_norm['print_prc']) ? '-' : round($late_norm['print_prc'],1).'%';
+                $mdata['ontime_norm_orders'] = empty($ontime_norm['orders']) ? '-' : QTYOutput($ontime_norm['orders']);
+                $mdata['ontime_norm_items'] = empty($ontime_norm['items']) ? '-' : QTYOutput($ontime_norm['items']);
+                $mdata['ontime_norm_prints'] = empty($ontime_norm['prints']) ? '-' : QTYOutput($ontime_norm['prints']);
+                $mdata['ontime_norm_orderprc'] = empty($ontime_norm['order_prc']) ? '-' : round($ontime_norm['order_prc'],1).'%';
+                $mdata['ontime_norm_itemprc'] = empty($ontime_norm['item_prc']) ? '-' : round($ontime_norm['item_prc'],1).'%';
+                $mdata['ontime_norm_printprc'] = empty($ontime_norm['print_prc']) ? '-' : round($ontime_norm['print_prc'],1).'%';
+                // Print
+                $mdata['ontime_print_orders'] = empty($ontime_print['orders']) ? '-' : QTYOutput($ontime_print['orders']);
+                $mdata['ontime_print_items'] = empty($ontime_print['items']) ? '-' : QTYOutput($ontime_print['items']);
+                $mdata['ontime_print_prints'] = empty($ontime_print['prints']) ? '-' : QTYOutput($ontime_print['prints']);
+                $mdata['ontime_print_orderprc'] = empty($ontime_print['order_prc']) ? '-' : round($ontime_print['order_prc'],1).'%';
+                $mdata['ontime_print_itemprc'] = empty($ontime_print['item_prc']) ? '-' : round($ontime_print['item_prc'],1).'%';
+                $mdata['ontime_print_printprc'] = empty($ontime_print['print_prc']) ? '-' : round($ontime_print['print_prc'],1).'%';
+                $mdata['late_print_orders'] = empty($late_print['orders']) ? '-' : QTYOutput($late_print['orders']);
+                $mdata['late_print_items'] = empty($late_print['items']) ? '-' : QTYOutput($late_print['items']);
+                $mdata['late_print_prints'] = empty($late_print['prints']) ? '-' : QTYOutput($late_print['prints']);
+                $mdata['late_print_orderprc'] = empty($late_print['order_prc']) ? '-' : round($late_print['order_prc'],1).'%';
+                $mdata['late_print_itemprc'] = empty($late_print['item_prc']) ? '-' : round($late_print['item_prc'],1).'%';
+                $mdata['late_print_printprc'] = empty($late_print['print_prc']) ? '-' : round($late_print['print_prc'],1).'%';
+            // }
             $this->ajaxResponse($mdata, $error);
         }
     }
