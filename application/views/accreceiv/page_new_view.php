@@ -5,6 +5,11 @@
     <div class="accreceiv-content-data">
         <div class="accreceiv-content-left <?=$brand=='ALL' ? 'sigmasystem' : ''?>">
             <div class="datarow">
+                <div class="accreceive-title">
+                    <div class="accreceiv-label">Accounts Receivable</div>
+                </div>
+            </div>
+            <div class="datarow">
                 <div class="accreceiv-totalown"></div>
                 <div class="accreceiv-totalpast"></div>
                 <div class="accreceiv-period">
@@ -91,11 +96,13 @@
         </div>
         <div class="accreceiv-content-center <?=$brand=='ALL' ? 'sigmasystem' : ''?>">
             <div class="datarow">
+                <div class="accreceiv-content-right"></div>
+            </div>
+            <div class="datarow">
                 <div class="accreceiv-totalrefund"></div>
                 <div class="totalrefund-export">
                     <div class="totalrefund-exportbtn"><i class="fa fa-file-excel-o"></i> Export</div>
                 </div>
-                <div class="accreceiv-content-right"></div>
             </div>
             <div class="datarow">
                 <div class="accreceiv-refunddetails-head">
@@ -109,9 +116,6 @@
             <div class="datarow">
                 <div class="accreceiv-refunddetails-body" id="accreceiv-refunddetails-body"></div>
             </div>
-        </div>
-        <div class="accreceiv-details">
-
         </div>
     </div>
 </div>
