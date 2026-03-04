@@ -41,6 +41,8 @@ function init_accreceive_totals() {
             $(".accreceiv-totalpast").empty().html(response.data.total_past);
             $(".accreceiv-totalrefund").empty().html(response.data.total_refund);
             $(".accreceiv-content-right").empty().html(response.data.totals);
+            $(".accreceiv-totalapproved").empty().html(response.data.total_approved);
+            $(".accreceiv-totalnotapproved").empty().html(response.data.total_notapproved);
         } else {
             show_error(response);
         }
@@ -64,7 +66,13 @@ function init_accreceive_details() {
         if (response.errors=='') {
             // $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
             // $(".accreceiv-content-center").find("div.accreceiv-details").empty().html(response.data.refunddetails);
-            $(".accreceiv-details").empty().html(response.data.content);
+            // $(".accreceiv-details").empty().html(response.data.content);
+            $(".approvedowntablebody").empty().html(response.data.approved_content);
+            new SimpleBar(document.getElementById('approvedowntablebody'), { autoHide: false });
+            $(".notapprovedowntablebody").empty().html(response.data.notapproved_content);
+            new SimpleBar(document.getElementById('notapprovedowntablebody'), { autoHide: false });
+            $(".accreceiv-refunddetails-body").empty().html(response.data.refund_content);
+            new SimpleBar(document.getElementById('accreceiv-refunddetails-body'), { autoHide: false });
             leftmenu_alignment();
             init_accreceive_content();
         } else {

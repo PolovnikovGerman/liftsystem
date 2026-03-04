@@ -40,9 +40,8 @@
     margin-top: -3px;
 }
 .accreceiv-content-data {
-    /* width: 1067px; */
     width: 1365px;
-    margin-top: 18px;
+    /*margin-top: 18px;*/
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
@@ -184,6 +183,69 @@
     position: relative;
     top: -3px;
     margin-left: 0.5px;
+}
+.accreceiv-totalownapprov-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #000000;
+    margin-right: 10px;
+}
+.accreceiv-totalownapprov-value {
+    width: 97px;
+    height: 22px;
+    line-height: 22px;
+    text-align: right;
+    padding-right: 3px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #000000;
+    border: 1px solid #000;
+}
+.accreceiv-totalownapprov-value span {
+    font-size: 12px;
+    position: relative;
+    top: -4px;
+    margin-left: 1px;
+}
+.approvedowntablehead {
+    width: 100%;
+    border: 1px solid #000000;
+}
+.approvedowntablehead > div {
+    background: #d3d3d3;
+    color: #000000;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px;
+}
+.approvedowntablebody {
+    width: 100%;
+    height: 300px;
+    border: 1px solid #000000;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.notapprovedowntablehead {
+    width: 100%;
+    border: 1px solid #000000;
+}
+.notapprovedowntablehead > div {
+    background: #fff77e;
+    color: #000000;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px;
+}
+.notapprovedowntablebody {
+    width: 100%;
+    height: 300px;
+    border: 1px solid #000000;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 .accreceiv-totalrefund {
     width: 161px; /*  360px; */
@@ -405,6 +467,15 @@
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
     margin-bottom: 20px;
+}
+.accreceiv-owndetails-bodyrowdayseparator {
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    color: #ffffff;
+    background: #6c6c6c;
+    padding-left: 8px;
 }
 .accreceiv-owndetails-bodyrow {
     width: 100%;
@@ -714,6 +785,9 @@ select.debtstatus.checked {
     border-right: 1px solid #000000;
     margin-bottom: 20px;
     width: 100%;
+    height: 690px;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 .accreceiv-refunddetails-bodyrow {
     width: 100%;

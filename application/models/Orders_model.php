@@ -8170,12 +8170,45 @@ Class Orders_model extends MY_Model
         foreach ($refsrc as $refr) {
             $totalref+=$refr['balance'];
         }
+        //
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
 
+        $this->db->select('o.order_id, o.order_blank, coalesce(p.cnt,0) as profcnt, v.balance');
+        $this->db->from('v_order_balances v');
+        $this->db->join('ts_orders o', 'o.order_id=v.order_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
+        $this->db->where('v.balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('v.yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('v.brand', $brand);
+            } else {
+                $this->db->where_in('v.brand', ['BT','SB']);
+            }
+        }
+        $orders = $this->db->get()->result_array();
+        $total_approved = $total_notapproved = 0;
+        foreach ($orders as $order) {
+            if (empty($order['profcnt']) && $order['order_blank']==0) {
+                $total_notapproved+=$order['balance'];
+            } else {
+                $total_approved+=$order['balance'];
+            }
+        }
         return array(
             'totalown' => $totalown,
             'pastown' => $pastown,
             'totalrefund' => $totalref,
             'balance' => $totalown+$totalref,
+            'total_approved' => $total_approved,
+            'total_notapproved' => $total_notapproved,
         );
     }
 
@@ -8211,7 +8244,7 @@ Class Orders_model extends MY_Model
             }
         }
         $owndats = $this->db->get()->result_array();
-        $owns=[];
+        $ownapproved = $ownnotapproved = [];
 
         foreach ($owndats as $owndat) {
             $sclass = '';
@@ -8233,66 +8266,105 @@ Class Orders_model extends MY_Model
                 $owndat['dueclass'] = 'pastdue';
             }
             $owndat['approved'] = ($owndat['approved'] == 0 ? 0 : 1);
-            $days = round((time() - intval($owndat['batch_due'])) / (24 * 60 * 60), 0);
-            $owndat['days'] = $days;
-            $dayclass = '';
-            if ($days > 60) {
-                $dayclass = 'pastdue';
-            }
-            $daysshow = '-';
-            $dayindex = '999';
-            if ($days > 60) {
-                $daysshow = '60+';
-                $dayindex = '000';
-            } elseif ($days > 30 && $days <= 60) {
-                $daysshow = '<60';
-                $dayindex = '100';
-            } elseif ($days > 1 && $days <= 30) {
-                $daysshow = '<30';
-                $dayindex = '200';
-            }
-            $owndat['daysshow'] = $daysshow;
-            $owndat['dayclass'] = $dayclass;
-            $owndat['sortidx'] = $dayindex;
             if ($owndat['order_blank']==1) {
                 $owndat['approved']=1;
             }
-            $owns[]=$owndat;
+            $days = round((time() - intval($owndat['batch_due'])) / (24 * 60 * 60), 0);
+            $owndat['days'] = $days;
+            $dayclass = '';
+//            if ($days > 60) {
+//                $dayclass = 'pastdue';
+//            }
+//            $daysshow = '-';
+//            $dayindex = '999';
+//            if ($days > 60) {
+//                $daysshow = '60+';
+//                $dayindex = '000';
+//            } elseif ($days > 30 && $days <= 60) {
+//                $daysshow = '<60';
+//                $dayindex = '100';
+//            } elseif ($days > 1 && $days <= 30) {
+//                $daysshow = '<30';
+//                $dayindex = '200';
+//            }
+            if ($days > 0) {
+                $dayclass = 'pastdue';
+            } else {
+                $dayclass = 'future';
+            }
+//            $owndat['daysshow'] = $daysshow;
+            $owndat['dayclass'] = $dayclass;
+//            $owndat['sortidx'] = $dayindex;
+            if ($owndat['approved']==1) {
+                $ownapproved[] = $owndat;
+            } else {
+                $ownnotapproved[] = $owndat;
+            }
         }
         if ($ownsort=='owntype') {
-            usort($owns, function ($item1, $item2) {
+            usort($ownapproved, function ($item1, $item2) {
+                return $item1['type'] <=> $item2['type'];
+            });
+            usort($ownnotapproved, function ($item1, $item2) {
                 return $item1['type'] <=> $item2['type'];
             });
         } elseif ($ownsort=='batch_due') {
-            usort($owns, function ($item1, $item2) {
+            usort($ownapproved, function ($item1, $item2) {
+                return $item1['batch_due'] <=> $item2['batch_due'];
+            });
+            usort($ownnotapproved, function ($item1, $item2) {
                 return $item1['batch_due'] <=> $item2['batch_due'];
             });
         } elseif ($ownsort=='artapprove') {
-            usort($owns, function ($item1, $item2) {
+            usort($ownapproved, function ($item1, $item2) {
+                return $item2['approved'] <=> $item1['approved'];
+            });
+            usort($ownnotapproved, function ($item1, $item2) {
                 return $item2['approved'] <=> $item1['approved'];
             });
         } else {
-            usort($owns, function ($item1, $item2) {
+            usort($ownapproved, function ($item1, $item2) {
+                return $item2['balance'] <=> $item1['balance'];
+            });
+            usort($ownnotapproved, function ($item1, $item2) {
                 return $item2['balance'] <=> $item1['balance'];
             });
         }
+        // Approved
         $ownidx = 0;
         $rundebt = 0;
-        $curtype = $owns[0]['type'];
-        foreach ($owns as $own) {
+        $curtype = $ownapproved[0]['type'];
+        foreach ($ownapproved as $own) {
             $datclass = '';
             if ($ownsort=='owntype') {
                 if ($own['type']!==$curtype) {
                     $datclass = 'separated';
                     $curtype = $own['type'];
-//                $curappr = $own['approved'];
                 }
             }
-            $owns[$ownidx]['datclass'] = $datclass;
-            $rundebt += $owns[$ownidx]['balance'];
-            $owns[$ownidx]['rundebt'] = $rundebt;
+            $ownapproved[$ownidx]['datclass'] = $datclass;
+            $rundebt += $own['balance'];
+            $ownapproved[$ownidx]['rundebt'] = $rundebt;
             $ownidx++;
         }
+        // Not Approved
+        $ownidx = 0;
+        $rundebt = 0;
+        $curtype = $ownnotapproved[0]['type'];
+        foreach ($ownnotapproved as $own) {
+            $datclass = '';
+            if ($ownsort=='owntype') {
+                if ($own['type']!==$curtype) {
+                    $datclass = 'separated';
+                    $curtype = $own['type'];
+                }
+            }
+            $ownnotapproved[$ownidx]['datclass'] = $datclass;
+            $rundebt += $own['balance'];
+            $ownnotapproved[$ownidx]['rundebt'] = $rundebt;
+            $ownidx++;
+        }
+
         // Refund
         if ($refundsort=='balance') {
             if ($refunddirec=='asc') {
@@ -8319,7 +8391,8 @@ Class Orders_model extends MY_Model
         $this->db->order_by($refundsort, $refunddir);
         $refunds = $this->db->get()->result_array();
         return array(
-            'owns' => $owns,
+            'ownapproved' => $ownapproved,
+            'ownnotapproved' => $ownnotapproved,
             'refunds' => $refunds,
             'daystart' => $daystart,
             'refundsort' => $refundsort,
