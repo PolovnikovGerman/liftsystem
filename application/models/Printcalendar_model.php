@@ -1365,6 +1365,7 @@ class Printcalendar_model extends MY_Model
         $didx = 0;
         $total_order = $total_prints = $order_needact = $prints_needact = $order_approved = $prints_approved = 0;
         $curord = 0;
+        $tt = 0;
         foreach ($lateorders as $uns) {
             if ($curord!==$uns['order_id']) {
                 $curord = $uns['order_id'];
@@ -1372,7 +1373,7 @@ class Printcalendar_model extends MY_Model
                 if ($uns['fulfill'] < $uns['shipped']) {
                     $order_needact++;
                 }
-                if ($uns['approv']==0 && $uns['order_blank']==0) {
+                if (empty($uns['approv']) && $uns['order_blank']==0) {
                     $order_approved++;
                 }
             }
@@ -1392,7 +1393,6 @@ class Printcalendar_model extends MY_Model
             }
             if ($lateorders[$didx]['approv']==0) {
                 $prints_approved+=$uns['prints'];
-                log_message('error','Order # '.$uns['order_num'].' Not Approved '.$uns['prints'].' prints');
             }
             if (empty($uns['rush_idx'])) {
                 $lateorders[$didx]['order_rush'] = 0;
