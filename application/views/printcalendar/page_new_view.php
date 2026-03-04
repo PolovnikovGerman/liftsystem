@@ -362,26 +362,26 @@
                             <div class="datarow">
                                 <div class="sprbox-orders">
                                     <div class="sprbox-title">Orders:</div>
-                                    <div class="sprbox-result" data-fld="ontimenormorders">&nbsp;</div>
+                                    <div class="sprbox-result" data-fld="ontimeprintorders">&nbsp;</div>
                                 </div>
                                 <div class="sprbox-items">
                                     <div class="sprbox-title">Items:</div>
-                                    <div class="sprbox-result" data-fld="ontimenormitems">&nbsp;</div>
+                                    <div class="sprbox-result" data-fld="ontimeprintitems">&nbsp;</div>
                                 </div>
                                 <div class="sprbox-total">
                                     <div class="sprbox-title">Total Prints:</div>
-                                    <div class="sprbox-result" data-fld="ontimenormprints">&nbsp;</div>
+                                    <div class="sprbox-result" data-fld="ontimeprintprints">&nbsp;</div>
                                 </div>
                             </div>
                             <div class="datarow">
                                 <div class="sprbox-orders">
-                                    <div class="sprbox-result" data-fld="ontimenormprcorders">&nbsp;</div>
+                                    <div class="sprbox-result" data-fld="ontimeprintprcorders">&nbsp;</div>
                                 </div>
                                 <div class="sprbox-items">
-                                    <div class="sprbox-result" data-fld="ontimenormprcitems">&nbsp;</div>
+                                    <div class="sprbox-result" data-fld="ontimeprintprcitems">&nbsp;</div>
                                 </div>
                                 <div class="sprbox-total">
-                                    <div class="sprbox-result" data-fld="ontimenormprcprints">&nbsp;</div>
+                                    <div class="sprbox-result" data-fld="ontimeprintprcprints">&nbsp;</div>
                                 </div>
                             </div>
                         </div>
@@ -392,26 +392,26 @@
                             <div class="datarow">
                                 <div class="lateordbox-orders">
                                     <div class="lateordbox-title">Orders:</div>
-                                    <div class="lateordbox-result" data-fld="latenormorders">&nbsp;</div>
+                                    <div class="lateordbox-result" data-fld="lateprintorders">&nbsp;</div>
                                 </div>
                                 <div class="lateordbox-items">
                                     <div class="lateordbox-title">Items:</div>
-                                    <div class="lateordbox-result" data-fld="latenormitems">&nbsp;</div>
+                                    <div class="lateordbox-result" data-fld="lateprintitems">&nbsp;</div>
                                 </div>
                                 <div class="lateordbox-total">
                                     <div class="lateordbox-title">Total Prints:</div>
-                                    <div class="lateordbox-result" data-fld="latenormprints">&nbsp;</div>
+                                    <div class="lateordbox-result" data-fld="lateprintprints">&nbsp;</div>
                                 </div>
                             </div>
                             <div class="datarow">
                                 <div class="lateordbox-orders">
-                                    <div class="lateordbox-result" data-fld="latenormprcorders">&nbsp;</div>
+                                    <div class="lateordbox-result" data-fld="lateprintprcorders">&nbsp;</div>
                                 </div>
                                 <div class="lateordbox-items">
-                                    <div class="lateordbox-result" data-fld="latenormprcitems">&nbsp;</div>
+                                    <div class="lateordbox-result" data-fld="lateprintprcitems">&nbsp;</div>
                                 </div>
                                 <div class="lateordbox-total">
-                                    <div class="lateordbox-result" data-fld="latenormprcprints">&nbsp;</div>
+                                    <div class="lateordbox-result" data-fld="lateprintprcprints">&nbsp;</div>
                                 </div>
                             </div>
                         </div>

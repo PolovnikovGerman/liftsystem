@@ -95,7 +95,62 @@ function init_reshedule_totals(year) {
             $("div.sprbox-result[data-fld='ontimeprcorders']").empty().html(response.data.ontime_orders_prc);
             $("div.sprbox-result[data-fld='ontimeprcitems']").empty().html(response.data.ontime_items_prc);
             $("div.sprbox-result[data-fld='ontimeprcprints']").empty().html(response.data.ontime_prints_prc);
-
+            // Critical LATE
+            $("div.lateordbox-result[data-fld='latecriticorders']").empty().html(response.data.late_critic_orders);
+            $("div.lateordbox-result[data-fld='latecriticitems']").empty().html(response.data.late_critic_items);
+            $("div.lateordbox-result[data-fld='latecriticprints']").empty().html(response.data.late_critic_prints);
+            $("div.lateordbox-result[data-fld='latecriticprcorders']").empty().html(response.data.late_critic_orderprc);
+            $("div.lateordbox-result[data-fld='latecriticprcitems']").empty().html(response.data.late_critic_itemprc);
+            $("div.lateordbox-result[data-fld='latecriticprcprints']").empty().html(response.data.late_critic_printprc);
+            // Critical ONTIME
+            $("div.sprbox-result[data-fld='ontimecriticorders']").empty().html(response.data.ontime_critical_orders);
+            $("div.sprbox-result[data-fld='ontimecriticitems']").empty().html(response.data.ontime_critical_items);
+            $("div.sprbox-result[data-fld='ontimecriticprints']").empty().html(response.data.ontime_critical_prints);
+            $("div.sprbox-result[data-fld='ontimecriticprcorders']").empty().html(response.data.ontime_critical_orderprc);
+            $("div.sprbox-result[data-fld='ontimecriticprcitems']").empty().html(response.data.ontime_critical_itemprc);
+            $("div.sprbox-result[data-fld='ontimecriticprcprints']").empty().html(response.data.ontime_critical_printprc);
+            // Not Approve LATE
+            $("div.lateordbox-result[data-fld='lateapprorders']").empty().html(response.data.late_appr_orders);
+            $("div.lateordbox-result[data-fld='lateappritems']").empty().html(response.data.late_appr_items);
+            $("div.lateordbox-result[data-fld='lateapprprints']").empty().html(response.data.late_appr_prints);
+            $("div.lateordbox-result[data-fld='lateapprprcorders']").empty().html(response.data.late_appr_orderprc);
+            $("div.lateordbox-result[data-fld='lateapprprcitems']").empty().html(response.data.late_appr_itemprc);
+            $("div.lateordbox-result[data-fld='lateapprprcprints']").empty().html(response.data.late_appr_printprc);
+            // Not Approve ONTIME
+            $("div.sprbox-result[data-fld='ontimeapprorders']").empty().html(response.data.ontime_appr_orders);
+            $("div.sprbox-result[data-fld='ontimeappritems']").empty().html(response.data.ontime_appr_items);
+            $("div.sprbox-result[data-fld='ontimeapprprints']").empty().html(response.data.ontime_appr_prints);
+            $("div.sprbox-result[data-fld='ontimeapprprcorders']").empty().html(response.data.ontime_appr_orderprc);
+            $("div.sprbox-result[data-fld='ontimeapprprcitems']").empty().html(response.data.ontime_appr_itemprc);
+            $("div.sprbox-result[data-fld='ontimeapprprcprints']").empty().html(response.data.ontime_appr_printprc);
+            // Norm ONTIME
+            $("div.sprbox-result[data-fld='ontimenormorders']").empty().html(response.data.ontime_norm_orders);
+            $("div.sprbox-result[data-fld='ontimenormitems']").empty().html(response.data.ontime_norm_items);
+            $("div.sprbox-result[data-fld='ontimenormprints']").empty().html(response.data.ontime_norm_prints);
+            $("div.sprbox-result[data-fld='ontimenormprcorders']").empty().html(response.data.ontime_norm_orderprc);
+            $("div.sprbox-result[data-fld='ontimenormprcitems']").empty().html(response.data.ontime_norm_itemprc);
+            $("div.sprbox-result[data-fld='ontimenormprcprints']").empty().html(response.data.ontime_norm_printprc);
+            // Norm LATE
+            $("div.lateordbox-result[data-fld='latenormorders']").empty().html(response.data.late_norm_orders);
+            $("div.lateordbox-result[data-fld='latenormitems']").empty().html(response.data.late_norm_items);
+            $("div.lateordbox-result[data-fld='latenormprints']").empty().html(response.data.late_norm_prints);
+            $("div.lateordbox-result[data-fld='latenormprcorders']").empty().html(response.data.late_norm_orderprc);
+            $("div.lateordbox-result[data-fld='latenormprcitems']").empty().html(response.data.late_norm_itemprc);
+            $("div.lateordbox-result[data-fld='latenormprcprints']").empty().html(response.data.late_norm_printprc);
+            // Print ONTIME
+            $("div.sprbox-result[data-fld='ontimeprintorders']").empty().html(response.data.ontime_print_orders);
+            $("div.sprbox-result[data-fld='ontimeprintitems']").empty().html(response.data.ontime_print_items);
+            $("div.sprbox-result[data-fld='ontimeprintprints']").empty().html(response.data.ontime_print_prints);
+            $("div.sprbox-result[data-fld='ontimeprintprcorders']").empty().html(response.data.ontime_print_orderprc);
+            $("div.sprbox-result[data-fld='ontimeprintprcitems']").empty().html(response.data.ontime_print_itemprc);
+            $("div.sprbox-result[data-fld='ontimeprintprcprints']").empty().html(response.data.ontime_print_printprc);
+            // Print LATE
+            $("div.lateordbox-result[data-fld='lateprintorders']").empty().html(response.data.late_print_orders);
+            $("div.lateordbox-result[data-fld='lateprintitems']").empty().html(response.data.late_print_items);
+            $("div.lateordbox-result[data-fld='lateprintprints']").empty().html(response.data.late_print_prints);
+            $("div.lateordbox-result[data-fld='lateprintprcorders']").empty().html(response.data.late_print_orderprc);
+            $("div.lateordbox-result[data-fld='lateprintprcitems']").empty().html(response.data.late_print_itemprc);
+            $("div.lateordbox-result[data-fld='lateprintprcprints']").empty().html(response.data.late_print_printprc);
         } else {
             show_error(response);
         }

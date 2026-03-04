@@ -366,11 +366,74 @@ class Printcalendar_model extends MY_Model
         return $out;
     }
 
-    public function year_statistic($year)
+    // $year
+    public function year_statistic()
     {
-        $start_year = strtotime($year.'-01-01');
-        $end_year = strtotime(($year+1).'-01-01');
-        $curdate = new DateTime(date('Y-m-d'));
+//        $start_year = strtotime($year.'-01-01');
+//        $end_year = strtotime(($year+1).'-01-01');
+//        $curdate = new DateTime(date('Y-m-d'));
+//        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty');
+//        $this->db->select('sum(coalesce(oic.item_qty,0)) as itemqty');
+//        $this->db->from('ts_order_itemcolors oic');
+//        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
+//        $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
+//        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left'); //
+//        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+//        $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+//        $this->db->join('ts_orders o', 'o.order_id=oi.order_id');
+//        $this->db->where('o.is_canceled', 0);
+//        $this->db->where('oi.print_date > ', 0);
+//        $this->db->where('oi.print_date < ', $curdate->getTimestamp());
+//        $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
+//        $lateres = $this->db->get()->row_array();
+//        // Year schedule
+//        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as printqty, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as imprintqty');
+//        $this->db->from('ts_order_itemcolors oic');
+//        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
+//        $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
+//        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+//        $this->db->join('ts_orders o', 'o.order_id=oi.order_id');
+//        $this->db->where('o.is_canceled', 0);
+//        $this->db->where('oi.print_date >= ', $start_year);
+//        $this->db->where('oi.print_date < ', $end_year);
+//        $statres = $this->db->get()->row_array();
+//        // Year printed
+//        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as printqty, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as imprintqty');
+//        $this->db->from('ts_order_itemcolors oic');
+//        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
+//        $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
+//        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+//        $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+//        $this->db->join('ts_orders o','o.order_id=oi.order_id');
+//        $this->db->where('o.is_canceled', 0);
+//        $this->db->where('oi.print_date >= ', $start_year);
+//        $this->db->where('oi.print_date < ', $end_year);
+//        $this->db->where('coalesce(amnt.fullfill,0) >= oic.item_qty');
+//        $readyres = $this->db->get()->row_array();
+
+//        $stat = [
+//            'late' => $lateres,
+//            'total_orders' => $statres['ordercnt'],
+//            'total_items' => $statres['printqty'],
+//            'total_prints' => $statres['imprintqty'],
+//            'leave_orders' => $statres['ordercnt'] - $readyres['ordercnt'] + (ifset($lateres, 'ordercnt',0)),
+//            'leave_prints' => $statres['imprintqty'] - $readyres['imprintqty'] + (ifset($lateres, 'printqty', 0)),
+//            'leave_items' => $statres['printqty'] - $readyres['printqty'] + (ifset($lateres ,'itemqty',0)),
+//            'ontime_orders' => $statres['ordercnt'] - $readyres['ordercnt'],
+//            'ontime_prints' => $statres['imprintqty'] - $readyres['imprintqty'],
+//            'ontime_items' => $statres['printqty'] - $readyres['printqty'],
+//            'year' => $year,
+//        ];
+//        $baseorder = $stat['leave_orders'];
+//        $baseitems = $stat['leave_items'];
+//        $baseprints = $stat['leave_prints'];
+//        $stat['late_orders_prc'] = $lateres['ordercnt'] / $baseorder * 100;
+//        $stat['late_items_prc'] = $lateres['itemqty'] / $baseitems * 100;
+//        $stat['late_prints_prc'] = $lateres['printqty'] / $baseprints * 100;
+//        $stat['ontime_orders_prc'] = $stat['ontime_orders'] / $baseorder * 100;
+//        $stat['ontime_items_prc'] = $stat['ontime_items'] / $baseitems * 100;
+//        $stat['ontime_prints_prc'] = $stat['ontime_prints'] / $baseprints * 100;
+
         $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as printqty');
         $this->db->select('sum(coalesce(oic.item_qty,0)) as itemqty');
         $this->db->from('ts_order_itemcolors oic');
@@ -381,58 +444,205 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('ts_orders o', 'o.order_id=oi.order_id');
         $this->db->where('o.is_canceled', 0);
-        $this->db->where('oi.print_date > ', 0);
-        $this->db->where('oi.print_date < ', $curdate->getTimestamp());
+        $this->db->where('o.print_date > ', 0);
+        // $this->db->where('oi.print_date < ', $curdate->getTimestamp());
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
-        $lateres = $this->db->get()->row_array();
-        // Year schedule
-        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as printqty, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as imprintqty');
-        $this->db->from('ts_order_itemcolors oic');
-        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
-        $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
-        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
-        $this->db->join('ts_orders o', 'o.order_id=oi.order_id');
-        $this->db->where('o.is_canceled', 0);
-        $this->db->where('oi.print_date >= ', $start_year);
-        $this->db->where('oi.print_date < ', $end_year);
-        $statres = $this->db->get()->row_array();
-        // Year printed
-        $this->db->select('count(distinct(o.order_id)) as ordercnt, sum(oic.item_qty) as printqty, sum(coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0)) as imprintqty');
-        $this->db->from('ts_order_itemcolors oic');
-        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id=oic.inventory_color_id');
-        $this->db->join('ts_order_items oi', 'oi.order_item_id=oic.order_item_id');
-        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
-        $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
-        $this->db->join('ts_orders o','o.order_id=oi.order_id');
-        $this->db->where('o.is_canceled', 0);
-        $this->db->where('oi.print_date >= ', $start_year);
-        $this->db->where('oi.print_date < ', $end_year);
-        $this->db->where('coalesce(amnt.fullfill,0) >= oic.item_qty');
-        $readyres = $this->db->get()->row_array();
-
+        $res = $this->db->get()->row_array();
         $stat = [
-            'late' => $lateres,
-            'total_orders' => $statres['ordercnt'],
-            'total_items' => $statres['printqty'],
-            'total_prints' => $statres['imprintqty'],
-            'leave_orders' => $statres['ordercnt'] - $readyres['ordercnt'] + (ifset($lateres, 'ordercnt',0)),
-            'leave_prints' => $statres['imprintqty'] - $readyres['imprintqty'] + (ifset($lateres, 'printqty', 0)),
-            'leave_items' => $statres['printqty'] - $readyres['printqty'] + (ifset($lateres ,'itemqty',0)),
-            'ontime_orders' => $statres['ordercnt'] - $readyres['ordercnt'],
-            'ontime_prints' => $statres['imprintqty'] - $readyres['imprintqty'],
-            'ontime_items' => $statres['printqty'] - $readyres['printqty'],
-            'year' => $year,
+            'orders' => $res['ordercnt'],
+            'items' => $res['itemqty'],
+            'prints' => $res['printqty'],
         ];
-        $baseorder = $stat['leave_orders'];
-        $baseitems = $stat['leave_items'];
-        $baseprints = $stat['leave_prints'];
-        $stat['late_orders_prc'] = $lateres['ordercnt'] / $baseorder * 100;
-        $stat['late_items_prc'] = $lateres['itemqty'] / $baseitems * 100;
-        $stat['late_prints_prc'] = $lateres['printqty'] / $baseprints * 100;
-        $stat['ontime_orders_prc'] = $stat['ontime_orders'] / $baseorder * 100;
-        $stat['ontime_items_prc'] = $stat['ontime_items'] / $baseitems * 100;
-        $stat['ontime_prints_prc'] = $stat['ontime_prints'] / $baseprints * 100;
         return $stat;
+    }
+    // $year
+    public function year_statistic_details($bases)
+    {
+        $curdate = strtotime(date('Y-m-d'));
+        // Get LATE orders
+        $this->db->select('oic.order_itemcolor_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv');
+        $this->db->select('o.order_id , oic.item_qty, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints, o.order_blank, ship.shipped');
+        $this->db->from('ts_order_itemcolors oic');
+        $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
+        $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
+        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id = oic.inventory_color_id');
+        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
+        $this->db->where('o.print_date < ', $curdate)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
+        $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
+        $this->db->order_by('o.order_id asc');
+        $lateorders = $this->db->get()->result_array();
+        $lates = $late_critic = $late_apprv = $late_norm = $late_print = [
+            'orders' => 0,
+            'items' => 0,
+            'prints' => 0,
+            'order_prc' => 0,
+            'item_prc' => 0,
+            'print_prc' => 0,
+        ];
+        $curord = 0;
+        foreach ($lateorders as $uns) {
+            if ($uns['order_id'] != $curord) {
+                $curord = $uns['order_id'];
+                $lates['orders']++;
+                if ($uns['fulfill'] < $uns['shipped']) {
+                    $late_critic['orders']++;
+                } elseif ($uns['approv']==0 && $uns['order_blank']==0) {
+                    $late_apprv['orders']++;
+                } elseif ($uns['fulfill'] == $uns['shipped']) {
+                    $late_norm['orders']++;
+                } else {
+                    $late_print['orders']++;
+                }
+            }
+            // Items and prints
+            $lates['items']+=$uns['item_qty'];
+            $lates['prints']+=$uns['prints'];
+            if ($uns['item_qty'] < $uns['shipped']) {
+                $late_critic['items']+=$uns['item_qty'];
+                $late_critic['prints']+=$uns['prints'];
+            } elseif ($uns['approv']==0 && $uns['order_blank']==0) {
+                $late_apprv['items']+=$uns['item_qty'];
+                $late_apprv['prints']+=$uns['prints'];
+            } elseif ($uns['item_qty'] == $uns['shipped']) {
+                $late_norm['items']+=$uns['item_qty'];
+                $late_norm['prints']+=$uns['prints'];
+            } else {
+                $late_print['items']+=$uns['item_qty'];
+                $late_print['prints']+=$uns['prints'];
+            }
+        }
+        $ontimes = $ontime_critic = $ontime_apprv = $ontime_norm = $ontime_print = [
+            'orders' => 0,
+            'items' => 0,
+            'prints' => 0,
+            'order_prc' => 0,
+            'item_prc' => 0,
+            'print_prc' => 0,
+        ];
+        // $end_year = strtotime(($year+1).'-01-01');
+        // if ($curdate < $end_year) {
+        // Get ONTIME
+        $this->db->select('oic.order_itemcolor_id, COALESCE(amnt.fullfill,0) as fulfill, COALESCE(approv.cnt,0) as approv');
+        $this->db->select('o.order_id , oic.item_qty, coalesce(impr.cntprint,0)*coalesce(oic.item_qty,0) as prints, o.order_blank, ship.shipped');
+        $this->db->from('ts_order_itemcolors oic');
+        $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
+        $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
+        $this->db->join('ts_inventory_colors ic', 'ic.inventory_color_id = oic.inventory_color_id');
+        $this->db->join('('.$this->shipsql.') ship','ship.order_itemcolor_id = oic.order_itemcolor_id');
+        $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
+        $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
+        $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
+        $this->db->where('o.print_date >= ', $curdate)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0 where('o.print_date < ', $end_year)->
+        // $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
+        $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
+        $this->db->order_by('order_id asc');
+        $ontimeords = $this->db->get()->result_array();
+        $curord = 0;
+        foreach ($ontimeords as $ontime) {
+            if ($ontime['order_id'] != $curord) {
+                $curord = $ontime['order_id'];
+                $ontimes['orders']++;
+                if ($ontime['fulfill'] < $ontime['shipped']) {
+                    $ontime_critic['orders']++;
+                } elseif (empty($ontime['approv']) && $ontime['order_blank']==0) {
+                    $ontime_apprv['orders']++;
+                } elseif ($ontime['fulfill'] == $ontime['shipped']) {
+                    $ontime_norm['orders']++;
+                } else {
+                    $ontime_print['orders']++;
+                }
+            }
+            $ontimes['items']+=$ontime['item_qty'];
+            $ontimes['prints']+=$ontime['prints'];
+            if ($ontime['fulfill'] < $ontime['shipped']) {
+                $ontime_critic['items']+=$ontime['item_qty'];
+                $ontime_critic['prints']+=$ontime['prints'];
+            } elseif (empty($ontime['approv']) && $ontime['order_blank']==0) {
+                $ontime_apprv['items']+=$ontime['item_qty'];
+                $ontime_apprv['prints']+=$ontime['prints'];
+            } elseif ($ontime['fulfill'] == $ontime['shipped']) {
+                $ontime_norm['items']+=$ontime['item_qty'];
+                $ontime_norm['prints']+=$ontime['prints'];
+            } else {
+                $ontime_print['items']+=$ontime['item_qty'];
+                $ontime_print['prints']+=$ontime['prints'];
+            }
+        }
+        $baseorder = $bases['orders'];
+        $baseitems = $bases['items'];
+        $baseprints = $bases['prints'];
+        if ($baseorder > 0) {
+            $lates['order_prc'] = $lates['orders'] / $baseorder * 100;
+            $ontimes['order_prc'] = $ontimes['orders'] / $baseorder * 100;
+        }
+        if ($baseitems > 0) {
+            $lates['item_prc'] = $lates['items'] / $baseitems * 100;
+            $ontimes['item_prc'] = $ontimes['items'] / $baseitems * 100;
+        }
+        if ($baseprints > 0) {
+            $lates['print_prc'] = $lates['prints'] / $baseprints * 100;
+            $ontimes['print_prc'] = $ontimes['prints'] / $baseprints * 100;
+        }
+        // Manage lates
+        $baseorder = $lates['orders'];
+        $baseitems = $lates['items'];
+        $baseprints = $lates['prints'];
+        if ($baseorder > 0) {
+            $late_critic['order_prc'] = $late_critic['orders'] / $baseorder * 100;
+            $late_apprv['order_prc'] = $late_apprv['orders'] / $baseorder * 100;
+            $late_norm['order_prc'] = $late_norm['orders'] / $baseorder * 100;
+            $late_print['order_prc'] = $late_print['orders'] / $baseorder * 100;
+        }
+        if ($baseitems > 0) {
+            $late_critic['item_prc'] = $late_critic['items'] / $baseitems * 100;
+            $late_apprv['item_prc'] = $late_apprv['items'] / $baseitems * 100;
+            $late_norm['item_prc'] = $late_norm['items'] / $baseitems * 100;
+            $late_print['item_prc'] = $late_print['items'] / $baseitems * 100;
+        }
+        if ($baseprints > 0) {
+            $late_critic['print_prc'] = $late_critic['prints'] / $baseprints * 100;
+            $late_apprv['print_prc'] = $late_apprv['prints'] / $baseprints * 100;
+            $late_norm['print_prc'] = $late_norm['prints'] / $baseprints * 100;
+            $late_print['print_prc'] = $late_print['prints'] / $baseprints * 100;
+        }
+        // Manage On Time
+        $baseorder = $ontimes['orders'];
+        $baseitems = $ontimes['items'];
+        $baseprints = $ontimes['prints'];
+        if ($baseorder > 0) {
+            $ontime_critic['order_prc'] = ($ontime_critic['orders'] / $baseorder) * 100;
+            $ontime_apprv['order_prc'] = ($ontime_apprv['orders'] / $baseorder) * 100;
+            $ontime_norm['order_prc'] = ($ontime_norm['orders'] / $baseorder) * 100;
+            $ontime_print['order_prc'] = ($ontime_print['orders'] / $baseorder) * 100;
+        }
+        if ($baseitems > 0) {
+            $ontime_critic['item_prc'] = $ontime_critic['items'] / $baseitems * 100;
+            $ontime_apprv['item_prc'] = $ontime_apprv['items'] / $baseitems * 100;
+            $ontime_norm['item_prc'] = $ontime_norm['items'] / $baseitems * 100;
+            $ontime_print['item_prc'] = $ontime_print['items'] / $baseitems * 100;
+        }
+        if ($baseprints > 0) {
+            $ontime_critic['print_prc'] = $ontime_critic['prints'] / $baseprints * 100;
+            $ontime_apprv['print_prc'] = $ontime_apprv['prints'] / $baseprints * 100;
+            $ontime_norm['print_prc'] = $ontime_norm['prints'] / $baseprints * 100;
+            $ontime_print['print_prc'] = $ontime_print['prints'] / $baseprints * 100;
+        }
+        // }
+        return [
+            'lates' => $lates,
+            'late_critic' => $late_critic,
+            'late_apprv' => $late_apprv,
+            'late_norm' => $late_norm,
+            'late_prints' => $late_print,
+            'ontimes' => $ontimes,
+            'ontime_critic' => $ontime_critic,
+            'ontime_apprv' => $ontime_apprv,
+            'ontime_norm' => $ontime_norm,
+            'ontime_prints' => $ontime_print,
+        ];
     }
 
     public function week_calendar($weeknumber, $year)
@@ -1138,7 +1348,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-        $this->db->where('o.print_date < ', $curdate)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
+        $this->db->where('o.print_date > ',0)->where('o.print_date < ', $curdate)->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         if ($showneedaction==0) {
             $this->db->where('coalesce(amnt.fullfill,0) >= ship.shipped');
@@ -1147,7 +1357,7 @@ class Printcalendar_model extends MY_Model
             $this->db->where('(COALESCE(approv.cnt,0) > 0 or o.order_blank=1)');
         }
         // $this->db->order_by('o.order_rush desc');
-        $this->db->order_by('oi.print_date asc');
+        $this->db->order_by('o.print_date asc');
         $this->db->order_by('o.order_id asc');
         $this->db->order_by('item asc');
         $this->db->order_by('ic.color asc');
@@ -1177,11 +1387,12 @@ class Printcalendar_model extends MY_Model
             } else {
                 $lateorders[$didx]['class'] = ($lateorders[$didx]['fulfillprc'] > $lateorders[$didx]['shippedprc'] ? 'critical' :  'normal');
             }
-            if (empty($lateorders[$didx]['approv']) && $lateorders[$didx]['order_blank'] == 0) {
+            if (empty($lateorders[$didx]['approv']) && $lateorders[$didx]['order_blank'] == 1) {
                 $lateorders[$didx]['approv'] = 1;
             }
             if ($lateorders[$didx]['approv']==0) {
                 $prints_approved+=$uns['prints'];
+                log_message('error','Order # '.$uns['order_num'].' Not Approved '.$uns['prints'].' prints');
             }
             if (empty($uns['rush_idx'])) {
                 $lateorders[$didx]['order_rush'] = 0;
@@ -1225,7 +1436,8 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-        $this->db->where('oi.print_date >= ', $curdate);
+        $this->db->where('o.print_date >= ', $curdate);
+        $this->db->where('o.print_date > ', 0);
         $this->db->where(['o.is_canceled' => 0, ]); // 'o.shipped_date' => 0,
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
