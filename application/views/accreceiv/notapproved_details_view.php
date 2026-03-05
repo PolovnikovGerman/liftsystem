@@ -24,9 +24,7 @@
                 <?php $rowtype = $own['type']; ?>
             <?php endif; ?>
             <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
-            <div class="accreceiv-owndetails-bodyapproval">
-                <?=$own['order_blank']==1 ? 'Blank' : 'Approved'?>
-            </div>
+            <div class="accreceiv-owndetails-bodyapproval notapproved">Not Approved</div>
             <div class="accreceiv-owndetails-bodyrunningtotal"><?=MoneyOutput($own['rundebt'],0)?></div>
             <div class="accreceiv-owndetails-bodydays <?=$own['dayclass']?>">
                 <?=$own['days']?>
