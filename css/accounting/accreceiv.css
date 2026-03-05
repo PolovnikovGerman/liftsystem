@@ -7,9 +7,8 @@
     margin-right: 20px;
 }
 .accreceive-title {
-    /* width: 770px; */
     width: 100%;
-    margin-bottom: 16px;
+    margin-bottom: 23px;
 }
 .accreceive-title div {
     height: 34px;
@@ -40,9 +39,8 @@
     margin-top: -3px;
 }
 .accreceiv-content-data {
-    /* width: 1067px; */
     width: 1365px;
-    margin-top: 18px;
+    /*margin-top: 18px;*/
 }
 .accreceiv-totals, .accreceiv-details {
     width: 100%;
@@ -54,12 +52,12 @@
     /*margin-right: 55px;*/
 }
 .accreceiv-content-left.stressrelievers {
-    width: 838px;
-    margin-right: 41px;
+    width: 971px;
+    margin-right: 10px;
 }
 .accreceiv-content-left.sigmasystem {
-    width: 879px;
-    margin-right: 20px;
+    width: 913px;
+    margin-right: 10px;
 }
 .accreceiv-content-center {
     width: 317px;
@@ -71,8 +69,7 @@
     border: 2px solid #000000;
     width: 227px;
     float: right !important;
-    /* margin-top: -48px; */
-    margin-top: -146px;
+    /*margin-top: -146px;*/
 }
 .accreceiv-totalown {
     width: 142px; /* 230px */
@@ -184,6 +181,85 @@
     position: relative;
     top: -3px;
     margin-left: 0.5px;
+}
+.accreceiv-totalownapprov-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000000;
+    margin-right: 10px;
+}
+.accreceiv-totalownapprov-value {
+    width: 97px;
+    height: 20px;
+    line-height: 22px;
+    text-align: right;
+    padding-right: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    border: 1px solid #5e5e5e;
+}
+.accreceiv-totalownapprov-value span {
+    font-size: 11px;
+    position: relative;
+    top: -4px;
+    margin-left: 1px;
+}
+.accreceiv-totalapproved {
+    margin-bottom: 4px;
+    margin-top: 5px;
+}
+.accreceiv-totalnotapproved {
+    margin-bottom: 4px;
+    margin-top: 5px;
+}
+.approvedowntablehead {
+    width: 100%;
+    border: 1px solid #000000;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    background: #d3d3d3;
+}
+.approvedowntablehead > div {
+    color: #000000;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px;
+}
+.approvedowntablebody {
+    width: 100%;
+    height: 314px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.notapprovedowntablehead {
+    width: 100%;
+    border: 1px solid #000000;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    background: #fff77e;
+}
+.notapprovedowntablehead > div {
+    color: #000000;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: bold;
+    height: 28px;
+    line-height: 28px;
+}
+.notapprovedowntablebody {
+    width: 100%;
+    height: 314px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 .accreceiv-totalrefund {
     width: 161px; /*  360px; */
@@ -357,8 +433,16 @@
 .accreceiv-owndetails-headdue {
     width: 44px;
 }
+.approvedowntablehead .accreceiv-owndetails-headdue, .notapprovedowntablehead .accreceiv-owndetails-headdue {
+    position: relative;
+    left: -11px;
+}
 .accreceiv-owndetails-headdays {
     width: 42px;
+}
+.approvedowntablehead .accreceiv-owndetails-headdays, .notapprovedowntablehead .accreceiv-owndetails-headdays {
+    position: relative;
+    left: -6px;
 }
 .accreceiv-owndetails-headdue.stressrelievers {
 }
@@ -369,9 +453,8 @@
 }
 .accreceiv-owndetails-headrunningtotal {
     width: 62px;
-    color: #c4c4c4 !important;
+    color: #5e5e5e !important;
     line-height: 14px !important;
-    font-size: 12px;
 }
 .accreceiv-owndetails-headorder {
     width: 47px;
@@ -391,6 +474,10 @@
 .accreceiv-owndetails-headtype {
     width: 62px;
 }
+.approvedowntablehead .accreceiv-owndetails-headtype, .notapprovedowntablehead .accreceiv-owndetails-headtype {
+    position: relative;
+    left: -7px;
+}
 .accreceiv-owndetails-headapproval {
     width: 68px;
 }
@@ -405,6 +492,16 @@
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
     margin-bottom: 20px;
+}
+.accreceiv-owndetails-bodyrowdayseparator {
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    color: #ffffff;
+    background: #6c6c6c;
+    padding-left: 8px;
+    font-weight: 600;
 }
 .accreceiv-owndetails-bodyrow {
     width: 100%;
@@ -581,13 +678,13 @@
 }
 .accreceiv-owndetails-bodystatusedit {
     display: none;
-    height: 93px!important;
+    height: 141px!important;
     width: 286px;
-    position: relative;
-    top: -33px;
-    left: 629px;
+    position: absolute;
+    top: 545px;
+    left: 612px;
     z-index: 1105;
-    margin-bottom: -93px;
+    /*margin-bottom: -93px;*/
     background-color: #efefef!important;
     border: 1px solid #000;
 }
@@ -607,11 +704,14 @@
 }
 .debtstatuscancel, .debtstatussave {
     font-size: 14px;
-    padding: 6px;
+    padding: 0 12px;
     border-radius: 5px;
     cursor: pointer;
-    float: right!important;
+    float: right !important;
     margin-left: 7px;
+    height: 26px;
+    line-height: 26px;
+    margin-top: 5px;
 }
 .debtstatussave {
     background-color: #04a700;
@@ -714,6 +814,9 @@ select.debtstatus.checked {
     border-right: 1px solid #000000;
     margin-bottom: 20px;
     width: 100%;
+    height: 690px;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 .accreceiv-refunddetails-bodyrow {
     width: 100%;
