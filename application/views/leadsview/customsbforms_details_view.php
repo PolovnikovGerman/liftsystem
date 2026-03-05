@@ -85,7 +85,7 @@
                     <input type="text" name="customform-state" readonly="readonly" value="<?=$data['ship_state']?>">
                 </div>
                 <div class="customform-group customform-zipcode">
-                    <input type="text" name="customform-zipcode" readonly="readonly" value="<?=$data['ship_city']?>"/>
+                    <input type="text" name="customform-zipcode" readonly="readonly" value="<?=$data['ship_zipcode']?>"/>
                 </div>
             </div>
             <div class="customform-row">
