@@ -5,12 +5,14 @@
     <?php $curtype = '' ?>
     <?php $dayclass = '' ?>
     <?php foreach($ownapproved as $own) : ?>
-        <?php if ($own['dayclass']!=$dayclass) : ?>
-        <?php $dayclass = $own['dayclass']; ?>
-            <?php if ($dayclass=='pastdue') : ?>
-                <div class="accreceiv-owndetails-bodyrowdayseparator"> Due Now </div>
-            <?php else : ?>
-                <div class="accreceiv-owndetails-bodyrowdayseparator"> Not Due Yet </div>
+        <?php if ($ownsort=='batch_due') : ?>
+            <?php if ($own['dayclass']!=$dayclass) : ?>
+            <?php $dayclass = $own['dayclass']; ?>
+                <?php if ($dayclass=='pastdue') : ?>
+                    <div class="accreceiv-owndetails-bodyrowdayseparator"> Due Now </div>
+                <?php else : ?>
+                    <div class="accreceiv-owndetails-bodyrowdayseparator"> Not Due Yet </div>
+                <?php endif; ?>
             <?php endif; ?>
         <?php endif; ?>
         <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?> <?=$own['datclass']?>">

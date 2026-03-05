@@ -26,7 +26,7 @@
                         <option value="batch_due">Date Due</option>
                         <option value="owntype">Type</option>
                         <option value="balance">Balance Owed</option>
-                        <option value="artapprove">Art Approval</option>
+<!--                        <option value="artapprove">Art Approval</option>-->
                     </select>
                 </div>
                 <div class="accreceiv-export">
