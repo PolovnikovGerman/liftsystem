@@ -58,7 +58,7 @@
                     </div>
                 <?php endif; ?>
             </div>
-            <div class="accreceiv-owndetails-bodystatusedit" data-order="<?=$own['order_id']?>"></div>
+<!--            <div class="accreceiv-owndetails-bodystatusedit" data-order="--><?php //=$own['order_id']?><!--"></div>-->
         </div>
         <?php $numpp++; ?>
     <?php endforeach; ?>
