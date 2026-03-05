@@ -3,7 +3,7 @@
     <input type="hidden" id="accreceiverefundsort" value="order_date"/>
     <input type="hidden" id="accreceiverefunddir" value="asc"/>
     <div class="accreceiv-content-data">
-        <div class="accreceiv-content-left <?=$brand=='ALL' ? 'sigmasystem' : ''?>">
+        <div class="accreceiv-content-left <?=$brand=='SG' ? 'sigmasystem' : ($brand=='SR' ? 'stressrelievers'  : '')?>">
             <div class="datarow">
                 <div class="accreceive-title">
                     <div class="accreceiv-label">Accounts Receivable</div>
@@ -50,7 +50,7 @@
                     <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due </div>
                     <div class="accreceiv-owndetails-headtype ownsort " data-sort="owntype">Type <span></span></div>
                     <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance</div>
-                    <?php if ($brand=='ALL') : ?>
+                    <?php if ($brand=='SG') : ?>
                         <div class="accreceiv-owndetails-headbrand ownsort" data-sort="brand"><span></span></div>
                     <?php endif; ?>
                     <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order</div>
@@ -78,7 +78,7 @@
                     <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due </div>
                     <div class="accreceiv-owndetails-headtype ownsort " data-sort="owntype">Type <span></span></div>
                     <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance</div>
-                    <?php if ($brand=='ALL') : ?>
+                    <?php if ($brand=='SG') : ?>
                         <div class="accreceiv-owndetails-headbrand ownsort" data-sort="brand"><span></span></div>
                     <?php endif; ?>
                     <div class="accreceiv-owndetails-headorder ownsort" data-sort="order_num">Order</div>
