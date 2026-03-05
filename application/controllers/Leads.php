@@ -2195,8 +2195,9 @@ class Leads extends My_Controller {
             $error = '';
             $postdata = $this->input->post();
             $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 0);
             $this->load->model('customform_model');
-            $data = $this->customform_model->get_customform_interest($brand);
+            $data = $this->customform_model->get_customform_interest($brand, $showall);
             $mdata['cntrec'] = count($data);
             $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
             if ($mdata['cntrec'] == 0) {

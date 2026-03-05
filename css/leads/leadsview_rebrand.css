@@ -37,6 +37,18 @@
     color: #ffffff;
     line-height: 25px;
     margin-left: 8px;
+    margin-right: 15px;
+}
+.newunassign_tasks_hideold {
+    font-size: 13px;
+    color: #ffffff;
+    line-height: 25px;
+}
+.newunassign_tasks_hideold label {
+    font-weight: normal;
+}
+.newunassign_tasks_hideold input[type='checkbox'] {
+    /* margin: 5px 0 0 0; */
 }
 .newunassign_tasks_total {
     color: #ffffff;
@@ -82,6 +94,9 @@
     margin-bottom: 20px;
     max-height: 1050px;
     width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
 }
 .newunassign_tasktable.emptycontent {
     opacity: 0.25;

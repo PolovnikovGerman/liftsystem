@@ -171,6 +171,7 @@ function search_leadsdata() {
 function init_customform_interest() {
     var params = new Array();
     params.push({name: 'brand', value: $("#leadviewbrand").val()});
+    params.push({name: 'showall', value: $("#unassigncustquoteall").val()});
     var url = '/leads/customform_interest';
     $.post(url, params, function (response){
         if (response.errors=='') {
@@ -234,7 +235,7 @@ function init_webquotes_interest() {
                 $(".newunassign_taskheader[data-task='onlinequotes']").removeClass('emptycontent');
                 $(".newunassign_tasksubheader[data-task='onlinequotes']").removeClass('emptycontent');
                 $("#onlinequotetable").removeClass('emptycontent');
-                new SimpleBar(document.getElementById('onlinequotetable'), { autoHide: false })
+                // new SimpleBar(document.getElementById('onlinequotetable'), { autoHide: false })
             }
             init_interest_management();
         } else {
@@ -389,6 +390,15 @@ function init_interest_management() {
                 }
             },'json');
         }
+    });
+    // Shange limit for custom quotes
+    $("#oldcustomquotechk").unbind('change').change(function (){
+        var showall = 0;
+        if ($(this).prop('checked')==true) {
+            showall = 1;
+        }
+        $("#unassigncustquoteall").val(showall);
+        init_customform_interest();
     });
 }
 
