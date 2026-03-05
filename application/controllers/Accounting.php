@@ -2721,6 +2721,8 @@ class Accounting extends MY_Controller
             $mdata['total_past'] = $this->load->view('accreceiv/totals_past_view', $res, TRUE);
             $mdata['total_refund'] = $this->load->view('accreceiv/totals_refund_view', $res, TRUE);
             $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
+            $mdata['total_approved'] = $this->load->view('accreceiv/totals_approved_view', $res, TRUE);
+            $mdata['total_notapproved'] = $this->load->view('accreceiv/totals_notapproved_view', $res, TRUE);
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
@@ -2737,24 +2739,21 @@ class Accounting extends MY_Controller
                 $brand = 'ALL';
             }
             $ownsort = ifset($postdata,'ownsort', 'batch_due');
-            // $ownsort1 = ($ownsort1=='owntype' ? 'type' : ($ownsort1=='ownapprove' ? 'approved' : $ownsort1));
-            // $owndirec = ifset($postdata,'owndirec', 'desc');
-            // $ownsort2 = ifset($postdata,'ownsort2', 'batch_due');
-            // $ownsort2 = ($ownsort2=='owntype' ? 'type' : ($ownsort2=='ownapprove' ? 'approved' : $ownsort2));
-            // $refundsort = ifset($postdata,'refundsort','order_date');
             $refundsort = 'order_date';
-            // $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $refunddirec = 'desc';
 
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $refundsort, $refunddirec);
-            if ($brand=='ALL') {
-                $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
-            } elseif ($brand=='SR') {
-                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
-            } else {
-                $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
-            }
-
+            $mdata['approved_content'] = $this->load->view('accreceiv/approved_details_view', $res, TRUE);
+            $mdata['notapproved_content'] = $this->load->view('accreceiv/notapproved_details_view', $res, TRUE);
+//            if ($brand=='ALL') {
+//                $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
+//            } elseif ($brand=='SR') {
+//                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
+//            } else {
+//                $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
+//            }
+            $mdata['refund_content'] = $this->load->view('accreceiv/refund_details_view', $res, TRUE);
+            $mdata['content'] = '';
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
@@ -3770,8 +3769,10 @@ class Accounting extends MY_Controller
     private function _prepare_accreceiv_view($brand) {
         $options=[
             'brand' => $brand,
+            'refundsort' => 'order_date',
+            'refunddirec' => 'desc',
         ];
-        return $this->load->view('accreceiv/page_view',$options, TRUE);
+        return $this->load->view('accreceiv/page_new_view',$options, TRUE);
     }
 
 }
