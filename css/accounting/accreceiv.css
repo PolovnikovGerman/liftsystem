@@ -7,9 +7,8 @@
     margin-right: 20px;
 }
 .accreceive-title {
-    /* width: 770px; */
     width: 100%;
-    margin-bottom: 16px;
+    margin-bottom: 23px;
 }
 .accreceive-title div {
     height: 34px;
@@ -184,34 +183,38 @@
     margin-left: 0.5px;
 }
 .accreceiv-totalownapprov-title {
-    font-size: 22px;
+    font-size: 16px;
     font-weight: 600;
     color: #000000;
     margin-right: 10px;
 }
 .accreceiv-totalownapprov-value {
     width: 97px;
-    height: 22px;
+    height: 20px;
     line-height: 22px;
     text-align: right;
     padding-right: 3px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     color: #000000;
-    border: 1px solid #000;
+    border: 1px solid #5e5e5e;
 }
 .accreceiv-totalownapprov-value span {
-    font-size: 12px;
+    font-size: 11px;
     position: relative;
     top: -4px;
     margin-left: 1px;
 }
+.accreceiv-totalapproved {
+    margin-bottom: 4px;
+    margin-top: 5px;
+}
 .approvedowntablehead {
     width: 100%;
     border: 1px solid #000000;
+    background: #d3d3d3;
 }
 .approvedowntablehead > div {
-    background: #d3d3d3;
     color: #000000;
     text-align: center;
     font-size: 11.5px;
@@ -229,9 +232,9 @@
 .notapprovedowntablehead {
     width: 100%;
     border: 1px solid #000000;
+    background: #fff77e;
 }
 .notapprovedowntablehead > div {
-    background: #fff77e;
     color: #000000;
     text-align: center;
     font-size: 11.5px;
@@ -418,8 +421,16 @@
 .accreceiv-owndetails-headdue {
     width: 44px;
 }
+.approvedowntablehead .accreceiv-owndetails-headdue, .notapprovedowntablehead .accreceiv-owndetails-headdue {
+    position: relative;
+    left: -11px;
+}
 .accreceiv-owndetails-headdays {
     width: 42px;
+}
+.approvedowntablehead .accreceiv-owndetails-headdays, .notapprovedowntablehead .accreceiv-owndetails-headdays {
+    position: relative;
+    left: -6px;
 }
 .accreceiv-owndetails-headdue.stressrelievers {
 }
@@ -430,9 +441,8 @@
 }
 .accreceiv-owndetails-headrunningtotal {
     width: 62px;
-    color: #c4c4c4 !important;
+    color: #5e5e5e !important;
     line-height: 14px !important;
-    font-size: 12px;
 }
 .accreceiv-owndetails-headorder {
     width: 47px;
@@ -451,6 +461,10 @@
 }
 .accreceiv-owndetails-headtype {
     width: 62px;
+}
+.approvedowntablehead .accreceiv-owndetails-headtype, .notapprovedowntablehead .accreceiv-owndetails-headtype {
+    position: relative;
+    left: -7px;
 }
 .accreceiv-owndetails-headapproval {
     width: 68px;
@@ -475,6 +489,7 @@
     color: #ffffff;
     background: #6c6c6c;
     padding-left: 8px;
+    font-weight: 600;
 }
 .accreceiv-owndetails-bodyrow {
     width: 100%;
