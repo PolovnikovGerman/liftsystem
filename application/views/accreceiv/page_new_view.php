@@ -40,6 +40,7 @@
                 <div class="accreceiv-totalapproved"></div>
             </div>
             <div class="datarow">
+                <!-- place for edit note -->
                 <!-- approved table head -->
                 <div class="approvedowntablehead">
                     <div class="accreceiv-owndetails-headnum">#</div>
@@ -68,6 +69,7 @@
                 <div class="accreceiv-totalnotapproved"></div>
             </div>
             <div class="datarow">
+                <div class="accreceiv-owndetails-bodystatusedit">&nbsp;</div>
                 <div class="notapprovedowntablehead">
                     <div class="accreceiv-owndetails-headnum">#</div>
                     <div class="accreceiv-owndetails-headapproval ownsort" data-sort="ownapprove">Approval</div>

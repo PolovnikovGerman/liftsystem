@@ -369,8 +369,10 @@ function edit_ownstatus(order) {
         if (response.errors=='') {
             $("#loader").show();
             $("#loaderimg").hide();
-            $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty().html(response.data.content);
-            $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").show();
+            // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty().html(response.data.content);
+            // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").show();
+            $(".accreceiv-owndetails-bodystatusedit").empty().html(response.data.content);
+            $(".accreceiv-owndetails-bodystatusedit").show();
             init_accstatus_edit(order);
         }
     },'json');
@@ -378,8 +380,10 @@ function edit_ownstatus(order) {
 
 function init_accstatus_edit(order) {
     $(".debtstatuscancel").unbind('click').click(function (){
-        $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
-        $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+        // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
+        // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+        $(".accreceiv-owndetails-bodystatusedit").empty();
+        $(".accreceiv-owndetails-bodystatusedit").hide();
         $("#loaderimg").show();
         $("#loader").hide();
     });
@@ -390,8 +394,10 @@ function init_accstatus_edit(order) {
         var url = '/accounting/debtstatus';
         $.post(url, params, function (response){
             if (response.errors=='') {
-                $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
-                $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+                // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
+                // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+                $(".accreceiv-owndetails-bodystatusedit").empty();
+                $(".accreceiv-owndetails-bodystatusedit").hide();
                 $("#loaderimg").show();
                 $("#loader").hide();
                 $(".accreceiv-owndetails-bodystatus[data-order='"+order+"']").empty().html(response.data.content);

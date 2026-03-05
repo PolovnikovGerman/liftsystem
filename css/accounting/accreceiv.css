@@ -666,13 +666,13 @@
 }
 .accreceiv-owndetails-bodystatusedit {
     display: none;
-    height: 93px!important;
+    height: 141px!important;
     width: 286px;
-    position: relative;
-    top: -33px;
-    left: 629px;
+    position: absolute;
+    top: 545px;
+    left: 612px;
     z-index: 1105;
-    margin-bottom: -93px;
+    /*margin-bottom: -93px;*/
     background-color: #efefef!important;
     border: 1px solid #000;
 }
@@ -692,7 +692,7 @@
 }
 .debtstatuscancel, .debtstatussave {
     font-size: 14px;
-    padding: 6px;
+    padding: 0 6px;
     border-radius: 5px;
     cursor: pointer;
     float: right!important;
