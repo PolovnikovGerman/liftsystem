@@ -1515,12 +1515,31 @@ class Leadmanagement extends MY_Controller
                 $setup_price = $this->leadquote_model->custom_setup_price;
             }
             $design_price = $this->config->item('custom_mischrg_value');
+            // Add Active
+            $idx = 0;
+            $active = 0;
+            foreach ($prices as $price) {
+                if ($price['item_qty'] >= 750 && $active==0) {
+                    $prices[$idx]['active'] = 1;
+                    $active = 1;
+                } else {
+                    $prices[$idx]['active'] = 0;
+                }
+                $idx++;
+            }
         } else {
             $this->load->model('prices_model');
             $pricesdat = $this->prices_model->get_itemlist_price($item_id);
             $prices = [];
+            $active = 0;
             foreach ($pricesdat as $pricerow) {
                 if ($pricerow['item_qty'] >= 150 && $pricerow['item_qty'] < 15000 && floatval($pricerow['sale_price']) > 0) {
+                    if ($pricerow['item_qty']>=250 && $active==0) {
+                        $active = 1;
+                        $pricerow['active'] = 1;
+                    } else {
+                        $pricerow['active'] = 0;
+                    }
                     $prices[] = $pricerow;
                 }
             }
