@@ -43,6 +43,8 @@
     font-size: 13px;
     color: #ffffff;
     line-height: 25px;
+    float: right!important;
+    margin-right: 10px;
 }
 .newunassign_tasks_hideold label {
     font-weight: normal;
@@ -52,11 +54,9 @@
 }
 .newunassign_tasks_total {
     color: #ffffff;
-    float: right!important;
     font-size: 12px;
     font-style: italic;
     line-height: 25px;
-    margin-right: 10px;
 }
 .newunassign_tasksubheader {
     background: #949494;

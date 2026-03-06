@@ -197,6 +197,7 @@ function init_customform_interest() {
 function init_webquest_interest() {
     var params = new Array();
     params.push({name: 'brand', value: $("#leadviewbrand").val()});
+    params.push({name: 'showall', value: $("#unassignwebquestall").val()});
     var url = '/leads/webquest_interest';
     $.post(url,params, function (response){
         if (response.errors=='') {
@@ -222,6 +223,7 @@ function init_webquest_interest() {
 function init_webquotes_interest() {
     var params = new Array();
     params.push({name: 'brand', value: $("#leadviewbrand").val()});
+    params.push({name: 'showall', value: $("#unassignwebquoteall").val()});
     var url = '/leads/webquotes_interest';
     $.post(url,params, function (response){
         if (response.errors=='') {
@@ -235,7 +237,9 @@ function init_webquotes_interest() {
                 $(".newunassign_taskheader[data-task='onlinequotes']").removeClass('emptycontent');
                 $(".newunassign_tasksubheader[data-task='onlinequotes']").removeClass('emptycontent');
                 $("#onlinequotetable").removeClass('emptycontent');
-                // new SimpleBar(document.getElementById('onlinequotetable'), { autoHide: false })
+                if (parseInt(response.data.cntrec) > 10) {
+                    new SimpleBar(document.getElementById('onlinequotetable'), { autoHide: false })
+                }
             }
             init_interest_management();
         } else {
@@ -247,6 +251,7 @@ function init_webquotes_interest() {
 function init_proofrequest_interest() {
     var params = new Array();
     params.push({name: 'brand', value: $("#leadviewbrand").val()});
+    params.push({name: 'showall', value: $("#unassignproofrequestall").val()});
     var url = '/leads/proofrequest_interest';
     $.post(url,params, function (response){
         if (response.errors=='') {
@@ -391,7 +396,7 @@ function init_interest_management() {
             },'json');
         }
     });
-    // Shange limit for custom quotes
+    // Change limit for custom quotes
     $("#oldcustomquotechk").unbind('change').change(function (){
         var showall = 0;
         if ($(this).prop('checked')==true) {
@@ -399,6 +404,33 @@ function init_interest_management() {
         }
         $("#unassigncustquoteall").val(showall);
         init_customform_interest();
+    });
+    // Change limit for web question
+    $("#oldwebquestionchk").unbind('change').change(function (){
+        var showall = 0;
+        if ($(this).prop('checked')==true) {
+            showall = 1;
+        }
+        $("#unassignwebquestall").val(showall);
+        init_webquest_interest();
+    });
+    // Change limit for web quotes
+    $("#oldwebquoteschk").unbind('change').change(function (){
+        var showall = 0;
+        if ($(this).prop('checked')==true) {
+            showall = 1;
+        }
+        $("#unassignwebquoteall").val(showall);
+        init_webquotes_interest();
+    });
+    // Change limit for proof request
+    $("#oldproofrequestchk").unbind('change').change(function (){
+        var showall = 0;
+        if ($(this).prop('checked')==true) {
+            showall = 1;
+        }
+        $("#unassignproofrequestall").val(showall);
+        init_proofrequest_interest();
     });
 }
 
