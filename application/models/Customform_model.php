@@ -327,7 +327,7 @@ class Customform_model extends MY_Model
         return ['labels'=>$labels,'data'=>$data];
     }
 
-    public function get_customform_interest($brand)
+    public function get_customform_interest($brand, $showall=1)
     {
         $this->db->select('q.*,le.lead_id');
         $this->db->from('ts_custom_quotes q');
@@ -341,6 +341,10 @@ class Customform_model extends MY_Model
             }
         }
         $this->db->where('q.active', 1);
+        if ($showall==0) {
+            $limitdate = strtotime('now - 90 days');
+            $this->db->where('unix_timestamp(q.date_add) >= ', $limitdate);
+        }
         $this->db->order_by('q.custom_quote_id', 'desc');
         $dats = $this->db->get()->result_array();
         return $dats;

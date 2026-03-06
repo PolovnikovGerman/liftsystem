@@ -194,10 +194,13 @@ Class Quotes_model extends My_Model {
         return $out;
     }
 
-    public function get_webquotes_interest($brand)
+    public function get_webquotes_interest($brand, $showall=1)
     {
-        $curdate = date('Y-m-d');
-        $new_timestamp = strtotime($curdate . ' -1 year');
+        if ($showall==0) {
+            $curdate = date('Y-m-d');
+            // $new_timestamp = strtotime($curdate . ' -1 year');
+            $new_timestamp = strtotime($curdate . ' -90 days');
+        }
         $this->db->select('e.*');
         $this->db->from('ts_emails e');
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
@@ -212,7 +215,9 @@ Class Quotes_model extends My_Model {
                 $this->db->where_in('e.brand', ['BT','SB']);
             }
         }
-        $this->db->where('unix_timestamp(e.email_date) >=', $new_timestamp);
+        if ($showall==0) {
+            $this->db->where('unix_timestamp(e.email_date) >=', $new_timestamp);
+        }
         $this->db->order_by('e.email_date','desc');
         return $this->db->get()->result_array();
     }

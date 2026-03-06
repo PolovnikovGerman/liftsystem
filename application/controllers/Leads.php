@@ -2213,8 +2213,9 @@ class Leads extends My_Controller {
             $error = '';
             $postdata = $this->input->post();
             $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
             $this->load->model('customform_model');
-            $data = $this->customform_model->get_customform_interest($brand);
+            $data = $this->customform_model->get_customform_interest($brand, $showall);
             $mdata['cntrec'] = count($data);
             $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
             if ($mdata['cntrec'] == 0) {
@@ -2234,8 +2235,9 @@ class Leads extends My_Controller {
             $error = '';
             $postdata = $this->input->post();
             $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
             $this->load->model('questions_model');
-            $data = $this->questions_model->get_webquest_interest($brand);
+            $data = $this->questions_model->get_webquest_interest($brand, $showall);
             $mdata['cntrec'] = count($data);
             $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
             if ($mdata['cntrec'] == 0) {
@@ -2255,8 +2257,9 @@ class Leads extends My_Controller {
             $error = '';
             $postdata = $this->input->post();
             $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
             $this->load->model('quotes_model');
-            $data = $this->quotes_model->get_webquotes_interest($brand);
+            $data = $this->quotes_model->get_webquotes_interest($brand, $showall);
             $mdata['cntrec'] = count($data);
             $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
             if ($mdata['cntrec'] == 0) {
@@ -2275,8 +2278,9 @@ class Leads extends My_Controller {
             $error = '';
             $postdata = $this->input->post();
             $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
             $this->load->model('artproof_model');
-            $data = $this->artproof_model->get_proofrequest_interest($brand);
+            $data = $this->artproof_model->get_proofrequest_interest($brand, $showall);
             $mdata['cntrec'] = count($data);
             $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
             if ($mdata['cntrec'] == 0) {

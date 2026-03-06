@@ -10445,6 +10445,7 @@ Class Orders_model extends MY_Model
                 $this->db->where_in('o.brand',['SB','BT']);
             }
         }
+        $this->db->order_by('o.order_date','desc');
         $orders = $this->db->get()->result_array();
         $out = [];
         foreach ($orders as $order) {

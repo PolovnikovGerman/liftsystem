@@ -1056,7 +1056,7 @@ Class Artproof_model extends MY_Model
         return $out;
     }
 
-    public function get_proofrequest_interest($brand)
+    public function get_proofrequest_interest($brand, $showall=1)
     {
         $this->db->select('e.*');
         $this->db->from('ts_emails e');
@@ -1071,6 +1071,10 @@ Class Artproof_model extends MY_Model
             } else {
                 $this->db->where_in('e.brand', ['BT','SB']);
             }
+        }
+        if ($showall==0) {
+            $limitdat = strtotime('now - 90 days');
+            $this->db->where('unix_timestamp(e.email_date) >=', $limitdat);
         }
         $this->db->order_by('e.email_date','desc');
         return $this->db->get()->result_array();
