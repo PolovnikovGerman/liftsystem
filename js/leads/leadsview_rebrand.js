@@ -432,6 +432,20 @@ function init_interest_management() {
         $("#unassignproofrequestall").val(showall);
         init_proofrequest_interest();
     });
+    // Change reminder month
+    $("select[name='reminder_month']").unbind('change').change(function (){
+        var month = $(this).val();
+        var year = $("select[name='reminder_year']").val();
+        $("#leadviewremindmonth").val(year+'-'+month);
+        init_repeatreminder();
+    });
+    // Change Reminder year
+    $("select[name='reminder_year']").unbind('change').change(function (){
+        var year = $(this).val();
+        var month = $("select[name='reminder_month']").val();
+        $("#leadviewremindmonth").val(year+'-'+month);
+        init_repeatreminder();
+    });
 }
 
 function initLeaddataPagination() {

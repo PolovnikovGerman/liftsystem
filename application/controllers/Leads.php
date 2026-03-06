@@ -2310,8 +2310,34 @@ class Leads extends My_Controller {
                 if ($mdata['cntrec']==0) {
                     $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
                 } else {
+                    $years = [];
+                    $curyear = intval(date('Y'));
+                    for ($i=1; $i <=12; $i++) {
+                        $years[] = [
+                            'key' => $curyear-$i,
+                            'value' => $curyear-$i,
+                        ];
+                    }
+                    $months = [];
+                    for ($i=1; $i <=12; $i++) {
+                        $months[] = [
+                            'key' => str_pad($i, 2, '0', STR_PAD_LEFT),
+                            'value' => date('F', strtotime($curyear.'-'.$i.'-01')),
+                        ];
+                    }
                     $start_date = strtotime($date.'-01');
-                    $mdata['content'] = $this->load->view('leadsview/interest_reminder_view',['orders' => $data, 'date' => date('F, Y', $start_date)], TRUE);
+                    $datesarray = explode('-', $date);
+                    $month = $datesarray[1];
+                    $year = $datesarray[0];
+                    $options = [
+                        'orders' => $data,
+                        'date' => date('F, Y', $start_date),
+                        'months'=>$months,
+                        'years' => $years,
+                        'monthdate' => $month,
+                        'yeardate' => $year,
+                    ];
+                    $mdata['content'] = $this->load->view('leadsview/interest_reminder_view', $options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
