@@ -20,10 +20,10 @@
             </div>
         </div>
         <?php foreach ($prices as $price) : ?>
-            <div class="qtypricelist-box" data-price="<?=$price['promo_price_id']?>" data-promoqty="<?=$price['item_qty']?>">
+            <div class="qtypricelist-box <?=$price['active']==1 ? 'active' : ''?>" data-price="<?=$price['promo_price_id']?>" data-promoqty="<?=$price['item_qty']?>">
                 <div class="qtyprice-rowqty">
                     <div class="qtyprice-qtybox">
-                        <input type="radio" name="pricecheck" value="<?=$price['promo_price_id']?>">
+                        <input type="radio" name="pricecheck" value="<?=$price['promo_price_id']?>" <?=$price['active']==1 ? 'checked="checked"' : ''?>/>
                         <span><?=short_number($price['item_qty'])?></span>
                     </div>
                 </div>

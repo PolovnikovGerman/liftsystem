@@ -2895,7 +2895,7 @@ Class Leads_model extends MY_Model
     }
 
     // Save lead form
-    public function save_leadpopup($leaddata, $user_id, $session_id, $closesession)
+    public function save_leadpopup($leaddata, $user_id, $session_id, $closesession=0)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Contact doesn\'t found'];
         $lead = $leaddata['lead'];
