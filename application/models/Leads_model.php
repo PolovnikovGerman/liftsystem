@@ -2660,7 +2660,7 @@ Class Leads_model extends MY_Model
             if ($res['result']==$this->success_result) {
                 $leaddat = $res['lead'];
                 $this->db->set('lead_id', $lead['lead_id']);
-                $this->db->set('contact_name', empty($leaddat['lead_customer']) ? NULL : ucfirst($leaddat['lead_customer']));
+                $this->db->set('contact_name', empty($leaddat['lead_customer']) ? NULL : ucwords($leaddat['lead_customer']));
                 $this->db->set('contact_email', $leaddat['lead_mail']);
                 $this->db->set('contact_phone', $leaddat['lead_phone']);
                 $this->db->insert('ts_lead_contacts');
@@ -2673,9 +2673,9 @@ Class Leads_model extends MY_Model
         foreach ($adrleads as $adrlead) {
             $this->db->where('lead_id', $adrlead['lead_id']);
             $this->db->set('country_id', $adrlead['ship_country']);
-            $this->db->set('address_line1', empty($adrlead['ship_address1']) ? NULL : ucfirst($adrlead['ship_address1']));
-            $this->db->set('address_line2', empty($adrlead['ship_address2']) ? NULL : ucfirst($adrlead['ship_address2']));
-            $this->db->set('city', empty($adrlead['ship_city']) ? NULL : ucfirst($adrlead['ship_city']));
+            $this->db->set('address_line1', empty($adrlead['ship_address1']) ? NULL : ucwords($adrlead['ship_address1']));
+            $this->db->set('address_line2', empty($adrlead['ship_address2']) ? NULL : ucwords($adrlead['ship_address2']));
+            $this->db->set('city', empty($adrlead['ship_city']) ? NULL : ucwords($adrlead['ship_city']));
             $this->db->set('zip', $adrlead['ship_zipcode']);
             $this->db->set('state', empty($adrlead['ship_state']) ? NULL : strtoupper($adrlead['ship_state']));
             $this->db->update('ts_leads');
