@@ -96,6 +96,26 @@ function updateCustomerAddress(address1, city, state, postcode, country) {
             $("select[data-fld='country_id']").val(response.data.country);
             $("input[data-fld='city']").val(response.data.city);
             $("input[data-fld='zip']").val(response.data.zip);
+            if (response.data.address_1=='') {
+                $("input[data-fld='address_line1']").addClass('emptyleadcontact');
+            } else {
+                $("input[data-fld='address_line1']").removeClass('emptyleadcontact');
+            }
+            if (response.data.country=='') {
+                $("select[data-fld='country_id']").addClass('emptyleadcontact');
+            } else {
+                $("select[data-fld='country_id']").removeClass('emptyleadcontact');
+            }
+            if (response.data.city=='') {
+                $("input[data-fld='city']").addClass('emptyleadcontact');
+            } else {
+                $("input[data-fld='city']").removeClass('emptyleadcontact');
+            }
+            if (response.data.zip=='') {
+                $("input[data-fld='zip']").addClass('emptyleadcontact');
+            } else {
+                $("input[data-fld='zip']").removeClass('emptyleadcontact');
+            }
             $("#lead_address_states").empty().html(response.data.states_view);
             $("#loader").hide();
             init_leadpopupedit();

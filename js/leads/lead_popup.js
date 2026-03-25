@@ -198,15 +198,32 @@ function init_leadpopupedit() {
     // Address Change
     $("input.leadaddressedit").unbind('change').change(function (){
         var params = new Array();
+        var newval = $(this).val();
+        var field_name = $(this).data('fld');
         params.push({name: 'lead', value: $("#leadeditid").val()});
-        params.push({name: 'field_name', value: $(this).data('fld')});
-        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'field_name', value: field_name});
+        params.push({name: 'newval', value: newval});
         var url = mainurl+"/lead_address_change";
         $.post(url, params, function (response){
             if (response.errors=='') {
+                if (newval=='') {
+                    $("input.leadaddressedit[data-fld='"+field_name+"']").addClass('emptyleadcontact');
+                } else {
+                    $("input.leadaddressedit[data-fld='"+field_name+"']").removeClass('emptyleadcontact');
+                }
                 if (parseInt(response.data.zipchange)==1) {
                     $("input.leadaddressedit[data-fld='city']").val(response.data.city);
+                    if (response.data.city=='') {
+                        $("input.leadaddressedit[data-fld='city']").addClass('emptyleadcontact');
+                    } else {
+                        $("input.leadaddressedit[data-fld='city']").removeClass('emptyleadcontact');
+                    }
                     $(".leadaddressedit[data-fld='state']").val(response.data.state);
+                    if (response.data.state=='') {
+                        $("input.leadaddressedit[data-fld='state']").addClass('emptyleadcontact');
+                    } else {
+                        $("input.leadaddressedit[data-fld='state']").removeClass('emptyleadcontact');
+                    }
                 }
             } else {
                 show_error(response);
@@ -216,14 +233,20 @@ function init_leadpopupedit() {
     $("select.leadaddressedit").unbind('change').change(function (){
         var params = new Array();
         var field_name = $(this).data('fld');
+        var newval = $(this).val();
         params.push({name: 'lead', value: $("#leadeditid").val()});
         params.push({name: 'field_name', value: field_name});
-        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'newval', value: newval});
         var url = mainurl+"/lead_address_change";
         $.post(url, params, function (response){
             if (response.errors=='') {
                 if (field_name=='country_id') {
                     $("#lead_address_states").empty().html(response.data.states_view);
+                }
+                if (newval=='') {
+                    $("select.leadaddressedit[data-fld='"+field_name+"']").addClass('emptyleadcontact');
+                } else {
+                    $("select.leadaddressedit[data-fld='"+field_name+"']").removeClass('emptyleadcontact');
                 }
                 init_leadpopupedit();
             } else {
@@ -263,15 +286,21 @@ function init_leadpopupedit() {
         var params = new Array();
         var fld = $(this).data('fld');
         var contact = $(this).data('contact');
+        var newval = $(this).val();
         params.push({name: 'lead', value: $("#leadeditid").val()});
         params.push({name: 'contact', value: contact});
         params.push({name: 'field_name', value: fld});
-        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'newval', value: newval});
         var url = mainurl+"/lead_contact_change";
         $.post(url, params, function (response){
             if (response.errors=='') {
                 if (parseInt(response.data.newphone)==1) {
-                    $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").val(response.data.phone)
+                    $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").val(response.data.phone);
+                }
+                if (newval=='') {
+                    $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").addClass('emptyleadcontact');
+                } else {
+                    $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").removeClass('emptyleadcontact');
                 }
             } else {
                 show_error(response);
