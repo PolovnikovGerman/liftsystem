@@ -197,7 +197,9 @@
             </div>
             <div class="leaddata_subheader">
                 <div class="ordernumber_head">Order #</div>
+                <div class="orderdate_head">Date</div>
                 <div class="ordercustomer_head">Customer</div>
+                <div class="orderitem_head">Item</div>
                 <div class="ordershipaddr_head">ShipAddr</div>
                 <div class="orderpayment_head">Payment</div>
                 <div class="orderart_head">Art</div>

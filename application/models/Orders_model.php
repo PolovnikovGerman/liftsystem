@@ -10427,7 +10427,7 @@ Class Orders_model extends MY_Model
         $this->db->where('p.approved > ',0)->group_by('a.order_id');
         $proofsql = $this->db->get_compiled_select();
         // Get orders
-        $this->db->select('o.order_id, o.order_num, o.customer_name as customer, o.order_blank, o.revenue, coalesce(sh.shipcnt,0) as shipcnt');
+        $this->db->select('o.order_id, o.order_num, o.order_date, o.order_items, o.item_id, o.order_itemnumber, o.customer_name as customer, o.order_blank, o.revenue, coalesce(sh.shipcnt,0) as shipcnt');
         $this->db->select('coalesce(amnt.amntcnt,0) as amntcnt, coalesce(amnt.amntsum,0) as amntsum');
         $this->db->select('coalesce(artw.artwcnt,0) as artwcnt');
         $this->db->select('coalesce(proof.apprcnt,0) as apprcnt');
@@ -10449,6 +10449,10 @@ Class Orders_model extends MY_Model
         $orders = $this->db->get()->result_array();
         $out = [];
         foreach ($orders as $order) {
+            $customitem = 0;
+            if ($order['item_id']==$this->config->item('custom_id')) {
+                $customitem = 1;
+            }
             $ship = empty($order['shipcnt']) ? 0 : 1;
             $shipclass = $ship==0 ? $missclass : $readyclass;
             if (empty($order['amntcnt'])) {
@@ -10478,7 +10482,10 @@ Class Orders_model extends MY_Model
                 $out[] = [
                     'order_id' => $order['order_id'],
                     'order_num' => $order['order_num'],
+                    'order_date' => date('m/d/y', $order['order_date']),
+                    'customitem' => $customitem,
                     'customer' => $order['customer'],
+                    'order_item' => ($customitem==1 ? $order['order_items'] : $order['order_itemnumber'].' '.$order['order_items']),
                     'ship' => $ship,
                     'shipclass' => $shipclass,
                     'payment' => $payment,

@@ -40,7 +40,7 @@
     margin-right: 15px;
 }
 .newunassign_tasks_hideold {
-    font-size: 13px;
+    font-size: 12px;
     color: #ffffff;
     line-height: 25px;
     float: right!important;
@@ -304,7 +304,9 @@
     color: #333333;
     font-size: 12px;
     font-weight: 600;
-    padding-left: 13px;
+    padding-left: 150px; /* 13px; */
+    padding-top: 3px;
+    height: 26px!important;
 }
 .repeatremand_hide_dat {
     border-right: 1px solid #000000;
@@ -520,8 +522,15 @@ input.lead_searchinput {
 .ordernumber_head {
     width: 46px;
 }
+.orderdate_head {
+    width: 50px;
+}
 .ordercustomer_head {
-    width: 203px;
+    /* width: 203px; */
+    width: 125px;
+}
+.orderitem_head {
+    width: 30px;
 }
 .ordershipaddr_head {
     width: 53px;
@@ -635,11 +644,23 @@ input.lead_searchinput {
     cursor: pointer;
     width: 46px;
 }
+.missorderdate_dat {
+    border-right: 1px solid #000000;
+    width: 50px;
+}
 .missordercustomer_dat {
     border-right: 1px solid #000000;
     padding-left: 5px;
     text-align: left!important;
-    width: 203px;
+    /* width: 203px; */
+    width: 125px;
+}
+.missorderitemname_dat {
+    border-right: 1px solid #000000;
+    width: 30px;
+}
+.missordernumber_dat.customitem, .missorderdate_dat.customitem, .missordercustomer_dat.customitem {
+    font-weight: 600;
 }
 .missordersdatarow .missing {
     background: #fb0404;

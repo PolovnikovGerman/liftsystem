@@ -19,6 +19,29 @@ var mainurl = '/leadmanagement';
 //     },'json');
 // }
 
+function add_lead(brand) {
+    var lead_id = 0
+    var url=mainurl+"/edit_lead";
+    $.post(url, {'lead_id': lead_id, 'brand' : brand}, function(response){
+        if (response.errors=='') {
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // init_lead_cloneemail();
+            init_leadpopupcontent();
+            init_quoteformcontent();
+            init_leadpopupedit();
+            if (parseInt($("#leadmapuse").val())==1) {
+                initCustomerAddressAutocomplete();
+            }
+        } else {
+            show_error(response);
+        }
+    }, 'json');
+
+}
+
 function edit_lead(lead_id) {
     // var lead_id=obj.id.substr(7);
     var url=mainurl+"/edit_lead";
@@ -247,6 +270,9 @@ function init_leadpopupedit() {
         var url = mainurl+"/lead_contact_change";
         $.post(url, params, function (response){
             if (response.errors=='') {
+                if (parseInt(response.data.newphone)==1) {
+                    $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").val(response.data.phone)
+                }
             } else {
                 show_error(response);
                 $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").val(response.data.oldval);

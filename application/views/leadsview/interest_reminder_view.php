@@ -1,16 +1,15 @@
 <?php $numpp = 1; ?>
 <div class="datarow">
-<!--    <div class="remindermonth">--><?php //=$date?><!--</div>-->
     <div class="remindermonth">
-        <select name="reminder_month">
-            <?php foreach ($months as $month) : ?>
-            <option value="<?=$month['key']?>" <?=$month['key']==$monthdate ? 'selected="selected"' : ''?>><?=$month['value']?></option>
-            <?php endforeach; ?>
-        </select>
-        <span>, </span>
         <select name="reminder_year">
             <?php foreach ($years as $year) : ?>
             <option value="<?=$year['key']?>" <?=$year['key']==$yeardate ? 'selected="selected"' : ''?>><?=$year['value']?></option>
+            <?php endforeach; ?>
+        </select>
+        <span>, </span>
+        <select name="reminder_month">
+            <?php foreach ($months as $month) : ?>
+                <option value="<?=$month['key']?>" <?=$month['key']==$monthdate ? 'selected="selected"' : ''?>><?=$month['value']?></option>
             <?php endforeach; ?>
         </select>
     </div>
