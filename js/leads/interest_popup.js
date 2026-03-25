@@ -68,6 +68,7 @@ function init_customform_modal(formid) {
                         $(".newcustomformsinfo").empty().html(response.data.totalnew);
                         initCustomFormPagination();
                         init_customform_interest();
+                        search_leadsdata();
                     } else {
                         show_error(response);
                     }
@@ -88,7 +89,10 @@ function init_customform_modal(formid) {
                 if (response.errors=='') {
                     $("#InterestModal").modal('hide');
                     $(".newcustomformsinfo").empty().html(response.data.totalnew);
-                    show_new_lead(response.data.leadid,'customquote', brand);
+//                     show_new_lead(response.data.leadid,'customquote', brand);
+                    initCustomFormPagination();
+                    init_customform_interest();
+                    search_leadsdata();
                 } else {
                     show_error(response);
                 }
@@ -181,6 +185,7 @@ function init_webquestion_modal(question) {
                         $(".newwebquestioninfo").empty().html(response.data.totalnew);
                         initQuestionPagination();
                         init_webquest_interest();
+                        search_leadsdata();
                     } else {
                         show_error(response);
                     }
@@ -201,7 +206,10 @@ function init_webquestion_modal(question) {
                 if (response.errors=='') {
                     $("#InterestModal").modal('hide');
                     $(".newwebquestioninfo").empty().html(response.data.totalnew);
-                    show_new_lead(response.data.leadid,'question', brand);
+                    // show_new_lead(response.data.leadid,'question', brand);
+                    initQuestionPagination();
+                    init_webquest_interest();
+                    search_leadsdata();
                 } else {
                     show_error(response);
                 }
@@ -284,6 +292,7 @@ function init_webquotes_modal(quote) {
                         $(".newwebquotesinfo").empty().html(response.data.totalnew);
                         initQuotesPagination();
                         init_webquotes_interest();
+                        search_leadsdata();
                     } else {
                         show_error(response);
                     }
@@ -304,7 +313,10 @@ function init_webquotes_modal(quote) {
                 if (response.errors=='') {
                     $("#InterestModal").modal('hide');
                     $(".newwebquotesinfo").empty().html(response.data.totalnew);
-                    show_new_lead(response.data.leadid,'quote', brand);
+                    // show_new_lead(response.data.leadid,'quote', brand);
+                    initQuotesPagination();
+                    init_webquotes_interest();
+                    search_leadsdata();
                 } else {
                     show_error(response);
                 }

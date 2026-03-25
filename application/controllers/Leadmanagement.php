@@ -1537,7 +1537,7 @@ class Leadmanagement extends MY_Controller
             $pricesdat = $this->prices_model->get_itemlist_price($item_id);
             $pricecnt = 0;
             foreach ($pricesdat as $price) {
-                if (floatval($price['sale_price']) > 0) {
+                if ($price['item_qty'] >= 150 && $price['item_qty'] < 15000 && floatval($price['sale_price']) > 0) {
                     $pricecnt++;
                 }
             }
@@ -1545,7 +1545,7 @@ class Leadmanagement extends MY_Controller
             $numidx = 0;
             $priceqty = 150;
             foreach ($pricesdat as $price) {
-                if (floatval($price['sale_price']) > 0) {
+                if ($price['item_qty'] >= 150 && $price['item_qty'] < 15000 && floatval($price['sale_price']) > 0) {
                     $numidx++;
                     if ($numidx == $priceidx) {
                         $priceqty = $price['item_qty'];
