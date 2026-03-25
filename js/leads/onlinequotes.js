@@ -82,6 +82,7 @@ function pageQuotesCallback(page_index) {
     $.post(url,params,function(response){
         if (response.errors=='') {
             $("div.quotes_tabledat").empty().html(response.data.content);
+            new SimpleBar(document.getElementById('quotes_tabledat'), { autoHide: false });
             $("#curpagequest").val(page_index);
             quote_content_init();
             $("#loader").hide();
@@ -123,21 +124,22 @@ function quote_content_init() {
     });
     $("div.quotelead").unbind('click').click(function (){
         var lead_id=$(this).data('lead');
-        if (parseInt(lead_id)!=0) {
-            var url="/leadmanagement/edit_lead";
-            $.post(url, {'lead_id':lead_id}, function(response){
-                if (response.errors=='') {
-                    $("#leadformModalLabel").empty().html(response.data.title);
-                    $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-                    $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
-                    $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
-                    init_lead_cloneemail();
-                    init_leadpopupedit();
-                } else {
-                    show_error(response);
-                }
-            }, 'json');
-        }
+        // if (parseInt(lead_id)!=0) {
+        //     var url="/leadmanagement/edit_lead";
+        //     $.post(url, {'lead_id':lead_id}, function(response){
+        //         if (response.errors=='') {
+        //             $("#leadformModalLabel").empty().html(response.data.title);
+        //             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+        //             $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+        //             $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+        //             init_lead_cloneemail();
+        //             init_leadpopupedit();
+        //         } else {
+        //             show_error(response);
+        //         }
+        //     }, 'json');
+        // }
+        edit_lead(lead_id);
     })
 }
 
@@ -268,16 +270,16 @@ function search_quotes() {
     }, 'json');
 
 }
-function showquotedetails(quote_id) {
-    var url="/leads/quote_details";
-    $.post(url,{'quote_id':quote_id},function(response){
-        if (response.errors=='') {
-            $("#pageModalLabel").empty().html('View Online Quote');
-            $("#pageModal").find('div.modal-dialog').css('width','753px');
-            $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
+// function showquotedetails(quote_id) {
+//     var url="/leads/quote_details";
+//     $.post(url,{'quote_id':quote_id},function(response){
+//         if (response.errors=='') {
+//             $("#pageModalLabel").empty().html('View Online Quote');
+//             $("#pageModal").find('div.modal-dialog').css('width','753px');
+//             $("#pageModal").find('div.modal-body').empty().html(response.data.content);
+//             $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
+//         } else {
+//             show_error(response);
+//         }
+//     },'json');
+// }

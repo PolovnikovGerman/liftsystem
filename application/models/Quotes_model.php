@@ -112,7 +112,7 @@ Class Quotes_model extends My_Model {
         $res=$this->db->get()->row_array();
         if (isset($res['email_id'])) {
             $res['email_date']=date('m/d/Y',strtotime($res['email_date']));
-            $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
+            // $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
             $res['email_sendermaillnk']=($res['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$res['email_sendermail'].'\');return false;">'.$res['email_sendermail'].'</a>' : $res['email_sendermail']);
             $colorprint=get_json_param($res['email_other_info'], 'colorprint', 0);
             if ($colorprint==0) {
@@ -194,6 +194,33 @@ Class Quotes_model extends My_Model {
         return $out;
     }
 
+    public function get_webquotes_interest($brand, $showall=1)
+    {
+        if ($showall==0) {
+            $curdate = date('Y-m-d');
+            // $new_timestamp = strtotime($curdate . ' -1 year');
+            $new_timestamp = strtotime($curdate . ' -90 days');
+        }
+        $this->db->select('e.*');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('e.email_subtype', $this->EMAIL_SUBTYPE);
+        $this->db->where('lem.email_id is null');
+        $this->db->where('e.email_include_lead',1);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('e.brand', $options['brand']);
+            } else {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            }
+        }
+        if ($showall==0) {
+            $this->db->where('unix_timestamp(e.email_date) >=', $new_timestamp);
+        }
+        $this->db->order_by('e.email_date','desc');
+        return $this->db->get()->result_array();
+    }
 
 }
 /* End of file quotes_model.php */
