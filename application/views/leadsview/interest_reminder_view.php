@@ -6,7 +6,7 @@
             <option value="<?=$year['key']?>" <?=$year['key']==$yeardate ? 'selected="selected"' : ''?>><?=$year['value']?></option>
             <?php endforeach; ?>
         </select>
-        <span>, </span>
+        &nbsp;
         <select name="reminder_month">
             <?php foreach ($months as $month) : ?>
                 <option value="<?=$month['key']?>" <?=$month['key']==$monthdate ? 'selected="selected"' : ''?>><?=$month['value']?></option>
