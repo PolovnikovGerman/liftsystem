@@ -4,7 +4,10 @@
         <div class="custom-info-txt">Customer:</div>
     </div>
     <div class="datarow">
-        <div class="custom-info-name truncateoverflowtext"><?=$customer?></div>
+<!--        <div class="custom-info-name truncateoverflowtext">-->
+            <input class="custom-info-name leadmainedit <?=empty($customer) ? 'emptyleadcontact' : ''?>" type="text" name="lead_company" placeholder="Customer Name"
+                   data-fld="lead_company" value="<?=$customer?>"/>
+<!--        </div>-->
     </div>
 </div>
 <div class="dumbedleft-panel">

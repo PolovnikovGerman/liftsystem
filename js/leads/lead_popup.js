@@ -132,15 +132,21 @@ function init_leadpopupedit() {
     // Input change
     $("input.leadmainedit").unbind('change').change(function (){
         var field_name = $(this).data('fld');
+        var newval = $(this).val();
         var params = new Array();
         params.push({name: 'lead', value: $("#leadeditid").val()});
         params.push({name: 'field_name', value: field_name});
-        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'newval', value: newval});
         var url = mainurl+"/lead_data_change";
         $.post(url, params, function (response){
             if (response.errors=='') {
                 if (field_name=='lead_needby') {
                     $("input#lead_needby").val(response.data.newdate);
+                }
+                if (newval=='') {
+                    $("input[data-fld='"+field_name+"']").addClass('emptyleadcontact');
+                } else {
+                    $("input[data-fld='"+field_name+"']").removeClass('emptyleadcontact');
                 }
             } else {
                 show_error(response);
