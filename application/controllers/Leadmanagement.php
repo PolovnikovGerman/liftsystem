@@ -1216,6 +1216,11 @@ class Leadmanagement extends MY_Controller
                     }
                     if ($res['result']==$this->success_result) {
                         $error='';
+                        $mdata['newphone'] = 0;
+                        if ($field=='contact_phone') {
+                            $mdata['newphone'] = 1;
+                            $mdata['phone'] = $res['contact_phone'];
+                        }
                     }
                 }
             }
@@ -1519,7 +1524,7 @@ class Leadmanagement extends MY_Controller
             $idx = 0;
             $active = 0;
             foreach ($prices as $price) {
-                if ($price['item_qty'] >= 750 && $active==0) {
+                if ($price['item_qty'] >= 1000 && $active==0) {
                     $prices[$idx]['active'] = 1;
                     $active = 1;
                 } else {
@@ -1530,11 +1535,29 @@ class Leadmanagement extends MY_Controller
         } else {
             $this->load->model('prices_model');
             $pricesdat = $this->prices_model->get_itemlist_price($item_id);
+            $pricecnt = 0;
+            foreach ($pricesdat as $price) {
+                if (floatval($price['sale_price']) > 0) {
+                    $pricecnt++;
+                }
+            }
+            $priceidx = floor($pricecnt/2);
+            $numidx = 0;
+            $priceqty = 150;
+            foreach ($pricesdat as $price) {
+                if (floatval($price['sale_price']) > 0) {
+                    $numidx++;
+                    if ($numidx == $priceidx) {
+                        $priceqty = $price['item_qty'];
+                        break;
+                    }
+                }
+            }
             $prices = [];
             $active = 0;
             foreach ($pricesdat as $pricerow) {
                 if ($pricerow['item_qty'] >= 150 && $pricerow['item_qty'] < 15000 && floatval($pricerow['sale_price']) > 0) {
-                    if ($pricerow['item_qty']>=250 && $active==0) {
+                    if ($pricerow['item_qty']>=$priceqty && $active==0) {
                         $active = 1;
                         $pricerow['active'] = 1;
                     } else {

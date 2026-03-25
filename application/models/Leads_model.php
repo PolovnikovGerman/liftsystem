@@ -2633,6 +2633,14 @@ Class Leads_model extends MY_Model
     public function get_lead_contacts($lead_id)
     {
         $results = $this->db->select('*')->from('ts_lead_contacts')->where('lead_id', $lead_id)->get()->result_array();
+        $idx = 0;
+        foreach ($results as $result) {
+            if (!empty($result['contact_phone'])) {
+                $phone = formatPhoneNumber(str_replace('-','', $result['contact_phone']), 1);
+                $results[$idx]['contact_phone'] = $phone;
+            }
+            $idx++;
+        }
         if (count($results) < 2) {
             $start = count($results);
             for ($i=$start; $i<2; $i++) {
@@ -2662,7 +2670,12 @@ Class Leads_model extends MY_Model
                 $this->db->set('lead_id', $lead['lead_id']);
                 $this->db->set('contact_name', empty($leaddat['lead_customer']) ? NULL : ucwords($leaddat['lead_customer']));
                 $this->db->set('contact_email', $leaddat['lead_mail']);
-                $this->db->set('contact_phone', $leaddat['lead_phone']);
+                $phonenum = NULL;
+                if (!empty($leaddat['lead_phone'])) {
+                    $phone = str_replace('-', '', $leaddat['lead_phone']);
+                    $phonenum = formatPhoneNumber($phone,1);
+                }
+                $this->db->set('contact_phone', $phonenum); // $leaddat['lead_phone']);
                 $this->db->insert('ts_lead_contacts');
             }
         }
@@ -2763,6 +2776,15 @@ Class Leads_model extends MY_Model
                 $oldval = $contacts[$idx][$field];
                 if ($newval!=$oldval) {
                     $leaddata['edit_flag'] = 1;
+                }
+                if ($field=='contact_phone') {
+                    $phonenum = '';
+                    if (!empty($newval)) {
+                        $phone = str_replace('-', '', $newval);
+                        $phonenum = formatPhoneNumber($phone, 1);
+                    }
+                    $contacts[$idx]['contact_phone'] = $phonenum;
+                    $out['contact_phone'] = $phonenum;
                 }
                 $contacts[$idx][$field] = $newval;
                 break;

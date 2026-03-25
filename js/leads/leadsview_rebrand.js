@@ -557,7 +557,10 @@ function init_leaddata_manage() {
             $(this).removeClass("current_row");
         });
     $("div.leaddataarea").find('div.datarow').unbind('click').click(function(){
-        edit_lead($(this).data('lead'));
+        if ($(this).data('lead')===undefined) {
+        } else {
+            edit_lead($(this).data('lead'));
+        }
     });
     // Open order
     $(".missordernumber_dat").unbind('click').click(function (){

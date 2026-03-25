@@ -130,6 +130,9 @@
     line-height: 19px;
     font-size: 12px;
 }
+.dumbedleft-panel input.emptyleadcontact {
+    opacity: 25%;
+}
 .dp-contactname {
     width: 100%;
 }
@@ -157,6 +160,9 @@
     height: 20px;
     line-height: 19px;
     font-size: 12px;
+}
+.dumbedleft-panel select.emptyleadcontact {
+    opacity: 25%;
 }
 .dp-country {
     width: 100%;
