@@ -2746,6 +2746,14 @@ Class Leads_model extends MY_Model
                     }
                 }
             }
+            if ($field=='lead_item_id') {
+                if ($newval > 0) {
+                    $itemdat=$this->db->select('item_id, item_name, item_number')->from('v_item_search')->where('item_id', $newval)->get()->row_array();
+                    if (ifset($itemdat,'item_id',0)==$newval) {
+                        $lead['lead_item'] = $itemdat['item_name'];
+                    }
+                }
+            }
             $out['result'] = $this->success_result;
             $leaddata['lead'] = $lead;
             $out['brand'] = $lead['brand'];

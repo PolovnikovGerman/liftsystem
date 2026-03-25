@@ -101,6 +101,9 @@
     margin-top: 2px;
     font-weight: 600;
 }
+.custom-info-name.emptyleadcontact {
+    opacity: 25%;
+}
 .dumbedleft-panel {
     margin-top: 10px;
     width: 100%;
