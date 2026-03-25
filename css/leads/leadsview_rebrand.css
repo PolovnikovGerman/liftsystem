@@ -42,9 +42,10 @@
 .newunassign_tasks_hideold {
     font-size: 11px;
     color: #ffffff;
-    line-height: 25px;
+    /*line-height: 25px;*/
     float: right!important;
     margin-right: 10px;
+    margin-top: -2px;
 }
 .newunassign_tasks_hideold label {
     font-weight: normal;
