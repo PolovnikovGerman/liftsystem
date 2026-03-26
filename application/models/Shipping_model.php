@@ -1438,8 +1438,10 @@ Class Shipping_model extends MY_Model
         // $kf=1;
         $this->load->config('shipping');
         $cntdat=$this->get_country($quote['shipping_country']);
-        $this->load->config('shipping');
         $shiper = $this->config->item('ups_shiper');
+//        if (empty($quote['shipping_zip'])) {
+//            return $this->calculate_shipcostdefault($quote['shipping_country'], $quote['brand'], $quote[''])
+//        }
         foreach ($items as $item) {
             $flagitem = 0;
             $itemqty = ifset($item, 'item_qty', 0);
@@ -2675,4 +2677,24 @@ Class Shipping_model extends MY_Model
             $this->email->clear(TRUE);
         }
     }
+
+    public function calculate_shipcostdefault($country_id, $brand, $qty, $delivery) {
+
+        $prices=$this->get_ship_methods($country_id, $brand, 'not_null');
+        $rates = [];
+        foreach ($prices as $row) {
+            $shipcost=$row['default_rate']*$qty;
+            $rate=($shipcost<$row['minimal_rate'] ? $row['minimal_rate'] : $shipcost);
+            $row['arrive_date']=$delivery+$row['shipping_method_available'];
+            $rates[$row['ups_code']]=array(
+                'ServiceCode' => $row['ups_code'],
+                'ServiceName' => $row['shipping_method_name'],
+                'Rate' => $rate,
+                'DeliveryDate' => $row['arrive_date'],
+                'current' => 0,
+            );
+        }
+        return $rates;
+    }
+
 }
