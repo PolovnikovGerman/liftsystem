@@ -44,9 +44,8 @@
     <div class="quoteitemtabledata" id="quoteitemtabledataarea">
         <div id="quoteitemtabledata"><?=$itemsview?></div>
         <div class="datarow"><div class="addquoteitem">+ add item</div></div>
-<!--        <div class="quoteitem_inventoryview">&nbsp;</div>-->
+        <div class="quoteitem_inventoryview">&nbsp;</div>
     </div>
-    <div class="quoteitem_inventoryview">&nbsp;</div>
 </div>
 <div class="datarow">
     <div class="leadquotediscountarea">
