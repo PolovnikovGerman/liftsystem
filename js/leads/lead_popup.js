@@ -734,8 +734,8 @@ function open_quote_details(quote_id) {
                     $(".leadblockright").hide();
                     $(".lead-quotes").hide();
                     // Hide Save button and Proof Request
-                    $(".leadfooterleft").css('opacity','0.5');
-                    $(".leadfooterright").css('opacity','0.5');
+                    $(".leadfooterleft").css('opacity','0.1');
+                    $(".leadfooterright").css('opacity','0.1');
                     $(".btn-newproofreq").unbind('click');
                     $(".duplicatelead").unbind('click');
                     $(".lead-savebtn").unbind('click');
