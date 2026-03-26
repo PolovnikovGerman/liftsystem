@@ -5352,4 +5352,20 @@ class Test extends CI_Controller
         $writer->save($filereport);    // download file
         echo 'File '.$filereport.' ready'.PHP_EOL;
     }
+
+    public function restore_leaddate()
+    {
+        $this->db->select('lead_id, lead_number, update_date')->from('ts_leads')->order_by('lead_id','desc');
+        $leads = $this->db->get()->result_array();
+        foreach ($leads as $lead) {
+            $this->db->select('lead_id, update_date')->from('upd_leaddate')->where('lead_id', $lead['lead_id']);
+            $upddat = $this->db->get()->row_array();
+            if (isset($upddat['lead_id']) && $lead['lead_id']==$upddat['lead_id']) {
+                $this->db->where('lead_id', $lead['lead_id']);
+                $this->db->set('update_date', $upddat['update_date']);
+                $this->db->update('ts_leads');
+                echo 'Lead L'.$lead['lead_number'].' restored update'.PHP_EOL;
+            }
+        }
+    }
 }

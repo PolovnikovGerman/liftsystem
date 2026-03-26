@@ -537,7 +537,7 @@ Class Leads_model extends MY_Model
     public function add_proof_request($lead, $address, $contacts, $usr_id, $usr_name) {
         $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_ERRMSG);
         $this->load->model('artwork_model');
-        $mail = $phone = '';
+        $mail = $phone = $contperson = '';
         foreach ($contacts as $contact) {
             if (!empty($contact['contact_email'])) {
                 $mail = $contact['contact_email'];
@@ -549,7 +549,12 @@ Class Leads_model extends MY_Model
                 $phone = $contact['contact_phone'];
             }
         }
-
+        foreach ($contacts as $contact) {
+            if (!empty($contact['contact_name'])) {
+                $contperson = $contact['contact_name'];
+                break;
+            }
+        }
         /* Create record in TS_EMAILS */
         $item_name=NULL;
         $item_num=NULL;
@@ -563,7 +568,7 @@ Class Leads_model extends MY_Model
         $this->db->set('email_type','Art_Submit');
         $this->db->set('proof_num',$proof_num);
         $this->db->set('proof_updated',  time());
-        $this->db->set('email_sender',$lead['lead_company']);
+        $this->db->set('email_sender', $contperson); // $lead['lead_company']
         $this->db->set('email_sendermail', $mail);
         $this->db->set('email_senderphone',$phone);
         $this->db->set('email_sendercompany',$lead['lead_customer']);
@@ -597,7 +602,7 @@ Class Leads_model extends MY_Model
             'customer' => $lead['lead_company'],
             'customer_phone' => $maildat['email_senderphone'],
             'customer_email' => $maildat['email_sendermail'],
-            'customer_contact' => $lead['lead_customer'],
+            'customer_contact' => $maildat['email_sender'],
             'item_name' => $maildat['email_item_name'],
             'other_item' => $lead['other_item_name'],
             'item_number' => $maildat['email_item_number'],
@@ -2320,12 +2325,12 @@ Class Leads_model extends MY_Model
             'lead_mail'=> $formdata['customer_email'],
             'lead_itemqty'=> $formdata['quota_qty'],
             'lead_item'=> 'Custom Item',
-            'other_item_name'=> $formdata['shape_desription'],
+//            'other_item_name'=> $formdata['shape_desription'],
             'lead_item_id' => $this->config->item('custom_id'),
             'lead_needby'=> (empty($formdata['ship_date']) ? NULL : date('Y-m-d', $formdata['ship_date'])),
             'lead_status'=>'',
             'lead_value' => '',
-            'lead_note' => '',
+            'lead_note' => $formdata['shape_desription'],
             'lead_type'=>$this->init_lead_type,
             'country_id' => $formdata['ship_country'],
             'state' => strtoupper($formdata['ship_state']),
@@ -2827,6 +2832,9 @@ Class Leads_model extends MY_Model
                         $lead['lead_item'] = $itemdat['item_name'];
                     }
                 }
+            }
+            if ($field=='other_item_name') {
+                $lead['lead_item'] = $newval;
             }
             $out['result'] = $this->success_result;
             $leaddata['lead'] = $lead;
