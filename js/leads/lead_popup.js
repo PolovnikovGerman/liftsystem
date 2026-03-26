@@ -1,23 +1,23 @@
 var mainurl = '/leadmanagement';
-// function show_new_lead(lead_id,type, brand) {
-//     var url=mainurl+"/edit_lead";
-//     params = new Array();
-//     params.push({name: 'lead_id', value :lead_id});
-//     params.push({name: 'brand', value: brand});
-//     $.post(url, params, function(response){
-//         if (response.errors=='') {
-//             $("#leadformModalLabel").empty().html(response.data.title);
-//             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-//             $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
-//             $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
-//             init_leadpopupcontent();
-//             init_quoteformcontent();
-//             init_leadpopupedit();
-//         } else {
-//             show_error(response);
-//         }
-//     },'json');
-// }
+function show_new_lead(lead_id,type, brand) {
+    var url=mainurl+"/edit_lead";
+    params = new Array();
+    params.push({name: 'lead_id', value :lead_id});
+    params.push({name: 'brand', value: brand});
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            $("#leadformModalLabel").empty().html(response.data.title);
+            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            init_leadpopupcontent();
+            init_quoteformcontent();
+            init_leadpopupedit();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
 
 function add_lead(brand) {
     var lead_id = 0
@@ -227,8 +227,10 @@ function init_leadpopupedit() {
                     $(".leadaddressedit[data-fld='state']").val(response.data.state);
                     if (response.data.state=='') {
                         $("input.leadaddressedit[data-fld='state']").addClass('emptyleadcontact');
+                        $("select.leadaddressedit[data-fld='state']").addClass('emptyleadcontact');
                     } else {
                         $("input.leadaddressedit[data-fld='state']").removeClass('emptyleadcontact');
+                        $("select.leadaddressedit[data-fld='state']").removeClass('emptyleadcontact');
                     }
                 }
             } else {
@@ -731,11 +733,16 @@ function open_quote_details(quote_id) {
                     $(".leadblockleft").hide();
                     $(".leadblockright").hide();
                     $(".lead-quotes").hide();
+                    // Hide Save button and Proof Request
+                    $(".leadfooterleft").css('opacity','0.5');
+                    $(".leadfooterright").css('opacity','0.5');
+                    $(".btn-newproofreq").unbind('click');
+                    $(".duplicatelead").unbind('click');
+                    $(".lead-savebtn").unbind('click');
                     $(".quote_details_view").show();
                     $(".quotecontentarea").empty().html(qresponse.data.quotecontent);
                     new SimpleBar(document.getElementById('quoteitemtabledataarea'), { autoHide: false });
                     new SimpleBar(document.getElementById('quoteshippingcostarea'), { autoHide: false });
-                    // init_leadquotes_view();
                     init_leadquotes_content();
                 } else {
                     $("#loader").hide();
