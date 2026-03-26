@@ -231,11 +231,29 @@ function init_commondata() {
         },'json');
     });
     // Other comon info
-    $("input.proofreqcommon").unbind('change').change(function (){
+    $("input.proofreqcommon[type='text']").unbind('change').change(function (){
         var params=new Array();
         params.push({name: 'artsession', value: $("input#artsession").val()});
         params.push({name:'field', value: $(this).data('fld')});
         params.push({name:'value', value: $(this).val()});
+        var url="/artproofrequest/art_commonupdate";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // $("div.artpopup_save").show();
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $("input.proofreqcommon[type='checkbox']").unbind('change').change(function (){
+        var newval = 0;
+        if ($(this).prop('checked')==true) {
+            newval = 1;
+        }
+        var params=new Array();
+        params.push({name: 'artsession', value: $("input#artsession").val()});
+        params.push({name:'field', value: $(this).data('fld')});
+        params.push({name:'value', value: newval});
         var url="/artproofrequest/art_commonupdate";
         $.post(url, params, function(response){
             if (response.errors=='') {
