@@ -55,7 +55,7 @@ class Leadmanagement extends MY_Controller
                     ];
                 }
                 $customer_address = [
-                    'country_id' => '',
+                    'country_id' => $this->config->item('default_country'),
                     'country_code' => '',
                     'address_line1' => '',
                     'address_line2' => '',
