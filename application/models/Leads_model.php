@@ -2970,7 +2970,11 @@ Class Leads_model extends MY_Model
         $this->db->set('lead_item_id',$lead['lead_item_id']);
         $this->db->set('other_item_name',$lead['other_item_name']);
         $this->db->set('lead_type',$lead['lead_type']);
-        $this->db->set('country_id', $lead['country_id']);
+        if (empty($lead['country_id'])) {
+            $this->db->set('country_id', $this->config->item('default_country'));
+        } else {
+            $this->db->set('country_id', $lead['country_id']);
+        }
         $this->db->set('address_line1', $lead['address_line1']);
         $this->db->set('address_line2', $lead['address_line2']);
         $this->db->set('city', $lead['city']);
