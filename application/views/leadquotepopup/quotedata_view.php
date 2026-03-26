@@ -14,7 +14,7 @@
     <div class="quoteactionsarea">
         <ul class="quotaactionbuttons-list">
             <li><div class="quotaactionbutton btnreorder">convert to order</div></li>
-            <li><div class="quotaactionbutton btnrequote">requote</div></li>
+            <li><div class="quotaactionbutton btnrequote">duplicate</div></li>
             <li><div class="quotaactionbutton btnpdf">pdf</div></li>
             <li><div class="quotaactionbutton btnsend">send</div></li>
             <li><div class="quotaactionbutton btnsave">save</div></li>
