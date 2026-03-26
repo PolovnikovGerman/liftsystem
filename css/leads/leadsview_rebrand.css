@@ -8,6 +8,9 @@
     width: 482px;
     margin-right: 94px;
 }
+.leads_content_left .topseparaterow {
+    border-top: 2px solid #000000;
+}
 .newunassign_header {
     background: #d572fe;
     border: 1px solid #434343;
