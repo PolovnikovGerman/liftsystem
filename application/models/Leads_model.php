@@ -2759,8 +2759,8 @@ Class Leads_model extends MY_Model
             }
         }
         // Add address
-        $this->db->select('le.lead_id, cq.ship_country, cq.ship_address1, cq.ship_address2, cq.ship_city, cq.ship_state, cq.ship_zipcode')->from('ts_lead_emails le');
-        $this->db->join('ts_custom_quotes cq', 'cq.custom_quote_id = le.custom_quote_id')->where('le.custom_quote_id is not null');
+        $this->db->select('le.lead_id, cq.ship_country, cq.ship_address1, cq.ship_address2, cq.ship_city, cq.ship_state, cq.ship_zipcode, l.update_date')->from('ts_lead_emails le');
+        $this->db->join('ts_custom_quotes cq', 'cq.custom_quote_id = le.custom_quote_id')->join('ts_leads l','l.lead_id=le.lead_id')->where('le.custom_quote_id is not null');
         $adrleads = $this->db->get()->result_array();
         foreach ($adrleads as $adrlead) {
             $this->db->where('lead_id', $adrlead['lead_id']);
@@ -2770,6 +2770,7 @@ Class Leads_model extends MY_Model
             $this->db->set('city', empty($adrlead['ship_city']) ? NULL : ucwords($adrlead['ship_city']));
             $this->db->set('zip', $adrlead['ship_zipcode']);
             $this->db->set('state', empty($adrlead['ship_state']) ? NULL : strtoupper($adrlead['ship_state']));
+            $this->db->set('update_date', $adrlead['update_date']);
             $this->db->update('ts_leads');
         }
     }
