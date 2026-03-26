@@ -6,7 +6,7 @@
         <div class="leadblock">
 <!--            <div class="btnclose"><i class="fa fa-times" aria-hidden="true"></i></div>-->
             <div class="leadblock-header">
-                <div class="leadnumber">Lead: <span>#L<?=$lead['lead_number']?></span></div>
+                <div class="leadnumber">Lead: <span>#<?=($lead['brand']=='SR' ? 'D' : 'L').str_pad($lead['lead_number'],5,'0', STR_PAD_LEFT)?></span></div>
                 <div class="leadtopstatus">
                     <label>Status:</label>
                     <select id="lead_type" class="leadtopstatusselect" data-fld="lead_type">
