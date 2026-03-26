@@ -4648,11 +4648,21 @@ class Leadquote_model extends MY_Model
             $this->db->set('imprint_price', $quoteparams['print_price']);
             $this->db->set('setup_price', $quoteparams['setup_price']);
             if ($lead_data['lead_item_id'] > 0) {
-                $this->db->set('item_weigth', $itemdata['item_weigth']);
-                $this->db->set('cartoon_qty', $itemdata['cartoon_qty']);
-                $this->db->set('cartoon_width', $itemdata['cartoon_width']);
-                $this->db->set('cartoon_heigh', $itemdata['cartoon_heigh']);
-                $this->db->set('cartoon_depth', $itemdata['cartoon_depth']);
+                if (!empty($itemdata['item_weigth'])) {
+                    $this->db->set('item_weigth', $itemdata['item_weigth']);
+                }
+                if (!empty($itemdata['cartoon_qty'])) {
+                    $this->db->set('cartoon_qty', $itemdata['cartoon_qty']);
+                }
+                if (!empty($itemdata['cartoon_width'])) {
+                    $this->db->set('cartoon_width', $itemdata['cartoon_width']);
+                }
+                if (!empty($itemdata['cartoon_heigh'])) {
+                    $this->db->set('cartoon_heigh', $itemdata['cartoon_heigh']);
+                }
+                if (!empty($itemdata['cartoon_depth'])) {
+                    $this->db->set('cartoon_depth', $itemdata['cartoon_depth']);
+                }
                 $this->db->set('inventory_item_id', $itemdata['printshop_item_id']);
             }
             $this->db->insert('ts_quote_items');
