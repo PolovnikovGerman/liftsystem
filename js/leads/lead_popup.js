@@ -487,8 +487,10 @@ function init_leadpopupedit() {
                     // $("#leadformModal").modal('hide');
                     $("#list-leadhistory").empty().html(response.data.history_view);
                     $("textarea[data-fld='newhistorymsg']").val('');
-                    $("#leadpopupquotetabl-body").empty().html(response.data.proofarts_view);
+                    $("#leadpopup_list-proofreqbox").empty().html(response.data.proofarts_view);
+                    new SimpleBar(document.getElementById('leadpopup_list-proofreqbox'), { autoHide: false });
                     artproof_lead(response.data.proof_id,'leadspopup');
+                    init_leadpopupedit();
                 } else {
                     $("#loader").hide();
                     show_error(response);
