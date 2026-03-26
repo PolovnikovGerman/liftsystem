@@ -38,6 +38,12 @@ class Leadmanagement extends MY_Controller
                 $lead_data['lead_number'] = $this->leads_model->get_leadnum($brand);
                 $lead_data['brand'] = $brand;
                 $lead_history = $lead_usr = $leads_attach = [];
+                $lead_usr[] = [
+                    'leaduser_id' => -1,
+                    'lead_id' => $lead_id,
+                    'user_id' => $this->USR_ID,
+                    'user_leadname' => $this->USER_REPLICA,
+                ];
                 $lead_contacts = [];
                 for ($i=1; $i<3; $i++) {
                     $lead_contacts[] = [
