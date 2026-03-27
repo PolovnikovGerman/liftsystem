@@ -9,7 +9,7 @@
         <div class="qtypricelist-box" data-price="custom">
             <div class="qtyprice-rowqty">
                 <div class="qtyprice-qtybox">
-                    <input type="radio" name="pricecheck" value="custom"/>
+                    <input type="checkbox" name="pricecheck" value="custom"/>
                     <input class="qtybox-qty" type="text" readonly="readonly" name="qtybox" data-price="custom"/>
                 </div>
             </div>
@@ -23,17 +23,17 @@
             <div class="qtypricelist-box <?=$price['active']==1 ? 'active' : ''?>" data-price="<?=$price['promo_price_id']?>" data-promoqty="<?=$price['item_qty']?>">
                 <div class="qtyprice-rowqty">
                     <div class="qtyprice-qtybox">
-                        <input type="radio" name="pricecheck" value="<?=$price['promo_price_id']?>" <?=$price['active']==1 ? 'checked="checked"' : ''?>/>
+                        <input type="checkbox" name="pricecheck" value="<?=$price['promo_price_id']?>" <?=$price['active']==1 ? 'checked="checked"' : ''?>/>
                         <span><?=short_number($price['item_qty'])?></span>
                     </div>
                 </div>
                 <div class="qtyprice-rowprice">
                     <div class="qtyprice-pricebox" data-promoprice="<?=$price['sale_price']?>">
-                    <?php if ($custom_item) : ?>
-                        <input class="qtybox-price" type="text" readonly="readonly" name="qtybox" data-price="<?=$price['promo_price_id']?>" value="<?=MoneyOutput($price['sale_price'])?>"/>
-                    <?php else : ?>
-                        <?=MoneyOutput($price['sale_price'])?>
-                    <?php endif; ?>
+<!--                    --><?php //if ($custom_item) : ?>
+                        <input class="qtybox-price" <?=$price['active']==1 ? '' : 'readonly="readonly"'?> type="text" name="qtybox" data-price="<?=$price['promo_price_id']?>" value="<?=MoneyOutput($price['sale_price'])?>"/>
+<!--                    --><?php //else : ?>
+<!--                        --><?php //=MoneyOutput($price['sale_price'])?>
+<!--                    --><?php //endif; ?>
                     </div>
                 </div>
             </div>

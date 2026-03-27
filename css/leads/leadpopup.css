@@ -858,6 +858,9 @@ input.qtybox-qty {
     font-size: 11px;
     padding: 0 3px;
 }
+.lead-quotesform input[type=checkbox] {
+    margin: 0!important;
+}
 .quotesform-locs select {
     /*width: 30px;*/
     width: 36px;
@@ -933,7 +936,7 @@ input.discount-exp {
 }
 .btn-createquote {
     float: right !important;
-    width: 84px;
+    /*width: 84px;*/
     height: 19px;
     line-height: 19px;
     background: #5b5afe;
@@ -945,6 +948,11 @@ input.discount-exp {
     border-radius: 4px;
     cursor: pointer;
     color: #fff;
+    padding: 0 5px;
+}
+.btn-createquote.lockbtn {
+    opacity: 0.2;
+    cursor: default;
 }
 .messagequote-block {
     display: block;
