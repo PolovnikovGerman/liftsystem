@@ -1,7 +1,13 @@
-<?php $numpp = 1; ?>
+<?php $numpp = 0; ?>
+<?php $curdate = ''?>
 <?php foreach ($forms as $form) : ?>
-    <div class="datarow <?=$numpp%2==0 ? 'greydatarow' : 'whitedatarow'?>" data-task="<?=$form['custom_quote_id']?>">
-        <div class="newunassign_date_dat"><?=date('m/d/y', strtotime($form['date_add']));?></div>
+    <div class="datarow <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?> <?=$curdate!==date('m/d/y', strtotime($form['date_add'])) && $numpp > 0 ? 'topseparaterow' : ''?>" data-task="<?=$form['custom_quote_id']?>">
+        <?php if ($curdate!==date('m/d/y', strtotime($form['date_add']))) :?>
+            <?php $curdate = date('m/d/y', strtotime($form['date_add'])); ?>
+            <div class="newunassign_date_dat"><?=$curdate?></div>
+        <?php else : ?>
+            <div class="newunassign_date_dat">--</div>
+        <?php endif; ?>
         <div class="sbcustomform_customer_dat truncateoverflowtext"><?=empty($form['customer_company']) ? $form['customer_name'] : $form['customer_company']?></div>
         <div class="sbcustomform_qty_dat"><?=QTYOutput($form['quota_qty'])?></div>
         <div class="sbcustomform_item_dat truncateoverflowtext" data-event="hover" data-css="itemdetailsballonbox"

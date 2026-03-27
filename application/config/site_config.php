@@ -292,3 +292,6 @@ $config['quote_customitem_price'] = array(
     array('promo_price_id' => -5, 'item_qty' => 5000, 'sale_price' => 2.51),
     array('promo_price_id' => -6, 'item_qty' => 10000, 'sale_price' => 2.35),
 );
+// Default shipping prices
+$config['custom_ship_price'] = 0.15;
+$config['regular_ship_price'] = 0.12;

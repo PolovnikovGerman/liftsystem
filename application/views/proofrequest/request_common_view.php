@@ -12,6 +12,10 @@
             <label>Request:</label>
             <div class="pr-requestbox"><?=($artwork['proof_num']=='' ? '&nbsp;' : ($artwork['brand']=='SR' ? 'rp' : 'pr').$artwork['proof_num'])?></div>
         </div>
+        <div class="prgroup-rushdata">
+            <input type="checkbox" name="artwork_rush" id="artwork_rush" class="proofreqcommon" data-fld="artwork_rush" <?=$artwork['artwork_rush']==1 ? 'checked="checked"' : ''?>/>
+            <label for="artwork_rush">Rush</label>
+        </div>
     </div>
 </div>
 <div class="prgreyblock-left">
