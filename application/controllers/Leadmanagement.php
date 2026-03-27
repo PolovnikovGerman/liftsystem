@@ -1518,7 +1518,7 @@ class Leadmanagement extends MY_Controller
             $active = 0;
             foreach ($prices as $price) {
                 if ($price['item_qty'] >= 1000 && $active==0) {
-                    $prices[$idx]['active'] = 1;
+                    $prices[$idx]['active'] = 0; // 1
                     $active = 1;
                 } else {
                     $prices[$idx]['active'] = 0;
@@ -1549,13 +1549,13 @@ class Leadmanagement extends MY_Controller
             $prices = [];
             $active = 0;
             foreach ($pricesdat as $pricerow) {
-                if ($pricerow['item_qty'] >= 150 && $pricerow['item_qty'] < 15000 && floatval($pricerow['sale_price']) > 0) {
-                    if ($pricerow['item_qty']>=$priceqty && $active==0) {
-                        $active = 1;
-                        $pricerow['active'] = 1;
-                    } else {
+                if ($pricerow['item_qty'] >= 150 && $pricerow['item_qty'] < 10000 && floatval($pricerow['sale_price']) > 0) {
+//                    if ($pricerow['item_qty']>=$priceqty && $active==0) {
+//                        $active = 1;
+//                        $pricerow['active'] = 1;
+//                    } else {
                         $pricerow['active'] = 0;
-                    }
+//                    }
                     $prices[] = $pricerow;
                 }
             }
