@@ -1321,6 +1321,14 @@ class Leadquote extends MY_Controller
                                 $lead_quotes = $this->load->view('leadpopup/leadquotes_list_view', array('quotes' => $qdat), TRUE);
                             }
                             $mdata['quotescontent'] = $lead_quotes;
+                            if (ifset($postdata, 'viewdoc', 0)==1) {
+                                $res = $this->leadquote_model->prepare_quotedoc($quotedata['quote_id']);
+                                $error = $res['msg'];
+                                if ($res['result']==$this->success_result) {
+                                    $error = '';
+                                    $mdata['docurl'] = $res['docurl'];
+                                }
+                            }
                         }
                     }
                 }

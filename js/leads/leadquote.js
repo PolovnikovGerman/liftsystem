@@ -52,12 +52,14 @@ function init_leadquotes_content() {
         var params = new Array();
         params.push({name: 'session', value: $("#quotesessionid").val()});
         params.push({name: 'lead', value: $("#quoteleadconnect").val()});
+        params.push({name: 'viewdoc', value: 1});
         var url = '/leadquote/quotesave';
         $("#loader").show();
         $.post(url, params, function (response) {
             if (response.errors=='') {
                 var lead_id = $("#quoteleadconnect").val();
                 restore_lead_view(lead_id);
+                var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
             } else {
                 $("#loader").hide();
                 show_error(response);
