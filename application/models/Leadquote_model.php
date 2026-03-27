@@ -4523,6 +4523,7 @@ class Leadquote_model extends MY_Model
         $usrdat = $this->user_model->get_user_data($usr_id);
         if (ifset($usrdat, 'user_id',0) > 0) {
             $taxcalc = 0;
+            $item_subtotal = 0;
             // Add a Quote
             $this->db->set('lead_id', $lead_data['lead_id']);
             $this->db->set('brand', $lead_data['brand']);
@@ -4532,10 +4533,12 @@ class Leadquote_model extends MY_Model
             if (!empty($quoteparams['discount_label'])) {
                 $this->db->set('discount_label', $quoteparams['discount_label']);
                 $this->db->set('discount_value', $quoteparams['discount']);
+                $item_subtotal-=$quoteparams['discount'];
             }
             if (!empty($quoteparams['design_price'])) {
                 $this->db->set('mischrg_label1', $this->config->item('custom_mischrg_label'));
                 $this->db->set('mischrg_value1', $quoteparams['design_price']);
+                $item_subtotal+=$quoteparams['design_price'];
             }
             $this->db->set('shipping_country', $lead_address['country_id']);
             $this->db->set('shipping_company', $lead_data['lead_company']);
@@ -4673,7 +4676,7 @@ class Leadquote_model extends MY_Model
                 if ($lead_data['lead_item_id'] > 0 && $itemdata['printshop_item_id']) {
                     $invcolor = $this->_inventory_color($itemdata['printshop_item_id'], $itmcolor);
                 }
-                $item_subtotal = $quoteparams['item_qty']*$quoteparams['item_price'];
+                $item_subtotal+=$quoteparams['item_qty']*$quoteparams['item_price'];
                 $this->db->set('quote_item_id', $quote_item_id);
                 $this->db->set('item_description', $item_description);
                 $this->db->set('item_color', $itmcolor);
@@ -4745,7 +4748,6 @@ class Leadquote_model extends MY_Model
                                 $this->db->set('imprint_qty', $quoteparams['item_qty']);
                                 $this->db->set('imprint_price', $imprint['print_1']);
                                 $this->db->insert('ts_quote_imprints');
-                                // $item_subtotal+=$quoteparams['item_qty']*$imprint['print_1'];
                                 $imprint_subtotal+=$quoteparams['item_qty']*$imprint['print_1'];
                                 $setupcnt++;
                             } else {
@@ -4776,6 +4778,7 @@ class Leadquote_model extends MY_Model
                         $this->db->insert('ts_quote_imprints');
                         $imprint_subtotal+=$setupcnt*$quoteparams['setup_price'];
                     }
+                    $item_subtotal+=$imprint_subtotal;
                     // Update Quote body
                     $this->db->where('quote_id', $quote_id);
                     $this->db->set('items_subtotal', $item_subtotal);
@@ -4828,9 +4831,11 @@ class Leadquote_model extends MY_Model
                     }
                     $tax = 0;
                     if ($taxcalc==1) {
-                        $tax = round(($quote['mischrg_value1']-$quote['discount_value']+$quote['rush_cost']+$quote['items_subtotal']+$quote['imprint_subtotal'])*($this->config->item('salesnewtax')/100),2);
+//                        $tax = round(($quote['mischrg_value1']-$quote['discount_value']+$quote['rush_cost']+$quote['items_subtotal']+$quote['imprint_subtotal'])*($this->config->item('salesnewtax')/100),2);
+                        $tax = round(($quote['rush_cost']+$quote['items_subtotal'])*($this->config->item('salesnewtax')/100),2);
                     }
-                    $total = $quote['mischrg_value1']-$quote['discount_value']+$quote['rush_cost']+$quote['items_subtotal']+$quote['imprint_subtotal'] + $tax + $shipcost;
+//                    $total = $quote['mischrg_value1']-$quote['discount_value']+$quote['rush_cost']+$quote['items_subtotal']+$quote['imprint_subtotal'] + $tax + $shipcost;
+                    $total = $quote['rush_cost']+$quote['items_subtotal'] + $tax + $shipcost;
                     $this->db->where('quote_id', $quote_id);
                     $this->db->set('sales_tax', $tax);
                     $this->db->set('shipping_cost', $shipcost);

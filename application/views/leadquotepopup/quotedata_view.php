@@ -84,7 +84,7 @@
 </div>
 <div class="datarow">
     <div class="quoteitemsubtotal">
-        <div class="quoteitemsubtotaltitle">Item Sub-total:</div>
+        <div class="quoteitemsubtotaltitle">Sub-total:</div>
         <div class="quoteitemsubtotalvalue"><?=empty($data['items_subtotal']) ? '&nbsp;' : MoneyOutput($data['items_subtotal'])?></div>
     </div>
 </div>
