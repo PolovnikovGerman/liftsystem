@@ -643,7 +643,7 @@ function add_leadquote() {
                     var chkprice = '';
                     $("input[name='pricecheck']:checked").each(function(index) {
                         chkprice = $(this).val();
-                        addquotedoc(chkprice);
+                        addquotedoc(chkprice, sresponse.data.lead_id);
                     });
                     // Restore lead
                     var lurl=mainurl+"/edit_lead";
@@ -670,7 +670,7 @@ function add_leadquote() {
     }
 }
 
-function addquotedoc(pricecheck) {
+function addquotedoc(pricecheck, lead_id) {
     var price = 0; var qty = 0;
     if (pricecheck=='custom') {
         price = $("input.qtybox-price[data-price='custom']").val();
@@ -700,7 +700,7 @@ function addquotedoc(pricecheck) {
     var other_note = $("textarea.quoteform_othernotes").val();
     var repcontact_note = $("textarea.quoteform_repcontact").val();
     var params = new Array();
-    params.push({name: 'lead', value: $("#leadeditid").val()});
+    params.push({name: 'lead_id', value: lead_id});
     params.push({name: 'promoprice', value: pricecheck});
     params.push({name: 'itemqty', value: qty});
     params.push({name: 'itemprice', value: price});
