@@ -5159,18 +5159,37 @@ class Test extends CI_Controller
         echo 'File '.$filereport.' ready'.PHP_EOL;
     }
 
-    public function restore_leaddate()
+    public function restore_leadquote()
     {
-        $this->db->select('lead_id, lead_number, update_date')->from('ts_leads')->order_by('lead_id','desc');
-        $leads = $this->db->get()->result_array();
-        foreach ($leads as $lead) {
-            $this->db->select('lead_id, update_date')->from('upd_leaddate')->where('lead_id', $lead['lead_id']);
-            $upddat = $this->db->get()->row_array();
-            if (isset($upddat['lead_id']) && $lead['lead_id']==$upddat['lead_id']) {
-                $this->db->where('lead_id', $lead['lead_id']);
-                $this->db->set('update_date', $upddat['update_date']);
-                $this->db->update('ts_leads');
-                echo 'Lead L'.$lead['lead_number'].' restored update'.PHP_EOL;
+        $quotes = $this->db->select('*')->from('ts_quotes')->get()->result_array();
+        foreach ($quotes as $quote) {
+            $this->db->select('count(qpr.quote_imprint_id) as cnt, sum(qpr.imprint_price) as imprtotal');
+            $this->db->from('ts_quote_imprints qpr');
+            $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qpr.quote_item_id');
+            $this->db->where('qi.quote_id', $quote['quote_id']);
+            $imprdat = $this->db->get()->row_array();
+            $imprtotal = 0;
+            if ($imprdat['cnt'] > 0) {
+                $imprtotal = $imprdat['imprtotal'];
+            }
+            $this->db->select('count(qc.quote_item_id) as cnt, sum(qc.item_qty*qc.item_price) as item_total');
+            $this->db->from('ts_quote_itemcolors qc');
+            $this->db->join('ts_quote_items qi','qi.quote_item_id = qc.quote_item_id');
+            $this->db->where('qi.quote_id', $quote['quote_id']);
+            $itemdat = $this->db->get()->row_array();
+            if ($itemdat['cnt'] > 0) {
+                $item_subtotal = floatval($itemdat['item_total']);
+                echo 'Items calc '.$item_subtotal.PHP_EOL;
+                echo 'Imprints '.$imprtotal.' Misch1 '.$quote['mischrg_value1'].' Misch2 '.$quote['mischrg_value2'].' Discount '.$quote['discount_value'].PHP_EOL;
+                $item_subtotal+=$imprtotal+$quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value'];
+                echo 'New Calc '.$item_subtotal.PHP_EOL;
+                if ($item_subtotal!=$quote['items_subtotal']) {
+                    $this->db->where('quote_id', $quote['quote_id']);
+                    $this->db->set('items_subtotal', $item_subtotal);
+                    $this->db->set('imprint_subtotal', $imprtotal);
+                    $this->db->update('ts_quotes');
+                    echo 'Sub Total Updated for '.$quote['quote_number'].PHP_EOL;
+                }
             }
         }
     }
