@@ -2,7 +2,7 @@
 <input type="hidden" id="quoteformexpandview" value="0"/>
 <div class="leadquotesform-top">
     <div class="qtypricetitle">
-        <div class="qtyprice-rowqty">Qty:</div>
+        <div class="qtyprice-rowqty">Multi Qty Quoter:</div>
         <div class="qtyprice-rowprice">Price Ea:</div>
     </div>
     <div class="qtypricelist">
@@ -24,7 +24,7 @@
                 <div class="qtyprice-rowqty">
                     <div class="qtyprice-qtybox">
                         <input type="checkbox" name="pricecheck" value="<?=$price['promo_price_id']?>" <?=$price['active']==1 ? 'checked="checked"' : ''?>/>
-                        <span><?=short_number($price['item_qty'])?></span>
+                        <span><?=$price['item_qty'] >= 10000 ? short_number($price['item_qty'],0) : $price['item_qty']?></span>
                     </div>
                 </div>
                 <div class="qtyprice-rowprice">
@@ -80,7 +80,7 @@
         <label>Exp:</label>
         <input type="text" name="quotesform-exp" class="discount-exp" readonly="readonly"/>
     </div>
-    <div class="btn-createquote fixedview">Create Quote</div>
+    <div class="btn-createquote fixedview lockbtn">Create Quote</div>
 </div>
 <div class="messagequote-block" style="display:none;">
     <div class="messagequote-box">
@@ -89,5 +89,5 @@
     <div class="messagequote-box">
         <textarea class="quoteform_repcontact"><?=$quote_repcontact?></textarea>
     </div>
-    <div class="btn-createquote">Create Quote</div>
+    <div class="btn-createquote lockbtn">Create Quote</div>
 </div>
