@@ -1337,6 +1337,7 @@ class Leadmanagement extends MY_Controller
                         $error='';
                         // Prepare content
                         $mdata['lead_id'] = $lead_id;
+                        $mdata['quote_id'] = $qres['quote_id'];
                     }
                 }
             }
