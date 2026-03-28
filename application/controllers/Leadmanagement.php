@@ -1268,88 +1268,76 @@ class Leadmanagement extends MY_Controller
             $mdata = [];
             $error='Connect lost. Reload Form';
             $postdata = $this->input->post();
-            $session_id = ifset($postdata, 'lead', 'Unkn');
-            $leaddata = usersession($session_id);
-            if (!empty($leaddata)) {
-                $res = $this->leads_model->save_leadpopup($leaddata, $this->USR_ID, $session_id);
-                $error = $res['msg'];
-                if ($res['result']==$this->success_result) {
-                    $lead_id = $res['lead_id'];
-                    // Add Lead Quote
-                    $leadsrc = $this->leads_model->get_lead($lead_id);
-                    $error = $leadsrc['msg'];
-                    if ($leadsrc['result']==$this->success_result) {
-                        $contacts = $this->leads_model->get_lead_contacts($lead_id);
-                        $lead = $leadsrc['lead'];
-                        $address = $leadsrc['address'];
-                        // Prices
-                        $custom_item = ifset($postdata, 'custom_item', 0);
-                        $promoprice_id = ifset($postdata, 'promoprice', 0);
-                        if ($custom_item==0 && $promoprice_id!=='custom') {
-                            $this->load->model('prices_model');
-                            $prres = $this->prices_model->get_promoprice($promoprice_id);
-                            $item_qty = $prres['item_qty'];
-                            $item_price = $prres['sale_price'];
-                        } else {
-                            $item_qty = ifset($postdata, 'itemqty', 0);
-                            $item_price = ifset($postdata, 'itemprice', 0);
-                            // Convert price, qty
-                            $item_qty = intval(str_replace(',','',$item_qty));
-                            $item_price = floatval(str_replace(',','.',str_replace('$','',$item_price)));
-                        }
-                        $printprice = ifset($postdata, 'printprice', 0);
-                        $printprice = floatval(str_replace(',','.',str_replace('$', '', $printprice)));
-                        $setupprice = ifset($postdata, 'setupprice', 0);
-                        $setupprice = floatval(str_replace(',','.',str_replace('$', '', $setupprice)));
-                        $design = ifset($postdata, 'design', 0);
-                        $design = floatval(str_replace(',','.',str_replace('$', '', $design)));
-                        $discount_label = ifset($postdata, 'discount_label', '');
-                        $discount = ifset($postdata, 'discount_val', 0);
-                        $discount = floatval(str_replace(',','.',str_replace('$', '', $discount)));
-                        $discount_exp = ifset($postdata, 'discount_exp', '');
-                        $quotezip = ifset($postdata, 'quotezip', '');
-                        $other_note = ifset($postdata, 'other_note', '');
-                        $repcontact_note = ifset($postdata, 'repcontact_note', '');
-                        $locations = [];
-                        $numloc = 1;
-                        for ($i=1; $i<13; $i++) {
-                            if (isset($postdata['location'.$i])) {
-                                if (!empty($postdata['location'.$i])) {
-                                    $locations[] = [
-                                        'location' => $numloc,
-                                        'prints' => $postdata['location'.$i],
-                                    ];
-                                    $numloc++;
-                                }
+            $lead_id = ifset($postdata, 'lead_id', 0);
+            if (!empty($lead_id)) {
+                // Add Lead Quote
+                $leadsrc = $this->leads_model->get_lead($lead_id);
+                $error = $leadsrc['msg'];
+                if ($leadsrc['result']==$this->success_result) {
+                    $contacts = $this->leads_model->get_lead_contacts($lead_id);
+                    $lead = $leadsrc['lead'];
+                    $address = $leadsrc['address'];
+                    // Prices
+                    $custom_item = ifset($postdata, 'custom_item', 0);
+                    $promoprice_id = ifset($postdata, 'promoprice', 0);
+                    $item_qty = ifset($postdata, 'itemqty', 0);
+                    $item_price = ifset($postdata, 'itemprice', 0);
+                    // Convert price, qty
+                    $item_qty = intval(str_replace(',','',$item_qty));
+                    $item_price = floatval(str_replace(',','.',str_replace('$','',$item_price)));
+                    $printprice = ifset($postdata, 'printprice', 0);
+                    $printprice = floatval(str_replace(',','.',str_replace('$', '', $printprice)));
+                    $setupprice = ifset($postdata, 'setupprice', 0);
+                    $setupprice = floatval(str_replace(',','.',str_replace('$', '', $setupprice)));
+                    $design = ifset($postdata, 'design', 0);
+                    $design = floatval(str_replace(',','.',str_replace('$', '', $design)));
+                    $discount_label = ifset($postdata, 'discount_label', '');
+                    $discount = ifset($postdata, 'discount_val', 0);
+                    $discount = floatval(str_replace(',','.',str_replace('$', '', $discount)));
+                    $discount_exp = ifset($postdata, 'discount_exp', '');
+                    $quotezip = ifset($postdata, 'quotezip', '');
+                    $other_note = ifset($postdata, 'other_note', '');
+                    $repcontact_note = ifset($postdata, 'repcontact_note', '');
+                    $locations = [];
+                    $numloc = 1;
+                    for ($i=1; $i<13; $i++) {
+                        if (isset($postdata['location'.$i])) {
+                            if (!empty($postdata['location'.$i])) {
+                                $locations[] = [
+                                    'location' => $numloc,
+                                    'prints' => $postdata['location'.$i],
+                                ];
+                                $numloc++;
                             }
                         }
-                        $quoteparams = [
-                            'lead' => $lead,
-                            'address' => $address,
-                            'contacts' => $contacts,
-                            'custom_item' => $custom_item,
-                            'item_qty' => $item_qty,
-                            'item_price' => $item_price,
-                            'print_price' => $printprice,
-                            'setup_price' => $setupprice,
-                            'design_price' => $design,
-                            'discount_label' => $discount_label,
-                            'discount' => $discount,
-                            'discount_exp' => $discount_exp,
-                            'quotezip' => $quotezip,
-                            'other_note' => $other_note,
-                            'repcontact_note' => $repcontact_note,
-                            'locations' => $locations,
-                            'user_id' => $this->USR_ID,
-                        ];
-                        $this->load->model('leadquote_model');
-                        $qres = $this->leadquote_model->add_leadpopup_quote($quoteparams);
-                        $error = $qres['msg'];
-                        if ($qres['result']==$this->success_result) {
-                            $error='';
-                            // Prepare content
-                            $mdata['lead_id'] = $lead_id;
-                        }
+                    }
+                    $quoteparams = [
+                        'lead' => $lead,
+                        'address' => $address,
+                        'contacts' => $contacts,
+                        'custom_item' => $custom_item,
+                        'item_qty' => $item_qty,
+                        'item_price' => $item_price,
+                        'print_price' => $printprice,
+                        'setup_price' => $setupprice,
+                        'design_price' => $design,
+                        'discount_label' => $discount_label,
+                        'discount' => $discount,
+                        'discount_exp' => $discount_exp,
+                        'quotezip' => $quotezip,
+                        'other_note' => $other_note,
+                        'repcontact_note' => $repcontact_note,
+                        'locations' => $locations,
+                        'user_id' => $this->USR_ID,
+                    ];
+                    $this->load->model('leadquote_model');
+                    $qres = $this->leadquote_model->add_leadpopup_quote($quoteparams);
+                    $error = $qres['msg'];
+                    if ($qres['result']==$this->success_result) {
+                        $error='';
+                        // Prepare content
+                        $mdata['lead_id'] = $lead_id;
+                        $mdata['quote_id'] = $qres['quote_id'];
                     }
                 }
             }
@@ -1531,7 +1519,7 @@ class Leadmanagement extends MY_Controller
             $active = 0;
             foreach ($prices as $price) {
                 if ($price['item_qty'] >= 1000 && $active==0) {
-                    $prices[$idx]['active'] = 1;
+                    $prices[$idx]['active'] = 0; // 1
                     $active = 1;
                 } else {
                     $prices[$idx]['active'] = 0;
@@ -1562,13 +1550,13 @@ class Leadmanagement extends MY_Controller
             $prices = [];
             $active = 0;
             foreach ($pricesdat as $pricerow) {
-                if ($pricerow['item_qty'] >= 150 && $pricerow['item_qty'] < 15000 && floatval($pricerow['sale_price']) > 0) {
-                    if ($pricerow['item_qty']>=$priceqty && $active==0) {
-                        $active = 1;
-                        $pricerow['active'] = 1;
-                    } else {
+                if ($pricerow['item_qty'] >= 150 && $pricerow['item_qty'] < 10000 && floatval($pricerow['sale_price']) > 0) {
+//                    if ($pricerow['item_qty']>=$priceqty && $active==0) {
+//                        $active = 1;
+//                        $pricerow['active'] = 1;
+//                    } else {
                         $pricerow['active'] = 0;
-                    }
+//                    }
                     $prices[] = $pricerow;
                 }
             }

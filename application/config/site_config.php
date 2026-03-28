@@ -288,7 +288,7 @@ $config['quote_customitem_price'] = array(
     array('promo_price_id' => -1, 'item_qty' => 500, 'sale_price' => 3.80),
     array('promo_price_id' => -2, 'item_qty' => 750, 'sale_price' => 3.45),
     array('promo_price_id' => -3, 'item_qty' => 1000, 'sale_price' => 3.05),
-    array('promo_price_id' => -4, 'item_qty' => 2500, 'sale_price' => 2.78),
+    array('promo_price_id' => -4, 'item_qty' => 2000, 'sale_price' => 2.78),
     array('promo_price_id' => -5, 'item_qty' => 5000, 'sale_price' => 2.51),
     array('promo_price_id' => -6, 'item_qty' => 10000, 'sale_price' => 2.35),
 );

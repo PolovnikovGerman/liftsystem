@@ -394,12 +394,38 @@ function init_leadpopupedit() {
     // Quote request change active
     $("input[name='pricecheck']").unbind('click').click(function (){
         var pricetype = $(this).val();
-        $(".qtypricelist-box").removeClass('active');
-        $(".qtypricelist-box").find('input.qtybox-qty').prop('readonly',true);
-        $(".qtypricelist-box").find('input.qtybox-price').prop('readonly',true);
-        $(".qtypricelist-box[data-price='"+pricetype+"']").addClass('active');
-        $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-qty').prop('readonly',false);
-        $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-price').prop('readonly',false);
+        var newval = 0;
+        if ($(this).prop('checked')==true) {
+            newval = 1;
+        }
+        if (newval==1) {
+            $(".qtypricelist-box[data-price='"+pricetype+"']").addClass('active');
+            $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-qty').prop('readonly',false);
+            $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-price').prop('readonly',false);
+        } else {
+            $(".qtypricelist-box[data-price='"+pricetype+"']").removeClass('active');
+            $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-qty').prop('readonly',true);
+            $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-price').prop('readonly',true);
+        }
+        // $(".qtypricelist-box").removeClass('active');
+        // $(".qtypricelist-box").find('input.qtybox-qty').prop('readonly',true);
+        // $(".qtypricelist-box").find('input.qtybox-price').prop('readonly',true);
+        // $(".qtypricelist-box[data-price='"+pricetype+"']").addClass('active');
+        // $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-qty').prop('readonly',false);
+        // $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-price').prop('readonly',false);
+        // Update label for quotes
+        var numcand = $("input[name='pricecheck']:checked").length;
+        if (parseInt(numcand)==0) {
+            // Hide create quote
+            $(".btn-createquote").addClass('lockbtn');
+            $(".btn-createquote").unbind('click');
+        } else if (parseInt(numcand)==1) {
+            $(".btn-createquote").removeClass('lockbtn').empty().html('Create Quote');
+            init_leadpopupedit();
+        } else {
+            $(".btn-createquote").removeClass('lockbtn').empty().html('Create '+numcand+' Quotes');
+            init_leadpopupedit();
+        }
     });
     // Unlock discount
     $("input[name='discountcheckbox']").unbind('click').click(function (){
@@ -449,7 +475,10 @@ function init_leadpopupedit() {
     });
     // Add Quote
     $(".btn-createquote").unbind('click').click(function (){
-        add_leadquote();
+        var numcand = $("input[name='pricecheck']:checked").length;
+        if (parseInt(numcand) > 0) {
+            add_leadquote();
+        }
     })
     // Show Quote PDF
     $(".leadquotetabl-doc").unbind('click').click(function (){
@@ -602,67 +631,25 @@ function add_leadquote() {
         var leadnum = $(".leadnumber").find('span').text();
         var msg="You will now save the updates of the "+leadnum+" by creating the quote.  Ok?";
         if (confirm(msg)==true) {
-            var price = 0; var qty = 0;
-            var pricecheck = $("input[name=pricecheck]:checked").val();
-            if (pricecheck=='custom') {
-                price = $("input.qtybox-price[data-price='custom']").val();
-                qty = $("input.qtybox-qty[data-price='custom']").val();
-            } else {
-                qty = $("div.qtypricelist-box[data-price='"+pricecheck+"']").data('promoqty');
-                if ($("#quoteformcustomitem").val()==1) {
-                    price = $("input.qtybox-price[data-price='"+pricecheck+"']").val();
-                } else {
-                    price = $("div.qtypricelist-box[data-price='"+pricecheck+"']").find('div.qtyprice-pricebox').data('promoprice');
-                }
-            }
-            var design = 0;
-            if ($("input[name='quotesform-design']").length > 0) {
-                design = $("input[name='quotesform-design']").val();
-            }
-            var printprice = $("input[name='quotesform-prints']").val();
-            var setupprice = $("input[name='quotesform-setup']").val();
-            // Discount
-            var discount_label = '';
-            var discount_val = 0;
-            var discount_exp = '';
-            if ($("input[name='discountcheckbox']:checked").length > 0) {
-                discount_label = $("input[name='quotesform-discount']").val();
-                if (discount_label=='') {
-                    discount_label = 'Courtesy Discount';
-                }
-                discount_val = $("input[name='quotesform-price']").val();
-                discount_exp = $("input[name='quotesform-exp']").val();
-            }
-            var quotezip = $("input[name='quotesform-zipcode']").val();
-            var other_note = $("textarea.quoteform_othernotes").val();
-            var repcontact_note = $("textarea.quoteform_repcontact").val();
-            var params = new Array();
-            params.push({name: 'lead', value: $("#leadeditid").val()});
-            params.push({name: 'promoprice', value: pricecheck});
-            params.push({name: 'itemqty', value: qty});
-            params.push({name: 'itemprice', value: price});
-            params.push({name: 'custom_item', value: $("#quoteformcustomitem").val()});
-            params.push({name: 'printprice', value: printprice});
-            params.push({name: 'setupprice', value: setupprice});
-            params.push({name: 'design', value: design});
-            params.push({name: 'discount_label', value: discount_label});
-            params.push({name: 'discount_val', value: discount_val});
-            params.push({name: 'discount_exp', value: discount_exp});
-            params.push({name: 'quotezip', value: quotezip});
-            params.push({name: 'other_note', value: other_note});
-            params.push({name: 'repcontact_note', value: repcontact_note});
-            for (let i = 1; i < 13; i++) {
-                if ($("select.quoteform-locations[data-location='"+i+"']").length > 0) {
-                    params.push({name: 'location'+i, value: $("select.quoteform-locations[data-location='"+i+"']").val()});
-                }
-            }
-            var url = mainurl+'/add_leadquote';
+            // Save lead
+            sparams = new Array();
+            sparams.push({name: 'lead', value: $("#leadeditid").val()});
+            sparams.push({name: 'closesession', value: 0});
+            var url = mainurl+'/lead_popup_save';
             $("#loader").show();
-            $.post(url, params, function(response){
-                if (response.errors=='') {
-                    // Refresh data
+            $.post(url, sparams, function (sresponse){
+                if (sresponse.errors=='') {
+                    // Send quotes
+                    var chkprice = '';
+                    var quotidx = 0;
+                    $("input[name='pricecheck']:checked").each(function(index) {
+                        chkprice = $(this).val();
+                        addquotedoc(chkprice, sresponse.data.lead_id);
+                        quotidx++;
+                    });
+                    // Restore lead
                     var lurl=mainurl+"/edit_lead";
-                    $.post(lurl, {'lead_id': response.data.lead_id}, function(lresponse){
+                    $.post(lurl, {'lead_id': sresponse.data.lead_id}, function(lresponse){
                         if (lresponse.errors=='') {
                             $("#leadformModalLabel").empty().html(lresponse.data.title);
                             $("#leadformModal").find('div.modal-body').empty().html(lresponse.data.content);
@@ -670,19 +657,83 @@ function add_leadquote() {
                             init_leadpopupcontent();
                             init_quoteformcontent();
                             init_leadpopupedit();
+                            if (quotidx<2) {
+                                var quote_id = $("#leadpopupquotetabl-body").find("div.leadquotetabl-doc:first").data('quote');
+                                open_quote_details(quote_id)
+                            }
                             $("#loader").hide();
                         } else {
                             $("#loader").hide();
-                            show_error(response);
+                            show_error(lresponse);
                         }
                     }, 'json');
                 } else {
                     $("#loader").hide();
-                    show_error(response);
+                    show_error(sresponse);
                 }
             },'json');
         }
     }
+}
+
+function addquotedoc(pricecheck, lead_id) {
+    var price = 0; var qty = 0;
+    if (pricecheck=='custom') {
+        price = $("input.qtybox-price[data-price='custom']").val();
+        qty = $("input.qtybox-qty[data-price='custom']").val();
+    } else {
+        qty = $("div.qtypricelist-box[data-price='" + pricecheck + "']").data('promoqty');
+        price = $("input.qtybox-price[data-price='"+pricecheck+"']").val();
+    }
+    var design = 0;
+    if ($("input[name='quotesform-design']").length > 0) {
+        design = $("input[name='quotesform-design']").val();
+    }
+    var printprice = $("input[name='quotesform-prints']").val();
+    var setupprice = $("input[name='quotesform-setup']").val();
+    var discount_label = '';
+    var discount_val = 0;
+    var discount_exp = '';
+    if ($("input[name='discountcheckbox']:checked").length > 0) {
+        discount_label = $("input[name='quotesform-discount']").val();
+        if (discount_label=='') {
+            discount_label = 'Courtesy Discount';
+        }
+        discount_val = $("input[name='quotesform-price']").val();
+        discount_exp = $("input[name='quotesform-exp']").val();
+    }
+    var quotezip = $("input[name='quotesform-zipcode']").val();
+    var other_note = $("textarea.quoteform_othernotes").val();
+    var repcontact_note = $("textarea.quoteform_repcontact").val();
+    var params = new Array();
+    params.push({name: 'lead_id', value: lead_id});
+    params.push({name: 'promoprice', value: pricecheck});
+    params.push({name: 'itemqty', value: qty});
+    params.push({name: 'itemprice', value: price});
+    params.push({name: 'custom_item', value: $("#quoteformcustomitem").val()});
+    params.push({name: 'printprice', value: printprice});
+    params.push({name: 'setupprice', value: setupprice});
+    params.push({name: 'design', value: design});
+    params.push({name: 'discount_label', value: discount_label});
+    params.push({name: 'discount_val', value: discount_val});
+    params.push({name: 'discount_exp', value: discount_exp});
+    params.push({name: 'quotezip', value: quotezip});
+    params.push({name: 'other_note', value: other_note});
+    params.push({name: 'repcontact_note', value: repcontact_note});
+    for (let i = 1; i < 13; i++) {
+        if ($("select.quoteform-locations[data-location='"+i+"']").length > 0) {
+            params.push({name: 'location'+i, value: $("select.quoteform-locations[data-location='"+i+"']").val()});
+        }
+    }
+    var url = mainurl+'/add_leadquote';
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
 }
 
 function init_leadpopup_assign() {

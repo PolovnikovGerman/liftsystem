@@ -768,7 +768,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     padding-top: 2px;
 }
 .qtypricetitle {
-    width: 56px;
+    width: 100px;
     text-align: right;
     font-size: 11px;
     font-weight: 600;
@@ -776,7 +776,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     padding-right: 4px;
 }
 .qtypricelist {
-    width: calc(100% - 56px);
+    width: calc(100% - 100px);
 }
 .qtyprice-rowqty {
     width: 100%;
@@ -825,12 +825,14 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     font-size: 10px;
     line-height: 16px;
     position: relative;
-    left: -4px;
-    top: -1px;
+    left: -3px;
+    top: -4px;
     margin-left: 3px;
 }
 input.qtybox-qty {
     width: 29px;
+    position: relative;
+    top: -4px;
 }
 
 .qtypricelist-box.active {
@@ -857,6 +859,9 @@ input.qtybox-qty {
     border-radius: 2px;
     font-size: 11px;
     padding: 0 3px;
+}
+.lead-quotesform input[type=checkbox] {
+    margin: 0;
 }
 .quotesform-locs select {
     /*width: 30px;*/
@@ -933,18 +938,23 @@ input.discount-exp {
 }
 .btn-createquote {
     float: right !important;
-    width: 84px;
+    /* width: 84px; */
     height: 19px;
     line-height: 19px;
-    background: #5b5afe;
+    background: #088aff;
     /*background: linear-gradient(to top, #4c4bfe, #6664fe);*/
-    background: linear-gradient(to top, #4169E1, #1E90FF);
+    /*background: linear-gradient(to top, #4169E1, #1E90FF);*/
     text-align: center;
     font-size: 11px;
     /* border: 1px solid #000; */
     border-radius: 4px;
     cursor: pointer;
     color: #fff;
+    padding: 0 5px;
+}
+.btn-createquote.lockbtn {
+    opacity: 0.2;
+    cursor: default;
 }
 .messagequote-block {
     display: block;

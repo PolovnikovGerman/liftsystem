@@ -2,14 +2,14 @@
 <input type="hidden" id="quoteformexpandview" value="0"/>
 <div class="leadquotesform-top">
     <div class="qtypricetitle">
-        <div class="qtyprice-rowqty">Qty:</div>
+        <div class="qtyprice-rowqty">Multi Qty Quoter:</div>
         <div class="qtyprice-rowprice">Price Ea:</div>
     </div>
     <div class="qtypricelist">
         <div class="qtypricelist-box" data-price="custom">
             <div class="qtyprice-rowqty">
                 <div class="qtyprice-qtybox">
-                    <input type="radio" name="pricecheck" value="custom"/>
+                    <input type="checkbox" name="pricecheck" value="custom"/>
                     <input class="qtybox-qty" type="text" readonly="readonly" name="qtybox" data-price="custom"/>
                 </div>
             </div>
@@ -23,17 +23,17 @@
             <div class="qtypricelist-box <?=$price['active']==1 ? 'active' : ''?>" data-price="<?=$price['promo_price_id']?>" data-promoqty="<?=$price['item_qty']?>">
                 <div class="qtyprice-rowqty">
                     <div class="qtyprice-qtybox">
-                        <input type="radio" name="pricecheck" value="<?=$price['promo_price_id']?>" <?=$price['active']==1 ? 'checked="checked"' : ''?>/>
-                        <span><?=short_number($price['item_qty'])?></span>
+                        <input type="checkbox" name="pricecheck" value="<?=$price['promo_price_id']?>" <?=$price['active']==1 ? 'checked="checked"' : ''?>/>
+                        <span><?=$price['item_qty'] >= 10000 ? short_number($price['item_qty'],0) : $price['item_qty']?></span>
                     </div>
                 </div>
                 <div class="qtyprice-rowprice">
                     <div class="qtyprice-pricebox" data-promoprice="<?=$price['sale_price']?>">
-                    <?php if ($custom_item) : ?>
-                        <input class="qtybox-price" type="text" readonly="readonly" name="qtybox" data-price="<?=$price['promo_price_id']?>" value="<?=MoneyOutput($price['sale_price'])?>"/>
-                    <?php else : ?>
-                        <?=MoneyOutput($price['sale_price'])?>
-                    <?php endif; ?>
+<!--                    --><?php //if ($custom_item) : ?>
+                        <input class="qtybox-price" <?=$price['active']==1 ? '' : 'readonly="readonly"'?> type="text" name="qtybox" data-price="<?=$price['promo_price_id']?>" value="<?=MoneyOutput($price['sale_price'])?>"/>
+<!--                    --><?php //else : ?>
+<!--                        --><?php //=MoneyOutput($price['sale_price'])?>
+<!--                    --><?php //endif; ?>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
         <label>Exp:</label>
         <input type="text" name="quotesform-exp" class="discount-exp" readonly="readonly"/>
     </div>
-    <div class="btn-createquote fixedview">Create Quote</div>
+    <div class="btn-createquote fixedview lockbtn">Create Quote</div>
 </div>
 <div class="messagequote-block" style="display:none;">
     <div class="messagequote-box">
@@ -89,5 +89,5 @@
     <div class="messagequote-box">
         <textarea class="quoteform_repcontact"><?=$quote_repcontact?></textarea>
     </div>
-    <div class="btn-createquote">Create Quote</div>
+    <div class="btn-createquote lockbtn">Create Quote</div>
 </div>
