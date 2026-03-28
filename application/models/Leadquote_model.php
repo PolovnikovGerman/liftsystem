@@ -4713,8 +4713,8 @@ class Leadquote_model extends MY_Model
             $this->db->insert('ts_quotes');
             if ($this->db->insert_id()>0) {
                 $response['result'] = $this->success_result;
-
                 $quote_id = $this->db->insert_id();
+                $response['quote_id'] = $quote_id;
                 // Contacts
                 foreach ($lead_contacts as $contact) {
                     if (!empty($contact['contact_name'])) {
@@ -4725,51 +4725,6 @@ class Leadquote_model extends MY_Model
                     }
                 }
             }
-//            $quotedat = [
-//                'sales_tax' => 0,
-//                'tax_exempt' => 0,
-//                'tax_reason' => '',
-//                'shipping_cost' => 0,
-//                'quote_note' => '',
-//                'items_subtotal' => 0,
-//                'imprint_subtotal' => 0,
-//                'quote_total' => 0,
-//            ];
-//            // Items
-//            $quote_items = [];
-//            $response['newitem'] = 0;
-//            // Add item
-//            $item_qty = $lead_prices['item_qty'];
-//            $item_price = $lead_prices['item_price'];
-//            $itemdat = $this->add_newleadquote_item($lead_data['lead_item_id'], $lead_data['other_item_name'], $leadqty, $lead_data['brand']);
-//            if ($itemdat['result']==$this->success_result) {
-//                $quote_items[] = $itemdat['quote_items'];
-//                $response['newitem'] = $itemdat['quote_items']['quote_item_id'];
-//                // Get Delivery Terms
-//                if ($lead_data['lead_item_id'] > 0) {
-//                    $this->load->model('calendars_model');
-//                    $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id'], $lead_data['brand']);
-//                    $quotedat['lead_time'] = json_encode($termdat);
-//                    foreach ($termdat as $row) {
-//                        if ($row['current']==1) {
-//                            $quotedat['rush_cost'] = $row['price'];
-//                            $quotedat['rush_days'] = $row['date'];
-//                            $quotedat['rush_terms'] = $row['name'];
-//                        }
-//                    }
-//                }
-//                if ($lead_data['lead_item_id']==$this->config->item('custom_id')) {
-//                    $quotedat['quote_repcontact'] = $this->config->item('custom_quote_note').$quotedat['quote_repcontact'];
-//                    $quotedat['mischrg_label1'] = $this->config->item('custom_mischrg_label');
-//                    if ($lead_data['brand']=='SR') {
-//                        $quotedat['mischrg_value1'] = $this->config->item('custom_mischrg_srvalue');
-//                    } else {
-//                        $quotedat['mischrg_value1'] = $this->config->item('custom_mischrg_value');
-//                    }
-//                }
-//            }
-//            $response['quote'] = $quotedat;
-//            $response['quote_items'] = $quote_items;
             // Add Item
             $this->load->model('orders_model');
             $this->load->model('leadorder_model');
@@ -4983,6 +4938,7 @@ class Leadquote_model extends MY_Model
                     $this->db->set('shipping_cost', $shipcost);
                     $this->db->set('quote_total', $total);
                     $this->db->update('ts_quotes');
+
                 }
             }
 

@@ -641,9 +641,11 @@ function add_leadquote() {
                 if (sresponse.errors=='') {
                     // Send quotes
                     var chkprice = '';
+                    var quotidx = 0;
                     $("input[name='pricecheck']:checked").each(function(index) {
                         chkprice = $(this).val();
                         addquotedoc(chkprice, sresponse.data.lead_id);
+                        quotidx++;
                     });
                     // Restore lead
                     var lurl=mainurl+"/edit_lead";
@@ -655,6 +657,10 @@ function add_leadquote() {
                             init_leadpopupcontent();
                             init_quoteformcontent();
                             init_leadpopupedit();
+                            if (quotidx<2) {
+                                var quote_id = $("#leadpopupquotetabl-body").find("div.leadquotetabl-doc:first").data('quote');
+                                open_quote_details(quote_id)
+                            }
                             $("#loader").hide();
                         } else {
                             $("#loader").hide();
