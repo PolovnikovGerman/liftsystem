@@ -1250,6 +1250,10 @@ class Artproofrequest extends MY_Controller
                         $error = '';
                         $mdata['callpage']=$callpage;
                         $artw = $artwres['artwork'];
+                        if (!empty($artw['mail_id'])) {
+                            $this->load->model('leads_model');
+                            $updlead = $this->leads_model->update_artlead($artw['mail_id']);
+                        }
                         $mdata['order_id'] = $mdata['email_id'] = 0;
                         if (!empty($artw['order_id'])) {
                             $mdata['order_id'] = $artw['order_id'];

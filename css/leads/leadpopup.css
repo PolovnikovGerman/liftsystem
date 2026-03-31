@@ -637,6 +637,9 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 .list-attachfiles {
     width: 100%;
     margin-top: 5px;
+    height: 131px;
+    scrollbar-width: none;
+    overflow-y: auto;
 }
 .attachfile {
     width: 100%;
