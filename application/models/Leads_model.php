@@ -2993,6 +2993,7 @@ Class Leads_model extends MY_Model
             $lead_id = $this->db->insert_id();
         } else {
             $this->db->set('update_usr',$user_id);
+            $this->db->set('update_date', date('Y-m-d H:i:s'));
             $this->db->where('lead_id',$lead['lead_id']);
             $this->db->update('ts_leads');
             $lead_id = $lead['lead_id'];
