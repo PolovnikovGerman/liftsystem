@@ -65,7 +65,7 @@
                     <div class="lead-attachments">
                         <div class="lead-attachmentstitle">Attachments:</div>
                         <div id="btn-attach"></div>
-                        <div class="list-attachfiles"><?=$attachments_view?></div>
+                        <div class="list-attachfiles" id="leadpopup_list-attachfiles"><?=$attachments_view?></div>
                     </div>
                 </div>
                 <div class="leadblockright">

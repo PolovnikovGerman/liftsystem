@@ -100,6 +100,7 @@ function init_leadpopupcontent(){
                 $.post(url, params, function (response) {
                     if (response.errors=='') {
                         $(".list-attachfiles").empty().html(response.data.content);
+                        new SimpleBar(document.getElementById('leadpopup_list-attachfiles'), {autoHide: false});
                         init_leadpopupedit();
                     } else {
                         show_error(response);
@@ -118,6 +119,7 @@ function init_leadpopupcontent(){
     new SimpleBar(document.getElementById('list-leadhistory'), { autoHide: false });
     new SimpleBar(document.getElementById('leadpopupquotetabl-body'), { autoHide: false });
     new SimpleBar(document.getElementById('leadpopup_list-proofreqbox'), { autoHide: false });
+    new SimpleBar(document.getElementById('leadpopup_list-attachfiles'), {autoHide: false});
 }
 
 function init_quoteformcontent() {
@@ -599,6 +601,7 @@ function init_leadpopupedit() {
                 $("#leadformModal").modal('hide');
                 initLeaddataPagination();
                 init_customform_interest();
+                show_leadpriority();
                 $("#loader").hide();
             } else {
                 $("#loader").hide();
@@ -635,6 +638,7 @@ function add_leadquote() {
             sparams = new Array();
             sparams.push({name: 'lead', value: $("#leadeditid").val()});
             sparams.push({name: 'closesession', value: 0});
+            sparams.push({name: 'savelead', value: 1});
             var url = mainurl+'/lead_popup_save';
             $("#loader").show();
             $.post(url, sparams, function (sresponse){
