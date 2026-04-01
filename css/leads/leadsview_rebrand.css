@@ -95,7 +95,7 @@
     border-right: 1px solid #434343;
     border-left: 1px solid #434343;
     border-bottom: 1px solid #434343;
-    margin-bottom: 20px;
+    margin-bottom: 40px; /* 20px; */
     max-height: 1050px;
     width: 100%;
     overflow-y: auto;
@@ -559,7 +559,7 @@ input.lead_searchinput {
 }
 .leaddataarea.priority {
     max-height: 422px;
-    margin-bottom: 20px; /* 5px; */
+    margin-bottom: 40px; /*20px;*/
 }
 .leaddataarea .dateout {
     background: #000000;
@@ -628,6 +628,14 @@ input.lead_searchinput {
     width: 27px;
 }
 /* Orders Miss Info */
+.leaddata_header .ordermissfilter {
+    width: 14px;
+    margin-right: 6px;
+}
+.leaddata_header .ordermissfilter i {
+    cursor: pointer;
+    font-size: 14px;
+}
 .ordermissinfoarea {
     width: 100%;
     border: 1px solid #000000;
