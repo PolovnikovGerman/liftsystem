@@ -130,6 +130,24 @@ Class Quotes_model extends My_Model {
             $res['itemcost']=($res['itemcost']==0 ? '' : '$'.number_format($res['itemcost'],2,'.',','));
             $res['total']=get_json_param($res['email_other_info'], 'total', 0);
             $res['total']=($res['total']==0 ? '' : '$'.number_format($res['total'],2,'.',','));
+            $res['country_id'] = $res['city'] = $res['state'] = $res['country'] = '';
+            $this->load->model('shipping_model');
+            if (!empty($res['quote_country'])) {
+                $country = $this->shipping_model->get_country_bycode2($res['quote_country']);
+                $res['country_id'] = $country['country_id'];
+                if ($country['country_id']==$this->config->item('default_country')) {
+                    $res['country'] = $country['country_iso_code_3'];
+                } else {
+                    $res['country'] = $country['country_name'];
+                }
+                if (!empty($res['quote_postcode'])) {
+                    $adrdat = $this->shipping_model->get_zip_address($res['country_id'], $res['quote_postcode']);
+                    if ($adrdat['result']==$this->success_result) {
+                        $res['city'] = $adrdat['city'];
+                        $res['state'] = $adrdat['state'];
+                    }
+                }
+            }
             $out['result']=$this->success_result;
             $out['data'] = $res;
         }
