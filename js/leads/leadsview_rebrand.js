@@ -152,6 +152,23 @@ function init_leadmanage_content() {
             add_lead(brand);
         }
     });
+    // Change User replica
+    $(".ordermissfilter").unbind('click').click(function(){
+        if ($(this).hasClass('inuse')) {
+            // Nothing
+        } else {
+            $(".ordermissfilter").removeClass('inuse');
+            $(".ordermissfilter").empty().html('<i class="fa fa-circle-thin" aria-hidden="true"></i>');
+            $(this).addClass('inuse');
+            $(this).empty().html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+            if ($(this).hasClass('user')) {
+                $("#leadordermissinfo").val($("#leadmainusr").val());
+            } else {
+                $("#leadordermissinfo").val('0');
+            }
+            show_ordermissinfo();
+        }
+    })
 }
 
 function search_leadsdata() {
@@ -531,6 +548,7 @@ function show_leadpriority() {
 function show_ordermissinfo() {
     var params = leadpaginationparams(0);
     params.push({name: 'sorttime', value: $("#ordermissinfosort").val()});
+    params.push({name: 'order_repl', value: $("#leadordermissinfo").val()});
     var url = 'leads/orders_missinfo';
     $("#loader").show();
     $.post(url, params, function(response){

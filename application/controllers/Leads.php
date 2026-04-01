@@ -360,8 +360,9 @@ class Leads extends My_Controller {
             if (!empty($brand)) {
                 $error = '';
                 // $sort = ifset($postdata,'sorttime',1);
+                $userrepl = ifset($postdata, 'order_repl',0);
                 $this->load->model('orders_model');
-                $orders = $this->orders_model->get_orders_missinfo($brand);
+                $orders = $this->orders_model->get_orders_missinfo($userrepl, $brand);
                 $mdata['cntrec'] = count($orders);
                 if (count($orders)==0) {
                     $mdata['content'] = $this->load->view('leadsview/leads_emptydata_view', [], TRUE);
