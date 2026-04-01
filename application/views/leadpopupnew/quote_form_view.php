@@ -2,7 +2,7 @@
 <input type="hidden" id="quoteformexpandview" value="0"/>
 <div class="leadquotesform-top">
     <div class="qtypricetitle">
-        <div class="qtyprice-rowqty">Multi Qty Quoter:</div>
+        <div class="qtyprice-rowqty">Quantity:</div>
         <div class="qtyprice-rowprice">Price Ea:</div>
     </div>
     <div class="qtypricelist">
