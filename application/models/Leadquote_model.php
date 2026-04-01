@@ -4538,11 +4538,11 @@ class Leadquote_model extends MY_Model
             if (!empty($quoteparams['design_price'])) {
                 if ($quoteparams['designtype']=='NEW') {
                     $this->db->set('mischrg_label1', $this->config->item('custom_mischrg_label'));
+                    $this->db->set('mischrg_value1', $quoteparams['design_price']);
                 } else {
                     $this->db->set('mischrg_label1', $this->config->item('custom_mischrgrepeat_label'));
+                    $this->db->set('mischrg_value1', 0);
                 }
-                $this->db->set('mischrg_value1', $quoteparams['design_price']);
-                $item_subtotal+=$quoteparams['design_price'];
             }
             $this->db->set('shipping_country', $lead_address['country_id']);
             $this->db->set('shipping_company', $lead_data['lead_company']);
