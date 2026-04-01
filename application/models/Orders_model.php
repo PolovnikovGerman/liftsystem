@@ -10385,7 +10385,7 @@ Class Orders_model extends MY_Model
         return $this->db->get()->result_array();
     }
 
-    public function get_orders_missinfo($brand)
+    public function get_orders_missinfo($userrepl, $brand)
     {
         $missclass = 'missing';
         $readyclass = 'ready';
@@ -10418,6 +10418,9 @@ Class Orders_model extends MY_Model
         $this->db->join("({$artsql}) artw", "artw.order_id=o.order_id",'left');
         $this->db->join("({$proofsql}) proof",'proof.order_id=o.order_id','left');
         $this->db->where('o.is_canceled',0);
+        if ($userrepl > 0) {
+            $this->db->where('order_usr_repic', $userrepl);
+        }
         $this->db->where('o.order_date >=', $finish_date);
         if ($brand!=='ALL') {
             if ($brand=='SR') {

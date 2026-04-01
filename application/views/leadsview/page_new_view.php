@@ -13,6 +13,8 @@
 <input type="hidden" id="unassignwebquestall" value="0"/>
 <input type="hidden" id="unassignwebquoteall" value="0"/>
 <input type="hidden" id="unassignproofrequestall" value="0"/>
+<input type="hidden" id="leadordermissinfo" value="<?=$user_id?>"/>
+<input type="hidden" id="leadmainusr" value="<?=$user_id?>"/>
 
 <div class="leads_content">
     <div class="leads_content_left">
@@ -194,6 +196,20 @@
             <div class="leaddataarea priority" id="leadsprioritydata"></div>
             <div class="leaddata_header ordermissinfo">
                 <div class="leaddata_label">Orders with Missing Info:</div>
+                <div class="leadsdata_sorting_area">
+                    <div class="leadsdata_sorting">
+                        <div class="ordermissfilter user inuse">
+                            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="leadsort_label"><?=$user_name?></div>
+                    </div>
+                    <div class="leadsdata_sorting">
+                        <div class="ordermissfilter allusers">
+                            <i class="fa fa-circle-thin" aria-hidden="true"></i>
+                        </div>
+                        <div class="leadsort_label">All</div>
+                    </div>
+                </div>
             </div>
             <div class="leaddata_subheader">
                 <div class="ordernumber_head">Order #</div>
@@ -205,7 +221,9 @@
                 <div class="orderart_head">Art</div>
                 <div class="orderapproval_head">Approval</div>
             </div>
-            <div class="ordermissinfoarea" id="ordermissinfodata"></div>
+            <div class="ordermissinfoarea" id="ordermissinfodata">
+                <div class="newunassign_emptydata">No records</div>
+            </div>
         </div>
     </div>
 </div>
