@@ -611,7 +611,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 .lead-attachments {
     width: 84px;
     height: 182px;
-    margin-left: 5px;
+    margin-left: 8px;
 }
 .lead-attachmentstitle {
     font-size: 12px;
@@ -723,7 +723,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .lead-quotestitle span {
     font-weight: normal;
-    font-size: 10px;
+    font-size: 11px;
     font-style: italic;
 }
 .lead-quotesbody {
@@ -804,11 +804,11 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     width: 100%;
     height: 16px;
     line-height: 14px;
-    background: #fff;
-    border: 1px solid #808080;
+    /* background: #fff; */
+    /* border: 1px solid #808080; */
     border-radius: 2px;
     font-size: 11px;
-/*    padding: 0 3px; */
+    /* padding: 0 3px; */
     text-align: center;
     font-weight: 600;
 }
@@ -863,21 +863,28 @@ input.qtybox-qty {
     border-radius: 2px;
     font-size: 11px;
     padding: 0 3px;
+    margin-left: -3px;
 }
 .lead-quotesform input[type=checkbox] {
     margin: 0;
 }
+.checkbox-discount input[type=checkbox] {
+    margin: 0;
+    position: relative;
+    top: 3px;
+}
 .quotesform-locs select, .quotesform-setup select, .quotesform-design select {
     width: 30px;
-    /*width: 36px;*/
+    /* width: 36px; */
     height: 16px;
     line-height: 15px;
     background: #fff;
     border: 1px solid #808080;
     border-radius: 2px;
     font-size: 11px;
-    /*padding: 0 4px;*/
+    /* padding: 0 4px; */
     margin-right: 1.5px;
+    margin-left: -3px;
 }
 .quotesform-locs select option {
     line-height: 12px;
