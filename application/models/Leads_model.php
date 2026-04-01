@@ -902,6 +902,20 @@ Class Leads_model extends MY_Model
             'lead_type'=>$this->init_lead_type,
             'brand' => $maildat['brand'],
         );
+        if ($maildat['email_subtype']=='Quote') {
+            if (isset($maildat['country_id']) && !empty($maildat['country_id'])) {
+                $leadpost['country_id']=$maildat['country_id'];
+            }
+            if (isset($maildat['state']) && !empty($maildat['state'])) {
+                $leadpost['state']=$maildat['state'];
+            }
+            if (isset($maildat['city']) && !empty($maildat['city'])) {
+                $leadpost['city']=$maildat['city'];
+            }
+            if (isset($maildat['quote_postcode']) && !empty($maildat['quote_postcode'])) {
+                $leadpost['zip'] = $maildat['quote_postcode'];
+            }
+        }
         $lead_tasks=array(
             'send_quote'=>1,
             'send_artproof'=>0,

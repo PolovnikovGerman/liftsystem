@@ -40,6 +40,24 @@
             </div>
         </div>
         <div class="onlinequote-row">
+            <div class="onlinequote-group onlinequote-city">
+                <label>City:</label>
+                <input class="onlinequote-input" type="text" name="onlinequote-city" readonly="readonly" value="<?=$data['city']?>"/>
+            </div>
+            <div class="onlinequote-group onlinequote-state">
+                <label>State:</label>
+                <input class="onlinequote-input" type="text" name="onlinequote-state" readonly="readonly" value="<?=$data['state']?>"/>
+            </div>
+            <div class="onlinequote-group onlinequote-postcode">
+                <label>Postal code:</label>
+                <input class="onlinequote-input" type="text" name="onlinequote-zip" readonly="readonly" value="<?=$data['quote_postcode']?>"/>
+            </div>
+            <div class="onlinequote-group onlinequote-country">
+                <label>Country:</label>
+                <input class="onlinequote-input" type="text" name="onlinequote-country" readonly="readonly" value="<?=$data['country']?>"/>
+            </div>
+        </div>
+        <div class="onlinequote-row">
             <div class="onlinequote-group onlinequote-imprint">
                 <label>Imprint:</label>
                 <input class="onlinequote-select" readonly="readonly" value="<?=$data['colorimprint']?>"/>

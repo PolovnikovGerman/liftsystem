@@ -271,6 +271,22 @@
 .onlinequote-colors {
     width: 172px;
 }
+.onlinequote-country {
+    width: 100px;
+    margin-right: 7px;
+}
+.onlinequote-state {
+    width: 40px;
+    margin-right: 7px;
+}
+.onlinequote-city {
+    width: 120px;
+    margin-right: 7px;
+}
+.onlinequote-postcode {
+    width: 74px;
+    margin-right: 7px;
+}
 .onlinequote-imprint {
     width: 156px;
 }
