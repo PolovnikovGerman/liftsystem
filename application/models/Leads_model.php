@@ -906,6 +906,20 @@ Class Leads_model extends MY_Model
             'lead_type'=>$this->init_lead_type,
             'brand' => $maildat['brand'],
         );
+        if ($maildat['email_subtype']=='Quote') {
+            if (isset($maildat['country_id']) && !empty($maildat['country_id'])) {
+                $leadpost['country_id']=$maildat['country_id'];
+            }
+            if (isset($maildat['state']) && !empty($maildat['state'])) {
+                $leadpost['state']=$maildat['state'];
+            }
+            if (isset($maildat['city']) && !empty($maildat['city'])) {
+                $leadpost['city']=$maildat['city'];
+            }
+            if (isset($maildat['quote_postcode']) && !empty($maildat['quote_postcode'])) {
+                $leadpost['zip'] = $maildat['quote_postcode'];
+            }
+        }
         $lead_tasks=array(
             'send_quote'=>1,
             'send_artproof'=>0,
@@ -3067,6 +3081,7 @@ Class Leads_model extends MY_Model
             $lead_id = $this->db->insert_id();
         } else {
             $this->db->set('update_usr',$user_id);
+            $this->db->set('update_date', date('Y-m-d H:i:s'));
             $this->db->where('lead_id',$lead['lead_id']);
             $this->db->update('ts_leads');
             $lead_id = $lead['lead_id'];
@@ -3176,6 +3191,18 @@ Class Leads_model extends MY_Model
         $leaddata['lead'] = $lead;
         usersession($session_id, $leaddata);
         return $out;
+    }
+
+    public function update_artlead($art_id) {
+        $this->db->select('*')->from('ts_lead_emails')->where('email_id', $art_id);
+        $res = $this->db->get()->row_array();
+        if (ifset($res,'lead_id',0) > 0) {
+            $lead_id = $res['lead_id'];
+            $this->db->where('lead_id', $lead_id);
+            $this->db->set('update_date', date('Y-m-d H:i:s'));
+            $this->db->update('ts_leads');
+        }
+        return true;
     }
 
     private function _prepare_leads_session($lead_id)

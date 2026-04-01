@@ -910,6 +910,7 @@ class Leadmanagement extends MY_Controller
             $leaddata = usersession($session_id);
             $closesession = 0;
             if (!empty($leaddata)) {
+                $leaddata['edit_flag'] = 1;
                 $res = $this->leads_model->save_leadpopup($leaddata, $this->USR_ID, $session_id, $closesession);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
@@ -1245,6 +1246,10 @@ class Leadmanagement extends MY_Controller
             $leaddata = usersession($session_id);
             if (!empty($leaddata)) {
                 $closesession = ifset($postdata, 'closesession', 0);
+                $savelead = ifset($postdata, 'savelead', 0);
+                if ($savelead==1) {
+                    $leaddata['edit_flag'] = 1;
+                }
                 $res = $this->leads_model->save_leadpopup($leaddata, $this->USR_ID, $session_id, $closesession);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
