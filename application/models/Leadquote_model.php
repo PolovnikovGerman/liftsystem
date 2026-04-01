@@ -4592,7 +4592,7 @@ class Leadquote_model extends MY_Model
             $this->load->model('leadorder_model');
             if ($lead_data['lead_item_id']<0) {
                 $itemdata=$this->orders_model->get_newitemdat($lead_data['lead_item_id']);
-                $item_description=$lead_data['other_item_name'];
+                $item_description=(empty($lead_data['other_item_name']) ? 'Custom Shaped Stress Balls' : $lead_data['other_item_name']);
             } else {
                 $itemdata=$this->leadorder_model->_get_itemdata($lead_data['lead_item_id']);
                 $item_description=$itemdata['item_name'];

@@ -1304,7 +1304,9 @@ class Leadmanagement extends MY_Controller
                     $other_note = ifset($postdata, 'other_note', '');
                     $repcontact_note = ifset($postdata, 'repcontact_note', '');
                     $setuptype = ifset($postdata, 'setuptype', 'NEW');
+                    $setupnote = ifset($postdata, 'setupnote', '');
                     $designtype = ifset($postdata, 'designtype', 'NEW');
+                    $designnote = ifset($postdata, 'designnote','');
                     $locations = [];
                     $numloc = 1;
                     for ($i=1; $i<13; $i++) {
@@ -1337,6 +1339,7 @@ class Leadmanagement extends MY_Controller
                         'locations' => $locations,
                         'user_id' => $this->USR_ID,
                         'setuptype' => $setuptype,
+                        'setupnote' => '',
                         'designtype' => $designtype,
                     ];
                     $this->load->model('leadquote_model');
