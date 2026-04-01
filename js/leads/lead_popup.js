@@ -724,6 +724,8 @@ function addquotedoc(pricecheck, lead_id) {
     params.push({name: 'quotezip', value: quotezip});
     params.push({name: 'other_note', value: other_note});
     params.push({name: 'repcontact_note', value: repcontact_note});
+    params.push({name: 'setuptype', value: $("select[name='setuptype']").val()});
+    params.push({name: 'designtype', value: $("select[name='designtype']").val()});
     for (let i = 1; i < 13; i++) {
         if ($("select.quoteform-locations[data-location='"+i+"']").length > 0) {
             params.push({name: 'location'+i, value: $("select.quoteform-locations[data-location='"+i+"']").val()});

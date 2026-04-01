@@ -54,8 +54,8 @@
     <div class="quotesform-setup">
         <label>Setup:</label>
         <select class="quoteform-setuptype" name="setuptype">
-            <option value="New">N</option>
-            <option value="Repeat">R</option>
+            <option value="NEW">N</option>
+            <option value="REPEAT">R</option>
         </select>
         <input type="text" name="quotesform-setup" value="<?=$setup_price?>"/>
     </div>
@@ -63,8 +63,8 @@
         <div class="quotesform-design">
             <label>Design:</label>
             <select class="quoteform-designtype" name="designtype">
-                <option value="New">N</option>
-                <option value="Repeat">R</option>
+                <option value="NEW">N</option>
+                <option value="REPEAT">R</option>
             </select>
             <input type="text" name="quotesform-design" value="<?=$design_price?>">
         </div>
