@@ -1,27 +1,26 @@
 /* Lead quote content */
-.quotepopupdetails {
-    display: none;
-    position: absolute;
-    z-index: 2;
-    width: 620px;
-    right: -4px;
-    top: 81px;
-}
 .quotepopupclose {
+    position: absolute;
+    float: right !important;
+    top: -12px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid #000;
+    background: #ff0000;
+    color: #fff;
+    text-align: center;
     cursor: pointer;
-    float: right!important;
-    position: relative;
-    z-index: 7;
-    right: -18px;
-    top: -6px;
+    opacity: 1;
+    z-index: 1;
+    font-size: 15px;
+    line-height: 18px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
 }
 .quotecontentarea {
-    float: left;
-    width: 612px;
-    height: 689px;
-    background: #9a9a9a;
-    border-radius: 7px;
-    padding: 9px;
+    width: 100%;
+    padding: 7px 5px;
 }
 .quotecontentarea div {
     float: left;
@@ -31,7 +30,7 @@
     color: #000000;
 }
 .datarow.quotetemplaterow {
-    margin-bottom: -8px;
+    /*margin-bottom: -8px;*/
 }
 .quotetemplatetitle {
     height: 22px;
@@ -45,117 +44,197 @@
     font-size: 12px;
 }
 .quotetemplateinpt select {
-    width: 122px;
-    padding-left: 9px;
+    width: 87px; /* 122px; */
+    padding-left: 5px; /* 9px; */
     font-size: 13px;
     height: 22px;
     background: #e5e5e5;
 }
+/*.quoteactionsarea {*/
+/*    margin-left: 19px;*/
+/*    background: #ffffff;*/
+/*    border: 1px solid #000000;*/
+/*    border-radius: 5px;*/
+/*    !* padding-left: 10px; *!*/
+/*    margin-right: 9px;*/
+/*    box-shadow: 0.3em 0.3em 3px rgb(0 0 0 / 50%);*/
+/*}*/
+/*.quoteactionsarea > div {*/
+/*    text-align: center;*/
+/*    color: #010192;*/
+/*    font-size: 13px;*/
+/*    height: 25px;*/
+/*    line-height: 22px;*/
+/*    opacity: 0.5;*/
+/*    !* padding: 1.5px 0; *!*/
+/*}*/
+/*.quoteactionsarea > div.active {*/
+/*    opacity: 1;*/
+/*    cursor: pointer;*/
+/*}*/
+/*.quoteactionaddorder {*/
+/*    padding: 1.5px 6px;*/
+/*    border-right: 1px solid #b6b6b6;*/
+/*}*/
+/*.quoteactionduplicate {*/
+/*    padding: 1.5px 6px;*/
+/*    border-right: 1px solid #b6b6b6;*/
+/*}*/
+/*.quoteactionsend {*/
+/*    padding: 1.5px 4px;*/
+/*    border-right: 1px solid #b6b6b6;*/
+/*}*/
+/*.quoteactionpdfdoc {*/
+/*    padding: 1.5px 10px;*/
+/*}*/
+/*.leadquotesavebtn {*/
+/*    background-image: url(/img/leadorder/button_save.png);*/
+/*    background-repeat: no-repeat;*/
+/*    width: 53px;*/
+/*    height: 32px;*/
+/*    cursor: pointer;*/
+/*}*/
+/*.leadquoteeditbtn {*/
+/*    background-image: url(/img/leadorder/button_edit.png);*/
+/*    background-repeat: no-repeat;*/
+/*    cursor: pointer;*/
+/*    height: 34px;*/
+/*    width: 52px;*/
+/*}*/
+/*.leadquotebtnlabel {*/
+/*    color: #FFFFFF!important;*/
+/*    width: 46px;*/
+/*    line-height: 28px;*/
+/*    text-align: center;*/
+/*    cursor: pointer;*/
+/*}*/
+
 .quoteactionsarea {
-    margin-left: 124px;
-    background: #ffffff;
-    border: 1px solid #000000;
-    border-radius: 5px;
-    /* padding-left: 10px; */
-    margin-right: 9px;
-    box-shadow: 0.3em 0.3em 3px rgb(0 0 0 / 50%);
+    float: right!important;
 }
-.quoteactionsarea > div {
-    text-align: center;
-    color: #010192;
-    font-size: 13px;
-    height: 25px;
-    line-height: 22px;
-    opacity: 0.5;
-    /* padding: 1.5px 0; */
+ul.quotaactionbuttons-list {
+    float: left;
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
 }
-.quoteactionsarea > div.active {
-    opacity: 1;
-    cursor: pointer;
+ul.quotaactionbuttons-list li {
+    float: left;
 }
-.quoteactionaddorder {
-    padding: 1.5px 6px;
-    border-right: 1px solid #b6b6b6;
+ul.quotaactionbuttons-list li:last-child {
+    border-right: none;
 }
-.quoteactionduplicate {
-    padding: 1.5px 6px;
-    border-right: 1px solid #b6b6b6;
-}
-.quoteactionsend {
-    padding: 1.5px 4px;
-    border-right: 1px solid #b6b6b6;
-}
-.quoteactionpdfdoc {
-    padding: 1.5px 10px;
-}
-.leadquotesavebtn {
-    background-image: url(/img/leadorder/button_save.png);
-    background-repeat: no-repeat;
-    width: 53px;
-    height: 32px;
-    cursor: pointer;
-}
-.leadquoteeditbtn {
-    background-image: url(/img/leadorder/button_edit.png);
-    background-repeat: no-repeat;
-    cursor: pointer;
-    height: 34px;
-    width: 52px;
-}
-.leadquotebtnlabel {
-    color: #FFFFFF!important;
-    width: 46px;
-    line-height: 28px;
-    text-align: center;
-    cursor: pointer;
-}
-.quotenumbertitle {
-    color: #525252!important;
-    font-size: 20px;
+.quotaactionbutton {
+    height: 21px;
+    line-height: 20px;
+    color: #3f3f3f;
+    font-size: 12px;/* 11px; */
     font-weight: 600;
-    height: 38px;
-    line-height: 38px;
+    /*padding: 0 4px;*/
+    padding: 0 9.5px;
+    background: #c4c2c2;
+    background: linear-gradient(to top, #aca9a9, #e2e1e1);
+    cursor: pointer;
+    border: 1px solid #3f3f3f;
+    border-right: none;
+}
+.quotaactionbutton.btnreorder {
+    border-radius: 4px 0 0 4px;
+}
+.quotaactionbutton.btnedit {
+    border-radius: 0 4px 4px 0;
+    border-right: 1px solid #3f3f3f;
+}
+.quotaactionbutton.btnreorder:hover {
+    background: #1d9977;
+    background: linear-gradient(to top, #228168, #18b388);
+    color: #fff;
+    text-shadow: rgba(0,0,0,0.5) 1px 1px 2px;
+}
+.quotaactionbutton.btnrequote:hover {
+    background: #1c9aa1;
+    background: linear-gradient(to top, #227f85, #15b5bf);
+    color: #fff;
+    text-shadow: rgba(0,0,0,0.5) 1px 1px 2px;
+}
+.quotaactionbutton.btnpdf:hover {
+    background: #886747;
+    background: linear-gradient(to top, #725334, #9c7a58);
+    color: #fff;
+    text-shadow: rgba(0,0,0,0.5) 1px 1px 2px;
+}
+.quotaactionbutton.btnsend:hover {
+    background: #5353ff;
+    background: linear-gradient(to top, #494dff, #5b57ff);
+    color: #fff;
+    text-shadow: rgba(0,0,0,0.5) 1px 1px 2px;
+}
+.quotaactionbutton.btnedit:hover {
+    background: #ce06c6;
+    background: linear-gradient(to top, #b0019a, #f10cf8);
+    color: #fff;
+    text-shadow: rgba(0,0,0,0.5) 1px 1px 2px;
+}
+.quotaactionbutton.btnsave {
+    border-radius: 0 4px 4px 0;
+    border-right: 1px solid #3f3f3f;
+}
+.quotaactionbutton.btnsave:hover {
+    background: #1db020;
+    background: linear-gradient(to top, #1e9a24, #1cc51d);
+    color: #fff;
+    text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
+}
+
+.quotenumbertitle {
+    color: #525252 !important;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 32px;
     margin-right: 5px;
 }
 .quotenumbervalue {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
-    height: 38px;
-    line-height: 38px;
+    line-height: 32px;
 }
 .quotedatearea {
     float: right!important;
     margin-right: 5px;
 }
 .quotedatetitle {
-    color: #525252!important;
-    font-size: 14px;
+    color: #525252 !important;
+    font-size: 13px;
     font-weight: 600;
-    height: 31px;
-    line-height: 31px;
+    line-height: 32px;
     margin-right: 5px;
 }
 .quotedatevalue {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    height: 31px;
-    line-height: 31px;
+    line-height: 32px;
 }
 .quoteitemtablehead {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
+    margin-top: 5px;
+    width: 100%;
+}
+.quoteitemtablehead.stresballstab {
+    background: #3e46dd;
+}
+.quoteitemtablehead.relieverstab {
+    background: #fffc00;
 }
 .quoteitemtablehead.stresballstab div {
-    background: #3e46dd;
-    color: #FFFFFF!important;
+    color: #FFFFFF !important;
     height: 21px;
     line-height: 21px;
     text-align: center;
     font-size: 11px;
 }
 .quoteitemtablehead.relieverstab div {
-    background: #fffc00;
     color: #000000!important;
     height: 21px;
     line-height: 21px;
@@ -165,46 +244,55 @@
 }
 
 .quoteitemtablehead .itemnumber {
-    width: 72px;
+    /*width: 72px;*/
+    width: 58px;
 }
 .quoteitemtablehead .itemdescription {
-    width: 180px;
+    /*width: 180px;*/
+    width: 201px;
 }
 .quoteitemtablehead .itemcolor {
     /* width: 92px; */
-    width: 153px;
+    /*width: 153px;*/
+    width: 64px;
 }
 .quoteitemtablehead .itemqty {
-    width: 52px;
+    /*width: 52px;*/
+    width: 42px;
 }
 .quoteitemtablehead .itemprice {
-    width: 41px;
+    /*width: 41px;*/
+    width: 42px;
 }
 .quoteitemtablehead .quoteitemsubtotal {
-    width: 92px;
+    /*width: 92px;*/
+    width: 68px;
 }
 .quoteitemtabledata {
     border-left: 2px solid #000000;
     border-bottom: 2px solid #000000;
     border-right: 2px solid #000000;
     background: #FFFFFF;
-    height: 190px;
+    /* height: 190px; */
+    height: 164px;
     width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: none;
 }
 /* Item Table data */
 .quoteitemsarea {
     width: 100%;
 }
 .quoteitemtabledatarow {
-    width: 583px;
-    font-size: 11px;
+    /*width: 583px;*/
+    width: 100%;
     border-bottom: 1px solid #b5b5b5;
 }
 .quoteitemtabledatarow > div {
     height: 20px;
-    line-height: 20px;
+    line-height: 22px;
+    font-size: 10px;
 }
 input.quouteitem_input, select.quouteitem_input {
     height: 16px;
@@ -213,14 +301,18 @@ input.quouteitem_input, select.quouteitem_input {
     width: 100%;
 }
 .quoteitemtabledatarow .itemnumber {
-    width: 72px;
-    font-weight: 600;
+    width: 64px; /* 72px;*/
+    /*font-weight: 600;*/
     text-align: right;
     padding-right: 5px;
 }
 .quoteitemtabledatarow .itemdescription {
     border-left: 1px solid #B5B5B5;
-    width: 180px;
+    width: 194px;
+    padding: 0 3px;
+}
+.quoteitemtabledatarow .itemdescription.custom {
+    width: 259px;
 }
 .quoteitemtabledatarow .itemdescription.viewmode {
     padding-left: 5px;
@@ -230,15 +322,18 @@ input.quouteitem_input, select.quouteitem_input {
 }
 input.quoteitem_description_long {
     padding-left: 2px;
-    width: 178px!important;
+    width: 178px !important;
+    margin-left: 4px;
 }
 .quoteitemtabledatarow .itemdescription > .itemcoloradd {
-    color: #026f11;
+    /*color: #026f11;*/
     cursor: pointer;
     float: left;
 }
 .quoteitemtabledatarow .itemcolor {
-    width: 153px;
+    width: 64px;
+    text-align: center;
+    padding: 0 3px;
 }
 span.addnewquotecolor {
     cursor: pointer;
@@ -247,37 +342,42 @@ span.addnewquotecolor {
     padding-left: 5px;
 }
 select.quoteitemcolors {
-    width: 150px;
+    /*width: 150px;*/
 }
 .quoteitemtabledatarow .itemcolor.bord_l {
     border-left: 1px solid #B5B5B5;
 }
 .quoteitemtabledatarow .itemqty {
     border-left: 1px solid #b5b5b5;
-    width: 52px;
+    /* width: 52px; */
+    width: 42px;
+    padding: 0 3px;
 }
 .quoteitemtabledatarow .itemqty.viewmode {
     padding-right: 5px;
     text-align: right;
 }
 input.quoteitem_qty {
-    width: 50px;
+    /*width: 50px;*/
+    width: 100%;
     text-align: right;
 }
 .quoteitemtabledatarow .itemprice {
-    width: 41px;
+    /*width: 41px;*/
+    width: 42px;
     border-left: 1px solid #b5b5b5;
+    padding: 0 3px;
 }
 .quoteitemtabledatarow .itemprice.viewmode {
     padding-right: 5px;
     text-align: right;
 }
 input.quoteitem_price {
-    width: 39px;
+    width: 100%;
     text-align: right;
 }
 .quoteitemtabledatarow .quoteitemrowsubtotal {
-    width: 68px;
+    width: 61px; /* 68px; */
     text-align: right;
     padding-right: 5px;
     font-weight: bold;
@@ -294,7 +394,7 @@ input.quoteitem_price {
 /* Imprints */
 .quoteitemtabledatarow .impritdetails {
     padding-left: 5px;
-    width: 73px;
+    width: 64px;
 }
 .quoteitemtabledatarow .impritdetails.addprintdetails {
     color: #026f11;
@@ -302,14 +402,14 @@ input.quoteitem_price {
 }
 .quoteitemtabledatarow .imprint_description {
     border-left: 1px solid #b5b5b5;
-    width: 331px;
+    width: 259px; /* 331px; */
     padding-left: 5px;
 }
 .quoteitemtabledatarow .imprint_qty {
     border-left: 1px solid #b5b5b5;
     padding-right: 3px;
     text-align: right;
-    width: 53px;
+    width: 42px; /* 53px; */
 }
 .quoteitemtabledatarow .imprint_price {
     border-left: 1px solid #b5b5b5;
@@ -324,27 +424,28 @@ input.quoteitem_price {
     width: 65px;
 }
 .addquoteitem {
-    padding-right: 2px;
+    padding-right: 4px;
     text-align: right;
-    width: 73px;
+    width: 66px;
     font-size: 11px;
     color: #026f11!important;
     cursor: pointer;
+    margin-top: 3px;
 }
 /* Item Table data END */
 .leadquotediscountarea {
     float: right!important;
-    width: 329px;
+    width: 330px;
     background: #FFFFFF;
     border-left: 2px solid #000000;
     border-bottom: 2px solid #000000;
     border-right: 2px solid #000000;
     /* margin-right: 4px; */
+    padding: 3px 5px 3px 5px;
 }
 /* Discounts */
 .quotemisschargetitle {
     width: 216px;
-    margin-right: 36px;
     padding-left: 1%;
 }
 input.quotediscountinpt {
@@ -356,6 +457,7 @@ input.quotediscountinpt {
 }
 .quotemisschargevalue {
     width: 70px;
+    float: right!important;
 }
 .quotediscountlabel {
     width: 57px;
@@ -366,55 +468,59 @@ input.quotediscountinpt {
 }
 .quotediscounttitle {
     width: 155px;
-    margin-right: 36px;
 }
 .quotediscountvalue {
     width: 70px;
+    float: right!important;
 }
 .quoteitemsubtotal {
-    float: right !important;
-    width: 188px;
+    float: right!important;
+    width: 178px;
 }
 .quoteitemsubtotaltitle {
-    font-size: 14px;
+    font-size: 13px;
     color: #4a4a4a!important;
     margin-right: 7px;
     height: 20px;
-    line-height: 20px;
+    line-height: 22px;
 }
 .quoteitemsubtotalvalue {
     background: #ffffff;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     text-align: right;
     padding-right: 5px;
     padding-left: 5px;
     width: 85px;
     height: 20px;
-    line-height: 20px;
+    line-height: 18px;
+    border: 2px solid #000;
+    border-top: none;
+    float: right!important;
 }
 .quotesectionlabel {
     font-size: 12px;
     font-weight: bold;
     color: #161616;
-    height: 21px;
-    line-height: 21px;
+    height: 17px;
+    line-height: 17px;
+}
+.datarow.shippingaddresplace {
+    /*margin-top: -14px;*/
 }
 .quoteshipaddressarea {
-    width: 255px;
+    width: 200px; /*  255px; */
     margin-bottom: 8px;
 }
 .quoteshipcountryarea {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
-    height: 26px;
+    height: 23px;
     background: #dadada;
-    width: 118px;
+    width: 120px; /* 118px; */
     position: relative;
     z-index: 5;
-    padding-left: 4px;
-    padding-top: 4px;
 }
 select.quoteaddressinpt, input.quoteaddressinpt,
 select.quoteadrinpt, input.quoteadrinpt {
@@ -424,7 +530,11 @@ select.quoteadrinpt, input.quoteadrinpt {
     border: none!important;
 }
 select.quotecountry {
-    width: 102px;
+    width: 104px; /* 102px;*/
+    height: 16px;
+    margin-left: 6px;
+    margin-top: 4px;
+
 }
 select.quotecountry:disabled {
     background: #acacac;
@@ -435,12 +545,12 @@ select.quotecountry:disabled {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
-    width: 255px;
+    width: 100%; /* 255px; */
     background: #dadada;
     margin-top: -2px;
     padding-left: 4px;
     border-bottom: 2px solid #000000;
-    height: 106px;
+    height: 96px;
 }
 input.quoteshipadrother {
     width: 100%;
@@ -462,7 +572,7 @@ input.quoteshipadrother {
     width: 41px;
 }
 input.quotepostal {
-    width: 40px;
+    width: 44px;
     float: left;
 }
 .quoteshipaddrescity {
@@ -470,11 +580,11 @@ input.quotepostal {
     float: left;
 }
 input.quotetown {
-    width: 76px;
+    width: 94px;
     float: left;
 }
 input.quoteshiptown {
-    width: 130px;
+    width: 94px; /* 130px; */
     float: left;
 }
 .quoteshipaddresdistrict {
@@ -485,29 +595,32 @@ select.quotestate {
     width: 38px;
 }
 .quoterushdataarea {
-    width: 337px;
+    width: calc(100% - 200px); /*  337px; */
 }
 .quoteleadtimelabel {
-    width: 95px;
+    width: 70px; /* 95px; */
     padding-right: 7px;
     font-size: 12px;
-    height: 20px;
+    height: 22px;
     line-height: 20px;
     text-align: right;
 }
 .quoteleadtime {
-    width: 190px;
+    /*width: 190px;*/
+    width: 151px;
     height: 20px;
     line-height: 20px;
 }
 select.quoteleadtimeselect {
-    height: 19px;
+    height: 17px;
     font-size: 12px;
     padding-left: 5px;
-    width: 144px;
+    width: 129px; /*  144px; */
+    border: 1px solid #585858;
 }
 .quoteleadrush {
-    width: 52px;
+    width: 46px;
+    float: right!important;
 }
 input.quoteleadshipcostinpt {
     height: 19px;
@@ -516,31 +629,32 @@ input.quoteleadshipcostinpt {
     padding-right: 3px;
 }
 input.quoteleadrushcost {
-    width: 49px;
+    width: 46px; /* 49px;*/
 }
 .quoteshippingcostarea {
-    width: 274px;
-    height: 66px;
+    width: 225px;
+    height: 58px;
     background: #f5f5f5;
     border: 2px solid #000000;
-    margin: 5px 4px 3px 4px;
+    margin: 0 0 3px 4px;
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: none;
 }
 /* Ship Rates */
 .quoteshippingcostarea .datarow div {
-    height: 20px;
-    line-height: 20px;
-    font-size: 11px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 10px;
 }
 .quoteshippingcostarea .datarow div.active {
     font-weight: 600;
 }
 .quoteratecheck {
-    font-size: 13px!important;
-    width: 20px;
+    font-size: 12px !important;
+    width: 16px;
     text-align: center;
-    margin-right: 5px;
+    margin-right: 2px;
 }
 .quoteratecheck.choice i {
     cursor: pointer;
@@ -556,23 +670,23 @@ input.quoteleadrushcost {
 }
 /*  Ship Rates End */
 .quoteshipcost {
-    width: 52px;
-    margin-top: 23px;
-    margin-left: 3px;
+    width: 46px; /* 52px;*/
+    margin-top: 28px;
+    float: right!important;
 }
 input.quoteshipcostvalue {
-    width: 49px;
+    width: 46px; /* 49px;*/
 }
 .quotetaxarea {
     border-right: 2px solid #000000;
     border-top: 2px solid #000000;
     border-bottom: 2px solid #000000;
     background: #dadada;
-    margin-top: 9px;
-    padding-top: 2px;
-    width: 280px;
+    margin-top: 8px;
+    width: 236px;
     margin-left: -2px;
     padding-left: 6px;
+    height: 26px;
 }
 .quotetaxlabelveiw {
     height: 22px;
@@ -618,8 +732,8 @@ input.quoteshipcostvalue {
     padding-left: 3px;
 }
 .quotetaxinput {
-    width: 58px;
-    padding-left: 5px;
+    width: 46px;
+    float: right!important;
 }
 .quotetaxlabel {
     font-size: 11px;
@@ -630,25 +744,25 @@ input.quoteshipcostvalue {
 }
 .quotetaxvalue {
     width: 100%;
+    float: right!important;
+    margin-top: 12px;
 }
 input.quotesalestaxvalue {
-    width: 49px;
+    width: 46px;
 }
 .quotebillingaddressarea {
-    width: 195px;
+    width: 200px; /* 195px; */
+    margin-top: 5px;
 }
 .quotebillcountryarea {
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
-    height: 26px;
+    height: 23px;
     background: #dadada;
-    width: 118px;
+    width: 120px;
     position: relative;
     z-index: 5;
-    padding-left: 4px;
-    padding-top: 2px;
-    padding-bottom: 4px;
 }
 .quotebillcountryarea.billingsame {
     border-left: 2px solid #737373;
@@ -677,20 +791,23 @@ input.quotesalestaxvalue {
     border-top: 2px solid #000000;
     border-right: 2px solid #000000;
     border-bottom: 2px solid #000000;
-    width: 192px;
+    width: 200px;
     background: #dadada;
     margin-top: -2px;
     padding-left: 4px;
     padding-bottom: 4px;
+    height: 96px;
 }
 .quoteaddressarea, .quotebilladdressarea {
-    width: 168px;
+    width: 180px; /* 168px; */
     border: 2px solid #8f8f9d;
-    padding: 5px;
-    margin-top: 3px;
+    padding: 0;
+    margin-top: 4px;
+    height: 84px;
+    position: relative;
 }
 .quoteaddressarea {
-    width: 222px;
+    /*width: 222px;*/
 }
 .quotebilladdressother.billingsame {
     border-bottom: 2px solid #737373;
@@ -726,50 +843,57 @@ select[data-item='billing_state']:disabled {
 .quotebilladdresdistrict {
     /* width: 49px; */
 }
-.billingaddresscopy, .shipaddrescopy {
+.quotebillingaddresscopy, .shipaddrescopy {
     background: #000000;
-    color: #ffffff!important;
+    color: #ffffff !important;
     font-size: 11px;
     cursor: pointer;
-    position: relative;
-    left: -22px;
+    position: absolute;
+    right: 0;
     width: 16px;
     height: 16px;
     text-align: center;
-    margin-top: 8px;
+    top: 0;
 }
 .quotenotesarea {
-    width: 236px;
+    width: 280px;
+    float: right !important;
 }
 textarea.quotenote {
-    width: 227px;
-    /* height: 52px; */
-    height: 131px;
+    width: 100%;
+    height: 94px;
     resize: none;
     overflow-y: auto;
     font-size: 11px;
     padding: 5px;
+    border: 2px solid #000;
 }
-.quotetotalarea {}
+.quotetotalarea {
+    float: right!important;
+    margin-bottom: 5px;
+}
 .quotetotals {
-    width: 150px;
+    width: 166px;
     background: #2b2b2b;
-    border-radius: 7px;
+    border-radius: 5px;
     font-size: 13px;
+    background: linear-gradient(to top, #020602, #3e3f3e);
+    border: 1px solid #342e23;
+    height: 24px;
 }
 .quotetotallabel {
-    height: 23px;
     line-height: 23px;
     text-align: left;
     margin-left: 6px;
     color: #ffffff!important;
+    font-size: 12px;
+    text-transform: uppercase;
 }
 .quotetotalvalue {
-    height: 23px;
     line-height: 23px;
     float: right!important;
     margin-right: 6px;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 600;
     color: #ffffff!important;
 }

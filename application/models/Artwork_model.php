@@ -393,9 +393,6 @@ Class Artwork_model extends MY_Model
         if (isset($artw['artwork_note'])) {
             $this->db->set('artwork_note',$artw['artwork_note']);
         }
-        if (isset($artw['other_item'])) {
-            $this->db->set('other_item', $artw['other_item']);
-        }
         $this->db->set('user_updated',$artw['user_id']);
         if ($artw['artwork_id']==0) {
             $this->db->set('user_created',$artw['user_id']);
@@ -412,7 +409,7 @@ Class Artwork_model extends MY_Model
             $this->db->where('artwork_id',$artw['artwork_id']);
             $this->db->update('ts_artworks');
         }
-        if (isset($artw['update_msg']) && $artw['update_msg']) {
+        if (isset($artw['update_msg']) && !empty($artw['update_msg'])) {
             /* Create record in History */
             $this->artwork_history_update($artw);
         }
@@ -943,136 +940,129 @@ Class Artwork_model extends MY_Model
     public function save_artdata($data, $artdata, $user_id, $artsession) {
         $out=array('result'=>$this->error_result, 'msg'=>  $this->INIT_MSG);
         $this->load->model('artproof_model');
-        $redraw_logos=array();
-        if (empty($artdata['customer_name'])) {
+        $artwork = $artdata['artwork'];
+        $locations = $artdata['locations'];
+        $proofs = $artdata['proofs'];
+        $approved = $artdata['approved'];
+        $deleted = $artdata['deleted'];
+        $redraw_logos = [];
+        if (empty($artwork['customer'])) {
             $out['msg']='Enter Customer Name';
-        } elseif (empty($artdata['customer_email'])) {
+        } elseif (empty($artwork['customer_email'])) {
             $out['msg']='Enter Customer Email';
-        } elseif (empty($artdata['item_name'])) {
+        } elseif (empty($artwork['item_name'])) {
             $out['msg']='Please select an item first. Your changes cannot be saved until you do this.';
         } else {
             $out['msg']='Test Save';
             /* Check - Order was assigned or not */
-            $assign_order=0;
-            if ($artdata['artwork_id']!=0) {
+            $assign_order = 0;
+            if ($artwork['artwork_id'] > 0) {
                 /* Select previous data about order */
                 $this->db->select('order_id, mail_id');
                 $this->db->from('ts_artworks');
-                $this->db->where('artwork_id',$artdata['artwork_id']);
+                $this->db->where('artwork_id',$artwork['artwork_id']);
                 $oldart=$this->db->get()->row_array();
-                if ($oldart['order_id']==0 && $oldart['mail_id']!=0 && $artdata['order_id']!=0) {
+                if (empty($oldart['order_id']) && !empty($oldart['mail_id']) && !empty($artwork['order_id'])) {
                     $assign_order=1;
                 }
             }
-            $oldartwork_id=0;
+            $oldartwork_id = 0;
             if ($assign_order) {
                 $this->db->select('artwork_id');
                 $this->db->from('ts_artworks');
-                $this->db->where('order_id',$artdata['order_id']);
+                $this->db->where('order_id',$artwork['order_id']);
                 $artwdat=$this->db->get()->row_array();
                 if (isset($artwdat['artwork_id'])) {
-                    $oldartwork_id=$artwdat['artwork_id'];
+                    $oldartwork_id = $artwdat['artwork_id'];
                 }
             }
 
-            $artwork=array(
-                'artwork_id'=>$artdata['artwork_id'],
-                'order_id'=>($artdata['order_id']==0 ? NULL : $artdata['order_id']),
-                'mail_id'=>($artdata['proofs_id']==0 ? NULL : $artdata['proofs_id']),
-                'update_msg'=>NULL,
-                'artwork_rush'=>$artdata['rush'],
-                'customer'=>$artdata['customer_name'],
-                'customer_contact'=>$artdata['contact'],
-                'customer_phone'=>$artdata['customer_phone'],
-                'customer_email'=>$artdata['customer_email'],
-                'item_name'=>$artdata['item_name'],
-                'item_number'=>$artdata['item_num'],
-                'artwork_note'=>$artdata['notes'],
-                'item_color'=>$artdata['item_color'],
-                'item_qty'=>$artdata['item_qty'],
-                'item_id'=>$artdata['item_id'],
-                'other_item'=>$artdata['other_item'],
-                'customer_instruct'=>$artdata['customer_instruct'],
-            );
+//            $artwork=array(
+//                'artwork_id'=>$artdata['artwork_id'],
+//                'order_id'=>($artdata['order_id']==0 ? NULL : $artdata['order_id']),
+//                'mail_id'=>($artdata['proofs_id']==0 ? NULL : $artdata['proofs_id']),
+//                'update_msg'=>NULL,
+//                'artwork_rush'=>$artdata['rush'],
+//                'customer'=>$artdata['customer_name'],
+//                'customer_contact'=>$artdata['contact'],
+//                'customer_phone'=>$artdata['customer_phone'],
+//                'customer_email'=>$artdata['customer_email'],
+//                'item_name'=>$artdata['item_name'],
+//                'item_number'=>$artdata['item_num'],
+//                'artwork_note'=>$artdata['notes'],
+//                'item_color'=>$artdata['item_color'],
+//                'item_qty'=>$artdata['item_qty'],
+//                'item_id'=>$artdata['item_id'],
+//                'other_item'=>$artdata['other_item'],
+//                'customer_instruct'=>$artdata['customer_instruct'],
+//            );
+//
+//            if ($artdata['update_msg']) {
+//                $artwork['update_msg']=$artdata['update_msg'];
+//            }
+//            $artwork['user_id']=$user_id;
+            $artwork['user_id'] = $user_id;
 
-            if ($artdata['update_msg']) {
-                $artwork['update_msg']=$artdata['update_msg'];
-            }
-            $artwork['user_id']=$user_id;
-
-            $artwork_id=$this->artwork_update($artwork);
-            $oldproofdocs=$this->get_artproofs($artwork_id);
-            /* update Proof & Order data */
-            if (intval($artdata['order_id'])==0) {
+            $artwork_id = $this->artwork_update($artwork);
+            $oldproofdocs = $this->get_artproofs($artwork_id);
+            // update Proof & Order data
+            if (intval($artwork['order_id'])==0) {
                 /* Update Proofs */
                 $proof_dat=array(
-                    'email_id'=>$artdata['proofs_id'],
-                    'proof_rush'=>$artdata['rush'],
-                    'email_sender'=>$artdata['customer_name'],
-                    'email_printing'=>$artdata['contact'],
-                    'email_senderphone'=>$artdata['customer_phone'],
-                    'email_sendermail'=>$artdata['customer_email'],
-                    'email_item_number'=>$artdata['item_num'],
-                    'email_questions'=>$artdata['notes'],
-                    'email_special_requests'=>$artdata['item_color'],
-                    'email_qty'=>$artdata['item_qty'],
-                    'email_item_id'=>$artdata['item_id'],
+                    'email_id' => $artwork['mail_id'], // $artwork['proofs_id'],
+                    'proof_rush'=> ifset($artwork, 'rush', 0),
+                    'email_sender' => $artwork['customer'],
+                    'email_printing' => $artwork['customer_contact'],
+                    'email_senderphone' => $artwork['customer_phone'],
+                    'email_sendermail' => $artwork['customer_email'],
+                    'email_item_number' => $artwork['item_number'],
+                    'email_questions' => $artwork['artwork_note'],
+                    'email_special_requests' => $artwork['item_color'],
+                    'email_qty' => $artwork['item_qty'],
+                    'email_item_id' => $artwork['item_id'],
                 );
-                if ($artdata['item_name']=='Other' || $artdata['item_name']=='Multiple' || $artdata['item_name']=='Custom Shaped Stress Balls') {
-                    if ($artdata['other_item']) {
-                        $proof_dat['email_item_name']=$artdata['other_item'];
+                if ($artwork['item_name']=='Other' || $artwork['item_name']=='Multiple' || $artwork['item_name']=='Custom Shaped Stress Balls') {
+                    if ($artwork['other_item']) {
+                        $proof_dat['email_item_name'] = $artwork['other_item'];
                     } else {
-                        $proof_dat['email_item_name']=$artdata['item_name'];
+                        $proof_dat['email_item_name'] = $artwork['item_name'];
                     }
                 } else {
-                    $proof_dat['email_item_name']=$artdata['item_name'];
+                    $proof_dat['email_item_name'] = $artwork['item_name'];
                 }
                 $this->proof_update($proof_dat);
             } else {
                 /* Update Orders */
                 if ($assign_order) {
                     /* Proof was assigned with Orders */
-                    $this->assign_order($artdata['proofs_id'],$artdata['order_id'],$oldartwork_id, $artdata['artwork_id']);
+                    $this->assign_order($artwork['mail_id'], $artwork['order_id'],$oldartwork_id, $artdata['artwork_id']);
 
                     $proof_dat=array(
                         'email_status'=>$this->order_status,
-                        'email_id'=>$artdata['proofs_id'],
+                        'email_id'=>$artwork['mail_id'],
                     );
                     $this->proof_update($proof_dat);
                     $this->db->select('order_num, brand')->from('ts_orders')->where('order_id', $artdata['order_id']);
                     $assigndata = $this->db->get()->row_array();
                     // Order #, Mail NUM
-//                    $ordpref=$artdata['order_num'];
-//                    $mailpref='pr'.$artdata['proof_num'];
-//                    $orddocpref=$artdata['order_num'];
-//                    $maildocpref='proof_'.$artdata['proof_num'];
-//                    /* Proofs */
-//                    $idxproof=0;
-//                    foreach ($artdata['proofs'] as $prrow) {
-//                        $namedoc=$prrow['proof_name'];
-//                        $newname=str_replace($maildocpref, $orddocpref, $namedoc);
-//                        $artdata['proofs'][$idxproof]['proof_name']=$newname;
-//                        $idxproof++;
-//                    }
                 }
-                $orddata=array(
-                    'order_rush'=>$artdata['rush'],
-                    'order_id'=>$artdata['order_id'],
-                    'order_blank'=>$artdata['blank'],
-                );
-                if ($artdata['item_name']=='Other' || $artdata['item_name']=='Multiple' || $artdata['item_name']=='Custom Shaped Stress Balls') {
-                    if ($artdata['other_item']) {
-                        $orddata['order_items']=$artdata['other_item'];
+                $orddata = [
+                    'order_rush' => $artwork['artwork_rush'],
+                    'order_id' => $artwork['order_id'],
+                    'order_blank'=> $artwork['artwork_blank'],
+                ];
+                if ($artwork['item_name']=='Other' || $artwork['item_name']=='Multiple' || $artwork['item_name']=='Custom Shaped Stress Balls') {
+                    if ($artwork['other_item']) {
+                        $orddata['order_items']=$artwork['other_item'];
                     } else {
-                        $orddata['order_items']=$artdata['item_name'];
+                        $orddata['order_items']=$artwork['item_name'];
                     }
                 } else {
-                    $orddata['order_items']=$artdata['item_name'];
+                    $orddata['order_items']=$artwork['item_name'];
                 }
             }
             $i=1;
             /* Update Locations */
-            $locations=$artdata['locations'];
             $this->save_artdatalocations($locations, $artwork_id);
             /* Save Proofs */
             // $idxproof=0;
@@ -1084,30 +1074,31 @@ Class Artwork_model extends MY_Model
             }
             createPath($path_proofsh);
             $numpp = 1;
-            foreach ($artdata['proofs'] as $prow) {
+            foreach ($proofs as $prow) {
                 /* Analyse row*/
-                $proof=array();
-                if ($prow['artwork_proof_id']<0) {
+                $ignored = 0;
+                $proof = [];
+                if ($prow['artwork_proof_id'] < 0) {
                     $path_sh=$this->config->item('pathpreload');
                     $path_full=$this->config->item('upload_path_preload');
                     $chkfilescr=str_replace($path_sh,$path_full,$prow['src']);
                     if (!file_exists($chkfilescr)) {
-                        if ($prow['deleted']==0) {
-                            $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $prow['src'], $prow['source_name'], 'Lost Upload (Save)');
-                        }
-                        $prow['deleted']=1;
+                        // if ($prow['deleted']==0) {
+                        $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $prow['src'], $prow['source_name'], 'Lost Upload (Save)');
+                        // }
+                        $ignored = 1;
                     }
                 } else {
                     $path_sh=$this->config->item('artwork_proofs_relative');
                     $path_full=$this->config->item('artwork_proofs');
                 }
-                if ($prow['deleted']=='') {
+                if ($ignored==0) {
                     $proofsrc=$prow['src'];
                     $docnameattr = extract_filename($proofsrc);
                     if ($assign_order==1) {
                         $proofname = ($assigndata['brand']=='SR' ? 'SR' : 'BT').$assigndata['order_num'].'_proof_'.str_pad($numpp,2,'0',STR_PAD_LEFT).'.'.$docnameattr['ext'];
                     } else {
-                        $proofname = 'proof_'.$artdata['proof_num'].'_'.str_pad($numpp,2,'0',STR_PAD_LEFT).'.'.$docnameattr['ext'];
+                        $proofname = 'proof_'.$artwork['proof_num'].'_'.str_pad($numpp,2,'0',STR_PAD_LEFT).'.'.$docnameattr['ext'];
                     }
                     $srclocation=str_replace($path_sh,$path_full,$proofsrc);
                     $newlocation=$path_prooffull.$proofname;
@@ -1142,30 +1133,42 @@ Class Artwork_model extends MY_Model
                     $res=$this->save_proofdat($proof, $user_id);
                     // Save log
                     $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $prow['src'], $prow['source_name'], 'Save ProofDoc (Save)');
-                } else {
-                    if ($prow['artwork_proof_id']>0) {
-                        /* Delete */
-                        $this->db->where('artwork_proof_id',$prow['artwork_proof_id']);
-                        $this->db->delete('ts_artwork_proofs');
-                        $proofsrc=$prow['src'];
-                        $srclocation=str_replace($path_proofsh,$path_prooffull,$proofsrc);
-                        @unlink($srclocation);
-                        $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $prow['src'], $prow['source_name'], 'Delete ProofDoc (Save)');
-                    }
+    //                } else {
+    //                    if ($prow['artwork_proof_id']>0) {
+    //                        /* Delete */
+    //                        $this->db->where('artwork_proof_id',$prow['artwork_proof_id']);
+    //                        $this->db->delete('ts_artwork_proofs');
+    //                        $proofsrc=$prow['src'];
+    //                        $srclocation=str_replace($path_proofsh,$path_prooffull,$proofsrc);
+    //                        @unlink($srclocation);
+    //                        $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $prow['src'], $prow['source_name'], 'Delete ProofDoc (Save)');
+    //                    }
+                }
+            }
+            // Delete
+            foreach ($deleted as $row) {
+                if ($row['entity_type']=='locations') {
+                    $this->db->where('artwork_art_id', $row['entity_id']);
+                    $this->db->delete('ts_artwork_arts');
+                }
+                if ($row['entity_type']=='proofs') {
+                    $this->db->where('artwork_proof_id', $row['entity_id']);
+                    $this->db->delete('ts_artwork_proofs');
                 }
             }
             // Clean session
             usersession($artsession,NULL);
             $out['result']=  $this->success_result;
             $out['msg']='';
+            $out['artwork_id'] = $artwork_id;
             // Art in redraw stage
             $cntnonvect=$this->artwork_chktext($artwork_id, 'VECTORED')+$this->artwork_chklogo($artwork_id, 'VECTORED');
             $rushnote=0;
             $rush_msgtxt='';
-            if ($cntnonvect!=0 && $artdata['oldrush']!=$artdata['rush']) {
-                $rushnote=1;
-                $rush_msgtxt=($artdata['rush']==1 ? 'Rush' : 'Standard');
-            }
+//            if ($cntnonvect!=0 && $artdata['oldrush']!=$artdata['rush']) {
+//                $rushnote=1;
+//                $rush_msgtxt=($artdata['rush']==1 ? 'Rush' : 'Standard');
+//            }
             if (count($redraw_logos)>0 || $rushnote==1) {
                 $this->artlogo_notification($redraw_logos, $artwork_id, $rush_msgtxt);
             }
@@ -1179,10 +1182,14 @@ Class Artwork_model extends MY_Model
             if ($res1['order_blank']=='1') {
                 $blank=1;
             }
+            $stagedat = [
+                'proof_id' => $artwork['mail_id'],
+                'order_id' => $artwork['order_id'],
+            ];
             if ($blank==1) {
-                $this->art_blank_changestage($data, $artdata, $artwork_id, $user_id);
+                $this->art_blank_changestage($stagedat, $artdata, $artwork_id, $user_id);
             } else {
-                $this->art_common_changestage($data, $artdata, $artwork_id,$user_id);
+                $this->art_common_changestage($stagedat, $artdata, $artwork_id,$user_id);
             }
             if ($assign_order) {
                 $this->_prepare_sync($artdata, $oldproofdocs, $user_id);
@@ -1192,8 +1199,9 @@ Class Artwork_model extends MY_Model
     }
 
     private function _prepare_sync($artdata, $oldproofdocs, $user_id) {
-        $artwork_id=$artdata['artwork_id'];
-        $order_id=$artdata['order_id'];
+        $artwork = $artdata['artwork'];
+        $artwork_id=$artwork['artwork_id'];
+        $order_id=$artwork['order_id'];
         $this->db->select('*');
         $this->db->from('ts_orders o');
         $this->db->where('order_id', $order_id);
@@ -1220,7 +1228,7 @@ Class Artwork_model extends MY_Model
                 $artsync['approv_stage']=1;
             } else {
                 $this->load->model('artlead_model');
-                $artsync=$this->artlead_model->art_common_changestage($order, $artdata, $artwork_id, $artsync, $user_id);
+                $artsync=$this->artlead_model->art_common_changestage($order, $artwork, $artwork_id, $artsync, $user_id);
             }
             // Add Artsync Data
             $this->db->set('user_id', $artsync['user_id']);
@@ -1408,65 +1416,56 @@ Class Artwork_model extends MY_Model
         $preload_path_fl=$this->config->item('upload_path_preload');
         $preload_path_sh=$this->config->item('pathpreload');
         createPath($path_sh);
+        $numpp = 1;
         foreach ($locations as $loc) {
             $location=array();
-            if ($loc['deleted']!='') {
-                // Mark logos as deleted
-                if ($loc['artwork_art_id']>0) {
-                    // We delete previously saved location
-                    $this->delete_artlocation($loc['artwork_art_id']);
-                }
+//            if ($loc['deleted']!='') {
+//                // Mark logos as deleted
+//                if ($loc['artwork_art_id']>0) {
+//                    // We delete previously saved location
+//                    $this->delete_artlocation($loc['artwork_art_id']);
+//                }
+//            } else {
+            $location['artwork_id'] = $artwork_id;
+            if ($loc['artwork_art_id'] <=0 ) {
+                $location['artwork_art_id'] = 0;
             } else {
-                $location['artwork_id']=$artwork_id;
-                if ($loc['artwork_art_id']<=0) {
-                    $location['artwork_art_id']=0;
-                } else {
-                    $location['artwork_art_id']=$loc['artwork_art_id'];
-                }
-                $location['art_type']=$loc['art_type'];
-                $location['art_ordnum']=$loc['art_ordnum'];
-                $location['art_numcolors']=$loc['art_numcolors'];
-                $location['art_color1']=($loc['art_color1']=='' ? NULL : $loc['art_color1']);
-                $location['art_color2']=($loc['art_color2']=='' ? NULL : $loc['art_color2']);
-                $location['art_color3']=($loc['art_color3']=='' ? NULL : $loc['art_color3']);
-                $location['art_color4']=($loc['art_color4']=='' ? NULL : $loc['art_color4']);
-                $location['customer_text']=($loc['customer_text']=='' ? NULL : $loc['customer_text']);
-                $location['font']=($loc['font']=='' ? NULL : $loc['font']);
-                $location['redraw_message']=$loc['redraw_message'];
-                $location['art_location']=($loc['art_location']=='' ? NULL : $loc['art_location']);
-                $location['rush']=intval($loc['rush']);
-                $location['redrawvect']=intval($loc['redrawvect']);
-                $location['redo']=intval($loc['redo']);
-                $location['repeat_text']=($loc['repeat_text']=='' ? NULL : $loc['repeat_text']);
-                if ($loc['art_type']=='Logo' || $loc['art_type']=='Reference') {
-                    /* Prepare art logos */
-                    if ($loc['artwork_art_id']<=0) {
-                        // New location - a) move file to new location
-                        if ($loc['logo_src']!='' && $loc['logo_src']!='&nbsp;') {
-                            /* copy */
-                            $srcname=str_replace($preload_path_sh, $preload_path_fl,$loc['logo_srcpath']);
-                            $destname=$path_fl.$loc['logo_src'];
-                            @copy($srcname,$destname);
-                            $location['logo_src']=$path_sh.$loc['logo_src'];
-                            $location['redraw_time']=time();
-                            if ($loc['redrawvect']==0) {
-                                // Make source vectorized
-                                $location['logo_vectorized']=$path_sh.$loc['logo_src'];
-                                $location['vectorized_time']=time();
-                            } else {
-                                $redraw_logos[]=array(
-                                    'logo_src'=>$loc['logo_src'],
-                                    'deed'=>'Add',
-                                );
-                            }
-                        }
-                    } else {
-                        if ($location['redo']==1) {
-                            $location['logo_vectorized']='';
-                            $location['vectorized_time']=0;
+                $location['artwork_art_id']=$loc['artwork_art_id'];
+            }
+            $location['art_type'] = $loc['art_type'];
+            $location['art_ordnum'] = $numpp; // $loc['art_ordnum'];
+            $location['art_numcolors'] = $loc['art_numcolors'];
+            $location['art_color1']=($loc['art_color1']=='' ? NULL : $loc['art_color1']);
+            $location['art_color2']=($loc['art_color2']=='' ? NULL : $loc['art_color2']);
+            $location['art_color3']=($loc['art_color3']=='' ? NULL : $loc['art_color3']);
+            $location['art_color4']=($loc['art_color4']=='' ? NULL : $loc['art_color4']);
+            $location['customer_text']=($loc['customer_text']=='' ? NULL : $loc['customer_text']);
+            $location['font']=($loc['font']=='' ? NULL : $loc['font']);
+            $location['redraw_message']=$loc['redraw_message'];
+            $location['art_location']=($loc['art_location']=='' ? NULL : $loc['art_location']);
+            $location['rush']=intval($loc['rush']);
+            $location['redrawvect']=intval($loc['redrawvect']);
+            $location['redo']=intval($loc['redo']);
+            $location['repeat_text']=($loc['repeat_text']=='' ? NULL : $loc['repeat_text']);
+            if ($loc['art_type']=='Logo' || $loc['art_type']=='Reference') {
+                /* Prepare art logos */
+                if ($loc['artwork_art_id'] <= 0) {
+                    // New location - a) move file to new location
+                    if ($loc['logo_src']!='' && $loc['logo_src']!='&nbsp;') {
+                        /* copy */
+                        $srcname = str_replace($preload_path_sh, $preload_path_fl,$loc['logo_src']);
+                        $destname = $path_fl.$loc['logo_src_clean'];
+                        @copy($srcname,$destname);
+                        $location['logo_src']=$path_sh.$loc['logo_src_clean'];
+                        $location['redraw_time']=time();
+                        if ($loc['redrawvect']==0) {
+                            // Make source vectorized
+                            $location['logo_vectorized']=$path_sh.$loc['logo_src_clean'];
+                            $location['vectorized_time']=time();
+                        } else {
                             $redraw_logos[]=array(
                                 'logo_src'=>$loc['logo_src'],
-                                'deed'=>'Redo',
+                                'deed'=>'Add',
                             );
                         }
                     }
@@ -1474,13 +1473,24 @@ Class Artwork_model extends MY_Model
                     if ($location['redo']==1) {
                         $location['logo_vectorized']='';
                         $location['vectorized_time']=0;
-                    }
-                    if ($location['redrawvect']==1 && empty($loc['redraw_time'])) {
-                        $location['redraw_time']=time();
+                        $redraw_logos[]=array(
+                            'logo_src'=>$loc['logo_src'],
+                            'deed'=>'Redo',
+                        );
                     }
                 }
-                $res=$this->artlocation_update($location);
+            } else {
+                if ($location['redo']==1) {
+                    $location['logo_vectorized']='';
+                    $location['vectorized_time']=0;
+                }
+                if ($location['redrawvect']==1 && empty($loc['redraw_time'])) {
+                    $location['redraw_time']=time();
+                }
             }
+            $res = $this->artlocation_update($location);
+            $numpp++;
+//            }
         } // End locations list
         return TRUE;
     }
@@ -1845,7 +1855,7 @@ Class Artwork_model extends MY_Model
     /* Change Stage - COMMON type (with logos) */
     public function art_common_changestage($data,$artdata,$artwork_id,$user_id) {
         /* count Logos, Proofs , etc */
-        $current_stage=$artdata['artstage'];
+        $current_stage=$artdata['artwork']['artstage'];
         $cntlogoall=$this->artwork_chklogo($artwork_id, 'ALL');
         $cnttextall=$this->artwork_chktext($artwork_id, 'ALL');
         $cntrepeat=$this->artwork_check_repeat($artwork_id, 'ALL');
@@ -2108,15 +2118,28 @@ Class Artwork_model extends MY_Model
         if (!isset($res['item_number'])) {
             $out['msg']='Item Not Found';
         } else {
-            $artdata['item_name']=$res['item_name'];
-            $artdata['item_num']=$res['item_number'];
-            $artdata['item_id']=$item_id;
-
+            $artwork = $artdata['artwork'];
+            $artwork['item_name']=$res['item_name'];
+            $artwork['item_num']=$res['item_number'];
+            $artwork['item_id']=$item_id;
+            $other_item = '';
+            if ($res['item_name']=='Other' || $res['item_name']=='Multiple' || $res['item_name']=='Custom Shaped Stress Balls') {
+                if ($res['item_name']=='Other') {
+                    $other_item = 'Other';
+                } elseif($res['item_name']=='Multiple') {
+                    $other_item = 'Multiple';
+                } else {
+                    $other_item = 'Custom';
+                }
+            }
+            $artwork['other_item'] = $other_item;
+            $artdata['artwork'] = $artwork;
             usersession($artsession, $artdata);
             $out['result']= $this->success_result;
             $out['msg']='';
-            $out['item_name']=$res['item_name'];
-            $out['item_number']=$res['item_number'];
+            $out['item_name'] = $res['item_name'];
+            $out['item_number'] = $res['item_number'];
+            $out['other_item'] = $other_item;
             $out['imprints']=$this->get_location_imprint($item_id);
         }
         return $out;
@@ -2143,212 +2166,179 @@ Class Artwork_model extends MY_Model
         return $out;
     }
 
-    public function get_templates($artdata, $artwork_id) {
+    public function get_templates($artdata) {
         $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Artwork data was lost. Please reload data';
+        $artwork = $artdata['artwork'];
+        $dbtablename='sb_items';
+        $brand = ifset($artwork, 'brand','BT');
+        $this->db->select("item_id, item_number, item_name, item_vector_img");
+        $this->db->from($dbtablename);
+        $this->db->where('item_vector_img is not null');
+        if ($brand=='SR') {
+            $this->db->where('brand', $brand);
         } else {
-            $dbtablename='sb_items';
-            $brand = ifset($artdata, 'brand','BT');
-            $this->db->select("item_id, item_number, item_name, item_vector_img");
-            $this->db->from($dbtablename);
-            $this->db->where('item_vector_img is not null');
-            if ($brand=='SR') {
-                $this->db->where('brand', $brand);
-            } else {
-                $this->db->where_id('brand',['SB','BT']);
-            }
-            $result=$this->db->get()->result_array();
-
-            $out['templates']=$result;
-            $out['result']=  $this->success_result;
+            $this->db->where_in('brand',['SB','BT']);
         }
+        $result=$this->db->get()->result_array();
+        $out['templates'] = $result;
+        $out['result'] = $this->success_result;
         return $out;
     }
 
     public function add_prooffile($artdata, $file, $filename, $usr_id, $artsession)
     {
         $out = array('result' => $this->error_result, 'msg' => $this->INIT_MSG);
+        $proofs = $artdata['proofs'];
+        $artwork = $artdata['artwork'];
         $idxproof = 0;
         $numpp = 0;
-        foreach ($artdata['proofs'] as $row) {
+        foreach ($proofs as $row) {
             $numpp = $row['proof_ordnum'];
             $idxproof++;
         }
         $path_full = $this->config->item('upload_path_preload');
         $path_sh = $this->config->item('pathpreload');
-        $prefix = ($artdata['order_num'] == '' ? $artdata['proof_num'] : $artdata['order_num']);
+        $prefix = ($artwork['order_num'] == '' ? $artwork['proof_num'] : $artwork['order_num']);
         if (file_exists($path_full.$file)) {
             $newsrc = $path_sh.$file;
             $numpp++;
             $idxproof++;
             $proof_id = ($idxproof) * (-1);
             $newname = 'proof_' . $prefix . '_' . str_pad($numpp, 2, '0', STR_PAD_LEFT) . '.pdf';
-            $dellink = '<div data-proofid="' . $proof_id . '" data-artworkid="' . $artdata['artwork_id'] . '" class="artpopup_artredcirkle removeproof">&nbsp;</div>';
-            $newproof = ['artwork_proof_id' => $proof_id, 'artwork_id' => $artdata['artwork_id'], 'proof_name' => $newname, 'src' => $newsrc, 'approved' => 0, 'approved_time' => 0, 'sended' => 0, 'sended_time' => 0, 'deleted' => '', 'dellink' => $dellink, 'proof_ordnum' => $numpp, 'source_name' => $filename,];
-            $artdata['proofs'][] = $newproof;
+            $newproof = [
+                'artwork_proof_id' => $proof_id,
+                'artwork_id' => $artwork['artwork_id'],
+                'proof_ordnum' => $numpp,
+                'proof_name' => $newname,
+                'sended' => 0,
+                'sended_time' => 0,
+                'approved' => 0,
+                'approved_time' => 0,
+                'source_name' => $filename,
+                'src' => $newsrc,
+                'proofdoc_link' => '',
+            ];
+            $proofs[] = $newproof;
             // Save to log
             $this->load->model('artproof_model');
-            $this->artproof_model->add_proofdoc_log($artdata['artwork_id'], $usr_id, $path_sh.$file, $filename, 'Save Upload');
+            $this->artproof_model->add_proofdoc_log($artwork['artwork_id'], $usr_id, $path_sh.$file, $filename, 'Save Upload');
         }
-
+        $artdata['proofs'] = $proofs;
         usersession($artsession, $artdata);
         $out['result'] = $this->success_result;
         /* Get all proofs */
-        $proofs = array();
-        $proofnum = 1;
-        $approvenum = 1;
-        foreach ($artdata['proofs'] as $row) {
-            if ($row['deleted'] == '') {
-                $row['out_approved'] = '';
-                $row['approve_class'] = '';
-                $row['approve_class'] = 'proofnotapproved';
-                $row['out_approved'] = '<img src="/img/artpage/artpopup_whitestar.png" alt="proof"/>';
-                $row['out_proofname'] = 'proof_' . str_pad($proofnum, 2, '0', STR_PAD_LEFT);
-                $proofnum++;
-                $row['out_apprname'] = '';
-                if ($row['approved'] == 1) {
-                    $row['out_approved'] = '<img src="/img/artpage/artpopup_greenstar.png" alt="proof"/>';
-                    $row['approve_class'] = 'proofapproved';
-                    $row['out_apprname'] = 'approved_' . str_pad($approvenum, 2, '0', STR_PAD_LEFT);
-                    $approvenum++;
-                }
-                $proofs[] = $row;
-            }
-        }
+//        $proofs = array();
+//        $proofnum = 1;
+//        $approvenum = 1;
+//        foreach ($artdata['proofs'] as $row) {
+//            if ($row['deleted'] == '') {
+//                $row['out_approved'] = '';
+//                $row['approve_class'] = '';
+//                $row['approve_class'] = 'proofnotapproved';
+//                $row['out_approved'] = '<img src="/img/artpage/artpopup_whitestar.png" alt="proof"/>';
+//                $row['out_proofname'] = 'proof_' . str_pad($proofnum, 2, '0', STR_PAD_LEFT);
+//                $proofnum++;
+//                $row['out_apprname'] = '';
+//                if ($row['approved'] == 1) {
+//                    $row['out_approved'] = '<img src="/img/artpage/artpopup_greenstar.png" alt="proof"/>';
+//                    $row['approve_class'] = 'proofapproved';
+//                    $row['out_apprname'] = 'approved_' . str_pad($approvenum, 2, '0', STR_PAD_LEFT);
+//                    $approvenum++;
+//                }
+//                $proofs[] = $row;
+//            }
+//        }
         $out['proofs'] = $proofs;
         return $out;
     }
 
     /* Delete Proof */
-    function art_delproof($artdata, $artwork_id, $proof_id, $user_id, $artsession) {
-        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Artwork data was lost. Please reload data';
-        } else {
-            $found=0;
-            $idxproof=0;
-            foreach ($artdata['proofs'] as $prow) {
-                if ($prow['artwork_proof_id']==$proof_id) {
-                    $artdata['proofs'][$idxproof]['deleted']='del';
-                    $found=1;
-                    $this->load->model('artproof_model');
-                    $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $prow['src'], $prow['source_name'], 'Remove Proof');
-                    break;
+    function art_delproof($artdata, $proof_id, $user_id, $artsession) {
+        $out = ['result'=>  $this->error_result, 'msg'=> 'Proof Doc Not Found'];
+        $artwork = $artdata['artwork'];
+        $proofs = $artdata['proofs'];
+        $approved = $artdata['approved'];
+        $deleted = $artdata['deleted'];
+        $found=0;
+        $newproof = [];
+        $newapproved = [];
+        foreach ($proofs as $prow) {
+            if ($prow['artwork_proof_id']==$proof_id) {
+                $found=1;
+                $this->load->model('artproof_model');
+                $this->artproof_model->add_proofdoc_log($artwork['artwork_id'], $user_id, $prow['src'], $prow['source_name'], 'Remove Proof');
+                if ($proof_id > 0) {
+                    $deleted[] = [
+                        'entity_type' => 'proofdoc',
+                        'entity_id' => $proof_id,
+                    ];
                 }
-                if ($found==1) {
-                    break;
-                }
-                $idxproof++;
-            }
-            if ($found) {
-                /* Save ARTDATA */
-                $newproof=array();
-                $idxproof=0;
-                $proofnum=1;
-                $approvenum=1;
-                // $numpp=0;
-                foreach ($artdata['proofs'] as $row) {
-                    if ($row['deleted']=='') {
-                        // $numpp++;
-                        $newprofname='proof_';
-                        if (intval($artdata['order_id'])==0) {
-                            $newprofname.=str_replace('-', '_', $artdata['proof_num']);
-                        } else {
-                            $newprofname.=str_replace('-', '_', $artdata['order_num']);
-                        }
-                        // $newprofname.='_'.str_pad($numpp, 2, '0', STR_PAD_LEFT).'.pdf';
-                        $newprofname.='_'.str_pad($row['proof_ordnum'], 2, '0', STR_PAD_LEFT).'.pdf';
-                        $artdata['proofs'][$idxproof]['proof_name']=$newprofname;
-                        $row['proof_name']=$newprofname;
-                        $row['out_approved']='';
-                        $row['approve_class']='';
-                        $row['approve_class']='proofnotapproved';
-                        /* artpopup_whitestar.png */
-                        $row['out_approved']='<img src="/img/artpage/artpopup_whitestar.png" alt="proof"/>';
-                        $row['out_proofname']='proof_'.str_pad($proofnum, 2, '0', STR_PAD_LEFT);
-                        $proofnum++;
-                        $row['out_apprname']='';
-                        if ($row['approved']==1) {
-                            $row['out_approved']='<img src="/img/artpage/artpopup_greenstar.png" alt="proof"/>';
-                            $row['approve_class']='proofapproved';
-                            $row['out_apprname']='approved_'.str_pad($approvenum,2,'0',STR_PAD_LEFT);
-                            $approvenum++;
-                        }
-                        $newproof[]=$row;
-                    }
-                    $idxproof++;
-                }
-                usersession($artsession,$artdata);
-                $out['proofs']=$newproof;
-                $out['result']=  $this->success_result;
-                $out['msg']='';
             } else {
-                $out['msg']='Proof Doc not found';
+                $newproof[] = $prow;
             }
+        }
+        if ($found) {
+            /* Save ARTDATA */
+            foreach ($approved as $item) {
+                if ($item['artwork_proof_id']!=$proof_id) {
+                    $newapproved[] = $item;
+                }
+            }
+            $artdata['proofs'] = $newproof;
+            $artdata['approved'] = $newapproved;
+            $artdata['deleted'] = $deleted;
+            usersession($artsession,$artdata);
+            $out['proofs'] = $newproof;
+            $out['approved'] = $newapproved;
+            $out['result']=  $this->success_result;
+            $out['msg']='';
         }
         return $out;
     }
 
     /* Approve Proof */
-    public function approve_proof($artwork_id, $proof_id, $artdata, $user_id, $artsession) {
-        $out=array('result'=>  $this->error_result,'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Your connection is lost. Please, reload form';
-        } else {
-            $found=0;
-            $idxproof=0;
-            foreach ($artdata['proofs'] as $prow) {
-                if ($prow['artwork_proof_id']==$proof_id) {
-                    $found=1;
-                    $artdata['proofs'][$idxproof]['approved']=1;
-                    $this->load->model('artproof_model');
-                    $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $prow['src'], $prow['source_name'], 'Approve Upload');
-                    break;
-                }
-                $idxproof++;
+    public function approve_proof($proof_id, $artdata, $user_id, $artsession) {
+        $out = ['result'=>  $this->error_result, 'msg'=> 'Proof Doc Not Found'];
+        $found=0;
+        $idxproof=0;
+        $artwork = $artdata['artwork'];
+        $proofs = $artdata['proofs'];
+        $approved = $artdata['approved'];
+        foreach ($proofs as $prow) {
+            if ($prow['artwork_proof_id']==$proof_id) {
+                $found=1;
+                $proofs[$idxproof]['approved']=1;
+                $this->load->model('artproof_model');
+                $this->artproof_model->add_proofdoc_log($artwork['artwork_id'], $user_id, $prow['src'], $prow['source_name'], 'Approve Upload');
+                break;
             }
-            if ($found==1) {
-                $newproofs=array();
-                $proofnum=1;
-                $approvenum=1;
-                foreach ($artdata['proofs'] as $row) {
-                    if ($row['deleted']=='') {
-                        $row['out_approved']='';
-                        $row['approve_class']='';
-                        $row['approve_class']='proofnotapproved';
-                        $row['out_approved']='<img src="/img/artpage/artpopup_whitestar.png" alt="proof"/>';
-                        $row['out_proofname']='proof_'.str_pad($proofnum, 2, '0', STR_PAD_LEFT);
-                        $proofnum++;
-                        $row['out_apprname']='';
-                        if ($row['approved']==1) {
-                            $row['out_approved']='<img src="/img/artpage/artpopup_greenstar.png" alt="proof"/>';
-                            $row['approve_class']='proofapproved';
-                            $row['out_apprname']='approved_'.str_pad($approvenum,2,'0',STR_PAD_LEFT);
-                            $approvenum++;
-                        }
-                        $newproofs[]=$row;
-                    }
-                }
-                $out['proofs']=$newproofs;
-                usersession($artsession, $artdata);
-                $out['result']= $this->success_result;
-                $out['msg']='';
-            } else {
-                $out['msg']='Proof not found';
-            }
+            $idxproof++;
+        }
+        if ($found==1) {
+            $approved[] = $proofs[$idxproof];
+            $artdata['proofs'] = $proofs;
+            $artdata['approved'] = $approved;
+            usersession($artsession, $artdata);
+            $out['result']= $this->success_result;
+            $out['msg']='';
+            $out['proofs'] = $proofs;
+            $out['approved'] = $approved;
         }
         return $out;
     }
 
     public function send_proof_approve($data, $artdata, $user_id, $artsession) {
         $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
+        $artwork = $artdata['artwork'];
+        $proofs = $artdata['proofs'];
+
         $seanmail=0;
         /* Check Data */
-        if ($data['artwork_id']!=$artdata['artwork_id']) {
-            $out['msg']='You Lost connection to Form. Please, reload form';
-            return $out;
-        } elseif (empty($data['from'])) {
+//        if ($data['artwork_id']!=$artdata['artwork_id']) {
+//            $out['msg']='You Lost connection to Form. Please, reload form';
+//            return $out;
+//        } else
+        if (empty($data['from'])) {
             $out['msg']='Enter Sender Email';
             return $out;
         } elseif (empty($data['customer'])) {
@@ -2405,15 +2395,18 @@ Class Artwork_model extends MY_Model
             $path_sh=$this->config->item('pathpreload');
             // $proofurl=$this->config->item('prooflnk');
             $proofurl=$this->config->item('newprooflnk');
-            foreach ($artdata['proofs'] as $row) {
+            foreach ($proofs as $row) {
+                $ignored = 0;
                 // Check that file exist
                 $chkfile=$srclocation=str_replace($path_sh,$path_full,$row['src']);
                 if ($row['artwork_proof_id']< 0 && !file_exists($chkfile)) {
-                    $artdata['proofs'][$idxproofs]['deleted']=1;
-                    $row['deleted']=1;
+                    // $artdata['proofs'][$idxproofs]['deleted']=1;
+                    // $row['deleted']=1;
+                    $ignored = 1;
                     $this->artproof_model->add_proofdoc_log($data['artwork_id'], $user_id, $row['src'], $row['source_name'], 'Lost Upload');
                 }
-                if (in_array($row['artwork_proof_id'],$proof_array) && intval($row['deleted'])==0) {
+                if (in_array($row['artwork_proof_id'],$proof_array) && $ignored==0) {
+                    // intval($row['deleted'])==0) {
                     // This proof doc was maked as send
                     // Collect data to insert / update
                     $proof=array();
@@ -2445,7 +2438,7 @@ Class Artwork_model extends MY_Model
                     }
                     $proof['sended']=1;
                     $proof['sended_time']=time();
-                    $proof['artwork_id']=$artdata['artwork_id'];
+                    $proof['artwork_id']=$artwork['artwork_id'];
                     // Save data
                     if ($upload==1) {
                         $res=$this->save_proofdat($proof, $user_id);
@@ -2456,15 +2449,15 @@ Class Artwork_model extends MY_Model
                     if ($res) {
                         $this->artproof_model->add_proofdoc_log($data['artwork_id'], $user_id, $row['src'], $row['source_name'], 'Send Proof');
                         if ($row['artwork_proof_id']<0) {
-                            $artdata['proofs'][$idxproofs]['artwork_proof_id']=$res;
-                            $artdata['proofs'][$idxproofs]['src']=$newsrc;
-                            $artdata['proofs'][$idxproofs]['proofdoc_link']=$newlink;
+                            $proofs[$idxproofs]['artwork_proof_id']=$res;
+                            $proofs[$idxproofs]['src']=$newsrc;
+                            $proofs[$idxproofs]['proofdoc_link']=$newlink;
                         }
-                        $artdata['proofs'][$idxproofs]['sended']=1;
-                        $artdata['proofs'][$idxproofs]['sended_time']=$proof['sended_time'];
-                        $artdata['proofs'][$idxproofs]['approve_class']='proofnotapproved';
-                        $artdata['proofs'][$idxproofs]['dellink']='';
-                        $attachsrc=$artdata['proofs'][$idxproofs]['proofdoc_link'];
+                        $proofs[$idxproofs]['sended']=1;
+                        $proofs[$idxproofs]['sended_time']=$proof['sended_time'];
+                        $proofs[$idxproofs]['approve_class']='proofnotapproved';
+                        $proofs[$idxproofs]['dellink']='';
+                        $attachsrc=$proofs[$idxproofs]['proofdoc_link'];
                         $attachments[]=$proofurl.$attachsrc;
                     }
                 }
@@ -2479,7 +2472,7 @@ Class Artwork_model extends MY_Model
                 if ($seanmail==0) {
                     array_push($other_cc, $this->config->item('sean_email'));
                 }
-                if ($artdata['proofs_id']) {
+                if ($artwork['mail_id']) {
                     $this->load->model('user_model');
                     $replicas=$this->user_model->get_user_leadreplicas(1);
                     // Get Lead and Main REP
@@ -2488,7 +2481,7 @@ Class Artwork_model extends MY_Model
                     $this->db->join('ts_lead_users lu','lu.user_id=u.user_id');
                     $this->db->join('ts_lead_emails le','le.lead_id=lu.lead_id');
                     $this->db->join('ts_leads l','l.lead_id=le.lead_id');
-                    $this->db->where('le.email_id', $artdata['proofs_id']);
+                    $this->db->where('le.email_id', $artwork['mail_id']);
                     $this->db->where('u.user_status',1);
                     $notemails=$this->db->get()->result_array();
                     if (count($notemails)>0) {
@@ -2601,13 +2594,13 @@ Class Artwork_model extends MY_Model
                     }
                     $this->email_model->logsendmail($logoptions);
                     // Get Lead related with order / proof requests
-                    if ($artdata['proofs_id']) {
+                    if ($artwork['mail_id']) {
                         $this->db->select('u.user_email, l.lead_number');
                         $this->db->from('users u');
                         $this->db->join('ts_lead_users lu', 'lu.user_id=u.user_id');
                         $this->db->join('ts_lead_emails le', 'le.lead_id=lu.lead_id');
                         $this->db->join('ts_leads l', 'l.lead_id=le.lead_id');
-                        $this->db->where('le.email_id', $artdata['proofs_id']);
+                        $this->db->where('le.email_id', $artwork['mail_id']);
                         $this->db->where('u.user_status', 1);
                         $notemails = $this->db->get()->result_array();
                         if (count($notemails) > 0) {
@@ -2620,9 +2613,9 @@ Class Artwork_model extends MY_Model
                             }
                             $this->email->to($list);
                             $this->email->from($data['from']);
-                            $notesubj = 'Proof sent to ' . $artdata['customer_name'];
+                            $notesubj = 'Proof sent to ' . $artwork['customer'];
                             $this->email->subject($notesubj);
-                            $msgnote = 'The Art Dept sent ' . $artdata['customer_name'] . ' ' . count($attachments) . ' proofs today (' . date('m/d/y g:i a') . ') for Lead # ' . $leadnum . ' ' . $artdata['item_name'] . ':' . PHP_EOL;
+                            $msgnote = 'The Art Dept sent ' . $artwork['customer'] . ' ' . count($attachments) . ' proofs today (' . date('m/d/y g:i a') . ') for Lead # ' . $leadnum . ' ' . $artwork['item_name'] . ':' . PHP_EOL;
                             foreach ($attachments as $row) {
                                 $msgnote .= ' - ' . str_replace($path_prooffull, '', $row) . PHP_EOL;
                             }
@@ -2631,12 +2624,12 @@ Class Artwork_model extends MY_Model
                         }
                     }
                 }
-                if ($artdata['proofs_id']) {
+                if ($artwork['mail_id']) {
                     // Update lead history and lead update status
                     $this->db->select('l.lead_number, l.lead_id');
                     $this->db->from('ts_leads l');
                     $this->db->join('ts_lead_emails le','le.lead_id=l.lead_id');
-                    $this->db->where('le.email_id', $artdata['proofs_id']);
+                    $this->db->where('le.email_id', $artwork['mail_id']);
                     $leadlist=$this->db->get()->result_array();
                     $msg='Art proof emailed'; // .$usrdat['user_name'];
                     foreach ($leadlist as $row) {
@@ -2652,8 +2645,8 @@ Class Artwork_model extends MY_Model
                     }
                 }
                 /* Add to History record that we send ART proof message */
-                if ($artdata['artwork_id']) {
-                    $this->db->set('artwork_id',$artdata['artwork_id']);
+                if ($artwork['artwork_id']) {
+                    $this->db->set('artwork_id',$artwork['artwork_id']);
                     $this->db->set('user_id',$user_id);
                     $this->db->set('created_time',time());
                     $this->db->set('message',$histmsg);
@@ -2661,27 +2654,29 @@ Class Artwork_model extends MY_Model
                     $this->db->insert('ts_artwork_history');
                 }
             }
+            $artdata['artwork'] = $artwork;
+            $artdata['proofs'] = $proofs;
             usersession($artsession, $artdata);
-            $proofdat=array();
-            $proofnum=1;
-            $approvenum=1;
-            foreach ($artdata['proofs'] as $row) {
-                $row['out_approved']='';
-                $row['approve_class']='';
-                $row['approve_class']='proofnotapproved';
-                $row['out_approved']='<img src="/img/artpage/artpopup_whitestar.png" alt="proof"/>';
-                $row['out_proofname']='proof_'.str_pad($proofnum, 2, '0', STR_PAD_LEFT);
-                $proofnum++;
-                $row['out_apprname']='';
-                if ($row['approved']==1) {
-                    $row['out_approved']='<img src="/img/artpage/artpopup_greenstar.png" alt="proof"/>';
-                    $row['approve_class']='proofapproved';
-                    $row['out_apprname']='approved_'.str_pad($approvenum,2,'0',STR_PAD_LEFT);
-                    $approvenum++;
-                }
-                $proofdat[]=$row;
-            }
-            $out['proofs']=$proofdat;
+//            $proofdat=array();
+//            $proofnum=1;
+//            $approvenum=1;
+//            foreach ($proofs as $row) {
+//                $row['out_approved']='';
+//                $row['approve_class']='';
+//                $row['approve_class']='proofnotapproved';
+//                $row['out_approved']='<img src="/img/artpage/artpopup_whitestar.png" alt="proof"/>';
+//                $row['out_proofname']='proof_'.str_pad($proofnum, 2, '0', STR_PAD_LEFT);
+//                $proofnum++;
+//                $row['out_apprname']='';
+//                if ($row['approved']==1) {
+//                    $row['out_approved']='<img src="/img/artpage/artpopup_greenstar.png" alt="proof"/>';
+//                    $row['approve_class']='proofapproved';
+//                    $row['out_apprname']='approved_'.str_pad($approvenum,2,'0',STR_PAD_LEFT);
+//                    $approvenum++;
+//                }
+//                $proofdat[]=$row;
+//            }
+//            $out['proofs']=$proofdat;
             $out['result']=$this->success_result;
             $out['msg']='';
         }
@@ -2689,71 +2684,44 @@ Class Artwork_model extends MY_Model
     }
 
     /* Revert Approved */
-    public function art_revert_approved($artdata, $artwork_id, $proof_id, $user_id, $artsession) {
+    public function art_revert_approved($artdata, $proof_id, $user_id, $artsession) {
         $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Artwork data was lost. Please reload data';
+        $artwork = $artdata['artwork'];
+        $proofs = $artdata['proofs'];
+        $approved = $artdata['approved'];
+        $found=0;
+        $idxproof=0;
+        foreach ($proofs as $prow) {
+            if ($prow['artwork_proof_id']==$proof_id) {
+                $proofs[$idxproof]['approved']=0;
+                $proofs[$idxproof]['approved_time']=0;
+                $found=1;
+                $this->load->model('artproof_model');
+                $this->artproof_model->add_proofdoc_log($artwork['artwork_id'], $user_id, $prow['src'], $prow['source_name'], 'Revert Approved Upload');
+                break;
+            }
+            if ($found==1) {
+                break;
+            }
+            $idxproof++;
+        }
+        if ($found) {
+            /* Save ARTDATA */
+            $newapproved = [];
+            foreach ($approved as $row) {
+                if ($row['artwork_proof_id']!=$proof_id) {
+                    $newapproved[] = $row;
+                }
+            }
+            $artdata['proofs'] = $proofs;
+            $artdata['approved'] = $newapproved;
+            usersession($artsession, $artdata);
+            $out['proofs'] = $proofs;
+            $out['approved'] = $newapproved;
+            $out['result'] = $this->success_result;
+            $out['msg']='';
         } else {
-            $found=0;
-            $idxproof=0;
-            foreach ($artdata['proofs'] as $prow) {
-                if ($prow['artwork_proof_id']==$proof_id) {
-                    $artdata['proofs'][$idxproof]['approved']=0;
-                    $artdata['proofs'][$idxproof]['approved_time']=0;
-                    $found=1;
-                    $this->load->model('artproof_model');
-                    $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $prow['src'], $prow['source_name'], 'Revert Approved Upload');
-                    break;
-                }
-                if ($found==1) {
-                    break;
-                }
-                $idxproof++;
-            }
-            if ($found) {
-                /* Save ARTDATA */
-                $newproof=array();
-                $idxproof=0;
-                // $numpp=0;
-                $proofnum=1;
-                $approvenum=1;
-                foreach ($artdata['proofs'] as $row) {
-                    if ($row['deleted']=='') {
-                        // $numpp++;
-                        $newprofname='proof_';
-                        if (intval($artdata['order_id'])==0) {
-                            $newprofname.=str_replace('-', '_', $artdata['proof_num']);
-                        } else {
-                            $newprofname.=str_replace('-', '_', $artdata['order_num']);
-                        }
-                        $newprofname.='_'.str_pad($row['proof_ordnum'], 2, '0', STR_PAD_LEFT).'.pdf';
-                        $artdata['proofs'][$idxproof]['proof_name']=$newprofname;
-                        $row['proof_name']=$newprofname;
-                        $row['out_approved']='';
-                        $row['approve_class']='';
-                        $row['approve_class']='proofnotapproved';
-                        /* artpopup_whitestar.png */
-                        $row['out_approved']='<img src="/img/artpopup_whitestar.png" alt="proof"/>';
-                        $row['out_proofname']='proof_'.str_pad($proofnum, 2, '0', STR_PAD_LEFT);
-                        $proofnum++;
-                        $row['out_apprname']='';
-                        if ($row['approved']==1) {
-                            $row['out_approved']='<img src="/img/artpopup_greenstar.png" alt="proof"/>';
-                            $row['approve_class']='proofapproved';
-                            $row['out_apprname']='approved_'.str_pad($approvenum,2,'0',STR_PAD_LEFT);
-                            $approvenum++;
-                        }
-                        $newproof[]=$row;
-                    }
-                    $idxproof++;
-                }
-                usersession($artsession, $artdata);
-                $out['proofs']=$newproof;
-                $out['result']=$this->success_result;
-                $out['msg']='';
-            } else {
-                $out['msg']='Proof Doc not found';
-            }
+            $out['msg']='Proof Doc not found';
         }
         return $out;
     }
@@ -2775,7 +2743,10 @@ Class Artwork_model extends MY_Model
         if ($found==1) {
             $out['result']=$this->success_result;
             $out['msg']='';
-            $out['filename']=$file;
+            $proof_sh = $this->config->item('artwork_proofs_relative');
+            $preload_sh = $this->config->item('pathpreload');
+
+            $out['filename']=str_replace([$proof_sh, $preload_sh], '', $file);
             $out['url']=$url;
         } else {
             $out['msg']='File not found';
@@ -2792,10 +2763,10 @@ Class Artwork_model extends MY_Model
     }
 
     public function add_referencelocation($artdata, $data, $artwork_id, $art_type, $artsession) {
-        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Unknown Artwork. Please, reload page';
-        } else {
+        $out=array('result'=>  $this->error_result, 'msg'=>  'Unknown Artwork. Please, reload page');
+        $artwork = $artdata['artwork'];
+        $locations = $artdata['locations'];
+        if ($artwork['artwork_id']==$artwork_id) {
             $idxloc=0;
             $numpp=0;
             if (isset($artdata['locations'])) {
@@ -2812,8 +2783,9 @@ Class Artwork_model extends MY_Model
             $preload_path_sh=$this->config->item('pathpreload');
             $custom_quote_sh = $this->config->item('upload_customquote_relative');
             $custom_quote_fl = $this->config->item('upload_customquote');
-            $logopath='';
             $repeat_text='';
+            $ready = 0;
+            $rush = 0; // $artdata['rush'];
             $imagesourceclass=$imagesourceview='';
             $newart_id=($idxloc*(-1));
             $redraw = 1;
@@ -2824,8 +2796,8 @@ Class Artwork_model extends MY_Model
             }
             $reflogos = explode('-', $reflogosrc);
             foreach ($reflogos as $reflogo) {
-                $logo_src='&nbsp;';
-                $logo_vect='&nbsp;';
+                $logo_src = '';
+                $logopath = '';
                 $usrtxt = '';
                 $this->db->select('*');
                 $this->db->from('ts_email_attachments');
@@ -2834,58 +2806,51 @@ Class Artwork_model extends MY_Model
                 if (ifset($res,'email_attachment_id',0)>0) {
                     $source_file = str_replace($custom_quote_sh, $custom_quote_fl, $res['email_attachment_filename']);
                     $file_det = extract_filename($res['email_attachment_filename']);
-                    if (in_array($file_det['ext'], $this->logo_imageext)) {
-                        $imagesourceclass = 'viewsource';
-                        $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
-                    }
                     $newfile = 'ref_'.uniq_link(10).'.'.$file_det['ext'];
                     $rescp = @copy($source_file, $preload_path_fl.$newfile);
                     if ($rescp) {
                         $logosrc_path = $preload_path_sh . $newfile;
-                        if ($artdata['order_id']) {
-                            $logo_src = $artdata['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                        if ($artwork['order_id']) {
+                            $logo_src = $artwork['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
                         } else {
-                            $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                            $logo_src = $artwork['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
                         }
-                        $rush=$artdata['rush'];
-                        $location=array(
-                            'artwork_art_id'=>$newart_id,
-                            'artwork_id'=>$artwork_id,
-                            'art_type'=>$art_type,
-                            'art_ordnum'=>$numpp,
-                            'logo_src'=>$logo_src,
-                            'logo_srcpath'=>$logosrc_path,
-                            'redraw_time'=>'',
-                            'logo_vectorized'=>$logo_vect,
-                            'logo_vectorizedpath'=>$logovec_path,
-                            'vectorized_time'=>'',
-                            'redrawvect'=>$redraw,
-                            'rush'=>$rush,
-                            'customer_text'=>$usrtxt,
-                            'font'=>'',
-                            'redraw_message'=>'',
-                            'redo'=>'',
-                            'art_numcolors'=>'',
-                            'art_color1'=>'',
-                            'art_color2'=>'',
-                            'art_color3'=>'',
-                            'art_color4'=>'',
-                            'art_location'=>'',
-                            'repeat_text'=>$repeat_text,
-                            'deleted' =>'',
-                            'imagesourceclass'=>$imagesourceclass,
-                            'imagesourceview'=>$imagesourceview,
-                        );
-                        $artdata['locations'][]=$location;
+                        $location = [
+                            'artwork_art_id' => $newart_id,
+                            'artwork_id' => $artwork_id,
+                            'art_type' => $art_type,
+                            'art_ordnum' => $numpp,
+                            'logo_src' => $logosrc_path,
+                            'logo_src_clean' => $logo_src,
+                            'logo_vectorized' => '',
+                            'logo_vectorized_clean' => '',
+                            'vectorized_time' => 0,
+                            'redrawvect' => $redraw,
+                            'rush' => $rush,
+                            'customer_text' => $usrtxt,
+                            'font' => '',
+                            'redraw_message' => '',
+                            'redo' => 0,
+                            'art_numcolors' => '',
+                            'art_location' => '',
+                            'repeat_text' => $repeat_text,
+                            'sys_redrawn' => 0,
+                            'ready' => $ready,
+                        ];
+                        for ($i=1; $i<5; $i++) {
+                            $location['art_color'.$i] = $location['color'.$i.'_title'] = $location['color'.$i.'_style'] = '';
+                            $location['color'.$i.'_active'] = 0;
+                        }
                         $idxloc++;
                         $numpp++;
+                        $locations[] = $location;
                     }
                 }
             }
             // If Exist Uploaded logo
             if (!empty($data['uploadlogo'])) {
-                $logo_src='&nbsp;';
-                $logo_vect='&nbsp;';
+                $logo_src='';
+                $logo_vect='';
                 $usrtxt='';
                 $logosrc_path='';
                 $logovec_path='';
@@ -2893,89 +2858,87 @@ Class Artwork_model extends MY_Model
                 $preload_path_sh=$this->config->item('pathpreload');
                 $logopath='';
                 $repeat_text='';
-                $imagesourceclass=$imagesourceview='';
+                // $imagesourceclass=$imagesourceview='';
                 $newart_id=($idxloc*(-1));
                 $redraw = 1;
                 $logopath = $data['uploadlogo'];
                 /* Make Filename */
                 $file_name = str_replace([$preload_path_fl, $preload_path_sh], '', $logopath);
                 $file_det = extract_filename($file_name);
-                if (in_array($file_det['ext'], $this->logo_imageext)) {
-                    $imagesourceclass = 'viewsource';
-                    $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
-                }
+//                if (in_array($file_det['ext'], $this->logo_imageext)) {
+//                    $imagesourceclass = 'viewsource';
+//                    $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
+//                }
                 $logosrc_path = $preload_path_sh . $file_name;
-                if ($artdata['order_id']) {
-                    $logo_src = $artdata['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                if ($artwork['order_id']) {
+                    $logo_src = $artwork['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
                 } else {
-                    $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                    $logo_src = $artwork['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
                 }
 
-                $rush=$artdata['rush'];
-                $location=array(
-                    'artwork_art_id'=>$newart_id,
-                    'artwork_id'=>$artwork_id,
-                    'art_type'=>$art_type,
-                    'art_ordnum'=>$numpp,
-                    'logo_src'=>$logo_src,
-                    'logo_srcpath'=>$logosrc_path,
-                    'redraw_time'=>'',
-                    'logo_vectorized'=>$logo_vect,
-                    'logo_vectorizedpath'=>$logovec_path,
-                    'vectorized_time'=>'',
-                    'redrawvect'=>$redraw,
-                    'rush'=>$rush,
-                    'customer_text'=>$usrtxt,
-                    'font'=>'',
-                    'redraw_message'=>'',
-                    'redo'=>'',
-                    'art_numcolors'=>'',
-                    'art_color1'=>'',
-                    'art_color2'=>'',
-                    'art_color3'=>'',
-                    'art_color4'=>'',
-                    'art_location'=>'',
-                    'repeat_text'=>$repeat_text,
-                    'deleted' =>'',
-                    'imagesourceclass'=>$imagesourceclass,
-                    'imagesourceview'=>$imagesourceview,
-                );
-                $artdata['locations'][]=$location;
+                $location = [
+                    'artwork_art_id' => $newart_id,
+                    'artwork_id' => $artwork_id,
+                    'art_type' => $art_type,
+                    'art_ordnum' => $numpp,
+                    'logo_src' => $logosrc_path,
+                    'logo_src_clean' => $logo_src,
+                    'logo_vectorized' => '',
+                    'logo_vectorized_clean' => '',
+                    'vectorized_time' => 0,
+                    'redrawvect' => $redraw,
+                    'rush' => $rush,
+                    'customer_text' => $usrtxt,
+                    'font' => '',
+                    'redraw_message' => '',
+                    'redo' => 0,
+                    'art_numcolors' => '',
+                    'art_location' => '',
+                    'repeat_text' => $repeat_text,
+                    'sys_redrawn' => 0,
+                    'ready' => $ready,
+                ];
+                for ($i=1; $i<5; $i++) {
+                    $location['art_color'.$i] = $location['color'.$i.'_title'] = $location['color'.$i.'_style'] = '';
+                    $location['color'.$i.'_active'] = 0;
+                }
+                $locations[] = $location;
             }
             // Save
-            usersession($artsession,$artdata);
+            $artdata['locations'] = $locations;
+            usersession($artsession, $artdata);
             $out['result'] = $this->success_result;
+            $out['locations'] = $locations;
         }
         return $out;
     }
 
     function add_location($artdata, $data, $artwork_id, $art_type, $artsession) {
-        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        if ($artdata['artwork_id']!=$artwork_id) {
-            $out['msg']='Unknown Artwork. Please, reload page';
-        } else {
+        $out=['result' => $this->error_result, 'msg' => 'Unknown Artwork. Please, reload page'];
+        $artwork = $artdata['artwork'];
+        $locations = $artdata['locations'];
+        if ($artwork['artwork_id']==$artwork_id) {
             $idxloc=0;
             $numpp=0;
-            if (isset($artdata['locations'])) {
-                foreach ($artdata['locations'] as $lrow) {
-                    $idxloc++;
-                    $numpp=$lrow['art_ordnum'];
-                }
+            foreach ($artdata['locations'] as $lrow) {
+                $idxloc++;
+                $numpp=$lrow['art_ordnum'];
             }
             $idxloc++;
             $numpp++;
             /* New Location */
             $logo_src='&nbsp;';
             $logo_vect='&nbsp;';
-            $usrtxt='';
+            $usrtxt = '';
             $logosrc_path='';
             $logovec_path='';
             $preload_path_fl=$this->config->item('upload_path_preload');
             $preload_path_sh=$this->config->item('pathpreload');
-            $logopath='';
+            $logopath = '';
             $repeat_text='';
-            $imagesourceclass=$imagesourceview='';
-            $newart_id=($idxloc*(-1));
+            $ready = 0;
+            // $imagesourceclass = $imagesourceview = '';
+            $newart_id = ($idxloc*(-1));
             if ($art_type=='Logo') {
                 if ($art_type == 'Logo') {
                     $redraw = 1;
@@ -2986,106 +2949,77 @@ Class Artwork_model extends MY_Model
                 /* Make Filename */
                 $file_name = str_replace([$preload_path_fl, $preload_path_sh], '', $logopath);
                 $file_det = extract_filename($file_name);
-                if (in_array($file_det['ext'], $this->logo_imageext)) {
-                    $imagesourceclass = 'viewsource';
-                    $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
-                }
+//                if (in_array($file_det['ext'], $this->logo_imageext)) {
+//                    $imagesourceclass = 'viewsource';
+//                    $imagesourceview = '/artproofrequest/viewartsource?id=' . $newart_id . '&artsession=' . $artsession;
+//                }
                 $logosrc_path = $preload_path_sh . $file_name;
-                if ($artdata['order_id']) {
-                    $logo_src = $artdata['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                if ($artwork['order_id']) {
+                    $logo_src = $artwork['order_num'] . '_' . $numpp . '.' . $file_det['ext'];
                 } else {
-                    $logo_src = $artdata['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
+                    $logo_src = $artwork['proof_num'] . '_' . $numpp . '.' . $file_det['ext'];
                 }
             } elseif($art_type=='Text') {
-                $redraw=0;
-                $usrtxt=$data['usertext'];
+                $redraw = 0;
+                $ready = 1;
+                $usrtxt = $data['usertext'];
             } else {
-                $redraw=0;
-                $repeat_text=$data['repeat_text'];
+                $redraw = 0;
+                $ready = 1;
+                $repeat_text = $data['repeat_text'];
             }
-            $rush=$artdata['rush'];
-            $location=array(
-                'artwork_art_id'=>$newart_id,
-                'artwork_id'=>$artwork_id,
-                'art_type'=>$art_type,
-                'art_ordnum'=>$numpp,
-                'logo_src'=>$logo_src,
-                'logo_srcpath'=>$logosrc_path,
-                'redraw_time'=>'',
-                'logo_vectorized'=>$logo_vect,
-                'logo_vectorizedpath'=>$logovec_path,
-                'vectorized_time'=>'',
-                'redrawvect'=>$redraw,
-                'rush'=>$rush,
-                'customer_text'=>$usrtxt,
-                'font'=>'',
-                'redraw_message'=>'',
-                'redo'=>'',
-                'art_numcolors'=>'',
-                'art_color1'=>'',
-                'art_color2'=>'',
-                'art_color3'=>'',
-                'art_color4'=>'',
-                'art_location'=>'',
-                'repeat_text'=>$repeat_text,
-                'deleted' =>'',
-                'imagesourceclass'=>$imagesourceclass,
-                'imagesourceview'=>$imagesourceview,
-            );
-            $artdata['locations'][]=$location;
+            $location = [
+                'artwork_art_id' => $newart_id,
+                'artwork_id' => $artwork_id,
+                'art_type' => $art_type,
+                'art_ordnum' => $numpp,
+                'logo_src' => $logosrc_path,
+                'logo_src_clean' => $logo_src,
+                'logo_vectorized' => '',
+                'logo_vectorized_clean' => '',
+                'vectorized_time' => 0,
+                'redrawvect' => $redraw,
+                'rush' => 0,
+                'customer_text' => $usrtxt,
+                'font' => '',
+                'redraw_message' => '',
+                'redo' => 0,
+                'art_numcolors' => '',
+                'art_location' => '',
+                'repeat_text' => $repeat_text,
+                'sys_redrawn' => 0,
+                'ready' => $ready,
+            ];
+            for ($i=1; $i<5; $i++) {
+                $location['art_color'.$i] = $location['color'.$i.'_title'] = $location['color'.$i.'_style'] = '';
+                $location['color'.$i.'_active'] = 0;
+            }
+            $locations[]=$location;
+            $artdata['locations']=$locations;
             /* Save  */
             usersession($artsession,$artdata);
-            $location['numpp']=$numpp;
-            $newlocation=$location;
-            $empty_icon='<img src="/img/artpage/white_square.png"/>';
-            $newlocation['artlabel']=$location['art_ordnum'].'.'.($location['art_type']=='Reference' ? 'Refer' : $location['art_type']);
-            $newlocation['redrawchk']=$newlocation['rushchk']=$newlocation['redochk']='&nbsp;';
-            if ($art_type=='Logo') {
-                $chk='checked="checked"';
-                $texticon='';
-                $srcdat=extract_filename($newlocation['logo_src']);
-                if (in_array($srcdat['ext'],$this->nonredrawn)) {
-                    $newlocation['location_state']='source_alert';
-                } else {
-                    $newlocation['location_state']='source';
-                }
-                $newlocation['redochk']='<input type="checkbox" class="artredo" data-artworkartid="'.$location['artwork_art_id'].'" value="1"/>';
-            } else {
-                $chk='';
-                $texticon=($newlocation['customer_text']=='' ? $empty_icon : '<img src="/img/artpage/artstatus_icon.png" title="'.$newlocation['customer_text'].'"/>');
-                $newlocation['redochk']='&nbsp;';
-                $newlocation['location_state']='redrawn';
-            }
-            if ($rush==1) {
-                $chkrush='checked="checked"';
-            } else {
-                $chkrush='';
-            }
-            $newlocation['repeat_text']=$repeat_text;
-            if ($art_type!='Repeat') {
-                $newlocation['redrawchk']='<input type="checkbox" class="artredraw" data-artworkartid="'.$location['artwork_art_id'].'" value="1" '.$chk.'/>';
-            }
-            $newlocation['rushchk']='<input type="checkbox" class="artrush" data-artworkartid="'.$location['artwork_art_id'].'" value="1" '.$chkrush.'/>';
-            $newlocation['redrawicon']=$empty_icon;
-            $newlocation['texticon']=$texticon;
-            $newlocation['imagesourceclass']=$imagesourceclass;
-            $newlocation['imagesourceview']=$imagesourceview;
 
-            $out['newlocation']=$newlocation;
+            $out['locations'] = $locations;
             $out['result']= $this->success_result;
             $out['msg']='';
         }
         return $out;
     }
 
-    public function get_artdata_locusrtxt($artdata, $art_id) {
+    public function get_artdata_locusrtxt($artdata, $locitem, $art_id) {
         $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_MSG,'usrtxt'=>'');
+        $locations = $artdata['locations'];
         $found=0;
-        foreach ($artdata['locations'] as $lrow) {
+        foreach ($locations as $lrow) {
             if ($lrow['artwork_art_id']==$art_id) {
                 $found=1;
                 $out['result']=$this->success_result;
                 $out['msg']='';
+                if ($locitem=='customer_text') {
+                    $out['usrtxt'] = $lrow['customer_text'];
+                } else {
+                    $out['usrtxt'] = $lrow['redraw_message'];
+                }
                 $out['usrtxt']=$lrow['customer_text'];
             }
             if ($found==1) {
@@ -3095,18 +3029,18 @@ Class Artwork_model extends MY_Model
         return $out;
     }
 
-    function save_artdata_locusrtxt($artdata, $art_id, $customer_text, $artsession) {
+    function save_artdata_locusrtxt($artdata, $art_id, $fldname, $newval, $artsession) {
         $out=array('result'=>  $this->error_result, 'msg'=> $this->INIT_MSG,'content'=>'');
         $found=0;
         $idx=0;
         foreach ($artdata['locations'] as $lrow) {
             if ($lrow['artwork_art_id']==$art_id && $lrow['art_type']=='Text') {
                 $found=1;
-                $artdata['locations'][$idx]['customer_text']=$customer_text;
+                $artdata['locations'][$idx][$fldname] = $newval;
                 usersession($artsession, $artdata);
                 $out['result']=$this->success_result;
                 $out['msg']='';
-                $out['content']='<img src="/img/artpage/artstatus_icon.png" alt="User Text" title="'.$customer_text.'"/>';
+                $out['locations'] = $artdata['locations'];
             }
             if ($found==1) {
                 break;
@@ -3130,16 +3064,39 @@ Class Artwork_model extends MY_Model
 
     /* Update Location field value */
     public function artlocationdata_update($artdata, $locitem, $locvalue, $art_id, $artsession) {
-        $out=array('result'=>  $this->error_result, 'msg'=>'Location Not Found');
+        $out = ['result'=>  $this->error_result, 'msg'=>'Location Not Found'];
+        $locations = $artdata['locations'];
         $idxloc=0;
         $found=0;
-        foreach ($artdata['locations'] as $lrow) {
+        foreach ($locations as $lrow) {
             if ($lrow['artwork_art_id']==$art_id) {
                 $found=1;
                 if (array_key_exists($locitem, $lrow)) {
-                    $artdata['locations'][$idxloc][$locitem]=$locvalue;
+                    $locations[$idxloc][$locitem]=$locvalue;
+                    if ($locitem=='redrawvect') {
+                        if ($locvalue==1) {
+                            $locations[$idxloc]['ready'] = 0;
+                        } else {
+                            $locations[$idxloc]['ready'] = 1;
+                        }
+                    }
+                    if ($locitem=='redo') {
+                        if ($locvalue==1) {
+                            if ($locations[$idxloc]['redrawvect']==1) {
+                            } else {
+                                $locations[$idxloc]['ready'] = 0;
+                            }
+                        } else {
+                            if ($locations[$idxloc]['redrawvect']==1) {
+                            } else {
+                                $locations[$idxloc]['ready'] = 1;
+                            }
+                        }
+                    }
+                    $artdata['locations']=$locations;
                     usersession($artsession,$artdata);
                     $out['result']=$this->success_result;
+                    $out['locations'] = $locations;
                     break;
                 } else {
                     $out['msg']='Location Item '.$locitem.' not Exist';
@@ -3149,6 +3106,50 @@ Class Artwork_model extends MY_Model
                 break;
             }
             $idxloc++;
+        }
+        return $out;
+    }
+
+    public function artlocationcolor_update($artdata, $color_num, $color_code, $art_id, $artsession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Location Not Found'];
+        $locations = $artdata['locations'];
+        $idx = 0;
+        $found = 1;
+        foreach ($locations as $location) {
+            if ($location['artwork_art_id']==$art_id) {
+                $found = 1;
+                break;
+            }
+            $idx++;
+        }
+        if ($found==1) {
+            $out['msg'] = 'Color Not Found';
+            // Location found
+            $colordat = [
+                'color_name' => '',
+                'color_style' => '',
+            ];
+            $imprint_colors = $this->config->item('imprint_colors');
+            $colorfound = 0;
+            foreach ($imprint_colors as $color) {
+                if ($color['code']==$color_code) {
+                    $colorfound = 1;
+                    $colordat['color_name'] = $color['name'];
+                    $colordat['color_style'] = $color['class'];
+                    break;
+                }
+            }
+            if ($colorfound==1) {
+                $locations[$idx]['art_color'.$color_num] = $colordat['color_name'];
+                $locations[$idx]['color'.$color_num.'_title'] = 'title="'.$colordat['color_name'].'"';
+                $locations[$idx]['color'.$color_num.'_style'] = $colordat['color_style'];
+                $locations[$idx]['color'.$color_num.'_active'] = 1;
+            }
+            $artdata['locations'] = $locations;
+            usersession($artsession,$artdata);
+            $out['result'] = $this->success_result;
+            $out['locations'] = $locations;
         }
         return $out;
     }
@@ -3178,25 +3179,31 @@ Class Artwork_model extends MY_Model
     }
 
     public function delete_location($artdata, $art_id, $artsession) {
-        $out=array('result'=>  $this->error_result, 'msg'=>  $this->INIT_MSG);
-        $idxloc=0;
+        $out = ['result'=>  $this->error_result, 'msg'=>  'Location Not Found'];
+        $locations = $artdata['locations'];
+        $deleted = $artdata['deleted'];
+        $newlocat = [];
         $found=0;
-        foreach ($artdata['locations'] as $lrow) {
+        foreach ($locations as $lrow) {
             if ($lrow['artwork_art_id']==$art_id) {
-                $artdata['locations'][$idxloc]['deleted']='del';
                 $found=1;
-                break;
-            }
-            if ($found==1) {
-                break;
+                if ($art_id > 0) {
+                    $deleted[] = [
+                        'entity_type' => 'locations',
+                        'entity_id' => $art_id,
+                    ];
+                }
             } else {
-                $idxloc++;
+                $newlocat[]=$lrow;
             }
         }
         if ($found==1) {
+            $artdata['locations']=$newlocat;
+            $artdata['deleted']=$deleted;
             usersession($artsession, $artdata);
             $out['result']= $this->success_result;
             $out['msg']='';
+            $out['locations'] = $newlocat;
         }
         return $out;
     }
@@ -3882,68 +3889,68 @@ Class Artwork_model extends MY_Model
         // Art Proof
         $this->db->select('e.brand, a.item_id, count(ap.artwork_proof_id) as cnt');
         $this->db->from('ts_artwork_proofs ap');
-        $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
-        $this->db->join('ts_emails e','e.email_id=a.mail_id');
+        $this->db->join('ts_artworks a', 'a.artwork_id=ap.artwork_id');
+        $this->db->join('ts_emails e', 'e.email_id=a.mail_id');
         $this->db->where('unix_timestamp(ap.created_time) >= ', $datebgn);
         $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
         $this->db->group_by('e.brand, a.item_id');
         $mailres = $this->db->get()->result_array();
         foreach ($mailres as $item) {
-            if ($item['brand']=='SR') {
-                $results['sr_proofs']+=$item['cnt'];
-                if ($item['item_id']==$this->config->item('custom_id')) {
-                    $results['sr_proofs_custom']+=$item['cnt'];
+            if ($item['brand'] == 'SR') {
+                $results['sr_proofs'] += $item['cnt'];
+                if ($item['item_id'] == $this->config->item('custom_id')) {
+                    $results['sr_proofs_custom'] += $item['cnt'];
                 }
-                $results['sr_total']+=$item['cnt'];
-                $results['total']+=$item['cnt'];
+                $results['sr_total'] += $item['cnt'];
+                $results['total'] += $item['cnt'];
             } else {
-                $results['sb_proofs']+=$item['cnt'];
-                if ($item['item_id']==$this->config->item('custom_id')) {
-                    $results['sb_proofs_custom']+=$item['cnt'];
+                $results['sb_proofs'] += $item['cnt'];
+                if ($item['item_id'] == $this->config->item('custom_id')) {
+                    $results['sb_proofs_custom'] += $item['cnt'];
                 }
-                $results['sb_total']+=$item['cnt'];
-                $results['total']+=$item['cnt'];
+                $results['sb_total'] += $item['cnt'];
+                $results['total'] += $item['cnt'];
             }
         }
         // Orders
         $this->db->select('o.brand, o.item_id, count(ap.artwork_proof_id) as cnt');
         $this->db->from('ts_artwork_proofs ap');
-        $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
-        $this->db->join('ts_orders o','o.order_id=a.order_id');
+        $this->db->join('ts_artworks a', 'a.artwork_id=ap.artwork_id');
+        $this->db->join('ts_orders o', 'o.order_id=a.order_id');
         $this->db->where('unix_timestamp(ap.created_time) >= ', $datebgn);
         $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
         $this->db->group_by('o.brand, o.item_id');
         $orders = $this->db->get()->result_array();
         foreach ($orders as $item) {
-            if ($item['brand']=='SR') {
-                $results['sr_orders']+=$item['cnt'];
-                if ($item['item_id']==$this->config->item('custom_id')) {
-                    $results['sr_order_custom']+=$item['cnt'];
+            if ($item['brand'] == 'SR') {
+                $results['sr_orders'] += $item['cnt'];
+                if ($item['item_id'] == $this->config->item('custom_id')) {
+                    $results['sr_order_custom'] += $item['cnt'];
                 }
-                $results['sr_total']+=$item['cnt'];
-                $results['total']+=$item['cnt'];
+                $results['sr_total'] += $item['cnt'];
+                $results['total'] += $item['cnt'];
             } else {
-                $results['sb_orders']+=$item['cnt'];
-                if ($item['item_id']==$this->config->item('custom_id')) {
-                    $results['sb_order_custom']+=$item['cnt'];
+                $results['sb_orders'] += $item['cnt'];
+                if ($item['item_id'] == $this->config->item('custom_id')) {
+                    $results['sb_order_custom'] += $item['cnt'];
                 }
-                $results['sb_total']+=$item['cnt'];
-                $results['total']+=$item['cnt'];
+                $results['sb_total'] += $item['cnt'];
+                $results['total'] += $item['cnt'];
             }
         }
         // Week results
-        $weekstart = strtotime(date('Y-m-d', $datebgn).'-7 days');
+        $weekstart = strtotime(date('Y-m-d', $datebgn) . '-7 days');
         $this->db->select('date_format(ap.created_time, "%Y-%m-%d") as upldat, count(ap.artwork_proof_id) as cnt');
         $this->db->from('ts_artwork_proofs ap');
         $this->db->where('unix_timestamp(ap.created_time) >= ', $weekstart);
         $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
         $this->db->group_by('upldat');
-        $this->db->order_by('ap.created_time','desc');
+        $this->db->order_by('ap.created_time', 'desc');
         $weeks = $this->db->get()->result_array();
         $weekdat = [];
         foreach ($weeks as $week) {
             $daybgn = strtotime($week['upldat']);
-            $dayend = strtotime($week['upldat'] .' 23:59:59');
+            $dayend = strtotime($week['upldat'] . ' 23:59:59');
             $dayresults = [
                 'sb_orders' => 0,
                 'sb_order_custom' => 0,
@@ -3960,53 +3967,53 @@ Class Artwork_model extends MY_Model
             ];
             $this->db->select('e.brand, a.item_id, count(ap.artwork_proof_id) as cnt');
             $this->db->from('ts_artwork_proofs ap');
-            $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
-            $this->db->join('ts_emails e','e.email_id=a.mail_id');
+            $this->db->join('ts_artworks a', 'a.artwork_id=ap.artwork_id');
+            $this->db->join('ts_emails e', 'e.email_id=a.mail_id');
             $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
             $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
             $this->db->group_by('e.brand, a.item_id');
             $mailres = $this->db->get()->result_array();
             foreach ($mailres as $row) {
-                if ($row['brand']=='SR') {
-                    $dayresults['sr_proofs']+=$row['cnt'];
-                    if ($row['item_id']==$this->config->item('custom_id')) {
-                        $dayresults['sr_proofs_custom']+=$row['cnt'];
+                if ($row['brand'] == 'SR') {
+                    $dayresults['sr_proofs'] += $row['cnt'];
+                    if ($row['item_id'] == $this->config->item('custom_id')) {
+                        $dayresults['sr_proofs_custom'] += $row['cnt'];
                     }
-                    $dayresults['sr_total']+=$row['cnt'];
-                    $dayresults['total']+=$row['cnt'];
+                    $dayresults['sr_total'] += $row['cnt'];
+                    $dayresults['total'] += $row['cnt'];
                 } else {
-                    $dayresults['sb_proofs']+=$row['cnt'];
-                    if ($row['item_id']==$this->config->item('custom_id')) {
-                        $dayresults['sb_proofs_custom']+=$row['cnt'];
+                    $dayresults['sb_proofs'] += $row['cnt'];
+                    if ($row['item_id'] == $this->config->item('custom_id')) {
+                        $dayresults['sb_proofs_custom'] += $row['cnt'];
                     }
-                    $dayresults['sb_total']+=$row['cnt'];
-                    $dayresults['total']+=$row['cnt'];
+                    $dayresults['sb_total'] += $row['cnt'];
+                    $dayresults['total'] += $row['cnt'];
                 }
             }
             // Orders
             $this->db->select('o.brand, o.item_id, count(ap.artwork_proof_id) as cnt');
             $this->db->from('ts_artwork_proofs ap');
-            $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
-            $this->db->join('ts_orders o','o.order_id=a.order_id');
+            $this->db->join('ts_artworks a', 'a.artwork_id=ap.artwork_id');
+            $this->db->join('ts_orders o', 'o.order_id=a.order_id');
             $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
             $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
             $this->db->group_by('o.brand, o.item_id');
             $orders = $this->db->get()->result_array();
             foreach ($orders as $row) {
-                if ($row['brand']=='SR') {
-                    $dayresults['sr_orders']+=$row['cnt'];
-                    if ($row['item_id']==$this->config->item('custom_id')) {
-                        $dayresults['sr_order_custom']+=$row['cnt'];
+                if ($row['brand'] == 'SR') {
+                    $dayresults['sr_orders'] += $row['cnt'];
+                    if ($row['item_id'] == $this->config->item('custom_id')) {
+                        $dayresults['sr_order_custom'] += $row['cnt'];
                     }
-                    $dayresults['sr_total']+=$row['cnt'];
-                    $dayresults['total']+=$row['cnt'];
+                    $dayresults['sr_total'] += $row['cnt'];
+                    $dayresults['total'] += $row['cnt'];
                 } else {
-                    $dayresults['sb_orders']+=$row['cnt'];
-                    if ($row['item_id']==$this->config->item('custom_id')) {
-                        $dayresults['sb_order_custom']+=$row['cnt'];
+                    $dayresults['sb_orders'] += $row['cnt'];
+                    if ($row['item_id'] == $this->config->item('custom_id')) {
+                        $dayresults['sb_order_custom'] += $row['cnt'];
                     }
-                    $dayresults['sb_total']+=$row['cnt'];
-                    $dayresults['total']+=$row['cnt'];
+                    $dayresults['sb_total'] += $row['cnt'];
+                    $dayresults['total'] += $row['cnt'];
                 }
             }
             $weekdat[] = $dayresults;
@@ -4018,18 +4025,18 @@ Class Artwork_model extends MY_Model
         ];
         $week_view = $this->load->view('messages/artupload_history_view', $options, TRUE);
         // Years result
-        $datestart = strtotime(date('Y',$datebgn).'-01-01');
+        $datestart = strtotime(date('Y', $datebgn) . '-01-01');
         $this->db->select('date_format(ap.created_time, "%Y-%m-%d") as upldat, count(ap.artwork_proof_id) as cnt');
         $this->db->from('ts_artwork_proofs ap');
         $this->db->where('unix_timestamp(ap.created_time) >= ', $datestart);
         $this->db->where('unix_timestamp(ap.created_time) < ', $dateend);
         $this->db->group_by('upldat');
-        $this->db->order_by('ap.created_time','desc');
+        $this->db->order_by('ap.created_time', 'desc');
         $lists = $this->db->get()->result_array();
         $yearres = [];
         foreach ($lists as $item) {
             $daybgn = strtotime($item['upldat']);
-            $dayend = strtotime($item['upldat'] .' 23:59:59');
+            $dayend = strtotime($item['upldat'] . ' 23:59:59');
             $dayresults = [
                 'sb_orders' => 0,
                 'sb_order_custom' => 0,
@@ -4046,53 +4053,53 @@ Class Artwork_model extends MY_Model
             ];
             $this->db->select('e.brand, a.item_id, count(ap.artwork_proof_id) as cnt');
             $this->db->from('ts_artwork_proofs ap');
-            $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
-            $this->db->join('ts_emails e','e.email_id=a.mail_id');
+            $this->db->join('ts_artworks a', 'a.artwork_id=ap.artwork_id');
+            $this->db->join('ts_emails e', 'e.email_id=a.mail_id');
             $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
             $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
             $this->db->group_by('e.brand, a.item_id');
             $mailres = $this->db->get()->result_array();
             foreach ($mailres as $row) {
-                if ($row['brand']=='SR') {
-                    $dayresults['sr_proofs']+=$row['cnt'];
-                    if ($row['item_id']==$this->config->item('custom_id')) {
-                        $dayresults['sr_proofs_custom']+=$row['cnt'];
+                if ($row['brand'] == 'SR') {
+                    $dayresults['sr_proofs'] += $row['cnt'];
+                    if ($row['item_id'] == $this->config->item('custom_id')) {
+                        $dayresults['sr_proofs_custom'] += $row['cnt'];
                     }
-                    $dayresults['sr_total']+=$row['cnt'];
-                    $dayresults['total']+=$row['cnt'];
+                    $dayresults['sr_total'] += $row['cnt'];
+                    $dayresults['total'] += $row['cnt'];
                 } else {
-                    $dayresults['sb_proofs']+=$row['cnt'];
-                    if ($row['item_id']==$this->config->item('custom_id')) {
-                        $dayresults['sb_proofs_custom']+=$row['cnt'];
+                    $dayresults['sb_proofs'] += $row['cnt'];
+                    if ($row['item_id'] == $this->config->item('custom_id')) {
+                        $dayresults['sb_proofs_custom'] += $row['cnt'];
                     }
-                    $dayresults['sb_total']+=$row['cnt'];
-                    $dayresults['total']+=$row['cnt'];
+                    $dayresults['sb_total'] += $row['cnt'];
+                    $dayresults['total'] += $row['cnt'];
                 }
             }
             // Orders
             $this->db->select('o.brand, o.item_id, count(ap.artwork_proof_id) as cnt');
             $this->db->from('ts_artwork_proofs ap');
-            $this->db->join('ts_artworks a','a.artwork_id=ap.artwork_id');
-            $this->db->join('ts_orders o','o.order_id=a.order_id');
+            $this->db->join('ts_artworks a', 'a.artwork_id=ap.artwork_id');
+            $this->db->join('ts_orders o', 'o.order_id=a.order_id');
             $this->db->where('unix_timestamp(ap.created_time) >= ', $daybgn);
             $this->db->where('unix_timestamp(ap.created_time) <= ', $dayend);
             $this->db->group_by('o.brand, o.item_id');
             $orders = $this->db->get()->result_array();
             foreach ($orders as $row) {
-                if ($row['brand']=='SR') {
-                    $dayresults['sr_orders']+=$row['cnt'];
-                    if ($row['item_id']==$this->config->item('custom_id')) {
-                        $dayresults['sr_order_custom']+=$row['cnt'];
+                if ($row['brand'] == 'SR') {
+                    $dayresults['sr_orders'] += $row['cnt'];
+                    if ($row['item_id'] == $this->config->item('custom_id')) {
+                        $dayresults['sr_order_custom'] += $row['cnt'];
                     }
-                    $dayresults['sr_total']+=$row['cnt'];
-                    $dayresults['total']+=$row['cnt'];
+                    $dayresults['sr_total'] += $row['cnt'];
+                    $dayresults['total'] += $row['cnt'];
                 } else {
-                    $dayresults['sb_orders']+=$row['cnt'];
-                    if ($row['item_id']==$this->config->item('custom_id')) {
-                        $dayresults['sb_order_custom']+=$row['cnt'];
+                    $dayresults['sb_orders'] += $row['cnt'];
+                    if ($row['item_id'] == $this->config->item('custom_id')) {
+                        $dayresults['sb_order_custom'] += $row['cnt'];
                     }
-                    $dayresults['sb_total']+=$row['cnt'];
-                    $dayresults['total']+=$row['cnt'];
+                    $dayresults['sb_total'] += $row['cnt'];
+                    $dayresults['total'] += $row['cnt'];
                 }
             }
             $yearres[] = $dayresults;
@@ -4104,15 +4111,15 @@ Class Artwork_model extends MY_Model
         ];
         $year_view = $this->load->view('messages/artupload_history_view', $options, TRUE);
         $email_conf = array(
-            'protocol'=>'smtp',
+            'protocol' => 'smtp',
             'smtp_host' => $this->config->item('sb_smtp_host'),
             'smtp_port' => $this->config->item('sb_smtp_port'),
             'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
             'smtp_user' => $this->config->item('sb_quote_user'),
             'smtp_pass' => $this->config->item('sb_quote_pass'),
-            'charset'=>'utf-8',
-            'mailtype'=>'html',
-            'wordwrap'=>TRUE,
+            'charset' => 'utf-8',
+            'mailtype' => 'html',
+            'wordwrap' => TRUE,
             'newline' => "\r\n",
         );
         $email_from = $this->config->item('sb_quote_user');
@@ -4123,12 +4130,548 @@ Class Artwork_model extends MY_Model
         $this->email->initialize($email_conf);
         $this->email->from($email_from);
         $this->email->to($email_to);
+    }
 
-        $title=date('D - M d, Y', $datebgn).' - Art Proof Uploads';
-        $this->email->subject($title);
-        $this->email->message($mail_body);
-        $this->email->send();
-        $this->email->clear(TRUE);
+    public function get_toredrawcont()
+    {
+        $this->db->select('count(arts.artwork_art_id) as cnt');
+        $this->db->from('ts_artwork_arts arts');
+        $this->db->join('ts_artworks artw','artw.artwork_id=arts.artwork_id');
+        $this->db->join('ts_emails prof','prof.email_id=artw.mail_id','left');
+        $this->db->join('ts_orders ord','ord.order_id=artw.order_id','left');
+        $this->db->where('arts.redrawvect', 1);
+        $this->db->where('redraw_time > ', 0);
+        $this->db->where('vectorized_time', 0);
+        $this->db->where('coalesce(prof.email_status, 0) != ', 4);
+        $this->db->where('coalesce(ord.is_canceled, 0) = ', 0);
+        $this->db->where('arts.art_type != ','Reference');
+        $res = $this->db->get()->row_array();
+        return $res['cnt'];
+    }
 
+    public function get_logo_toredraw()
+    {
+        $day=24*60*60;
+        $hour=60*60;
+        // $logo_place=$this->config->item('artwork_logo_relative');
+        $this->db->select('arts.artwork_art_id as artwork_logo_id, arts.redo, arts.rush as rush, arts.redraw_time, arts.vectorized_time, prof.proof_num, ord.order_num, arts.art_ordnum',FALSE);
+        $this->db->select('arts.logo_src, arts.customer_text as logo_text, arts.redraw_message, coalesce(prof.email_status,0) as email_status, coalesce(ord.is_canceled,0) as order_status ',FALSE);
+        $this->db->select('artw.artwork_rush');
+        $this->db->from('ts_artwork_arts arts');
+        $this->db->join('ts_artworks artw','artw.artwork_id=arts.artwork_id');
+        $this->db->join('ts_emails prof','prof.email_id=artw.mail_id','left');
+        $this->db->join('ts_orders ord','ord.order_id=artw.order_id','left');
+        $this->db->where('arts.redrawvect',1);
+        $this->db->where('redraw_time > ',0);
+        $this->db->where('vectorized_time',0);
+        $this->db->where('arts.art_type != ','Reference');
+        $this->db->having(array('email_status != ' => 2, 'email_status != ' => 4,  'order_status = ' => 0));
+        $this->db->order_by('arts.redo desc, arts.rush desc, arts.redraw_time asc');
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        // $rush_icon="<img src='/img/task_rushicon.png' alt='rush'/>";
+        // $text_icon="<img src='/img/redraw/usrtext_icon.png' alt='User Text'/>";
+        // $details_icon='<img src="/img/magnifier.png" alt="details"/>';
+
+        foreach ($res as $row) {
+            $msgclass='';
+            $diff=time()-$row['redraw_time'];
+            $outdiff='';
+            if ($diff>=$day) {
+                /* days */
+                $numdays=round($diff/$day,0);
+                $diff=$diff-($day*$numdays);
+                $outdiff.=$numdays.'d ';
+            }
+            if ($diff>=$hour) {
+                $numhours=round($diff/$hour,0);
+                $diff=$diff-($numhours*$hour);
+                $outdiff.=$numhours.'h ';
+            }
+            if ($diff>60) {
+                $nummins=round($diff/60,0);
+                if ($nummins>0) {
+                    $outdiff.=$nummins.'m';
+                }
+            }
+            $row['diff']=$outdiff;
+            $row['redo']=($row['redo']==0 ? '&nbsp;' : 'REDO');
+            $row['rush']=(($row['rush']=='1' || $row['artwork_rush']==1) ? 1 : 0);
+            $user_txt=0;
+            $user_title=$usrtext_class='';
+            if ($row['logo_text']) {
+                $user_txt=1;
+                $user_title=$row['logo_text'];
+                $usrtext_class='usertextlogo';
+            }
+            $row['user_txt']=$user_txt;
+            $row['user_title']=$user_title;
+            $row['usrtext_class']=$usrtext_class;
+            $details=0;
+            if ($row['redraw_message'] && strlen($row['redraw_message'])>59) {
+                $details=1;
+                $msgclass='longredrawmessage';
+            }
+            $row['message_details']=$details;
+            $row['message_class']=$msgclass;
+            $sourcedet=extract_filename($row['logo_src']);
+            $srcname=($row['order_num']=='' ? 'pr_'.$row['proof_num'] : $row['order_num']);
+            $srcname.='_'.str_pad($row['art_ordnum'], 2, '0', STR_PAD_LEFT).'.'.$sourcedet['ext'];
+            $row['filename']=$srcname;
+            $row['imagesourceclass']=$row['redrawsource']='';
+            if (in_array($sourcedet['ext'], $this->logo_imageext)) {
+                $row['imagesourceclass']='imagesourceview';
+                // $row['redrawsource']='/redraw/viewsource/?id='.$row['artwork_logo_id'];
+                $row['redrawsource'] = $row['logo_src'];
+            }
+            $out[]=$row;
+        }
+        return $out;
+    }
+
+    public function logo_vectored($logo_id, $user_id)
+    {
+        $out=['result'=>  $this->error_result, 'msg'=> 'Logo Not Found'];
+        $res=$this->redrawnlogo_details($logo_id);
+        if (ifset($res, 'artwork_art_id',0) > 0 ) {
+            $this->db->where('artwork_art_id',$logo_id);
+            $this->db->set('logo_vectorized',$res['logo_src']);
+            $this->db->set('vectorized_time',  time());
+            $this->db->set('redo',0);
+            $this->db->update('ts_artwork_arts');
+            /* Calc # of logos in Need Vectored stage */
+            $reschk=$this->redrawn_checkartwork($res['artwork_id']);
+            if ($reschk==0) {
+                if ($res['order_id']) {
+                    $this->db->where('order_id',$res['order_id']);
+                    $this->db->set('update_usr',$user_id);
+                    $this->db->set('update_date',time());
+                    $this->db->set('order_redrawn',1);
+                    $this->db->set('order_redrawn_update',time());
+                    $this->db->set('order_vectorized',1);
+                    $this->db->set('order_vectorized_update',  time());
+                    $this->db->update('ts_orders');
+                } else {
+                    $this->db->where('email_id',$res['mail_id']);
+                    $this->db->set('proof_updated',time());
+                    $this->db->set('email_redrawn',1);
+                    $this->db->set('email_redrawn_update',time());
+                    $this->db->set('email_vectorized',1);
+                    $this->db->set('email_vectorized_update',time());
+                    $this->db->update('ts_emails');
+                }
+//            } else {
+//                if ($res['order_id']) {
+//                    $this->db->set('update_usr',$user_id);
+//                    $this->db->set('update_date',time());
+//                    $this->db->set('order_redrawn',1);
+//                    $this->db->set('order_redrawn_update',time());
+//                } else {
+//                    $this->db->set('proof_updated',time());
+//                    $this->db->set('email_redrawn',1);
+//                    $this->db->set('email_redrawn_update',time());
+//                }
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    private function redrawnlogo_details($logo_id) {
+        $this->db->select('a.*, art.mail_id, art.order_id, mail.proof_num, ord.order_num, art.artwork_rush, ord.order_blank');
+        $this->db->from('ts_artwork_arts a');
+        $this->db->join('ts_artworks art','art.artwork_id=a.artwork_id');
+        $this->db->join('ts_emails mail','mail.email_id=art.mail_id','left');
+        $this->db->join('ts_orders ord','ord.order_id=art.order_id','left');
+        $this->db->where('a.artwork_art_id',$logo_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    public function redrawn_checkartwork($artwork_id) {
+        $this->db->select('count(a.artwork_art_id) as cnt');
+        $this->db->from('ts_artwork_arts a');
+        $this->db->where('a.artwork_id',$artwork_id);
+        $this->db->where('a.redrawvect',1);
+        $this->db->where('a.vectorized_time', 0);
+        $reschk=$this->db->get()->row_array();
+        return $reschk['cnt'];
+    }
+
+    public function get_artlocation_details($artwork_art_id)
+    {
+        $this->db->select('art.*, prof.proof_num, ord.order_num');
+        $this->db->from('ts_artwork_arts art');
+        $this->db->join('ts_artworks a','a.artwork_id=art.artwork_id');
+        $this->db->join('ts_emails prof','prof.email_id=a.mail_id','left');
+        $this->db->join('ts_orders ord','ord.order_id=a.order_id','left');
+        $this->db->where('artwork_art_id',$artwork_art_id);
+        $res=$this->db->get()->row_array();
+        return $res;
+    }
+
+    public function save_vectorfile($logo, $file, $user_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown error. Try later'];
+        $path_sh = $this->config->item('pathpreload');
+        $path = $this->config->item('upload_path_preload');
+        $filesrc = $path.str_replace($path_sh, '', $file);
+        if (!$logo) {
+            $out['msg'] = 'Unknown Logo file r1893';
+        } elseif (!$filesrc) {
+            $out['msg'] = 'Empty Upload File r1895';
+        } elseif (!$this->isLogoExist($logo)) {
+            $out['msg'] = 'Logo File was Deleted r1897';
+        } else {
+            $newfile = str_replace($path, '', $filesrc);
+            if (!$newfile) {
+                $out['msg'] = 'Incorrect Uploaded File r1902';
+            } else {
+                $filedet = extract_filename($newfile);
+                if (!$filedet['ext'] || $filedet['ext'] != 'ai') {
+                    $out['msg'] = 'Incorrect Uploaded File Format r1906';
+                } else {
+                    /* get data about logo by ID */
+                    $logodet = $this->redrawnlogo_details($logo);
+                    if ($logodet['art_type']=='Text') {
+                        if ($logodet['order_id']=='') {
+                            $logodet['logo_src']='pr'.$logodet['proof_num'].'_'.$logodet['art_ordnum'].'.png';
+                        } else {
+                            $logodet['logo_src']=$logodet['order_num'].'_'.$logodet['art_ordnum'].'.png';
+                        }
+                    } else {
+                        if ($logodet['logo_src']=='') {
+                            if ($logodet['order_id']=='') {
+                                $logodet['logo_src']='pr'.$logodet['proof_num'].'_'.$logodet['art_ordnum'].'.png';
+                            } else {
+                                $logodet['logo_src']=$logodet['order_num'].'_'.$logodet['art_ordnum'].'.png';
+                            }
+                        }
+                    }
+
+                    $src_det = extract_filename(str_replace($this->config->item('artwork_logo_relative'), '', $logodet['logo_src']));
+                    $newtargfile = $src_det['name'] . '.' . $filedet['ext'];
+                    $destfile = $this->config->item('artwork_logo') . $newtargfile;
+                    @copy($filesrc, $destfile);
+                    if (file_exists($destfile)) {
+                        @unlink($filesrc);
+                        /* update LOGO record */
+                        $this->db->set('logo_vectorized', $this->config->item('artwork_logo_relative').$newtargfile);
+                        $this->db->set('vectorized_time', time());
+                        $this->db->set('redo', 0);
+                        $this->db->where('artwork_art_id', $logo);
+                        $this->db->update('ts_artwork_arts');
+                        $out['result'] = $this->success_result;
+                        /* Send message about Redraw */
+                        if (!in_array($_SERVER['SERVER_NAME'], $this->config->item('localserver'))) {
+                            $this->send_notification($logodet);
+                        }
+                        /* Check Artwork */
+                        $reschk=$this->redrawn_checkartwork($logodet['artwork_id']);
+                        if ($reschk==0) {
+                            if ($logodet['order_id']) {
+                                $this->db->set('update_usr',$user_id);
+                                $this->db->set('update_date',time());
+                                $this->db->set('order_redrawn',1);
+                                $this->db->set('order_redrawn_update',  time());
+                                $this->db->set('order_vectorized',1);
+                                $this->db->set('order_vectorized_update',  time());
+                                $this->db->where('order_id',$logodet['order_id']);
+                                $this->db->update('ts_orders');
+                                // Add record to Art Sync
+                                $this->load->model('orders_model');
+                                $orddet=$this->orders_model->get_order_detail($logodet['order_id']);
+                                $this->db->set('user_id', $user_id);
+                                $this->db->set('order_id', $logodet['order_id']);
+                                $this->db->set('customer', $orddet['customer_name']);
+                                $this->db->set('item_descript', $orddet['item_name']);
+                                $this->db->set('rush', $logodet['artwork_rush']);
+                                $this->db->set('blank', $logodet['order_blank']);
+                                $this->db->set('art_stage',1);
+                                $this->db->set('redraw_stage',1);
+                                $this->db->set('vector_stage',1);
+                                $this->db->insert('ts_artdata_sync');
+                                // item_name
+                            } else {
+                                $this->db->set('proof_updated',time());
+                                $this->db->set('email_vectorized',1);
+                                $this->db->set('email_vectorized_update',time());
+                                $this->db->where('email_id',$logodet['mail_id']);
+                                $this->db->update('ts_emails');
+                            }
+                        }
+                    } else {
+                        $out['msg'] = 'Error during save file '.$destfile;
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
+    private function isLogoExist($logo_id) {
+        $this->db->select('count(artwork_art_id) as cnt')->from('ts_artwork_arts')->where('artwork_art_id',$logo_id);
+        $res=$this->db->get()->row_array();
+        if ($res['cnt']==0) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    private function send_notification($logodet) {
+        /* select emails */
+        $emails=$this->get_emails_fornotification('Redraw Finished');
+        $num_emails=count($emails);
+        $cc_array=array();
+        if ($num_emails>0) {
+            if ($num_emails==1) {
+                $from=$emails[0]['email_address'];
+            } else {
+                $from=$emails[0]['email_address'];
+                $idx=0;
+                foreach ($emails as $row) {
+                    if ($idx>0) {
+                        array_push($cc_array, $row['email_address']);
+                    }
+                    $idx++;
+                }
+            }
+            $maindoc=($logodet['order_id']=='' ? 'Proof Request #'.$logodet['proof_num'] : 'Order #'.$logodet['order_num']);
+            $msg_subj='Redraw of '.$maindoc.'  Finished - Production : '.($logodet['rush']=='1' ? ' Rush' : 'Standard');
+
+            $body_options=array(
+                'document'=>$maindoc,
+                'type'=>$logodet['art_type'],
+            );
+            /* ART order or Proof */
+            $email_body=$this->load->view('messages/redraw_finish_view',$body_options,TRUE);
+            // Send message
+
+            $this->load->library('email');
+            $config['protocol'] = 'sendmail';
+            $config['charset'] = 'utf8';
+            $config['wordwrap'] = TRUE;
+            $config['mailtype'] = 'html';
+
+            $this->email->initialize($config);
+
+            $this->email->to($from);
+            if (count($cc_array)!=0) {
+                $this->email->cc($cc_array);
+            }
+            $from=$this->config->item('redraw_email');
+            $this->email->from($from);
+            $this->email->subject($msg_subj);
+            $this->email->message($email_body);
+            $this->email->send();
+            $this->email->clear(TRUE);
+        }
+        return TRUE;
+    }
+
+    public function total_vectorized() {
+        $out=array(
+            'total_jobs'=>0,
+            'avg_time'=>'',
+            'avg_rush'=>'',
+        );
+        $this->db->select('count(artwork_art_id) as cnt, avg(vectorized_time-redraw_time) as avg_time');
+        $this->db->from('ts_artwork_arts al');
+        $this->db->join('ts_artworks aw','aw.artwork_id=al.artwork_id');
+        $this->db->join('ts_orders ord','ord.order_id=aw.order_id','left');
+        $this->db->join('ts_emails pr','pr.email_id=aw.mail_id','left');
+        $this->db->where('vectorized_time > ',0);
+        $this->db->where('redrawvect',1);
+        $this->db->where('sys_redrawn',0);
+        $this->db->where('logo_src != logo_vectorized');
+        $this->db->where('coalesce(ord.is_canceled,0)',0);
+        $this->db->where('coalesce(pr.email_status,0) != ',2);
+        $res=$this->db->get()->row_array();
+        $out['total_jobs']=$res['cnt'];
+        if ($res['cnt']>0) {
+            $out['avg_time']=show_time($res['avg_time']);
+        }
+        /* AVG time RUSH */
+        $this->db->select('count(al.artwork_art_id) as cnt, avg(al.vectorized_time-al.redraw_time) as avg_time');
+        $this->db->from('ts_artwork_arts al');
+        $this->db->join('ts_artworks aw','aw.artwork_id=al.artwork_id');
+        $this->db->join('ts_orders ord','ord.order_id=aw.order_id','left');
+        $this->db->join('ts_emails pr','pr.email_id=aw.mail_id','left');
+        $this->db->where('al.rush',1);
+        $this->db->where('al.vectorized_time > ',0);
+        $this->db->where('al.redrawvect',1);
+        $this->db->where('sys_redrawn',0);
+        $this->db->where('logo_src != logo_vectorized');
+        $this->db->where('coalesce(ord.is_canceled,0)',0);
+        $this->db->where('coalesce(pr.email_status,0) != ',2);
+        $rushres=$this->db->get()->row_array();
+        if ($rushres['cnt']>0) {
+            $out['avg_rush']=show_time($rushres['avg_time']);
+        }
+        return $out;
+    }
+
+    function get_vectorized($order_by, $direction, $limit, $offset,$maxval) {
+        $this->db->select('a.artwork_art_id as artwork_logo_id, a.rush as rush_redraw, a.logo_vectorized, a.logo_src, a.vectorized_time,
+            (a.vectorized_time-a.redraw_time) as spend_time, pr.proof_num, ord.order_num, a.art_ordnum');
+        $this->db->select('aw.artwork_rush');
+        $this->db->from('ts_artwork_arts a');
+        $this->db->join('ts_artworks aw','aw.artwork_id=a.artwork_id');
+        $this->db->join('ts_orders ord','ord.order_id=aw.order_id','left');
+        $this->db->join('ts_emails pr','pr.email_id=aw.mail_id','left');
+        $this->db->where('a.redrawvect',1);
+        $this->db->where('a.vectorized_time > ',0);
+        $this->db->where('sys_redrawn',0);
+        $this->db->where('logo_src != logo_vectorized');
+        $this->db->where('coalesce(ord.is_canceled,0)',0);
+        $this->db->where('coalesce(pr.email_status,0) != ',2);
+        $this->db->order_by($order_by, $direction);
+        $this->db->limit($limit, $offset);
+        $res=$this->db->get()->result_array();
+
+        $out=array();
+        if ($offset>$maxval) {
+            $ordnum = $maxval;
+        } else {
+            $ordnum = $maxval - $offset;
+        }
+
+        // $path_sh=$this->config->item('artwork_logo_relative');
+        // $rush_icon="<img src='/img/task_rushicon.png' alt='rush'/>";
+        foreach ($res as $row) {
+            $row['num_pp']=$ordnum; /* Tempsolution */
+            $sourcedata = extract_filename($row['logo_src']);
+            $vectordata = extract_filename($row['logo_vectorized']);
+            $name_file = ($row['order_num']=='' ? 'pr_'.$row['proof_num'] : $row['order_num']);
+            $name_file.='_'.str_pad($row['art_ordnum'], 2, '0', STR_PAD_LEFT);
+            $row['vectorfile'] = $name_file.'.'.$vectordata['ext'];
+            $row['srcfile'] = $name_file.'.'.$sourcedata['ext'];
+            $row['proof_num'] = ($row['proof_num']=='' ? '&nbsp;' :$row['proof_num']);
+            $row['order_num'] = ($row['order_num']=='' ? '&nbsp;' : $row['order_num']);
+            $row['exec_date'] = date('m/d/y H:i:s',$row['vectorized_time']);
+            $spend_time = get_time($row['spend_time']);
+            $row['spend_days']=$spend_time['days'];
+            $row['spend_hours']=$spend_time['hours'];
+            $row['spend_mins']=$spend_time['mins'];
+            // $row['vectorfile']=  str_replace($path_sh, '', $row['logo_vectorized']);
+            // $row['srcfile']=str_replace($path_sh, '', $row['logo_src']);
+            $row['rush']=(($row['rush_redraw']==1 || $row['artwork_rush']==1) ? 1 : 0);
+            $row['imagesourceclass']=$row['redrawedsource']='';
+            if (in_array($sourcedata['ext'], $this->logo_imageext)) {
+                $row['imagesourceclass']='imagereadysourceview';
+                $row['redrawedsource']=$row['logo_src'];
+            }
+            $out[]=$row;
+            $ordnum--;
+        }
+        return $out;
+    }
+
+    public function get_proofrequest_locations($artwork_id, $artwork)
+    {
+        $this->db->select('a.*,art.order_id, art.mail_id, ord.order_num, proof.proof_num');
+        $this->db->from('ts_artwork_arts a');
+        $this->db->join('ts_artworks art', 'art.artwork_id=a.artwork_id');
+        $this->db->join('ts_orders ord',  'ord.order_id=art.order_id','left');
+        $this->db->join('ts_emails proof', 'proof.email_id=art.mail_id', 'left');
+        $this->db->where('a.artwork_id', $artwork_id);
+        $locations = $this->db->get()->result_array();
+        $this->load->config('siteart_config');
+        $imprint_colors = $this->config->item('imprint_colors');
+        // $logopath_full = $this->config->item('artwork_logo');
+        $logopath_sh = $this->config->item('artwork_logo_relative');
+        $idx = 0;
+        $numpp = 1;
+        foreach ($locations as $location) {
+            $ready = 0;
+            if ($location['art_type']=='Text') {
+                if ($location['redrawvect']==0) {
+                    $ready = 1;
+                }
+            } elseif ($location['art_type']=='Logo' || $location['art_type']=='Reference') {
+                if ($location['redrawvect']==0) {
+                    $ready = 1;
+                } else {
+                    if ($location['redraw_time'] > 0 && $location['vectorized_time'] > 0) {
+                        if ($location['redo']==0) {
+                            $ready = 1;
+                        }
+                    }
+                }
+            } else {
+                $ready = 1;
+            }
+            $logosrc = $vectorimg = '';
+            if (!empty($location['logo_src'])) {
+                $filedet = extract_filename($location['logo_src']);
+                if ($artwork['order_id']) {
+                    $logosrc = $artwork['order_num'].'_'.str_pad($numpp,2,"0",STR_PAD_LEFT).'.'.$filedet['ext'];
+                } else {
+                    $logosrc = $artwork['proof_num'].'_'.str_pad($numpp,2,"0",STR_PAD_LEFT).'.'.$filedet['ext'];
+                }
+            }
+            if (!empty($location['logo_vectorized'])) {
+                $filedet = extract_filename($location['logo_vectorized']);
+                if ($artwork['order_id']) {
+                    $vectorimg = $artwork['order_num'].'_'.str_pad($numpp,2,"0",STR_PAD_LEFT).'.'.$filedet['ext'];
+                } else {
+                    $vectorimg = $artwork['proof_num'].'_'.str_pad($numpp,2,"0",STR_PAD_LEFT).'.'.$filedet['ext'];
+                }
+            }
+            // Colors
+            for ($i=1; $i<5; $i++) {
+                $title = ''; $active = 0; $style = '';
+                foreach ($imprint_colors as $color) {
+                    if ($location['art_color'.$i]==$color['name']) {
+                        $title = 'title="'.$color['name'].'"';
+                        $active = 1;
+                        $style = $color['class'];
+                        break;
+                    }
+                }
+                $locations[$idx]['color'.$i.'_title'] = $title;
+                $locations[$idx]['color'.$i.'_style'] = $style;
+                $locations[$idx]['color'.$i.'_active'] = $active;
+            }
+            $locations[$idx]['logo_src_clean'] = $logosrc;
+            $locations[$idx]['logo_vectorized_clean'] = $vectorimg;
+            $locations[$idx]['ready'] = $ready;
+            $idx++;
+            $numpp++;
+        }
+        return $locations;
+    }
+
+    public function get_proofrequest_proofdocs($artwork_id)
+    {
+        $this->db->select('*');
+        $this->db->from('ts_artwork_proofs');
+        $this->db->where('artwork_id',$artwork_id);
+        $this->db->order_by('artwork_proof_id');
+        $proofs = $this->db->get()->result_array();
+        $idx = 0;
+        foreach ($proofs as $proof) {
+            $proofs[$idx]['src']=$proof['proof_name'];
+            $idx++;
+        }
+        return $proofs;
+    }
+
+    public function get_artwork_details($artwork_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Artwork Not Found'];
+        $artw = $this->db->select('*')->from('ts_artworks')->where('artwork_id', $artwork_id)->get()->row_array();
+        if (ifset($artw, 'artwork_id', 0) == $artwork_id) {
+            $out['result'] = $this->success_result;
+            $out['artwork'] = $artw;
+        }
+        return $out;
+    }
+
+    public function get_lead_email($email_id)
+    {
+        return $this->db->select('*')->from('ts_lead_emails')->where('email_id', $email_id)->get()->row_array();
     }
 }
