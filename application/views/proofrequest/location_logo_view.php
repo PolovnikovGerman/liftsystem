@@ -17,7 +17,7 @@
                 <?php if (empty($location['logo_vectorized'])) : ?>
                 &nbsp;
                 <?php else : ?>
-                <div class="artw-srclogo truncateoverflowtext"  data-link="<?=$location['logo_vectorized']?>" data-file="<?=$location['logo_src_clean']?>">
+                <div class="artw-srclogo truncateoverflowtext"  data-link="<?=$location['logo_vectorized']?>" data-file="<?=$location['logo_vectorized_clean']?>">
                     <?=$location['logo_vectorized_clean']?>
                 </div>
                 <?php endif; ?>
