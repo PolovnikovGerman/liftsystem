@@ -56,7 +56,7 @@
                     <div class="leadblockcenter">
                         <div class="lead-details-block">
                             <div class="datarow">
-                                <label for="lead_itemqty">Requested Qty:</label>
+                                <label for="lead_itemqty">Req. Qty:</label>
                                 <input type="text" id="lead_itemqty" class="leadmainedit" data-fld="lead_itemqty" value="<?=$lead['lead_itemqty']?>"/>
                             </div>
                             <?php if (!empty($lead['lead_customtype'])) : ?>
