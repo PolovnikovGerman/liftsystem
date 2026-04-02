@@ -2,7 +2,7 @@
 <input type="hidden" id="quoteformexpandview" value="0"/>
 <div class="leadquotesform-top">
     <div class="qtypricetitle">
-        <div class="qtyprice-rowqty">Multi Qty Quoter:</div>
+        <div class="qtyprice-rowqty">Quantity:</div>
         <div class="qtyprice-rowprice">Price Ea:</div>
     </div>
     <div class="qtypricelist">
@@ -29,11 +29,7 @@
                 </div>
                 <div class="qtyprice-rowprice">
                     <div class="qtyprice-pricebox" data-promoprice="<?=$price['sale_price']?>">
-<!--                    --><?php //if ($custom_item) : ?>
                         <input class="qtybox-price" <?=$price['active']==1 ? '' : 'readonly="readonly"'?> type="text" name="qtybox" data-price="<?=$price['promo_price_id']?>" value="<?=MoneyOutput($price['sale_price'])?>"/>
-<!--                    --><?php //else : ?>
-<!--                        --><?php //=MoneyOutput($price['sale_price'])?>
-<!--                    --><?php //endif; ?>
                     </div>
                 </div>
             </div>
@@ -57,12 +53,22 @@
     </div>
     <div class="quotesform-setup">
         <label>Setup:</label>
+        <select class="quoteform-setuptype" name="setuptype">
+            <option value="NEW">N</option>
+            <option value="REPEAT">R</option>
+        </select>
         <input type="text" name="quotesform-setup" value="<?=$setup_price?>"/>
+        <input type="text" name="quotesform-setupnote" value="" placeholder="Note"/>
     </div>
     <?php if ($custom_item) : ?>
         <div class="quotesform-design">
             <label>Design:</label>
+            <select class="quoteform-designtype" name="designtype">
+                <option value="NEW">N</option>
+                <option value="REPEAT">R</option>
+            </select>
             <input type="text" name="quotesform-design" value="<?=$design_price?>">
+            <input type="text" name="quotesform-designnote" style="display: none;" value="" placeholder="Note">
         </div>
     <?php endif; ?>
 </div>
