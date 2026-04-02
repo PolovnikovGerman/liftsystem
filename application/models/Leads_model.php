@@ -396,6 +396,9 @@ Class Leads_model extends MY_Model
                 $this->db->set('update_date', date('Y-m-d H:i:s'));
                 $newhistory=$leadpost['lead_status'];
             }
+            if (isset($leadpost['lead_customtype']) && !empty($leadpost['lead_customtype'])) {
+                $this->db->set('lead_customtype',$leadpost['lead_customtype']);
+            }
             $this->db->set('lead_type',$leadpost['lead_type']);
             if ($leadpost['lead_id']==0) {
                 /* New Record */
@@ -2354,6 +2357,9 @@ Class Leads_model extends MY_Model
             'address_2' => $formdata['ship_address2'],
             'brand' => $formdata['brand'],
         ];
+        if (!empty($formdata['shape_type'])) {
+            $leadpost['lead_customtype'] = $formdata['shape_type'];
+        }
         $lead_tasks = [
             'send_quote'=>0,
             'send_artproof'=>0,

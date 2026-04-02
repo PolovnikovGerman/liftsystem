@@ -4681,8 +4681,9 @@ class Leadquote_model extends MY_Model
                 if ($quoteparams['designtype']=='NEW') {
                     $this->db->set('mischrg_label1', $this->config->item('custom_mischrg_label'));
                     $this->db->set('mischrg_value1', $quoteparams['design_price']);
+                    $item_subtotal+=$quoteparams['design_price'];
                 } else {
-                    $this->db->set('mischrg_label1', $this->config->item('custom_mischrgrepeat_label'));
+                    $this->db->set('mischrg_label1', $this->config->item('custom_mischrgrepeat_label').' ('.$quoteparams['designnote']);
                     $this->db->set('mischrg_value1', 0);
                 }
             }
@@ -4734,7 +4735,7 @@ class Leadquote_model extends MY_Model
             $this->load->model('leadorder_model');
             if ($lead_data['lead_item_id']<0) {
                 $itemdata=$this->orders_model->get_newitemdat($lead_data['lead_item_id']);
-                $item_description=$lead_data['other_item_name'];
+                $item_description=(empty($lead_data['other_item_name']) ? 'Custom Shaped Stress Balls' : $lead_data['other_item_name']);
             } else {
                 $itemdata=$this->leadorder_model->_get_itemdata($lead_data['lead_item_id']);
                 $item_description=$itemdata['item_name'];
@@ -4797,7 +4798,7 @@ class Leadquote_model extends MY_Model
                         $this->db->set('quote_item_id', $quote_item_id);
                         $this->db->set('imprint_active', 1);
                         $this->db->set('num_colors', $location['prints']);
-                        if ($location['prints']==1 || $location['prints']==1) {
+                        if ($location['prints']==1 || $location['prints']>4) {
                             if ($location['location']==1) {
                                 $this->db->set('print_1',0);
                             } else {
@@ -4822,7 +4823,11 @@ class Leadquote_model extends MY_Model
                             $this->db->set('setup_4', 0);
                         }
                         $this->db->set('imprint_type', $quoteparams['setuptype']);
+                        if ($quoteparams['setuptype']=='REPEAT') {
+                            $this->db->set('repeat_note', $quoteparams['setupnote']);
+                        }
                         $this->db->insert('ts_quote_imprindetails');
+                        $numloc++;
                     }
                     $start = count($locations)+1;
                     for ($i=$start; $i<13; $i++) {
@@ -4837,18 +4842,18 @@ class Leadquote_model extends MY_Model
                         $this->db->set('print_2', $quoteparams['print_price']);
                         $this->db->set('print_3', $quoteparams['print_price']);
                         $this->db->set('print_4', $quoteparams['print_price']);
-                        if ($quoteparams['setuptype']=='NEW') {
+                        // if ($quoteparams['setuptype']=='NEW') {
                             $this->db->set('setup_1', $quoteparams['setup_price']);
                             $this->db->set('setup_2', $quoteparams['setup_price']);
                             $this->db->set('setup_3', $quoteparams['setup_price']);
                             $this->db->set('setup_4', $quoteparams['setup_price']);
-                        } else {
-                            $this->db->set('setup_1', 0);
-                            $this->db->set('setup_2', 0);
-                            $this->db->set('setup_3', 0);
-                            $this->db->set('setup_4', 0);
-                        }
-                        $this->db->set('imprint_type', $quoteparams['setuptype']);
+//                        } else {
+//                            $this->db->set('setup_1', 0);
+//                            $this->db->set('setup_2', 0);
+//                            $this->db->set('setup_3', 0);
+//                            $this->db->set('setup_4', 0);
+//                        }
+//                         $this->db->set('imprint_type', $quoteparams['setuptype']);
                         $this->db->insert('ts_quote_imprindetails');
                     }
                     // Add details
@@ -4896,7 +4901,7 @@ class Leadquote_model extends MY_Model
                         if ($quoteparams['setuptype']=='NEW') {
                             $descipt = 'One Time Art Setup Charge';
                         } else {
-                            $descipt = 'Repeat Setup Charge';
+                            $descipt = 'Repeat Setup Charge '.$quoteparams['setupnote'];
                         }
                         $this->db->set('quote_item_id', $quote_item_id);
                         $this->db->set('imprint_description', $descipt);
@@ -4904,11 +4909,11 @@ class Leadquote_model extends MY_Model
                         $this->db->set('imprint_qty', $setupcnt);
                         if ($quoteparams['setuptype']=='NEW') {
                             $this->db->set('imprint_price', $quoteparams['setup_price']);
+                            $imprint_subtotal+=$setupcnt*$quoteparams['setup_price'];
                         } else {
                             $this->db->set('imprint_price', 0);
                         }
                         $this->db->insert('ts_quote_imprints');
-                        $imprint_subtotal+=$setupcnt*$quoteparams['setup_price'];
                     }
                     $item_subtotal+=$imprint_subtotal;
                     // Update Quote body
