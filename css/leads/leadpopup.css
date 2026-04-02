@@ -725,7 +725,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .lead-details-block label {
     font-weight: normal;
-    font-size: 9.5px;
+    font-size: 10px;
     margin-bottom: 0;
 }
 .lead-details-block input {
@@ -736,11 +736,11 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     border-radius: 2px;
     font-size: 11px;
     padding: 0;
-    margin-left: -3px;
-    width: 23px;
+    /*margin-left: -3px;*/
+    width: 43px;
 }
 .lead_customtypelabel {
-    font-size: 9.5px;
+    font-size: 10px;
     margin-right: 4px;
     line-height: 16px;
 }
@@ -750,7 +750,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     height: 16px;
     line-height: 16px;
     padding-left: 2px;
-    width: 62px;
+    width: 60px;
 }
 /* Quote template */
 .lead-quotes {
