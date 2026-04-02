@@ -4683,7 +4683,7 @@ class Leadquote_model extends MY_Model
                     $this->db->set('mischrg_value1', $quoteparams['design_price']);
                     $item_subtotal+=$quoteparams['design_price'];
                 } else {
-                    $this->db->set('mischrg_label1', $this->config->item('custom_mischrgrepeat_label').' ('.$quoteparams['designnote']);
+                    $this->db->set('mischrg_label1', $this->config->item('custom_mischrgrepeat_label').' ('.$quoteparams['designnote'].')');
                     $this->db->set('mischrg_value1', 0);
                 }
             }
