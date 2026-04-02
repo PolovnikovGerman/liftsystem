@@ -4539,6 +4539,7 @@ class Leadquote_model extends MY_Model
                 if ($quoteparams['designtype']=='NEW') {
                     $this->db->set('mischrg_label1', $this->config->item('custom_mischrg_label'));
                     $this->db->set('mischrg_value1', $quoteparams['design_price']);
+                    $item_subtotal+=$quoteparams['design_price'];
                 } else {
                     $this->db->set('mischrg_label1', $this->config->item('custom_mischrgrepeat_label').' ('.$quoteparams['designnote']);
                     $this->db->set('mischrg_value1', 0);
@@ -4651,13 +4652,12 @@ class Leadquote_model extends MY_Model
                 $this->db->insert('ts_quote_itemcolors');
                 if ($this->db->insert_id()) {
                     $quote_itemcolor_id = $this->db->insert_id();
-                    $numloc = 1;
                     foreach ($locations as $location) {
                         $this->db->set('quote_item_id', $quote_item_id);
                         $this->db->set('imprint_active', 1);
                         $this->db->set('num_colors', $location['prints']);
-                        if ($location['prints']==1) { // || $location['prints']==1
-                            if ($location['location']==1 && $numloc==1) {
+                        if ($location['prints']==1 || $location['prints']>4) {
+                            if ($location['location']==1) {
                                 $this->db->set('print_1',0);
                             } else {
                                 $this->db->set('print_1', $quoteparams['print_price']);
@@ -4767,11 +4767,11 @@ class Leadquote_model extends MY_Model
                         $this->db->set('imprint_qty', $setupcnt);
                         if ($quoteparams['setuptype']=='NEW') {
                             $this->db->set('imprint_price', $quoteparams['setup_price']);
+                            $imprint_subtotal+=$setupcnt*$quoteparams['setup_price'];
                         } else {
                             $this->db->set('imprint_price', 0);
                         }
                         $this->db->insert('ts_quote_imprints');
-                        $imprint_subtotal+=$setupcnt*$quoteparams['setup_price'];
                     }
                     $item_subtotal+=$imprint_subtotal;
                     // Update Quote body

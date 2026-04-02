@@ -53,10 +53,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="lead-attachments">
-                        <div class="lead-attachmentstitle">Attachments:</div>
-                        <div id="btn-attach"></div>
-                        <div class="list-attachfiles" id="leadpopup_list-attachfiles"><?=$attachments_view?></div>
+                    <div class="leadblockcenter">
+                        <div class="lead-details-block">
+                            <div class="datarow">
+                                <label for="lead_itemqty">Requested Qty:</label>
+                                <input type="text" id="lead_itemqty" class="leadmainedit" data-fld="lead_itemqty" value="<?=$lead['lead_itemqty']?>"/>
+                            </div>
+                            <?php if (!empty($lead['lead_customtype'])) : ?>
+                                <div class="datarow">
+                                    <div class="lead_customtypelabel">Type:</div>
+                                    <div class="lead_customtype truncateoverflowtext"><?=$lead['lead_customtype']?></div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="lead-attachments">
+                            <div class="lead-attachmentstitle">Attachments:</div>
+                            <div id="btn-attach"></div>
+                            <div class="list-attachfiles" id="leadpopup_list-attachfiles"><?=$attachments_view?></div>
+                        </div>
                     </div>
                 </div>
                 <div class="leadblockright">
