@@ -1,4 +1,6 @@
 <?php $nrow = 0; ?>
+<?php $curdate = '';?>
+<?php $showcurdate = 0; ?>
 <?php foreach ($quotes as $quote): ?>
     <?php if ($quote['rowtype']=='total') : ?>
         <div class="leadquotetabl-tr yeartotal">
@@ -7,7 +9,17 @@
         </div>
     <?php else : ?>
         <div class="leadquotetabl-tr <?=$nrow%2==0 ? 'whitedatarow' : 'greydatarow';?>">
-            <div class="leadquotetabl-date"><?=date('m/d', $quote['quote_date'])?></div> <!-- leadquotetabl-td -->
+            <?php if ($curdate!==date('m/d', $quote['quote_date'])) : ?>
+            <?php $curdate = date('m/d', $quote['quote_date']); ?>
+            <?php $showcurdate = 1; ?>
+            <?php endif; ?>
+            <div class="leadquotetabl-date">
+                <?php if ($showcurdate==1) : ?>
+                    <?=$curdate?>
+                <?php else : ?>
+                ---
+                <?php endif; ?>
+            </div>
             <div class="leadquotetabl-quote" data-quote="<?=$quote['quote_id']?>">
                 <div class="leadquotetabl-quotebox <?=$quote['orders'] > 0 ? 'blueactive' : ''?>"><?=$quote['brand']=='SR' ? '' : 'QB-'?><?=$quote['quote_number']?><?=$quote['brand']=='SR' ? '-QS' : ''?></div>
             </div>
@@ -19,5 +31,6 @@
             <div class="leadquotetabl-subtotal"><?=MoneyOutput($quote['quote_total'])?></div>
         </div>
         <?php $nrow++; ?>
+        <?php $showcurdate = 0; ?>
     <?php endif; ?>
 <?php endforeach; ?>

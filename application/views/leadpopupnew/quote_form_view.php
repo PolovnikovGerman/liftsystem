@@ -58,7 +58,7 @@
             <option value="REPEAT">R</option>
         </select>
         <input type="text" name="quotesform-setup" value="<?=$setup_price?>"/>
-        <input type="text" name="quotesform-setupnote" style="display: none;" value="" placeholder="Note"/>
+        <input type="text" name="quotesform-setupnote" value="" placeholder="Note"/>
     </div>
     <?php if ($custom_item) : ?>
         <div class="quotesform-design">
