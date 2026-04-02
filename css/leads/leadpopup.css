@@ -503,7 +503,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     height: 48px;
     border: 1px solid #585858;
     background: #fff;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 11px;
     padding: 3px;
     resize: none;
@@ -659,6 +659,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .attachfile-name {
     font-size: 10px;
+    cursor: pointer;
 }
 /* Need By */
 .lead-needbynotes {
@@ -708,7 +709,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     height: 117px; /* 218px; */
     border: 1px solid #585858;
     background: #fff;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 12px;
     padding: 4px;
     resize: none;
@@ -907,6 +908,8 @@ input.qtybox-qty {
 }
 .lead-quotesform input[type=checkbox] {
     margin: 0;
+    position: relative;
+    top: -1px;
 }
 .checkbox-discount input[type=checkbox] {
     margin: 0;
@@ -950,17 +953,27 @@ input.qtybox-qty {
     margin-left: 5px;
 }
 .quotesform-setup input {
-    width: 29px;
+    width: 25px;
+}
+input[name='quotesform-setupnote'] {
+    display: none;
+    width: 30px;
 }
 .quotesform-design {
     float: right !important;
     margin-left: 5px;
 }
+select.quoteform-designtype {
+    width: 32px;
+}
+select.quoteform-setuptype {
+    width: 32px;
+}
 #modal-lead-stock .quotesform-design {
     display: none;
 }
 .quotesform-design input {
-    width: 34px;
+    width: 28px;
 }
 .quotesform-zipcode {}
 .quotesform-zipcode input {
@@ -1170,6 +1183,9 @@ input.discount-exp {
     width: 61px;
     text-align: right;
     padding: 0 4px;
+}
+.leadquotetabl-tr .leadquotetabl-qty, .leadquotetabl-tr .leadquotetabl-descr, .leadquotetabl-tr .leadquotetabl-subtotal {
+    font-size: 11px;
 }
 .leadquotetabl-header .leadquotetabl-descr,
 .leadquotetabl-header .leadquotetabl-subtotal {

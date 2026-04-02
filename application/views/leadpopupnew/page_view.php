@@ -62,7 +62,7 @@
                             <?php if (!empty($lead['lead_customtype'])) : ?>
                                 <div class="datarow">
                                     <div class="lead_customtypelabel">Type:</div>
-                                    <div class="lead_customtype truncateoverflowtext"><?=$lead['lead_customtype']?></div>
+                                    <div class="lead_customtype truncateoverflowtext"><?=ucwords($lead['lead_customtype'])?></div>
                                 </div>
                             <?php endif; ?>
                         </div>
