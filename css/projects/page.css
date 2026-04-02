@@ -30,6 +30,7 @@
 .logo-company {
     position: relative;
     margin: 0 16px;
+    top: -49px;
 }
 .logo-company-empty {
     position: relative;
