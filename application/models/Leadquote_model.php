@@ -4540,7 +4540,7 @@ class Leadquote_model extends MY_Model
                     $this->db->set('mischrg_label1', $this->config->item('custom_mischrg_label'));
                     $this->db->set('mischrg_value1', $quoteparams['design_price']);
                 } else {
-                    $this->db->set('mischrg_label1', $this->config->item('custom_mischrgrepeat_label'));
+                    $this->db->set('mischrg_label1', $this->config->item('custom_mischrgrepeat_label').' ('.$quoteparams['designnote']);
                     $this->db->set('mischrg_value1', 0);
                 }
             }
@@ -4651,12 +4651,13 @@ class Leadquote_model extends MY_Model
                 $this->db->insert('ts_quote_itemcolors');
                 if ($this->db->insert_id()) {
                     $quote_itemcolor_id = $this->db->insert_id();
+                    $numloc = 1;
                     foreach ($locations as $location) {
                         $this->db->set('quote_item_id', $quote_item_id);
                         $this->db->set('imprint_active', 1);
                         $this->db->set('num_colors', $location['prints']);
-                        if ($location['prints']==1 || $location['prints']==1) {
-                            if ($location['location']==1) {
+                        if ($location['prints']==1) { // || $location['prints']==1
+                            if ($location['location']==1 && $numloc==1) {
                                 $this->db->set('print_1',0);
                             } else {
                                 $this->db->set('print_1', $quoteparams['print_price']);
@@ -4680,7 +4681,11 @@ class Leadquote_model extends MY_Model
                             $this->db->set('setup_4', 0);
                         }
                         $this->db->set('imprint_type', $quoteparams['setuptype']);
+                        if ($quoteparams['setuptype']=='REPEAT') {
+                            $this->db->set('repeat_note', $quoteparams['setupnote']);
+                        }
                         $this->db->insert('ts_quote_imprindetails');
+                        $numloc++;
                     }
                     $start = count($locations)+1;
                     for ($i=$start; $i<13; $i++) {
@@ -4695,18 +4700,18 @@ class Leadquote_model extends MY_Model
                         $this->db->set('print_2', $quoteparams['print_price']);
                         $this->db->set('print_3', $quoteparams['print_price']);
                         $this->db->set('print_4', $quoteparams['print_price']);
-                        if ($quoteparams['setuptype']=='NEW') {
+                        // if ($quoteparams['setuptype']=='NEW') {
                             $this->db->set('setup_1', $quoteparams['setup_price']);
                             $this->db->set('setup_2', $quoteparams['setup_price']);
                             $this->db->set('setup_3', $quoteparams['setup_price']);
                             $this->db->set('setup_4', $quoteparams['setup_price']);
-                        } else {
-                            $this->db->set('setup_1', 0);
-                            $this->db->set('setup_2', 0);
-                            $this->db->set('setup_3', 0);
-                            $this->db->set('setup_4', 0);
-                        }
-                        $this->db->set('imprint_type', $quoteparams['setuptype']);
+//                        } else {
+//                            $this->db->set('setup_1', 0);
+//                            $this->db->set('setup_2', 0);
+//                            $this->db->set('setup_3', 0);
+//                            $this->db->set('setup_4', 0);
+//                        }
+//                         $this->db->set('imprint_type', $quoteparams['setuptype']);
                         $this->db->insert('ts_quote_imprindetails');
                     }
                     // Add details
@@ -4754,7 +4759,7 @@ class Leadquote_model extends MY_Model
                         if ($quoteparams['setuptype']=='NEW') {
                             $descipt = 'One Time Art Setup Charge';
                         } else {
-                            $descipt = 'Repeat Setup Charge';
+                            $descipt = 'Repeat Setup Charge '.$quoteparams['setupnote'];
                         }
                         $this->db->set('quote_item_id', $quote_item_id);
                         $this->db->set('imprint_description', $descipt);

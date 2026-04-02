@@ -1339,8 +1339,9 @@ class Leadmanagement extends MY_Controller
                         'locations' => $locations,
                         'user_id' => $this->USR_ID,
                         'setuptype' => $setuptype,
-                        'setupnote' => '',
+                        'setupnote' => $setupnote,
                         'designtype' => $designtype,
+                        'designnote' => $designnote,
                     ];
                     $this->load->model('leadquote_model');
                     $qres = $this->leadquote_model->add_leadpopup_quote($quoteparams);
