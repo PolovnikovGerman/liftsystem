@@ -723,9 +723,9 @@ function addquotedoc(pricecheck, lead_id) {
     var discount_exp = '';
     if ($("input[name='discountcheckbox']:checked").length > 0) {
         discount_label = $("input[name='quotesform-discount']").val();
-        if (discount_label=='') {
-            discount_label = 'Courtesy Discount';
-        }
+        // if (discount_label=='') {
+        //     discount_label = 'Courtesy Discount';
+        // }
         discount_val = $("input[name='quotesform-price']").val();
         discount_exp = $("input[name='quotesform-exp']").val();
     }
