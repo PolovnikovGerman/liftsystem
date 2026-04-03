@@ -4672,7 +4672,7 @@ class Leadquote_model extends MY_Model
             $this->db->set('quote_number', $newnum);
             $this->db->set('quote_date', time());
             $this->db->set('quote_template', $this->quotetemplates[0]);
-            if (!empty($quoteparams['discount_label'])) {
+            if (!empty($quoteparams['discount_label']) && !empty($quoteparams['discount'])) {
                 $this->db->set('discount_label', $quoteparams['discount_label']);
                 $this->db->set('discount_value', $quoteparams['discount']);
                 $item_subtotal-=$quoteparams['discount'];
