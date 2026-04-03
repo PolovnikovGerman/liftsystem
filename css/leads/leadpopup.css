@@ -536,14 +536,14 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     height: 14px;
     line-height: 14px;
     background: #ffdbca;
-    font-size: 10px;
+    font-size: 11px;
     padding-left: 4px;
 }
 .leadhistory-name {
     font-weight: 600;
 }
 .leadhistory-txtbox {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 11px;
     padding: 0 4px;
 }
