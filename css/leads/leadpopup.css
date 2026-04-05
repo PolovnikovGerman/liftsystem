@@ -344,7 +344,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     font-weight: 600;
 }
 .leadblockleft {
-    width: 284px;
+    width: 300px; /* 284px; */
 }
 .leadblockright {
     float: right !important;
@@ -360,12 +360,12 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .lead-itemdescr {
     width: 283px;
-    /*height: 81px;*/
     height: auto;
     background: #d9d8c5;
     border: 1px solid #86856b;
     border-radius: 5px;
     padding: 5px;
+    margin-bottom: 10px;
 }
 .lead-itemdescrtitle {
     width: 100%;
@@ -462,7 +462,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 .lead-statushistory .tab-content > .active {
     display: block;
     width: 193px;
-    height: 160px;
+    /*height: 160px;*/
     background: #d9d8c5;
     border: 1px solid #86856b;
     border-radius: 0 0 5px 5px;
@@ -473,12 +473,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .lead-statushistory {
     width: 193px;
-    height: 182px;
-    margin-top: 9px;
-    /*background: #d9d8c5;
-    border: 1px solid #86856b;
-    border-radius: 5px;
-    padding: 5px;*/
+    /*height: 182px;*/
 }
 .lead-statushistorybody {
     width: 193px;
@@ -508,7 +503,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     height: 48px;
     border: 1px solid #585858;
     background: #fff;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 11px;
     padding: 3px;
     resize: none;
@@ -519,8 +514,8 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .lead-historybox {
     width: 100%;
-    /*height: 99px;*/
-    height: 93px;
+    /*height: 93px;*/
+    height: 177px;
     border: 1px solid #585858;
     background: #fff;
     font-size: 11px;
@@ -530,7 +525,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .list-leadhistory {
     width: 100%;
-    height: 89px;
+    height: 175px;
 }
 .leadhistory-box {
     width: 100%;
@@ -541,14 +536,14 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     height: 14px;
     line-height: 14px;
     background: #ffdbca;
-    font-size: 10px;
+    font-size: 11px;
     padding-left: 4px;
 }
 .leadhistory-name {
     font-weight: 600;
 }
 .leadhistory-txtbox {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 11px;
     padding: 0 4px;
 }
@@ -615,13 +610,13 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 /* Attachments */
 .lead-attachments {
     width: 84px;
-    height: 182px;
-    margin-left: 5px;
+    /*height: 182px;*/
+    /*margin-left: 8px;*/
 }
 .lead-attachmentstitle {
     font-size: 12px;
     font-weight: 600;
-    margin-top: 15px;
+    /*margin-top: 15px;*/
 }
 .btn-attach {
     width: 84px!important;
@@ -637,14 +632,19 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 .list-attachfiles {
     width: 100%;
     margin-top: 5px;
-    height: 131px;
+    /*height: 131px;*/
+    height: 91px;
     scrollbar-width: none;
     overflow-y: auto;
 }
 .attachfile {
-    width: 100%;
+    /*width: 100%;*/
+    width: 84px;
     line-height: 11px;
     margin-bottom: 3px;
+}
+.attachfile:hover {
+    background: #f0efe2;
 }
 .attachfile:last-child {
     margin-bottom: 0;
@@ -662,11 +662,12 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .attachfile-name {
     font-size: 10px;
+    cursor: pointer;
 }
 /* Need By */
 .lead-needbynotes {
     width: 200px;
-    height: 272px;
+    /*height: 272px;*/
     background: #d9d8c5;
     border: 1px solid #86856b;
     border-radius: 5px;
@@ -708,13 +709,52 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .lead-notesbox textarea {
     width: 100%;
-    height: 218px;
+    height: 117px; /* 218px; */
     border: 1px solid #585858;
     background: #fff;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 12px;
     padding: 4px;
     resize: none;
+}
+/* Central Block */
+.leadblockcenter {
+    width: 90px;
+    margin-left: 8px;
+}
+.lead-details-block {
+    width: 100%;
+    margin-left: -4px;
+    margin-bottom: 5px;
+}
+.lead-details-block label {
+    font-weight: normal;
+    font-size: 10px;
+    margin-bottom: 0;
+}
+.lead-details-block input {
+    height: 16px;
+    line-height: 15px;
+    background: #fff;
+    border: 1px solid #808080;
+    border-radius: 2px;
+    font-size: 11px;
+    padding: 0;
+    /*margin-left: -3px;*/
+    width: 43px;
+}
+.lead_customtypelabel {
+    font-size: 10px;
+    margin-right: 4px;
+    line-height: 16px;
+}
+.lead_customtype {
+    background: #fff;
+    font-size: 11px;
+    height: 16px;
+    line-height: 16px;
+    padding-left: 2px;
+    width: 60px;
 }
 /* Quote template */
 .lead-quotes {
@@ -724,6 +764,11 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 .lead-quotestitle {
     font-size: 14px;
     font-weight: 600;
+}
+.lead-quotestitle span {
+    font-weight: normal;
+    font-size: 11px;
+    font-style: italic;
 }
 .lead-quotesbody {
     width: 100%;
@@ -803,11 +848,11 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     width: 100%;
     height: 16px;
     line-height: 14px;
-    background: #fff;
-    border: 1px solid #808080;
+    /* background: #fff; */
+    /* border: 1px solid #808080; */
     border-radius: 2px;
     font-size: 11px;
-/*    padding: 0 3px; */
+    /* padding: 0 3px; */
     text-align: center;
     font-weight: 600;
 }
@@ -862,21 +907,30 @@ input.qtybox-qty {
     border-radius: 2px;
     font-size: 11px;
     padding: 0 3px;
+    margin-left: -3px;
 }
 .lead-quotesform input[type=checkbox] {
     margin: 0;
+    position: relative;
+    top: -1px;
 }
-.quotesform-locs select {
-    /*width: 30px;*/
-    width: 36px;
+.checkbox-discount input[type=checkbox] {
+    margin: 0;
+    position: relative;
+    top: 3px;
+}
+.quotesform-locs select, .quotesform-setup select, .quotesform-design select {
+    width: 30px;
+    /* width: 36px; */
     height: 16px;
     line-height: 15px;
     background: #fff;
     border: 1px solid #808080;
     border-radius: 2px;
     font-size: 11px;
-    padding: 0 4px;
+    /* padding: 0 4px; */
     margin-right: 1.5px;
+    margin-left: -3px;
 }
 .quotesform-locs select option {
     line-height: 12px;
@@ -902,17 +956,27 @@ input.qtybox-qty {
     margin-left: 5px;
 }
 .quotesform-setup input {
-    width: 29px;
+    width: 25px;
+}
+input[name='quotesform-setupnote'] {
+    display: none;
+    width: 30px;
 }
 .quotesform-design {
     float: right !important;
     margin-left: 5px;
 }
+select.quoteform-designtype {
+    width: 32px;
+}
+select.quoteform-setuptype {
+    width: 32px;
+}
 #modal-lead-stock .quotesform-design {
     display: none;
 }
 .quotesform-design input {
-    width: 34px;
+    width: 28px;
 }
 .quotesform-zipcode {}
 .quotesform-zipcode input {
@@ -1122,6 +1186,9 @@ input.discount-exp {
     width: 61px;
     text-align: right;
     padding: 0 4px;
+}
+.leadquotetabl-tr .leadquotetabl-qty, .leadquotetabl-tr .leadquotetabl-descr, .leadquotetabl-tr .leadquotetabl-subtotal {
+    font-size: 11px;
 }
 .leadquotetabl-header .leadquotetabl-descr,
 .leadquotetabl-header .leadquotetabl-subtotal {

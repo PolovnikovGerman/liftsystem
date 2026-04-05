@@ -39,6 +39,41 @@
                             <textarea class="leadmainedit" data-fld="other_item_name"><?=$lead['other_item_name']?></textarea>
                         </div>
                     </div>
+                    <div class="lead-needbynotes">
+                        <div class="lead-needby">
+                            <div class="lead-needbytitle">Need by Date:</div>
+                            <div class="lead-needbybox">
+                                <input type="text" id="lead_needby" class="leadmainedit" data-fld="lead_needby" value="<?=empty($lead['lead_needby']) ? '' : date('D - M j, Y', $lead['lead_needby'])?>"/>
+                            </div>
+                        </div>
+                        <div class="lead-notes">
+                            <div class="lead-notestitle">Notes:</div>
+                            <div class="lead-notesbox">
+                                <textarea class="leadmainedit" data-fld="lead_note"><?=$lead['lead_note']?></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="leadblockcenter">
+                        <div class="lead-details-block">
+                            <div class="datarow">
+                                <label for="lead_itemqty">Req. Qty:</label>
+                                <input type="text" id="lead_itemqty" class="leadmainedit" data-fld="lead_itemqty" value="<?=$lead['lead_itemqty']?>"/>
+                            </div>
+                            <?php if (!empty($lead['lead_customtype'])) : ?>
+                                <div class="datarow">
+                                    <div class="lead_customtypelabel">Type:</div>
+                                    <div class="lead_customtype truncateoverflowtext"><?=ucwords($lead['lead_customtype'])?></div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="lead-attachments">
+                            <div class="lead-attachmentstitle">Attachments:</div>
+                            <div id="btn-attach"></div>
+                            <div class="list-attachfiles" id="leadpopup_list-attachfiles"><?=$attachments_view?></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="leadblockright">
                     <div class="lead-statushistory">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active"><a href="#custom-status-history" aria-controls="custom-status-history" role="tab" data-toggle="tab">Status & History:</a></li>
@@ -62,32 +97,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="lead-attachments">
-                        <div class="lead-attachmentstitle">Attachments:</div>
-                        <div id="btn-attach"></div>
-                        <div class="list-attachfiles" id="leadpopup_list-attachfiles"><?=$attachments_view?></div>
-                    </div>
-                </div>
-                <div class="leadblockright">
-                    <div class="lead-needbynotes">
-                        <div class="lead-needby">
-                            <div class="lead-needbytitle">Need by Date:</div>
-                            <div class="lead-needbybox">
-                                <input type="text" id="lead_needby" class="leadmainedit" data-fld="lead_needby" value="<?=empty($lead['lead_needby']) ? '' : date('D - M j, Y', $lead['lead_needby'])?>"/>
-                            </div>
-                        </div>
-                        <div class="lead-notes">
-                            <div class="lead-notestitle">Notes:</div>
-                            <div class="lead-notesbox">
-                                <textarea class="leadmainedit" data-fld="lead_note"><?=$lead['lead_note']?></textarea>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="datarow">
                 <div class="lead-quotes">
-                    <div class="lead-quotestitle">Quotes:</div>
+                    <div class="lead-quotestitle">Quotes: <span>Check boxes to create multiple quotes at once</span></div>
                     <div class="lead-quotesbody">
                         <div class="lead-quotesform"><?=$quote_form_view?></div>
                         <div class="btn-messagequote">Message on Quote <span class="quoteform-expandview"><i class="fa fa-caret-down" aria-hidden="true"></i></span></div>

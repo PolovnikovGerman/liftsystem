@@ -475,6 +475,25 @@ function init_leadpopupedit() {
             $(".btn-createquote.fixedview").show();
         }
     });
+    // Change setup / design
+    $("select.quoteform-setuptype").unbind('change').change(function (){
+        if ($(this).val()=='NEW') {
+            $("input[name='quotesform-setup']").show();
+            $("input[name='quotesform-setupnote']").hide();
+        } else {
+            $("input[name='quotesform-setup']").hide();
+            $("input[name='quotesform-setupnote']").show();
+        }
+    });
+    $("select.quoteform-designtype").unbind('change').change(function (){
+        if ($(this).val()=='NEW') {
+            $("input[name='quotesform-design']").show();
+            $("input[name='quotesform-designnote']").hide();
+        } else {
+            $("input[name='quotesform-design']").hide();
+            $("input[name='quotesform-designnote']").show();
+        }
+    });
     // Add Quote
     $(".btn-createquote").unbind('click').click(function (){
         var numcand = $("input[name='pricecheck']:checked").length;
@@ -630,6 +649,10 @@ function add_leadquote() {
         alert('Chose Item Quote QTY');
     } else if ($("#lead_item").val()=='') {
         alert('Chose Item for Quote');
+    } else if ($("select.quoteform-setuptype")=='REPEAT' && $("input[name='quotesform-setupnote']").val()=='') {
+        alert('Enter Repeat Note for Setup');
+    } else if ($("select.quoteform-designtype")=='REPEAT' && $("input[name='quotesform-designnote']").val()=='') {
+        alert('Enter Repeat Note for Design');
     } else {
         var leadnum = $(".leadnumber").find('span').text();
         var msg="You will now save the updates of the "+leadnum+" by creating the quote.  Ok?";
@@ -700,9 +723,9 @@ function addquotedoc(pricecheck, lead_id) {
     var discount_exp = '';
     if ($("input[name='discountcheckbox']:checked").length > 0) {
         discount_label = $("input[name='quotesform-discount']").val();
-        if (discount_label=='') {
-            discount_label = 'Courtesy Discount';
-        }
+        // if (discount_label=='') {
+        //     discount_label = 'Courtesy Discount';
+        // }
         discount_val = $("input[name='quotesform-price']").val();
         discount_exp = $("input[name='quotesform-exp']").val();
     }
@@ -724,6 +747,10 @@ function addquotedoc(pricecheck, lead_id) {
     params.push({name: 'quotezip', value: quotezip});
     params.push({name: 'other_note', value: other_note});
     params.push({name: 'repcontact_note', value: repcontact_note});
+    params.push({name: 'setuptype', value: $("select[name='setuptype']").val()});
+    params.push({name: 'setupnote', value: $("input[name='quotesform-setupnote']").val()});
+    params.push({name: 'designtype', value: $("select[name='designtype']").val()});
+    params.push({name: 'designnote', value: $("input[name='quotesform-designnote']").val()});
     for (let i = 1; i < 13; i++) {
         if ($("select.quoteform-locations[data-location='"+i+"']").length > 0) {
             params.push({name: 'location'+i, value: $("select.quoteform-locations[data-location='"+i+"']").val()});
@@ -733,6 +760,7 @@ function addquotedoc(pricecheck, lead_id) {
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
+            console.log('Quote '+response.data.quote_id+' Added successfully');
         } else {
             $("#loader").hide();
             show_error(response);

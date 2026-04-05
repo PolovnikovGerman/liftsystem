@@ -906,7 +906,7 @@ class Leadorder extends MY_Controller
                     'usrtxt'=>$leadorder['order']['discount_descript'],
                     /* 'title'=>'Type Discount Description', */
                 );
-                $mdata['content']=$this->load->view('artpage/newarttext_view', $options, TRUE);
+                $mdata['content']=$this->load->view('leadorderdetails/newarttext_view', $options, TRUE);
                 $mdata['title']='Type Discount Description';
                 $error='';
             }
