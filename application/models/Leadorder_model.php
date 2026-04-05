@@ -5101,7 +5101,7 @@ Class Leadorder_model extends My_Model {
             $res['msg']='Empty Misc Charge Notification (row 2)';
             return $res;
         }
-        if (abs(floatval($data['discount_val']))>0 && empty($data['discount_descript'])) {
+        if (abs(floatval($data['discount_val']))>0 && empty($data['discount_label'])) { // discount_descript
             $res['msg']='All Discounts Must Have Valid Reason Explaining Why';
             return $res;
         }

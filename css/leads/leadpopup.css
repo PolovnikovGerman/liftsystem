@@ -643,6 +643,9 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     line-height: 11px;
     margin-bottom: 3px;
 }
+.attachfile:hover {
+    background: #f0efe2;
+}
 .attachfile:last-child {
     margin-bottom: 0;
 }
