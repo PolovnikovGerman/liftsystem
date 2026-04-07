@@ -751,14 +751,26 @@ function addquotedoc(pricecheck, lead_id) {
     }
     var url = mainurl+'/add_leadquote';
     $("#loader").show();
-    $.post(url, params, function(response){
-        if (response.errors=='') {
+    // $.post(url, params, function(response){
+    //     if (response.errors=='') {
+    //         console.log('Quote '+response.data.quote_id+' Added successfully');
+    //     } else {
+    //         $("#loader").hide();
+    //         show_error(response);
+    //     }
+    // },'json');
+    $.ajax({
+        url: url,
+        type: 'POST',
+        dataType: 'json',
+        data: params,
+        success: function(response) {
             console.log('Quote '+response.data.quote_id+' Added successfully');
-        } else {
-            $("#loader").hide();
-            show_error(response);
+        },
+        error: function(xhr, status, error) {
+            console.log("Error:", error);
         }
-    },'json');
+    });
 }
 
 function init_leadpopup_assign() {
