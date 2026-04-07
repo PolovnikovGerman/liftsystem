@@ -10520,4 +10520,108 @@ Class Orders_model extends MY_Model
         }
         return $out;
     }
+
+    public function accountreceiv_export($period, $brand, $ownsort, $refundsort, $refunddirec)
+    {
+        $daystart = strtotime(date('Y-m-d'));
+        $cur_year = intval(date('Y'));
+        $limit_year = 0;
+        if ($period > 0) {
+            $limit_year = $cur_year - intval($period) + 1;
+        }
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
+        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, o.debtstatus_date as update_date, ob.customer_ponum, o.order_blank');
+        $this->db->from('v_order_balances v');
+        $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
+        $this->db->join('ts_orders o','o.order_id=v.order_id');
+        $this->db->join('ts_order_billings ob','ob.order_id=v.order_id');
+        $this->db->where('v.balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('v.yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('v.brand', $brand);
+            } else {
+                $this->db->where_in('v.brand', ['BT','SB']);
+            }
+        }
+        $this->db->order_by($ownsort);
+        $owndats = $this->db->get()->result_array();
+        $owns = [];
+        $rundebt = 0;
+
+        foreach ($owndats as $owndat) {
+            $sclass = '';
+            if ($owndat['balance_manage'] == 3) {
+                $stype = $this->accrec_terms;
+            } elseif ($owndat['balance_manage'] == 2) {
+                $stype = $this->accrec_prepay;
+            } elseif ($owndat['balance_manage'] == 1) {
+                $stype = $this->accrec_willupd;
+                if (!empty($owndat['cntcard'])) {
+                    $stype = $this->accrec_credit;
+                    $sclass = 'creditcard';
+                }
+            }
+            $owndat['type'] = $stype;
+            $owndat['typeclass'] = $sclass;
+            $owndat['dueclass'] = 'current';
+            if ($owndat['batch_due'] < $daystart) {
+                $owndat['dueclass'] = 'pastdue';
+            }
+            $owndat['approved'] = ($owndat['approved'] == 0 ? 0 : 1);
+            if ($owndat['order_blank']==1) {
+                $owndat['approved']=1;
+            }
+            $days = round((time() - intval($owndat['batch_due'])) / (24 * 60 * 60), 0);
+            $owndat['days'] = $days;
+            $dayclass = '';
+            if ($days > 0) {
+                $dayclass = 'pastdue';
+            } else {
+                $dayclass = 'future';
+            }
+            $owndat['dayclass'] = $dayclass;
+            $rundebt += $owndat['balance'];
+            $owndat['rundebt'] = $rundebt;
+            $owns[] = $owndat;
+        }
+        // Refund
+        if ($refundsort=='balance') {
+            if ($refunddirec=='asc') {
+                $refunddir='desc';
+            } else {
+                $refunddir='asc';
+            }
+        } else {
+            $refunddir = $refunddirec;
+        }
+        $this->db->select('*');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance < 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
+            }
+        }
+        $this->db->order_by($refundsort, $refunddir);
+        $refunds = $this->db->get()->result_array();
+
+        return array(
+            'owns' => $owns,
+            'refunds' => $refunds,
+        );
+    }
 }
