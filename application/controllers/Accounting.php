@@ -2821,14 +2821,13 @@ class Accounting extends MY_Controller
 //            $ownsort1 = ($ownsort1=='owntype' ? 'type' : ($ownsort1=='ownapprove' ? 'approved' : $ownsort1));
 //            $ownsort2 = ifset($postdata,'ownsort2', 'batch_due');
 //            $ownsort2 = ($ownsort2=='owntype' ? 'type' : ($ownsort2=='ownapprove' ? 'approved' : $ownsort2));
-            $ownsort = ifset($postdata,'ownsort', 'owntype');
-            $refundsort = ifset($postdata,'refundsort','order_date');
-            $refunddirec = ifset($postdata, 'refunddirec', 'desc');
-            $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $refundsort, $refunddirec);
+            $ownsort = 'batch_due';
+            $refundsort = 'order_date';
+            $refunddirec = 'asc';
+            $res = $this->orders_model->accountreceiv_export($period, $brand, $ownsort, $refundsort, $refunddirec);
             $this->load->model('exportexcell_model');
             if ($exporttype=='O') {
-                $owns = array_merge($res['ownapproved'], $res['ownnotapproved']);
-                $mdata['url'] = $this->exportexcell_model->export_owed($owns, $brand);
+                $mdata['url'] = $this->exportexcell_model->export_owed($res['owns'], $brand);
             } else {
                 $mdata['url'] = $this->exportexcell_model->export_refund($res['refunds']);
             }

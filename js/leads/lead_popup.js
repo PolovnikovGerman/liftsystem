@@ -667,33 +667,25 @@ function add_leadquote() {
             $.post(url, sparams, function (sresponse){
                 if (sresponse.errors=='') {
                     // Send quotes
+                    var numquotes = $("input[name='pricecheck']:checked").length;
+                    console.log(numquotes+' quotes in queue');
+                    var leadid = sresponse.data.lead_id;
                     var chkprice = '';
                     var quotidx = 0;
+                    var maxquote = 0;
+                    $("input[name='pricecheck']:checked").each(function(index) {
+                        maxquote = $(this).val();
+                    });
                     $("input[name='pricecheck']:checked").each(function(index) {
                         chkprice = $(this).val();
-                        addquotedoc(chkprice, sresponse.data.lead_id);
-                        quotidx++;
-                    });
-                    // Restore lead
-                    var lurl=mainurl+"/edit_lead";
-                    $.post(lurl, {'lead_id': sresponse.data.lead_id}, function(lresponse){
-                        if (lresponse.errors=='') {
-                            $("#leadformModalLabel").empty().html(lresponse.data.title);
-                            $("#leadformModal").find('div.modal-body').empty().html(lresponse.data.content);
-                            $("#leadformModal").find('div.modal-footer').empty().html(lresponse.data.footer);
-                            init_leadpopupcontent();
-                            init_quoteformcontent();
-                            init_leadpopupedit();
-                            if (quotidx<2) {
-                                var quote_id = $("#leadpopupquotetabl-body").find("div.leadquotetabl-doc:first").data('quote');
-                                open_quote_details(quote_id)
-                            }
-                            $("#loader").hide();
-                        } else {
-                            $("#loader").hide();
-                            show_error(lresponse);
+                        var lastquote = 0;
+                        if (chkprice==maxquote) {
+                            lastquote = 1;
                         }
-                    }, 'json');
+                        addquotedoc(chkprice, leadid, lastquote, numquotes);
+                        quotidx++;
+                        // console.log('Quote '+quotidx+' added');
+                    });
                 } else {
                     $("#loader").hide();
                     show_error(sresponse);
@@ -703,7 +695,7 @@ function add_leadquote() {
     }
 }
 
-function addquotedoc(pricecheck, lead_id) {
+function addquotedoc(pricecheck, lead_id, lastquote, numquotes) {
     var price = 0; var qty = 0;
     if (pricecheck=='custom') {
         price = $("input.qtybox-price[data-price='custom']").val();
@@ -760,7 +752,16 @@ function addquotedoc(pricecheck, lead_id) {
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
+            var quote_id = response.data.quote_id;
             console.log('Quote '+response.data.quote_id+' Added successfully');
+            if (parseInt(lastquote)==1) {
+                restore_lead_view(lead_id);
+                if (numquotes==1) {
+                    setTimeout(function() {
+                        open_quote_details(quote_id);
+                    }, 1500);
+                }
+            }
         } else {
             $("#loader").hide();
             show_error(response);
@@ -854,6 +855,7 @@ function restore_lead_view(lead_id) {
                 initCustomerAddressAutocomplete();
             }
             $("#loader").hide();
+            console.log('Lead '+lead_id+' restored');
         } else {
             show_error(response);
         }
