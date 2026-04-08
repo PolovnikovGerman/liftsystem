@@ -4652,6 +4652,7 @@ class Leadquote_model extends MY_Model
                 $this->db->insert('ts_quote_itemcolors');
                 if ($this->db->insert_id()) {
                     $quote_itemcolor_id = $this->db->insert_id();
+                    $numloc = 1;
                     foreach ($locations as $location) {
                         $this->db->set('quote_item_id', $quote_item_id);
                         $this->db->set('imprint_active', 1);
