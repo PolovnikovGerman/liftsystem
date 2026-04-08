@@ -757,7 +757,9 @@ function addquotedoc(pricecheck, lead_id, lastquote, numquotes) {
             if (parseInt(lastquote)==1) {
                 restore_lead_view(lead_id);
                 if (numquotes==1) {
-                    open_quote_details(quote_id);
+                    setTimeout(function() {
+                        open_quote_details(quote_id);
+                    }, 1500);
                 }
             }
         } else {
