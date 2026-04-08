@@ -752,14 +752,12 @@ function addquotedoc(pricecheck, lead_id, lastquote, numquotes) {
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
+            var quote_id = response.data.quote_id;
             console.log('Quote '+response.data.quote_id+' Added successfully');
             if (parseInt(lastquote)==1) {
                 restore_lead_view(lead_id);
                 if (numquotes==1) {
-                    setTimeout(function() {
-                        var quote_id = $("#leadpopupquotetabl-body").find("div.leadquotetabl-doc:first").data('quote');
-                        open_quote_details(quote_id)
-                    }, 1000);
+                    open_quote_details(quote_id);
                 }
             }
         } else {
