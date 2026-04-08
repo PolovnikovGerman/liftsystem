@@ -672,20 +672,19 @@ function add_leadquote() {
                     var leadid = sresponse.data.lead_id;
                     var chkprice = '';
                     var quotidx = 0;
+                    var maxquote = 0;
+                    $("input[name='pricecheck']:checked").each(function(index) {
+                        maxquote = $(this).val();
+                    });
                     $("input[name='pricecheck']:checked").each(function(index) {
                         chkprice = $(this).val();
-                        addquotedoc(chkprice, leadid);
-                        quotidx++;
-                        console.log('Quote '+quotidx+' added');
-                        if (quotidx>=numquotes) {
-                            console.log('Add '+quotidx+' quotes. Restore Lead Popup');
-                            restore_lead_view(leadid);
-                            if (quotidx<2) {
-                                var quote_id = $("#leadpopupquotetabl-body").find("div.leadquotetabl-doc:first").data('quote');
-                                open_quote_details(quote_id)
-                            }
-                            // $("#loader").hide();
+                        var lastquote = 0;
+                        if (chkprice==maxquote) {
+                            lastquote = 1;
                         }
+                        addquotedoc(chkprice, leadid, lastquote, numquotes);
+                        quotidx++;
+                        // console.log('Quote '+quotidx+' added');
                     });
                 } else {
                     $("#loader").hide();
@@ -696,7 +695,7 @@ function add_leadquote() {
     }
 }
 
-function addquotedoc(pricecheck, lead_id) {
+function addquotedoc(pricecheck, lead_id, lastquote, numquotes) {
     var price = 0; var qty = 0;
     if (pricecheck=='custom') {
         price = $("input.qtybox-price[data-price='custom']").val();
@@ -751,26 +750,23 @@ function addquotedoc(pricecheck, lead_id) {
     }
     var url = mainurl+'/add_leadquote';
     $("#loader").show();
-    // $.post(url, params, function(response){
-    //     if (response.errors=='') {
-    //         console.log('Quote '+response.data.quote_id+' Added successfully');
-    //     } else {
-    //         $("#loader").hide();
-    //         show_error(response);
-    //     }
-    // },'json');
-    $.ajax({
-        url: url,
-        type: 'POST',
-        dataType: 'json',
-        data: params,
-        success: function(response) {
+    $.post(url, params, function(response){
+        if (response.errors=='') {
             console.log('Quote '+response.data.quote_id+' Added successfully');
-        },
-        error: function(xhr, status, error) {
-            console.log("Error:", error);
+            if (parseInt(lastquote)==1) {
+                restore_lead_view(lead_id);
+                if (numquotes==1) {
+                    setTimeout(function() {
+                        var quote_id = $("#leadpopupquotetabl-body").find("div.leadquotetabl-doc:first").data('quote');
+                        open_quote_details(quote_id)
+                    }, 1000);
+                }
+            }
+        } else {
+            $("#loader").hide();
+            show_error(response);
         }
-    });
+    },'json');
 }
 
 function init_leadpopup_assign() {
