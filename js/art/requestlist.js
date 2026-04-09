@@ -193,7 +193,8 @@ function init_prooflistmanage() {
         var lead_id=$(this).data('leadid');
         var mailid=$(this).data('proofid');
         if (lead_id==0) {
-            prooflead(mailid);
+            // prooflead(mailid);
+            artproof_lead(mailid, 'requestlist', 1);
         } else {
             profedit_lead(lead_id);
         }

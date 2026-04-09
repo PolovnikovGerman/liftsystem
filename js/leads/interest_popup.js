@@ -340,7 +340,83 @@ function init_webquotes_modal(quote) {
         revertassignlead(title, lead, type);
     })
 }
+// Proof request footer
+function proofrequst_assign(proofid) {
+    $(".intpopupfooter-check").unbind('click').click(function(){
+        var checkval = $("#proofrequest_leadcheck").val();
+        if (parseInt(checkval)==0) {
+            $("#proofrequest_leadcheck").val(1);
+            $(".intpopupfooter-check").empty().html('<i class="fa fa-check-square-o" aria-hidden="true"></i>');
+            $("select#lead_id").prop('disabled', false);
+            $(".interest_lead_assign").addClass('active');
+            $(".ip-btncreatelead").removeClass('active');
+            $("select#lead_id").focus();
+        } else {
+            $("#proofrequest_leadcheck").val(0);
+            $(".intpopupfooter-check").empty().html('<i class="fa fa-square-o" aria-hidden="true"></i>');
+            $("select#lead_id").prop('disabled', true);
+            $("select#lead_id").val('');
+            $(".interest_lead_assign").removeClass('active');
+            $(".ip-btncreatelead").addClass('active');
+        }
+    });
+    // Assign to exist lead
+    $(".interest_lead_assign").unbind('click').click(function(){
+        if ($(this).hasClass('active')) {
+            var newlead = $("select#lead_id").val();
+            if (newlead=='') {
+                alert('Choose Lead # before assign');
+            } else {
+                var url="/leads/savequeststatus";
+                var brand = $("#interestsb_brand").val();
+                var leadid = $("#lead_id").val();
+                var params = new Array();
+                params.push({name: 'lead_id', value: leadid});
+                params.push({name: 'leademail_id', value: $("#leademail_id").val()});
+                params.push({name: 'mail_id', value: proofid});
+                params.push({name: 'brand', value: brand});
+                $.post(url, params, function(response){
+                    if (response.errors=='') {
+                        $("#proofRequestModal").modal('hide');
+                        // $(".newwebquotesinfo").empty().html(response.data.totalnew);
+                        init_proofrequest_interest();
+                        search_leadsdata();
+                        search_proofs();
+                        show_new_lead(leadid,'proofreq', brand);
+                    } else {
+                        show_error(response);
+                    }
+                }, 'json');
+            }
+        }
+    });
+    // Add new Lead
+    $(".ip-btncreatelead").unbind('click').click(function(){
+        if ($(this).hasClass('active')) {
+            var brand = $("#interestsb_brand").val();
+            var params = new Array();
+            params.push({name: 'type', value: 'Proof'});
+            params.push({name: 'mail_id', value: proofid});
+            params.push({name: 'leademail_id', value: $("#leademail_id").val()});
+            params.push({name: 'brand', value: brand});
+            var url="/leads/create_leadmessage";
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $("#proofRequestModal").modal('hide');
+                    // $(".newwebquotesinfo").empty().html(response.data.totalnew);
+                    init_proofrequest_interest();
+                    search_leadsdata();
+                    search_proofs();
+                    show_new_lead(response.data.leadid,'proofreq', brand);
+                } else {
+                    show_error(response);
+                }
+            }, 'json');
+        }
+    });
 
+
+}
 function revertassignlead(title, lead, type) {
     if (confirm('Revert assign to lead '+title+'?')==true) {
         var params = new Array();

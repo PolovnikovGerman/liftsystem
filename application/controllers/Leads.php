@@ -1348,6 +1348,7 @@ class Leads extends My_Controller {
                             ];
                             $mdata['totalnew'] = $this->quotes_model->get_count_quotes($quoteoptiions);
                         }
+                    } elseif ($mail_type=='Art_Submit') {
 
                     }
                 }
