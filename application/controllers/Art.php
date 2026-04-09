@@ -103,6 +103,11 @@ class Art extends MY_Controller {
 
         $head['styles'][]=array('style' => '/css/mytooltip/jquery.qtip.css');
         $head['scripts'][]=['src'=>'/js/mytooltip/jquery.qtip.js'];
+        // Interests Popups
+        $head['styles'][] = ['style' => '/css/leads/interest_modal.css'];
+        $head['styles'][] = ['style' => '/css/leads/interest_popup.css'];
+        $head['scripts'][] = ['src' => '/js/leads/interest_popup.js'];
+
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,

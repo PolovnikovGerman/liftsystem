@@ -379,10 +379,22 @@ function proofrequst_assign(proofid) {
                     if (response.errors=='') {
                         $("#proofRequestModal").modal('hide');
                         // $(".newwebquotesinfo").empty().html(response.data.totalnew);
-                        init_proofrequest_interest();
-                        search_leadsdata();
+                        try {
+                            init_proofrequest_interest();
+                        } catch (e) {
+                            console.log('Function init_proofrequest_interest does not exist.')
+                        }
+                        try {
+                            search_leadsdata();
+                        } catch (e) {
+                            console.log('Function search_leadsdata does not exist.')
+                        }
                         search_proofs();
-                        show_new_lead(leadid,'proofreq', brand);
+                        try {
+                            show_new_lead(leadid,'proofreq', brand);
+                        } catch (e) {
+                            console.log('Function show_new_lead does not exist.')
+                        }
                     } else {
                         show_error(response);
                     }
@@ -404,10 +416,22 @@ function proofrequst_assign(proofid) {
                 if (response.errors=='') {
                     $("#proofRequestModal").modal('hide');
                     // $(".newwebquotesinfo").empty().html(response.data.totalnew);
-                    init_proofrequest_interest();
-                    search_leadsdata();
+                    try {
+                        init_proofrequest_interest();
+                    } catch (e) {
+                        console.log('Function init_proofrequest_interest does not exist.')
+                    }
+                    try {
+                        search_leadsdata();
+                    } catch (e) {
+                        console.log('Function search_leadsdata does not exist.')
+                    }
                     search_proofs();
-                    show_new_lead(response.data.leadid,'proofreq', brand);
+                    try {
+                        show_new_lead(response.data.leadid,'proofreq', brand);
+                    } catch (e) {
+                        console.log('Function show_new_lead does not exist.')
+                    }
                 } else {
                     show_error(response);
                 }

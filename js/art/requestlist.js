@@ -387,7 +387,11 @@ function profedit_lead(lead_id) {
             // $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
             // init_lead_cloneemail();
             // init_leadpopupedit();
-            edit_lead(lead_id);
+            try {
+                edit_lead(lead_id);
+            } catch (e) {
+                console.log("Function EDIT_LEAD does not exist.");
+            }
             // $("select#lead_item").select2({
             //     dropdownParent: $('#pageModal'),
             //     matcher: matchStart
