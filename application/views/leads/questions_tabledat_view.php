@@ -3,11 +3,10 @@
     <div class="quest_tabrow <?=($nrow%2==0 ? 'whitedatarow' : 'greydatarow')?> <?=$row['rowclass']?>">
         <div class="quest_numrec" data-email="<?=$row['email_id']?>"><?=$row['ordnum']?></div>
         <div class="quest_websys_dat" data-questid="<?=$row['email_id']?>">
-            <!-- <?=$row['email_websys']?> -->
             <?=$row['inclicon']?>
         </div>
-        <div class="quest_status <?=$row['assign_class']?>" data-questid="<?=$row['email_id']?>">
-            <div class="quest_replica" data-lead="<?=$row['lead_id']?>"><?=$row['lead_number']?></div>
+        <div class="quest_status <?=$row['assign_class']?>">
+            <div class="quest_replica" data-lead="<?=empty($row['lead_id']) ? 0 : $row['lead_id']?>" data-questid="<?=$row['email_id']?>"><?=$row['lead_number']?></div>
         </div>
         <div class="questshowdetailsrow" data-email="<?=$row['email_id']?>">
             <div class="quest_date"><?=$row['email_date']?></div>

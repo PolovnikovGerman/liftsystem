@@ -114,8 +114,9 @@ function quote_content_init() {
     })
     $("div.quoteassign").click(function(){
         var mailid=$(this).data('quoteid');
-        change_quotereplic(mailid);
-        return false;
+        // change_quotereplic(mailid);
+        // return false;
+        showquotedetails(mailid);
     });
     $("div.quote_brand").click(function(){
         var quote_id=$(this).data('quoteid');

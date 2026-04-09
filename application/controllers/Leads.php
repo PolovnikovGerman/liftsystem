@@ -1300,16 +1300,16 @@ class Leads extends My_Controller {
     public function change_leadrelation() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $lead_id=$this->input->post('lead_id');
             if (!$lead_id) {
                 $error='Unknown Lead';
             } else {
                 $this->load->model('leads_model');
-                $leaddata=$this->leads_model->get_lead($lead_id);
-                if (!isset($leaddata['lead_id'])) {
-                    $error='Lead not found';
-                } else {
+                $leadsrc=$this->leads_model->get_lead($lead_id);
+                $error = $leadsrc['msg'];
+                if ($leadsrc['result']==$this->success_result) {
+                    $error = '';
+                    $leaddata = $leadsrc['lead'];
                     $mdata['lead_date']=($leaddata['lead_date']==0 ? '' : 'Date: '.date('m/d/y',$leaddata['lead_date']));
                     $mdata['lead_customer']='Name: '.$leaddata['lead_customer'];
                     $mdata['lead_mail']='Email: '.$leaddata['lead_mail'];
@@ -1343,7 +1343,7 @@ class Leads extends My_Controller {
                             $data = $resquest['data'];
                             $mdata['type'] = $mail_type;
                             $quuestoptions = [
-                                'brand' => $quest['brand'],
+                                'brand' => $data['brand'],
                                 'assign' => 1,
                                 'hideincl' => 1,
                                 'newquest' => 1,
@@ -1359,13 +1359,14 @@ class Leads extends My_Controller {
                             $data = $resquest['data'];
                             $mdata['type'] = $mail_type;
                             $quoteoptiions = [
-                                'brand' => $quest['brand'],
+                                'brand' => $data['brand'],
                                 'assign' => 1,
                                 'hideincl' => 1,
                                 'newquotes' => 1,
                             ];
                             $mdata['totalnew'] = $this->quotes_model->get_count_quotes($quoteoptiions);
                         }
+                    } elseif ($mail_type=='Art_Submit') {
 
                     }
                 }

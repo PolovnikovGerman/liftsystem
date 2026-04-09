@@ -617,7 +617,6 @@ Class Artproof_model extends MY_Model
     }
 
     public function get_proof_data($email_id) {
-        $ci=&get_instance();
         $this->db->select('e.*,lem.leademail_id, l.lead_id, l.lead_number, l.lead_date, l.lead_customer, l.lead_mail');
         $this->db->from('ts_emails e');
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
