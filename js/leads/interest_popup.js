@@ -57,10 +57,12 @@ function init_customform_modal(formid) {
             } else {
                 var url="/leads/savecustomformstatus";
                 var params = new Array();
+                var leadid = $("#lead_id").val();
+                var brand = $("#interestsb_brand").val();
                 params.push({name: 'customform', value: formid});
-                params.push({name: 'lead_id', value: $("#lead_id").val()});
+                params.push({name: 'lead_id', value: leadid});
                 params.push({name: 'leademail_id', value: $("#leademail_id").val()});
-                params.push({name: 'brand', value: $("#interestsb_brand").val()});
+                params.push({name: 'brand', value: brand});
                 // var dat=$("form#msgstatus").serializeArray();
                 $.post(url, params, function(response){
                     if (response.errors=='') {
@@ -69,7 +71,7 @@ function init_customform_modal(formid) {
                         initCustomFormPagination();
                         init_customform_interest();
                         search_leadsdata();
-                        show_new_lead(response.data.leadid,'customquote', brand);
+                        show_new_lead(leadid,'customquote', brand);
                     } else {
                         show_error(response);
                     }
@@ -176,10 +178,12 @@ function init_webquestion_modal(question) {
             } else {
                 var url="/leads/savequeststatus";
                 var params = new Array();
-                params.push({name: 'lead_id', value: $("#lead_id").val()});
+                var leadid = $("#lead_id").val();
+                var brand = $("#interestsb_brand").val();
+                params.push({name: 'lead_id', value: leadid});
                 params.push({name: 'leademail_id', value: $("#leademail_id").val()});
                 params.push({name: 'mail_id', value: question});
-                params.push({name: 'brand', value: $("#interestsb_brand").val()});
+                params.push({name: 'brand', value: brand});
                 $.post(url, params, function(response){
                     if (response.errors=='') {
                         $("#InterestModal").modal('hide');
@@ -187,7 +191,7 @@ function init_webquestion_modal(question) {
                         initQuestionPagination();
                         init_webquest_interest();
                         search_leadsdata();
-                        show_new_lead(response.data.leadid,'question', brand);
+                        show_new_lead(leadid,'question', brand);
                     } else {
                         show_error(response);
                     }
@@ -283,11 +287,13 @@ function init_webquotes_modal(quote) {
                 alert('Choose Lead # before assign');
             } else {
                 var url="/leads/savequeststatus";
+                var brand = $("#interestsb_brand").val();
+                var leadid = $("#lead_id").val();
                 var params = new Array();
-                params.push({name: 'lead_id', value: $("#lead_id").val()});
+                params.push({name: 'lead_id', value: leadid});
                 params.push({name: 'leademail_id', value: $("#leademail_id").val()});
                 params.push({name: 'mail_id', value: quote});
-                params.push({name: 'brand', value: $("#interestsb_brand").val()});
+                params.push({name: 'brand', value: brand});
                 $.post(url, params, function(response){
                     if (response.errors=='') {
                         $("#InterestModal").modal('hide');
@@ -295,7 +301,7 @@ function init_webquotes_modal(quote) {
                         initQuotesPagination();
                         init_webquotes_interest();
                         search_leadsdata();
-                        show_new_lead(response.data.leadid,'quote', brand);
+                        show_new_lead(leadid,'quote', brand);
                     } else {
                         show_error(response);
                     }
