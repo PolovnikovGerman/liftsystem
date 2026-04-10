@@ -125,7 +125,13 @@ function init_questions_content() {
     });
     $("div.quest_replica").unbind('click').click(function (){
         var lead_id = $(this).data('lead');
-        edit_lead(lead_id);
+        if (parseInt(lead_id) > 0) {
+            edit_lead(lead_id);
+        } else {
+            var question = $(this).data('questid');
+            showquestdetails(question);
+        }
+        //
     })
     // $("div.questassign").click(function(){
     //     var questid=$(this).data('questid');

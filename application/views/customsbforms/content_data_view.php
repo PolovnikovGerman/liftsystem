@@ -18,7 +18,7 @@
         </div>
         <div class="status">
             <?php if (empty($dat['lead_number'])) : ?>
-                <div class="sbformnew">New</div>
+                <div class="sbformnew" data-form="<?=$dat['custom_quote_id']?>">New</div>
             <?php else : ?>
                 <div class="customformlead" style="width: 100%;" data-lead="<?=$dat['lead_id']?>">L<?=$dat['lead_number']?></div>
             <?php endif; ?>
