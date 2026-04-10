@@ -201,14 +201,18 @@ function init_customform_content() {
             }
         },'json');
     });
-    $(".assignform").unbind('click').click(function () {
-        var formid = $(this).parent('div.content-row').data('form');
-        assign_custom(formid);
-    });
+    // $(".assignform").unbind('click').click(function () {
+    //     var formid = $(this).parent('div.content-row').data('form');
+    //     assign_custom(formid);
+    // });
     $(".customformlead").unbind('click').click(function (){
         var lead_id = $(this).data('lead');
         edit_lead(lead_id);
-    })
+    });
+    $(".sbformnew").unbind('click').click(function (){
+        var formid = $(this).data('form');
+        showcustomformdetails(formid);
+    });
 }
 
 // function showcustomformdetails(formid) {

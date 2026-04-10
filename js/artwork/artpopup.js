@@ -36,17 +36,24 @@ function order_artstage(order_id, callpage, brand) {
 }
 
 /* Proof Request Art Popup */
-function artproof_lead(mailid, callpage) {
+function artproof_lead(mailid, callpage, assign=0) {
     //mailid=mailid.substr(7);
     /* ART POPUP */
     var url="/art/proof_artdata";
-    $.post(url,{'proof_id':mailid, 'callpage': callpage},function(response){
+    $.post(url,{'proof_id':mailid, 'callpage': callpage, 'assign' : assign},function(response){
         if (response.errors==='') {
             $(".popover").popover('hide');
             $("#proofRequestModalLabel").empty().html('PROOF REQUEST');
             $("#proofRequestModal").find('div.modal-body').empty().html(response.data.content);
+            $("#proofRequestModal").find('div.modal-footer').empty();
+            if (parseInt(assign)==1) {
+                $("#proofRequestModal").find('div.modal-footer').html(response.data.footer);
+            }
             $("#proofRequestModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* SAVE, EMAIL, etc buttons */
+            if (parseInt(assign)==1) {
+                proofrequst_assign(mailid);
+            }
             init_popupcontent();
         } else {
             show_error(response);
