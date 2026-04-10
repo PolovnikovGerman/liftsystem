@@ -362,80 +362,101 @@ function proofrequst_assign(proofid) {
     });
     // Assign to exist lead
     $(".interest_lead_assign").unbind('click').click(function(){
+        // Save art
         if ($(this).hasClass('active')) {
             var newlead = $("select#lead_id").val();
             if (newlead=='') {
                 alert('Choose Lead # before assign');
             } else {
-                var url="/leads/savequeststatus";
-                var brand = $("#interestsb_brand").val();
-                var leadid = $("#lead_id").val();
-                var params = new Array();
-                params.push({name: 'lead_id', value: leadid});
-                params.push({name: 'leademail_id', value: $("#leademail_id").val()});
-                params.push({name: 'mail_id', value: proofid});
-                params.push({name: 'brand', value: brand});
-                $.post(url, params, function(response){
-                    if (response.errors=='') {
-                        $("#proofRequestModal").modal('hide');
-                        // $(".newwebquotesinfo").empty().html(response.data.totalnew);
-                        try {
-                            init_proofrequest_interest();
-                        } catch (e) {
-                            console.log('Function init_proofrequest_interest does not exist.')
-                        }
-                        try {
-                            search_leadsdata();
-                        } catch (e) {
-                            console.log('Function search_leadsdata does not exist.')
-                        }
-                        search_proofs();
-                        try {
-                            show_new_lead(leadid,'proofreq', brand);
-                        } catch (e) {
-                            console.log('Function show_new_lead does not exist.')
-                        }
+                // Save Art
+                var nparams=new Array();
+                nparams.push({name: 'artsession', value: $("input#artsession").val()});
+                var nurl="/artproofrequest/artwork_save";
+                $.post(nurl, nparams, function(nresponse){
+                    if (nresponse.errors=='') {
+                        var url="/leads/savequeststatus";
+                        var brand = $("#interestsb_brand").val();
+                        var leadid = $("#lead_id").val();
+                        var params = new Array();
+                        params.push({name: 'lead_id', value: leadid});
+                        params.push({name: 'leademail_id', value: $("#leademail_id").val()});
+                        params.push({name: 'mail_id', value: proofid});
+                        params.push({name: 'brand', value: brand});
+                        $.post(url, params, function(response){
+                            if (response.errors=='') {
+                                $("#proofRequestModal").modal('hide');
+                                // $(".newwebquotesinfo").empty().html(response.data.totalnew);
+                                try {
+                                    init_proofrequest_interest();
+                                } catch (e) {
+                                    console.log('Function init_proofrequest_interest does not exist.')
+                                }
+                                try {
+                                    search_leadsdata();
+                                } catch (e) {
+                                    console.log('Function search_leadsdata does not exist.')
+                                }
+                                search_proofs();
+                                try {
+                                    show_new_lead(leadid,'proofreq', brand);
+                                } catch (e) {
+                                    console.log('Function show_new_lead does not exist.')
+                                }
+                            } else {
+                                show_error(response);
+                            }
+                        }, 'json');
                     } else {
-                        show_error(response);
+                        show_error(nresponse);
                     }
-                }, 'json');
+                }, 'json')
             }
         }
     });
     // Add new Lead
     $(".ip-btncreatelead").unbind('click').click(function(){
         if ($(this).hasClass('active')) {
-            var brand = $("#interestsb_brand").val();
-            var params = new Array();
-            params.push({name: 'type', value: 'Proof'});
-            params.push({name: 'mail_id', value: proofid});
-            params.push({name: 'leademail_id', value: $("#leademail_id").val()});
-            params.push({name: 'brand', value: brand});
-            var url="/leads/create_leadmessage";
-            $.post(url, params, function(response){
-                if (response.errors=='') {
-                    $("#proofRequestModal").modal('hide');
-                    // $(".newwebquotesinfo").empty().html(response.data.totalnew);
-                    try {
-                        init_proofrequest_interest();
-                    } catch (e) {
-                        console.log('Function init_proofrequest_interest does not exist.')
-                    }
-                    try {
-                        search_leadsdata();
-                    } catch (e) {
-                        console.log('Function search_leadsdata does not exist.')
-                    }
-                    search_proofs();
-                    try {
-                        show_new_lead(response.data.leadid,'proofreq', brand);
-                    } catch (e) {
-                        console.log('Function show_new_lead does not exist.')
-                    }
+            // Save Art
+            var nparams=new Array();
+            nparams.push({name: 'artsession', value: $("input#artsession").val()});
+            var nurl="/artproofrequest/artwork_save";
+            $.post(nurl, nparams, function(nresponse){
+                if (nresponse.errors=='') {
+                    var brand = $("#interestsb_brand").val();
+                    var params = new Array();
+                    params.push({name: 'type', value: 'Proof'});
+                    params.push({name: 'mail_id', value: proofid});
+                    params.push({name: 'leademail_id', value: $("#leademail_id").val()});
+                    params.push({name: 'brand', value: brand});
+                    var url="/leads/create_leadmessage";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $("#proofRequestModal").modal('hide');
+                            // $(".newwebquotesinfo").empty().html(response.data.totalnew);
+                            try {
+                                init_proofrequest_interest();
+                            } catch (e) {
+                                console.log('Function init_proofrequest_interest does not exist.')
+                            }
+                            try {
+                                search_leadsdata();
+                            } catch (e) {
+                                console.log('Function search_leadsdata does not exist.')
+                            }
+                            search_proofs();
+                            try {
+                                show_new_lead(response.data.leadid,'proofreq', brand);
+                            } catch (e) {
+                                console.log('Function show_new_lead does not exist.')
+                            }
+                        } else {
+                            show_error(response);
+                        }
+                    }, 'json');
                 } else {
-                    show_error(response);
+                    show_error(nresponse);
                 }
-            }, 'json');
+            }, 'json')
         }
     });
 

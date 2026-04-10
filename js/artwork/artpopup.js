@@ -51,11 +51,10 @@ function artproof_lead(mailid, callpage, assign=0) {
             }
             $("#proofRequestModal").modal({backdrop: 'static', keyboard: false, show: true});
             /* SAVE, EMAIL, etc buttons */
-            if (parseInt(assign)==0) {
-                init_popupcontent();
-            } else {
+            if (parseInt(assign)==1) {
                 proofrequst_assign(mailid);
             }
+            init_popupcontent();
         } else {
             show_error(response);
         }
