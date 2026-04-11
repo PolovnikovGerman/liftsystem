@@ -348,7 +348,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .leadblockright {
     float: right !important;
-    width: 200px;
+    width: 197px; /* 200px; */
 }
 .lead-itemdescr {
     width: 283px;
