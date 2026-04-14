@@ -4248,7 +4248,7 @@ class Leadquote_model extends MY_Model
                     'item_color' => $quote_items[$idx]['items'][0]['item_color'],
                     'colors' => $quote_items[$idx]['items'][0]['colors'],
                 ];
-                if ($quote['brand'] == 'SR') {
+                if (!empty($quote_items[$idx]['inventory_item_id'])) {
                     $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quotesritem_color_choice', $coloropt, true);
                 } else {
                     $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quoteitem_color_choice', $coloropt, true);
