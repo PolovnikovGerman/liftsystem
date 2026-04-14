@@ -588,4 +588,40 @@ Class Utils extends CI_Controller
         die('{error: "server-error query params not passed"}');
     }
 
+    public function save_sblift_file() {
+        $out = ['result' => 0, 'msg' => 'Unknown error'];
+        $postdata = $this->input->post();
+        foreach ($postdata as $key => $value) {
+            log_message('error', 'Post PARAM '.$key.' Value - '.$value);
+        }
+        $upltype = 'preload';
+        if (ifset($postdata, 'type','')=='customquote') {
+            $upltype = 'customquote';
+        }
+        if ($upltype == 'preload') {
+            $savepath = $this->config->item('upload_path_preload');
+            $respons_path = $this->config->item('pathpreload');
+        } elseif ($upltype=='customquote') {
+            $savepath = $this->config->item('upload_customquote');
+            $respons_path = $this->config->item('upload_customquote_relative');
+        }
+        log_message('error','Upload type '.$upltype.' Short path '.$respons_path);
+        $destfile = $savepath.$postdata['filename'];
+        $content = @file_get_contents($postdata['fileurl']);
+        if ($content) {
+            log_message('error', 'File '.$postdata['fileurl'].' contents: GET');
+            $res = @file_put_contents($destfile, $content);
+            if ($res) {
+                log_message('error', 'File '.$destfile.' saved');
+                $out['result'] = 1;
+                $out['file'] = $respons_path.$postdata['filename'];
+            } else {
+                $out['msg'] = 'File '.$destfile.' not saved';
+            }
+        } else {
+            $out['msg'] = 'File '.$postdata['fileurl'].' not found';
+        }
+        echo json_encode($out);
+    }
+
 }
