@@ -1175,6 +1175,7 @@ input.discount-exp {
 .leadquotetabl-prints {
     /*width: 53px;*/
     width: 44px;
+    padding: 0 3px;
 }
 .leadquotetabl-descr {
     /*width: 190px;*/
