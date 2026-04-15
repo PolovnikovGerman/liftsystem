@@ -42,7 +42,7 @@
                 <div class="leads_viewclosedflag">
                     <i class="fa fa-square-o" aria-hidden="true"></i>
                 </div>
-                <div class="leads_viewclosedlabel">View Closed & Dead</div>
+                <div class="leads_viewclosedlabel">View Closed & Dormant</div>
                 <div class="leads_mapview">
                     <div class="leads_mapicon priority">&nbsp;</div>
                     <div class="leads_map_label">Priority</div>

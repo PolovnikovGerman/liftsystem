@@ -103,6 +103,11 @@ class Art extends MY_Controller {
 
         $head['styles'][]=array('style' => '/css/mytooltip/jquery.qtip.css');
         $head['scripts'][]=['src'=>'/js/mytooltip/jquery.qtip.js'];
+        // Interests Popups
+        $head['styles'][] = ['style' => '/css/leads/interest_modal.css'];
+        $head['styles'][] = ['style' => '/css/leads/interest_popup.css'];
+        $head['scripts'][] = ['src' => '/js/leads/interest_popup.js'];
+
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -883,62 +888,69 @@ class Art extends MY_Controller {
     public function proof_artdata() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
-            $proof_id=$this->input->post('proof_id');
-            $callpage = $this->input->post('callpage');
-            /* Get PR Data */
-            $this->load->model('artproof_model');
-            $this->load->model('email_model');
-            $this->load->model('artwork_model');
-            $data=$this->artproof_model->get_proof_data($proof_id);
+            $error='Unknown Proof Request';
+            $postdata = $this->input->post();
+            $proof_id = ifset($postdata,'proof_id',0);
+            $callpage = ifset($postdata,'callpage','');
+            $assign = ifset($postdata,'assign','');
+            if (!empty($proof_id)) {
+                /* Get PR Data */
+                $error = '';
+                $this->load->model('artproof_model');
+                $this->load->model('email_model');
+                $this->load->model('artwork_model');
+                $data=$this->artproof_model->get_proof_data($proof_id);
+                /* Current stage */
+                if ($data['email_art']==0) {
+                    $curstage=$this->NO_ART;
+                } elseif ($data['email_redrawn']==0) {
+                    $curstage=$this->REDRAWN;
+                } elseif ($data['email_vectorized']==0) {
+                    $curstage=$this->NO_VECTOR;
+                } elseif ($data['email_proofed']==0) {
+                    $curstage=$this->TO_PROOF;
+                } elseif ($data['email_approved']==0) {
+                    $curstage=$this->NEED_APPROVAL;
+                } else {
+                    $curstage=$this->JUST_APPROVED;
+                }
+                $artwork = $this->artwork_model->get_artwork_proof($proof_id,$this->USR_ID);
 
-            /* Current stage */
-            if ($data['email_art']==0) {
-                $curstage=$this->NO_ART;
-            } elseif ($data['email_redrawn']==0) {
-                $curstage=$this->REDRAWN;
-            } elseif ($data['email_vectorized']==0) {
-                $curstage=$this->NO_VECTOR;
-            } elseif ($data['email_proofed']==0) {
-                $curstage=$this->TO_PROOF;
-            } elseif ($data['email_approved']==0) {
-                $curstage=$this->NEED_APPROVAL;
-            } else {
-                $curstage=$this->JUST_APPROVED;
+                $artwork_id = $artwork['artwork_id'];
+                if ($artwork['item_id']==0) {
+                    $artwork['item_id']=$data['email_item_id'];
+                }
+                $artwork['item_qty']=($artwork['item_qty']=='0' ? '' : $artwork['item_qty']);
+                $artwork['other_item_label']='';
+                $artwork['callpage']=$callpage;
+                if ($artwork['item_name']=='Other') {
+                    $artwork['other_item_label']='Other';
+                } elseif ($artwork['item_name']=='Multiple') {
+                    $artwork['other_item_label']='Multiple';
+                }
+                $artwork['brand'] = $data['brand'];
+                $artwork['artstage'] = $curstage;
+                // $mdata['content']=$this->prepare_artwork_content($artwork, $common_dat, $curstage);
+                $artwork_session = 'artwork'.uniq_link(15);
+                $mdata['content'] = $this->prepare_proofrequest_popup($artwork, $artwork_session);
+                if ($assign==1) {
+                    // Prepare assign form
+                    $leadoptions=array(
+                        'orderby'=>'lead_number',
+                        'direction'=>'desc',
+                        'brand' => $data['brand'],
+                    );
+                    $this->load->model('leads_model');
+                    $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                    $leadlist = $this->leads_model->prepare_assign_list($leaddat);
+                    $footer_options = [
+                        'proofreq_id' => $proof_id,
+                        'leads' => $leadlist,
+                        'brand' => $data['brand'],
+                    ];
+                    $mdata['footer'] = $this->load->view('proofrequest/footer_view', $footer_options, TRUE);
+                }
             }
-            $artwork=$this->artwork_model->get_artwork_proof($proof_id,$this->USR_ID);
-
-            $artwork_id=$artwork['artwork_id'];
-            if ($artwork['item_id']==0) {
-                $artwork['item_id']=$data['email_item_id'];
-            }
-            $artwork['item_qty']=($artwork['item_qty']=='0' ? '' : $artwork['item_qty']);
-            $template=$this->email_model->get_emailtemplate_byname($this->ART_PROOF);
-
-            if (!$artwork['order_num']) {
-                $artwork['ordernum_data']=$this->load->view('artpage/artwork_orderassign_view',array(),TRUE);
-            } else {
-                $artwork['ordernum_data']=$this->load->view('artpage/artwork_ordernum_view',$artwork,TRUE);
-            }
-            $artwork['items_list']=$this->artwork_model->get_items_list($data['brand']);
-            $artwork['other_item_label']='';
-            $artwork['callpage']=$callpage;
-            if ($artwork['item_name']=='Other') {
-                $artwork['other_item_label']='Other';
-            } elseif ($artwork['item_name']=='Multiple') {
-                $artwork['other_item_label']='Multiple';
-            }
-            $artwork['brand'] = $data['brand'];
-            $orderview=$this->load->view('artpage/artwork_itemdat_view',$artwork, TRUE);
-            // $artwork['bypass']=0;
-            $commondat=$this->load->view('artpage/artwork_common_view',$artwork,TRUE);
-            $item_options=array(
-                'orderview'=>$orderview,
-                'commonview'=>$commondat,
-            );
-            $common_dat=$this->load->view('artpage/popup_itemdat_view',$item_options,TRUE);
-            $mdata['content']=$this->prepare_artwork_content($artwork, $common_dat, $curstage);
-
             $this->ajaxResponse($mdata,$error);
         }
     }
@@ -1133,5 +1145,69 @@ class Art extends MY_Controller {
         $content=$this->load->view('artpage/popup_view',$popup_options,TRUE);
         return $content;
     }
+
+    private function prepare_proofrequest_popup($artwork, $session)
+    {
+        // Grey Section
+        $items_list = $this->artwork_model->get_items_list($artwork['brand']);
+        $common_view = $this->load->view('proofrequest/request_common_view', ['artwork' => $artwork, 'items' => $items_list], TRUE);
+        $messages_view = $this->load->view('proofrequest/messages_view',$artwork, TRUE);
+
+        $locations = $this->artwork_model->get_proofrequest_locations($artwork['artwork_id'], $artwork);
+        $imprint_locations = $this->artwork_model->get_location_imprint($artwork['item_id']);
+        $logos_view = $this->template->build_proofreq_locationsview($artwork['artwork_id'], $locations, $imprint_locations);
+
+        if ($artwork['brand']=='SR') {
+            $templurl = $this->config->item('sr_empty_template');
+            $templtitle = $this->config->item('sr_empty_title');
+        } else {
+            $templurl = $this->config->item('sb_empty_template');
+            $templtitle = $this->config->item('sb_empty_title');
+        }
+        $templ_options = [
+            'emptytemplate_url' => $templurl,
+            'templatetitle' => $templtitle,
+            'artwork_id' => $artwork['artwork_id'],
+        ];
+        $templates_view=$this->load->view('proofrequest/templates_view', $templ_options,TRUE);
+
+        /* Get Proofs */
+        $proofdat = $this->artwork_model->get_proofrequest_proofdocs($artwork['artwork_id']);
+        $approved = [];
+        foreach ($proofdat as $proof) {
+            if ($proof['approved']==1) {
+                $approved[] = $proof;
+            }
+        }
+
+        $proofs_view = $this->load->view('proofrequest/proofs_list_view', ['proofs'=>$proofdat],TRUE);
+        $approved_view = $this->load->view('proofrequest/proofs_approved_view', ['proofs'=>$approved],TRUE);
+
+        $contentoptions = [
+            'common_view' => $common_view,
+            'messages_view' => $messages_view,
+            'logos_view' => $logos_view,
+            'proofs_view' => $proofs_view,
+            'approved_view' => $approved_view,
+            'templates_view' => $templates_view,
+            'artwork_id'=> $artwork['artwork_id'],
+            'locrecs' => count($locations),
+            'proofrecs' => count($proofdat),
+            'approvrecs' => count($approved),
+            'session'=> $session,
+        ];
+        $artworkdata = [
+            'artwork' => $artwork,
+            'locations' => $locations,
+            'proofs' => $proofdat,
+            'approved' => $approved,
+            'deleted' => [],
+        ];
+        usersession($session,$artworkdata);
+        $content = $this->load->view('proofrequest/modal_page_view', $contentoptions, TRUE);
+        return $content;
+    }
+
+
 
 }

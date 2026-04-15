@@ -57,7 +57,7 @@
                     <option value="6">Ordering Soon Only</option>
                     <option value="2">Priority Only</option>
                     <option value="3">Closed Only</option>
-                    <option value="4">Dead Only</option>
+                    <option value="4">Dormant Only</option>
                     <option value="">View All Leads</option>
                 </select>
                 <select id="sorttime" class="leads_sortselect sorttime">

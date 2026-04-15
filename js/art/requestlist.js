@@ -145,7 +145,7 @@ function init_prooflistmanage() {
     var dath=$("div.proof_tabledat").css('height');
     dath=parseInt(dath.replace('px', ''));
     if (dath<maxh) {
-        $("div.proof_tabrow").css('width','969px');
+        // $("div.proof_tabrow").css('width','969px');
     }
     var rowid='';
     $("div.proof_tabrow").hover(
@@ -193,7 +193,8 @@ function init_prooflistmanage() {
         var lead_id=$(this).data('leadid');
         var mailid=$(this).data('proofid');
         if (lead_id==0) {
-            prooflead(mailid);
+            // prooflead(mailid);
+            artproof_lead(mailid, 'requestlist', 1);
         } else {
             profedit_lead(lead_id);
         }
@@ -380,12 +381,17 @@ function profedit_lead(lead_id) {
     $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
             // POPUP
-            $("#leadformModalLabel").empty().html(response.data.title);
-            $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
-            $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
-            init_lead_cloneemail();
-            init_leadpopupedit();
+            // $("#leadformModalLabel").empty().html(response.data.title);
+            // $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            // $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // init_lead_cloneemail();
+            // init_leadpopupedit();
+            try {
+                edit_lead(lead_id);
+            } catch (e) {
+                console.log("Function EDIT_LEAD does not exist.");
+            }
             // $("select#lead_item").select2({
             //     dropdownParent: $('#pageModal'),
             //     matcher: matchStart

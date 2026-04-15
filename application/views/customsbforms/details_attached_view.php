@@ -1,6 +1,6 @@
-<div class="csf-inputgroup attachimg">
-    <h5>Attached images:</h5>
-</div>
+<!--<div class="csf-inputgroup attachimg">-->
+<!--    <h5>Attached images:</h5>-->
+<!--</div>-->
 <?php foreach ($attachs as $attach) { ?>
     <div class="csf-inputgroup">
         <div class="file-box">

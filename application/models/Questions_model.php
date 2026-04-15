@@ -107,7 +107,7 @@ Class Questions_model extends My_Model {
         if (isset($res['email_id'])) {
             $out['result']=$this->success_result;
             $res['email_date']=date('m/d/Y',strtotime($res['email_date']));
-            $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
+            // $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
             $res['chk']=($res['email_status']==0 ? 'chreplic' : '');
             $res['email_sendermaillnk']=($res['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$res['email_sendermail'].'\');return false;">'.$res['email_sendermail'].'</a>' : $res['email_sendermail']);
             $out['data'] = $res;
@@ -192,6 +192,34 @@ Class Questions_model extends My_Model {
         return $out;
     }
 
+    public function get_webquest_interest($brand, $showall=1)
+    {
+        $curdate = date('Y-m-d');
+        if ($showall==0) {
+            $new_timestamp = strtotime($curdate . ' -90 days');
+//        } else {
+//            $new_timestamp = strtotime($curdate . ' -1 year');
+        }
+
+        $this->db->select('e.*');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('lem.email_id is null');
+        if ($showall==0) {
+            $this->db->where('unix_timestamp(e.email_date) >=', $new_timestamp);
+        }
+        $this->db->where('e.email_include_lead',1);
+        if ($brand != 'ALL') {
+            if ($brand == 'SR') {
+                $this->db->where('e.brand', $brand);
+            } else {
+                $this->db->where_in('e.brand', ['SB','BT']);
+            }
+        }
+        $this->db->order_by('e.email_date', 'DESC');
+        return $this->db->get()->result_array();
+    }
 }
 /* End of file questions_model.php */
 /* Location: ./application/models/questions_model.php */

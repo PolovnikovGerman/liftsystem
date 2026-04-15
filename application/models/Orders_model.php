@@ -8151,12 +8151,45 @@ Class Orders_model extends MY_Model
         foreach ($refsrc as $refr) {
             $totalref+=$refr['balance'];
         }
+        //
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
 
+        $this->db->select('o.order_id, o.order_blank, coalesce(p.cnt,0) as profcnt, v.balance');
+        $this->db->from('v_order_balances v');
+        $this->db->join('ts_orders o', 'o.order_id=v.order_id');
+        $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
+        $this->db->where('v.balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('v.yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('v.brand', $brand);
+            } else {
+                $this->db->where_in('v.brand', ['BT','SB']);
+            }
+        }
+        $orders = $this->db->get()->result_array();
+        $total_approved = $total_notapproved = 0;
+        foreach ($orders as $order) {
+            if (empty($order['profcnt']) && $order['order_blank']==0) {
+                $total_notapproved+=$order['balance'];
+            } else {
+                $total_approved+=$order['balance'];
+            }
+        }
         return array(
             'totalown' => $totalown,
             'pastown' => $pastown,
             'totalrefund' => $totalref,
             'balance' => $totalown+$totalref,
+            'total_approved' => $total_approved,
+            'total_notapproved' => $total_notapproved,
         );
     }
 
@@ -8192,7 +8225,7 @@ Class Orders_model extends MY_Model
             }
         }
         $owndats = $this->db->get()->result_array();
-        $owns=[];
+        $ownapproved = $ownnotapproved = [];
 
         foreach ($owndats as $owndat) {
             $sclass = '';
@@ -8214,62 +8247,105 @@ Class Orders_model extends MY_Model
                 $owndat['dueclass'] = 'pastdue';
             }
             $owndat['approved'] = ($owndat['approved'] == 0 ? 0 : 1);
-            $days = round((time() - intval($owndat['batch_due'])) / (24 * 60 * 60), 0);
-            $owndat['days'] = $days;
-            $dayclass = '';
-            if ($days > 60) {
-                $dayclass = 'pastdue';
-            }
-            $daysshow = '-';
-            $dayindex = '999';
-            if ($days > 60) {
-                $daysshow = '60+';
-                $dayindex = '000';
-            } elseif ($days > 30 && $days <= 60) {
-                $daysshow = '<60';
-                $dayindex = '100';
-            } elseif ($days > 1 && $days <= 30) {
-                $daysshow = '<30';
-                $dayindex = '200';
-            }
-            $owndat['daysshow'] = $daysshow;
-            $owndat['dayclass'] = $dayclass;
-            $owndat['sortidx'] = $dayindex;
             if ($owndat['order_blank']==1) {
                 $owndat['approved']=1;
             }
-            $owns[]=$owndat;
+            $days = round((time() - intval($owndat['batch_due'])) / (24 * 60 * 60), 0);
+            $owndat['days'] = $days;
+            $dayclass = '';
+//            if ($days > 60) {
+//                $dayclass = 'pastdue';
+//            }
+//            $daysshow = '-';
+//            $dayindex = '999';
+//            if ($days > 60) {
+//                $daysshow = '60+';
+//                $dayindex = '000';
+//            } elseif ($days > 30 && $days <= 60) {
+//                $daysshow = '<60';
+//                $dayindex = '100';
+//            } elseif ($days > 1 && $days <= 30) {
+//                $daysshow = '<30';
+//                $dayindex = '200';
+//            }
+            if ($days > 0) {
+                $dayclass = 'pastdue';
+            } else {
+                $dayclass = 'future';
+            }
+//            $owndat['daysshow'] = $daysshow;
+            $owndat['dayclass'] = $dayclass;
+//            $owndat['sortidx'] = $dayindex;
+            if ($owndat['approved']==1) {
+                $ownapproved[] = $owndat;
+            } else {
+                $ownnotapproved[] = $owndat;
+            }
         }
         if ($ownsort=='owntype') {
-            usort($owns, function ($item1, $item2) {
+            usort($ownapproved, function ($item1, $item2) {
+                return $item1['type'] <=> $item2['type'];
+            });
+            usort($ownnotapproved, function ($item1, $item2) {
                 return $item1['type'] <=> $item2['type'];
             });
         } elseif ($ownsort=='batch_due') {
-            usort($owns, function ($item1, $item2) {
+            usort($ownapproved, function ($item1, $item2) {
                 return $item1['batch_due'] <=> $item2['batch_due'];
             });
+            usort($ownnotapproved, function ($item1, $item2) {
+                return $item1['batch_due'] <=> $item2['batch_due'];
+            });
+        } elseif ($ownsort=='artapprove') {
+            usort($ownapproved, function ($item1, $item2) {
+                return $item2['approved'] <=> $item1['approved'];
+            });
+            usort($ownnotapproved, function ($item1, $item2) {
+                return $item2['approved'] <=> $item1['approved'];
+            });
         } else {
-            usort($owns, function ($item1, $item2) {
+            usort($ownapproved, function ($item1, $item2) {
+                return $item2['balance'] <=> $item1['balance'];
+            });
+            usort($ownnotapproved, function ($item1, $item2) {
                 return $item2['balance'] <=> $item1['balance'];
             });
         }
+        // Approved
         $ownidx = 0;
         $rundebt = 0;
-        $curtype = $owns[0]['type'];
-        foreach ($owns as $own) {
+        $curtype = $ownapproved[0]['type'];
+        foreach ($ownapproved as $own) {
             $datclass = '';
             if ($ownsort=='owntype') {
                 if ($own['type']!==$curtype) {
                     $datclass = 'separated';
                     $curtype = $own['type'];
-//                $curappr = $own['approved'];
                 }
             }
-            $owns[$ownidx]['datclass'] = $datclass;
-            $rundebt += $owns[$ownidx]['balance'];
-            $owns[$ownidx]['rundebt'] = $rundebt;
+            $ownapproved[$ownidx]['datclass'] = $datclass;
+            $rundebt += $own['balance'];
+            $ownapproved[$ownidx]['rundebt'] = $rundebt;
             $ownidx++;
         }
+        // Not Approved
+        $ownidx = 0;
+        $rundebt = 0;
+        $curtype = $ownnotapproved[0]['type'];
+        foreach ($ownnotapproved as $own) {
+            $datclass = '';
+            if ($ownsort=='owntype') {
+                if ($own['type']!==$curtype) {
+                    $datclass = 'separated';
+                    $curtype = $own['type'];
+                }
+            }
+            $ownnotapproved[$ownidx]['datclass'] = $datclass;
+            $rundebt += $own['balance'];
+            $ownnotapproved[$ownidx]['rundebt'] = $rundebt;
+            $ownidx++;
+        }
+
         // Refund
         if ($refundsort=='balance') {
             if ($refunddirec=='asc') {
@@ -8296,7 +8372,8 @@ Class Orders_model extends MY_Model
         $this->db->order_by($refundsort, $refunddir);
         $refunds = $this->db->get()->result_array();
         return array(
-            'owns' => $owns,
+            'ownapproved' => $ownapproved,
+            'ownnotapproved' => $ownnotapproved,
             'refunds' => $refunds,
             'daystart' => $daystart,
             'refundsort' => $refundsort,
@@ -10282,5 +10359,250 @@ Class Orders_model extends MY_Model
             $res=$this->email->send();
             $this->email->clear(TRUE);
         }
+    }
+
+    public function get_reminders($date, $customorders, $orderrich, $brand)
+    {
+        $start_date = strtotime($date.'-01');
+        $finish_date = strtotime(date('Y-m-d', $start_date) . ' +1 month');
+        $this->db->select('order_id, order_date, order_num, customer_name as customer, order_qty as qty, order_itemnumber as item_number, order_items as item_name, item_id, hide_reminder');
+        $this->db->from('ts_orders');
+        $this->db->where('order_date >=', $start_date)->where('order_date < ', $finish_date)->where('is_canceled',0);
+        if ($customorders==1) {
+            $this->db->where('item_id', $this->config->item('custom_id'));
+        }
+        if ($orderrich==1) {
+            $this->db->where('revenue >=', 1000);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB', 'BT']);
+            }
+        }
+        $this->db->order_by('order_date','asc');
+        return $this->db->get()->result_array();
+    }
+
+    public function get_orders_missinfo($userrepl, $brand)
+    {
+        $missclass = 'missing';
+        $readyclass = 'ready';
+        $finish_date = strtotime(date('Y-m-d') . ' -2 years');
+        $this->db->select('s.order_id, count(sc.order_shipcost_id) as shipcnt');
+        $this->db->from('ts_order_shipaddres s');
+        $this->db->join('ts_order_shipcosts sc', 'sc.order_shipaddr_id = s.order_shipaddr_id');
+        $this->db->group_by('s.order_id');
+        $shipadrsql = $this->db->get_compiled_select();
+        $this->db->select('order_id, count(batch_id) as amntcnt, sum(batch_amount) as amntsum');
+        $this->db->from('ts_order_batches');
+        $this->db->group_by('order_id');
+        $amntsql = $this->db->get_compiled_select();
+        $this->db->select('a.order_id, count(al.artwork_art_id) artwcnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_arts al', 'al.artwork_id = a.artwork_id');
+        $this->db->group_by('a.order_id');
+        $artsql = $this->db->get_compiled_select();
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as apprcnt')->from('ts_artworks a')->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0)->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+        // Get orders
+        $this->db->select('o.order_id, o.order_num, o.order_date, o.order_items, o.item_id, o.order_itemnumber, o.customer_name as customer, o.order_blank, o.revenue, coalesce(sh.shipcnt,0) as shipcnt');
+        $this->db->select('coalesce(amnt.amntcnt,0) as amntcnt, coalesce(amnt.amntsum,0) as amntsum');
+        $this->db->select('coalesce(artw.artwcnt,0) as artwcnt');
+        $this->db->select('coalesce(proof.apprcnt,0) as apprcnt');
+        $this->db->from('ts_orders o');
+        $this->db->join("({$shipadrsql}) sh",'sh.order_id=o.order_id','left');
+        $this->db->join("({$amntsql}) amnt", 'amnt.order_id=o.order_id','left');
+        $this->db->join("({$artsql}) artw", "artw.order_id=o.order_id",'left');
+        $this->db->join("({$proofsql}) proof",'proof.order_id=o.order_id','left');
+        $this->db->where('o.is_canceled',0);
+        if ($userrepl > 0) {
+            $this->db->where('order_usr_repic', $userrepl);
+        }
+        $this->db->where('o.order_date >=', $finish_date);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('o.brand',$brand);
+            } else {
+                $this->db->where_in('o.brand',['SB','BT']);
+            }
+        }
+        $this->db->order_by('o.order_date','desc');
+        $orders = $this->db->get()->result_array();
+        $out = [];
+        foreach ($orders as $order) {
+            $customitem = 0;
+            if ($order['item_id']==$this->config->item('custom_id')) {
+                $customitem = 1;
+            }
+            $ship = empty($order['shipcnt']) ? 0 : 1;
+            $shipclass = $ship==0 ? $missclass : $readyclass;
+            if (empty($order['amntcnt'])) {
+                $payment = 0;
+                $payment_class = $missclass;
+            } else {
+                $payment = $order['amntsum'];
+                if ($order['amntsum']>=$order['revenue']) {
+                    $payment_class = $readyclass;
+                } else {
+                    $payment_class = $missclass;
+                }
+            }
+            if ($order['order_blank']==1) {
+                $art = 1;
+            } else {
+                if ($order['apprcnt'] > 0) {
+                    $art = 1;
+                } else {
+                    $art = empty($order['artwcnt']) ? 0 : 1;
+                }
+            }
+            $artclass = empty($art) ? $missclass : $readyclass;
+            $proof = $order['order_blank']==1 ? 1 : (empty($order['apprcnt']) ? 0 : 1);
+            $proofclass = empty($proof) ? $missclass : $readyclass;
+            if (empty($ship) || $payment_class==$missclass || empty($art) || empty($proof)) {
+                $out[] = [
+                    'order_id' => $order['order_id'],
+                    'order_num' => $order['order_num'],
+                    'order_date' => date('m/d/y', $order['order_date']),
+                    'customitem' => $customitem,
+                    'customer' => $order['customer'],
+                    'order_item' => ($customitem==1 ? $order['order_items'] : $order['order_itemnumber'].' '.$order['order_items']),
+                    'ship' => $ship,
+                    'shipclass' => $shipclass,
+                    'payment' => $payment,
+                    'paymentclass' => $payment_class,
+                    'art' => $art,
+                    'artclass' => $artclass,
+                    'proof' => $proof,
+                    'proofclass' => $proofclass,
+                ];
+            }
+        }
+        return $out;
+    }
+
+    public function hide_reminder($order_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
+        $order = $this->db->select('*')->from('ts_orders')->where('order_id', $order_id)->get()->row_array();
+        if (ifset($order,'order_id',0)==$order_id) {
+            $hideremind = 0;
+            if ($order['hide_reminder']==0) {
+                $hideremind = 1;
+            }
+            $this->db->where('order_id', $order_id);
+            $this->db->set('hide_reminder', $hideremind);
+            $this->db->update('ts_orders');
+            $out['result'] = $this->success_result;
+            $out['hidereminder'] = $hideremind;
+        }
+        return $out;
+    }
+
+    public function accountreceiv_export($period, $brand, $ownsort, $refundsort, $refunddirec)
+    {
+        $daystart = strtotime(date('Y-m-d'));
+        $cur_year = intval(date('Y'));
+        $limit_year = 0;
+        if ($period > 0) {
+            $limit_year = $cur_year - intval($period) + 1;
+        }
+        $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artworks a');
+        $this->db->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id');
+        $this->db->where('p.approved > ',0);
+        $this->db->group_by('a.order_id');
+        $proofsql = $this->db->get_compiled_select();
+
+        $this->db->select('v.*, coalesce(cnt,0) approved, o.debt_status, o.order_confirmation as order_confirm, o.debtstatus_date as update_date, ob.customer_ponum, o.order_blank');
+        $this->db->from('v_order_balances v');
+        $this->db->join('('.$proofsql.') p','p.order_id=v.order_id','left');
+        $this->db->join('ts_orders o','o.order_id=v.order_id');
+        $this->db->join('ts_order_billings ob','ob.order_id=v.order_id');
+        $this->db->where('v.balance > 0');
+        if ($limit_year!==0) {
+            $this->db->where('v.yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('v.brand', $brand);
+            } else {
+                $this->db->where_in('v.brand', ['BT','SB']);
+            }
+        }
+        $this->db->order_by($ownsort);
+        $owndats = $this->db->get()->result_array();
+        $owns = [];
+        $rundebt = 0;
+
+        foreach ($owndats as $owndat) {
+            $sclass = '';
+            if ($owndat['balance_manage'] == 3) {
+                $stype = $this->accrec_terms;
+            } elseif ($owndat['balance_manage'] == 2) {
+                $stype = $this->accrec_prepay;
+            } elseif ($owndat['balance_manage'] == 1) {
+                $stype = $this->accrec_willupd;
+                if (!empty($owndat['cntcard'])) {
+                    $stype = $this->accrec_credit;
+                    $sclass = 'creditcard';
+                }
+            }
+            $owndat['type'] = $stype;
+            $owndat['typeclass'] = $sclass;
+            $owndat['dueclass'] = 'current';
+            if ($owndat['batch_due'] < $daystart) {
+                $owndat['dueclass'] = 'pastdue';
+            }
+            $owndat['approved'] = ($owndat['approved'] == 0 ? 0 : 1);
+            if ($owndat['order_blank']==1) {
+                $owndat['approved']=1;
+            }
+            $days = round((time() - intval($owndat['batch_due'])) / (24 * 60 * 60), 0);
+            $owndat['days'] = $days;
+            $dayclass = '';
+            if ($days > 0) {
+                $dayclass = 'pastdue';
+            } else {
+                $dayclass = 'future';
+            }
+            $owndat['dayclass'] = $dayclass;
+            $rundebt += $owndat['balance'];
+            $owndat['rundebt'] = $rundebt;
+            $owns[] = $owndat;
+        }
+        // Refund
+        if ($refundsort=='balance') {
+            if ($refunddirec=='asc') {
+                $refunddir='desc';
+            } else {
+                $refunddir='asc';
+            }
+        } else {
+            $refunddir = $refunddirec;
+        }
+        $this->db->select('*');
+        $this->db->from('v_order_balances');
+        $this->db->where('balance < 0');
+        if ($limit_year!==0) {
+            $this->db->where('yearorder >= ', $limit_year);
+        }
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
+            }
+        }
+        $this->db->order_by($refundsort, $refunddir);
+        $refunds = $this->db->get()->result_array();
+
+        return array(
+            'owns' => $owns,
+            'refunds' => $refunds,
+        );
     }
 }

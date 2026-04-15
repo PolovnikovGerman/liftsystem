@@ -10,66 +10,38 @@ function show_new_lead(lead_id,type, brand) {
             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
             $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
             $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
-            // Init clone email
-            init_lead_cloneemail();
+            init_leadpopupcontent();
+            init_quoteformcontent();
             init_leadpopupedit();
-            // Save Button
-            $(".saveleaddat").unbind('dblclick');
-            $(".saveleaddat").unbind('click').click(function(){
-                $("#loader").show();
-                save_lead();
-                $("#loader").hide();
-                $('.modal-backdrop').hide();
-                if (type=='quote') {
-                    initQuotesPagination();
-                } else if (type=='question') {
-                    initQuestionPagination();
-                } else if (type=='customquote') {
-                    initCustomFormPagination();
-                } else {
-                    initProofPagination();
-                }
-            });
-            $("#leadformModal").find('button.close').unbind('click').click(function (){
-                $('.modal-backdrop').hide();
-                if (type=='quote') {
-                    initQuotesPagination();
-                } else if (type=='question') {
-                    initQuestionPagination();
-                } else if (type=='customquote') {
-                    initCustomFormPagination();
-                } else {
-                    initProofPagination();
-                }
-            });
         } else {
             show_error(response);
         }
-    }, 'json');
+    },'json');
 }
-/* New lead */
+
 function add_lead(brand) {
-    var lead_id=0;
+    var lead_id = 0
     var url=mainurl+"/edit_lead";
-    $.post(url, {'lead_id':lead_id, brand: brand}, function(response){
+    $.post(url, {'lead_id': lead_id, 'brand' : brand}, function(response){
         if (response.errors=='') {
-            // $("#pageModalLabel").empty().html(response.data.title);
-            // $("#pageModal").find('div.modal-body').empty().html(response.data.content);
-            // $("#pageModal").find('div.modal-dialog').css('width','970px');
-            // $("#pageModal").modal({backdrop: 'static', keyboard: false, show: true});
-            // init_leadpopupedit();
             $("#leadformModalLabel").empty().html(response.data.title);
             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            // $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
             $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
-            init_lead_cloneemail();
+            // init_lead_cloneemail();
+            init_leadpopupcontent();
+            init_quoteformcontent();
             init_leadpopupedit();
+            if (parseInt($("#leadmapuse").val())==1) {
+                initCustomerAddressAutocomplete();
+            }
         } else {
             show_error(response);
         }
     }, 'json');
+
 }
-/* Edit Lead */
+
 function edit_lead(lead_id) {
     // var lead_id=obj.id.substr(7);
     var url=mainurl+"/edit_lead";
@@ -77,180 +49,190 @@ function edit_lead(lead_id) {
         if (response.errors=='') {
             $("#leadformModalLabel").empty().html(response.data.title);
             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-            $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
+            // $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
             $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
-            init_lead_cloneemail();
+            // init_lead_cloneemail();
+            init_leadpopupcontent();
+            init_quoteformcontent();
             init_leadpopupedit();
+            if (parseInt($("#leadmapuse").val())==1) {
+                initCustomerAddressAutocomplete();
+            }
         } else {
             show_error(response);
         }
     }, 'json');
 }
 
-function init_leadpopupedit() {
-    $("#leadformModal").find('button.close').unbind('click').click(function (){
-        $('.modal-backdrop').hide();
-        initLeaddataPagination();
-        initProofPagination();
-    });
-    var lead_id=$("input#lead_id").val();
-    if (lead_id==0) {
-        $("input#lead_company").focus();
-    }
-    $("img.leadcalendbtn").datepicker({
-        autoclose: true,
-        todayHighlight: true
-    }).on('changeDate', function (e) {
-        $("#lead_needby").val(e.format(0,"mm/dd/yyyy"));
-    });
-    /* Check box other */
-    $("#other_task").unbind('change').change(function(){
-        var chk=$("#other_task").prop('checked');
-        if (chk==false) {
-            $("textarea#other").attr('readonly',true);
-        } else {
-            $("textarea#other").attr('readonly',false);
-        }
-    })
-
-    var itemid=$("select#lead_item").val();
-    if (itemid!='') {
-        if (parseInt(itemid)<1) {
-            $("div.item_otheritemarea").show();
-            $("div.lead_history").removeClass('expandhistory');
-        } else {
-            $("div.item_otheritemarea").hide();
-            $("div.lead_history").addClass('expandhistory');
-        }
-    }
-
-    // $("select#lead_item").searchable();
+function init_leadpopupcontent(){
     $("select#lead_item").select2({
         dropdownParent: $('#leadformModal'),
         matcher: matchStart,
     });
-    $("select#lead_item").change(function(){
-        var item_id=$("select#lead_item").val();
-        lead_itemchange(item_id);
-    })
-
-    $("input#lead_itemqty").on('focusout',function(){
-        $("#lead_item").select2('open');
-        $("#lead_item").find('input.select2-search__field').focus();
+    $("input#lead_needby").datepicker({
+        autoclose: true,
+        todayHighlight: true
     });
+    // Attachment
+    var upload_templ= '<div class="qq-uploader"><div class="custom_upload qq-upload-button btn-attach">+ add attachment</div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>'+
+        '<div class="clear"></div></div>';
 
-    $("input.usrrepliccheck").unbind('change').change(function(){
-        var value=1;
-        if ($(this).prop('checked')==true) {
-            value=0;
-        }
-        if ($(this).prop('readonly')==true) {
-            if (value==1) {
-                $(this).prop('checked',true);
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('btn-attach'),
+        action: '/utils/save_leadattach',
+        uploadButtonText: '',
+        multiple: true,
+        debug: false,
+        template: upload_templ,
+        params: {
+        },
+        allowedExtensions: [],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url= mainurl+'/lead_attachment_add';
+                var params=new Array();
+                params.push({name: 'lead', value: $("#leadeditid").val()});
+                params.push({name: 'attachdoc', value: responseJSON.filename});
+                params.push({name: 'sourcename', value: responseJSON.source});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $(".list-attachfiles").empty().html(response.data.content);
+                        new SimpleBar(document.getElementById('leadpopup_list-attachfiles'), {autoHide: false});
+                        init_leadpopupedit();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
             } else {
-                $(this).prop('checked',false);
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
             }
         }
-    })
-    // Attachments
-    $("div.lead_attach_view").unbind('click').click(function () {
-        var link = $(this).data('link');
-        window.open(link, 'attachwin', 'width=600, height=800,toolbar=1')
     });
-    // Delete attachment
-    $("div.lead_attach_remove").unbind('click').click(function () {
-        if (confirm('Remove attachment ?')==true) {
-            var attachid = $(this).data('attachid');
-            delete_lead_attachment(attachid);
-        }
-    });
+    // Select Picker
+    $("#lead_type").selectpicker('refresh');
+    // Scrolls
+    new SimpleBar(document.getElementById('list-leadhistory'), { autoHide: false });
+    new SimpleBar(document.getElementById('leadpopupquotetabl-body'), { autoHide: false });
+    new SimpleBar(document.getElementById('leadpopup_list-proofreqbox'), { autoHide: false });
+    new SimpleBar(document.getElementById('leadpopup_list-attachfiles'), {autoHide: false});
+}
 
-    if ($("#addleadattachment").length > 0) {
-        var qq_template= '<div class="qq-uploader"><div class="btn-addfile qq-upload-button">'+
-            '+ Add Attachment</div>' +
-            '<ul class="qq-upload-list"></ul>' +
-            '<ul class="qq-upload-drop-area"></ul>'+
-            '<div class="clear"></div></div>';
-
-
-        var uploader = new qq.FileUploader({
-            element: document.getElementById('addleadattachment'),
-            action: '/utils/save_leadattach',
-            template: qq_template,
-            uploadButtonText: '',
-            multiple: true,
-            debug: false,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG','pdf','PDF','ai','AI','psd','PSD','eps','EPS'],
-            onComplete: function(id, fileName, responseJSON){
-                if (responseJSON.success==true) {
-                    // $("li.qq-upload-success").hide();
-                    $("ul.qq-upload-list").css('display','none');
-                    var params=new Array();
-                    params.push({name: 'session_id', value: $("#session_attach").val()});
-                    params.push({name: 'newval', value: responseJSON.filename});
-                    params.push({name: 'src', value: responseJSON.source});
-                    var url=mainurl+"/lead_attachment_add";
-                    $.post(url, params, function (response) {
-                        if (response.errors=='') {
-                            $(".lead_popup_attachs").empty().html(response.data.content);
-                            init_leadpopupedit();
-                        } else {
-                            show_error(response);
-                        }
-                    },'json');
-                }
-            }
-        });
+function init_quoteformcontent() {
+    $("select.quoteform-locations[data-location='1']").removeClass('inactive');
+    if ($("#quoteformcustomitem").val()==1) {
+        $("select.quoteform-locations[data-location='1']").val(5);
+    } else {
+        $("select.quoteform-locations[data-location='1']").val(1);
     }
-    /* Question */
-    $("div.lead_popup_questchck").unbind('click').click(function(){
-        show_questdetails(this);
-    });
-    $("div.lead_popup_proofchck").unbind('click').click(function(){
-        show_proofdetails(this);
-    })
-    $("div.lead_popup_quotechck").unbind('click').click(function(){
-        show_quotedetails(this);
-    })
-    /* Duplicate Lead */
-    $("div.lead_duplicate").unbind('click').click(function(){
-        duplicatelead();
-    })
-    /* Save Button */
-    $(".saveleaddat").unbind('click').click(function(){
-        save_lead();
-    })
-    $("div.lead_popup_addrequest img").unbind('click').click(function(){
-        add_proofrequest();
-    });
-    $("div.lead_quoteprofnum").unbind('click').click(function(){
-        var mail_id=$(this).data('leadid');
-        var lead_id=$("input#lead_id").val();
-        var dat=$("form#leadeditform").serializeArray();
-        dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
-        dat.push({name:'session_id', value: $("#session").val()});
-        dat.push({name: 'session_attach', value: $("#session_attach").val()});
-        dat.push({name: 'lead_type', value: $("#lead_type").val()});
-        var url=mainurl+"/lead_proofrequest";
-        $.post(url, dat, function(response){
+}
+function init_leadpopupedit() {
+    // Input change
+    $("input.leadmainedit").unbind('change').change(function (){
+        var field_name = $(this).data('fld');
+        var newval = $(this).val();
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: field_name});
+        params.push({name: 'newval', value: newval});
+        var url = mainurl+"/lead_data_change";
+        $.post(url, params, function (response){
             if (response.errors=='') {
-                show_artdata(mail_id, lead_id,'old');
+                if (field_name=='lead_needby') {
+                    $("input#lead_needby").val(response.data.newdate);
+                }
+                if (newval=='') {
+                    $("input[data-fld='"+field_name+"']").addClass('emptyleadcontact');
+                } else {
+                    $("input[data-fld='"+field_name+"']").removeClass('emptyleadcontact');
+                }
             } else {
                 show_error(response);
             }
-        }, 'json');
-    })
-    $("div.proofed").unbind('click').click(function(){
-        var mail_id=$(this).data('leadid');
-        var url=mainurl+"/lead_approvedshow";
-        $.post(url,{'email_id':mail_id},function(response){
+        },'json');
+    });
+    // Select Changes
+    $("select.leadmainedit").unbind('change').change(function (){
+        var params = new Array();
+        var field_name = $(this).data('fld');
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: field_name});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = mainurl+"/lead_data_change";
+        $.post(url, params, function (response){
             if (response.errors=='') {
-                var data=response.data.approved;
-                for (var key in data) {
-                    var val = data[key]['proof_name'];
-                    var filename=data[key]['file_name'];
-                    if (val) {
-                        $.fileDownload('/art/art_openimg', {httpMethod : "POST", data: {url : val, file: filename}});
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Status change
+    $("#lead_type").unbind('change').change(function (){
+        var params = new Array();
+        var field_name = $(this).data('fld');
+        var typeval = $(this).val();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: field_name});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = mainurl+"/lead_data_change";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#lead_type").selectpicker('val', typeval);
+                // var newtxt = $("#lead_type option:selected").text();
+                // $("#select2-lead_item-container").empty().html(newtxt);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+    // TextArea Changes
+    $("textarea.leadmainedit").unbind('change').change(function(){
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = mainurl+"/lead_data_change";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Address Change
+    $("input.leadaddressedit").unbind('change').change(function (){
+        var params = new Array();
+        var newval = $(this).val();
+        var field_name = $(this).data('fld');
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: field_name});
+        params.push({name: 'newval', value: newval});
+        var url = mainurl+"/lead_address_change";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (newval=='') {
+                    $("input.leadaddressedit[data-fld='"+field_name+"']").addClass('emptyleadcontact');
+                } else {
+                    $("input.leadaddressedit[data-fld='"+field_name+"']").removeClass('emptyleadcontact');
+                }
+                if (parseInt(response.data.zipchange)==1) {
+                    $("input.leadaddressedit[data-fld='city']").val(response.data.city);
+                    if (response.data.city=='') {
+                        $("input.leadaddressedit[data-fld='city']").addClass('emptyleadcontact');
+                    } else {
+                        $("input.leadaddressedit[data-fld='city']").removeClass('emptyleadcontact');
+                    }
+                    $(".leadaddressedit[data-fld='state']").val(response.data.state);
+                    if (response.data.state=='') {
+                        $("input.leadaddressedit[data-fld='state']").addClass('emptyleadcontact');
+                        $("select.leadaddressedit[data-fld='state']").addClass('emptyleadcontact');
+                    } else {
+                        $("input.leadaddressedit[data-fld='state']").removeClass('emptyleadcontact');
+                        $("select.leadaddressedit[data-fld='state']").removeClass('emptyleadcontact');
                     }
                 }
             } else {
@@ -258,303 +240,624 @@ function init_leadpopupedit() {
             }
         },'json');
     });
-    // Manage Replics
-    $("div.lead_popup_replicausrchk").unbind('click').click(function(){
-        var user=$(this).data('user');
-        var replic=$(this).data('replic');
-        if (confirm('Remove '+replic+' from Lead Reps ?')==true) {
-            var data=new Array();
-            data.push({name: 'user', value: user});
-            data.push({name: 'session_id', value: $("#session").val()});
-            data.push({name: 'brand', value: $("#brand").val()})
-            var url=mainurl+"/lead_remove_rep";
-            $.post(url,data, function(response){
-                if (response.errors=='') {
-                    $("div.lead_popup_replicas").empty().html(response.data.content);
-                    init_leadpopupedit();
-                } else {
-                    show_error(response);
+    $("select.leadaddressedit").unbind('change').change(function (){
+        var params = new Array();
+        var field_name = $(this).data('fld');
+        var newval = $(this).val();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: field_name});
+        params.push({name: 'newval', value: newval});
+        var url = mainurl+"/lead_address_change";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (field_name=='country_id') {
+                    $("#lead_address_states").empty().html(response.data.states_view);
                 }
-            },'json')
-        }
-    });
-    $("div.lead_popup_addreplica").unbind('click').click(function(){
-        // editmail_form        
-        var url=mainurl+"/lead_addrep_view";
-        $.post(url, {'session_id':$("#session").val()}, function(response){
-            if (response.errors=='') {
-                $("#artNextModalLabel").empty().html('Add Lead Rep');
-                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-                $("#artNextModal").find('div.modal-dialog').css('width','570px');
-                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-                $('#artNextModal').on('hidden.bs.modal', function (e) {
-                    $(document.body).addClass('modal-open');
-                })
-                $("div.leadreplicadddatasave").unbind('click').click(function(){
-                    addnewleaderpl();
-                });
-            } else {
-                show_error(response);
-            }
-        },'json');
-    });
-    // Edit quotes
-    $(".leadquotenumberlist").unbind('click').click(function(){
-        var quote_id = $(this).data('leadquote');
-        leadquote_edit(quote_id);
-    })
-    $(".quotesaddnew").unbind('click').click(function () {
-        addnewcustomquote();
-    });
-}
-
-function delete_lead_attachment(attachid) {
-    var url=mainurl+"/lead_attachment_delete";
-    var params=new Array();
-    params.push({name: 'session_id', value: $("#session_attach").val()});
-    params.push({name: 'attach_id', value: attachid});
-    $.post(url,params, function (response) {
-        if (response.errors=='') {
-            $(".lead_popup_attachs").empty().html(response.data.content);
-            $(".datarow[data-leadquote='"+quote_id+"']").children('div').addClass('active');
-            init_leadpopupedit();
-        } else {
-            show_error(response);
-        }
-    },'json');
-}
-
-function addnewleaderpl() {    
-    var params=new Array();
-    var numpp=0;
-    $("input.newuserreplchk[type=checkbox]").each(function(){
-        if ($(this).prop('checked')==true) {
-            numpp++;
-            params.push({name: 'user'+numpp, value: $(this).val()});            
-        }        
-    });    
-    if (numpp==0) {
-        $("#artNextModal").modal('hide');
-    } else {
-        params.push({name:'session_id', value: $("#session").val()});
-        params.push({name: 'brand', value: $("#brand").val()});
-        var url=mainurl+"/lead_addrep_save";
-        $.post(url, params, function(response){
-            if (response.errors=='') {
-                $("div.lead_popup_replicas").empty().html(response.data.content);
-                $("#artNextModal").modal('hide');
+                if (newval=='') {
+                    $("select.leadaddressedit[data-fld='"+field_name+"']").addClass('emptyleadcontact');
+                } else {
+                    $("select.leadaddressedit[data-fld='"+field_name+"']").removeClass('emptyleadcontact');
+                }
                 init_leadpopupedit();
             } else {
                 show_error(response);
             }
         },'json');
-    }
-    
-}
-/*
- * 
- $("input.newuserreplchk").each(function(e){
-  console.log($(this).val();
-});
- */
-function add_proofrequest() {
-    var lead_num=$("div.lead_popup_number").text();
-    var msg="You will now save the updates of the "+lead_num+" by creating the proof request.  Ok?";
-    if (confirm(msg)==true) {
-        var url=mainurl+"/lead_addproofrequst";
-        var dat=$("form#leadeditform").serializeArray();
-        dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
-        dat.push({name:'session_id', value: $("#session").val()});
-        dat.push({name: 'session_attach', value: $("#session_attach").val()});
-        dat.push({name: 'lead_type', value: $("#lead_type").val()});
-        $("#loader").show();
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: dat,
-            dataType: "json",
-            timeout: 5000,
-            success: function(response) {
-                if (response.errors=='') {
-                    $("#loader").hide();
-                    show_artdata(response.data.email_id, response.data.lead_id,'new');
+    });
+    // Item Change
+    $(".leadpopupitem").unbind('change').change(function (){
+        var field_name = 'lead_item_id';
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'field_name', value: field_name});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = mainurl+"/lead_data_change";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                var newtxt = $("#lead_item option:selected").text();
+                $("#select2-lead_item-container").empty().html(newtxt);
+                if (parseInt(response.data.show_custom)==1) {
+                    $("div.lead-descr").addClass('active');
                 } else {
-                    $("#loader").hide();
-                    alert(response.errors);
+                    $("div.lead-descr").removeClass('active');
                 }
-            },
-            error: function(x, t, m) {
-                if(t==="timeout") {
-                    $("#loader").hide();
-                    alert('Request Time Out. Try again');
-                } else {
-                    $("#loader").hide();
-                    alert(m);
-                }
+                $("textarea[data-fld='other_item_name']").val('');
+                // Re init Quote form
+                $(".lead-quotesform").empty().html(response.data.quote_form);
+                init_quoteformcontent();
+                init_leadpopupedit();
+            } else {
+                show_error(response);
             }
+        },'json');
+    });
+    // Contacts change
+    $("input.leadcontactedit").unbind('change').change(function (){
+        var params = new Array();
+        var fld = $(this).data('fld');
+        var contact = $(this).data('contact');
+        var newval = $(this).val();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'contact', value: contact});
+        params.push({name: 'field_name', value: fld});
+        params.push({name: 'newval', value: newval});
+        var url = mainurl+"/lead_contact_change";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (parseInt(response.data.newphone)==1) {
+                    $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").val(response.data.phone);
+                }
+                if (newval=='') {
+                    $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").addClass('emptyleadcontact');
+                } else {
+                    $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").removeClass('emptyleadcontact');
+                }
+            } else {
+                show_error(response);
+                $("input.leadcontactedit[data-contact='"+contact+"'][data-fld='"+fld+"']").val(response.data.oldval);
+            }
+        },'json');
+    });
+    // Copy field in clipboard
+    $(".dp-contactemailbtn").unbind('click').click(function (){
+        var contact = $(this).data('contact');
+        var element = document.querySelector(".dp-contactemail[data-contact='"+contact+"']");
+        copyEmailToClipboard(element);
+        $(element).show();
+    });
+    // Open assign popup
+    $(".leadtopreps-addbtn").unbind('click').click(function(){
+        $(".leadtopassign-popup").show();
+        init_leadpopup_assign();
+    });
+    // Open Other replicas
+    $(".repsuserbox-other").unbind('click').click(function (){
+        $(".leadotherreplica-popup").show();
+        $(".leadusrreplicacancel").unbind('click').click(function(){
+            $(".leadotherreplica-popup").hide();
         });
-    }
-}
-
-// Call artdata from Lead
-function show_artdata(mail_id, lead_id,relation_type) {
-    var url="/art/proof_artdata";
-    $.post(url,{'proof_id':mail_id},function(response){
-        if (response.errors==='') {
-            $("#pageModal").modal('hide');
-            $("#artModalLabel").empty().html('Artwork Edit');
-            $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").find('div.modal-dialog').css('width','928px');
-            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
-            /* SAVE, EMAIL, etc buttons */
-            init_artpopupcontent(lead_id, mail_id,relation_type);
-            $(document.body).addClass('modal-open');
-        } else {
-            show_error(response);
-        }
-    },'json');
-    return false;
-}
-
-function init_artpopupcontent(lead_id, mail_id,relation_type) {
-    init_popupcontent();
-    $("#artModal").find('button.close').unbind('click').click(function(){
-        if (relation_type=='new') {
-            // disablePopup();
-            /* Delete proof */
-            var url = mainurl+"/lead_deleteproof";
-            $.post(url,{'email_id':mail_id},function(response){
+    });
+    // Delete replica
+    $(".repsuserbox-icn").unbind('click').click(function (){
+        var leadname = $(this).data('usrname');
+        if (confirm('Remove '+leadname+' from Lead Reps ?')==true) {
+            var params=new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            params.push({name: 'leadusr', value: $(this).data('usr')});
+            var url = mainurl+'/userreplica_remove_popup';
+            $.post(url, params, function (response){
                 if (response.errors=='') {
-                    restore_leadform(0);
+                    $("#leadtopreplicacontent").empty().html(response.data.content);
+                    init_leadpopupedit();
                 } else {
                     show_error(response);
                 }
             },'json');
-        } else {
-            restore_leadform(0);
         }
-
-    })
-    $("div.artpopup_save").unbind('click').click(function(){
-        var dat=$("form#artdetailsform").serializeArray();
-        var url="/artproofrequest/artwork_save";
-        $.post(url, dat, function(response){
+    });
+    // Delete relation
+    $(".quests-unlink").unbind('click').click(function (){
+        var leadmail = $(this).data('leadmail');
+        if (confirm('Unlink '+$(this).data('leadrel')+'?')==true) {
+            var params = new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            params.push({name: 'leadmail', value: leadmail});
+            var url = mainurl+'/revertassign';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".list-quests").empty().html(response.data.tasksview);
+                    init_leadpopupedit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // Show related interest
+    $(".questionbox-icn").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'leadmail', value: $(this).data('leadmail')});
+        var url = mainurl+'/showtask';
+        $.post(url, params, function (response){
             if (response.errors=='') {
-                $("#artModal").modal('hide');
-                restore_leadform(mail_id);
+                if (response.data.tasktype=='customform') {
+                    showcustomformdetails(response.data.task);
+                } else if (response.data.tasktype=='question') {
+                    showquestdetails(response.data.task);
+                } else if (response.data.tasktype=='quote') {
+                    showquotedetails(response.data.task);
+                }
             } else {
                 show_error(response);
             }
         }, 'json')
+    });
+    // Quote request change active
+    $("input[name='pricecheck']").unbind('click').click(function (){
+        var pricetype = $(this).val();
+        var newval = 0;
+        if ($(this).prop('checked')==true) {
+            newval = 1;
+        }
+        if (newval==1) {
+            $(".qtypricelist-box[data-price='"+pricetype+"']").addClass('active');
+            $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-qty').prop('readonly',false);
+            $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-price').prop('readonly',false);
+        } else {
+            $(".qtypricelist-box[data-price='"+pricetype+"']").removeClass('active');
+            $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-qty').prop('readonly',true);
+            $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-price').prop('readonly',true);
+        }
+        // $(".qtypricelist-box").removeClass('active');
+        // $(".qtypricelist-box").find('input.qtybox-qty').prop('readonly',true);
+        // $(".qtypricelist-box").find('input.qtybox-price').prop('readonly',true);
+        // $(".qtypricelist-box[data-price='"+pricetype+"']").addClass('active');
+        // $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-qty').prop('readonly',false);
+        // $(".qtypricelist-box[data-price='"+pricetype+"']").find('input.qtybox-price').prop('readonly',false);
+        // Update label for quotes
+        var numcand = $("input[name='pricecheck']:checked").length;
+        if (parseInt(numcand)==0) {
+            // Hide create quote
+            $(".btn-createquote").addClass('lockbtn');
+            $(".btn-createquote").unbind('click');
+        } else if (parseInt(numcand)==1) {
+            $(".btn-createquote").removeClass('lockbtn').empty().html('Create Quote');
+            init_leadpopupedit();
+        } else {
+            $(".btn-createquote").removeClass('lockbtn').empty().html('Create '+numcand+' Quotes');
+            init_leadpopupedit();
+        }
+    });
+    // Unlock discount
+    $("input[name='discountcheckbox']").unbind('click').click(function (){
+        var chkdisc = 0;
+        if ($(this).prop('checked')==true) {
+            chkdisc = 1;
+        }
+        if (chkdisc==0) {
+            $("div.quotesform-discount").addClass('inactive');
+            $("input.discount-code").prop('readonly',true);
+            $("input.discount-price").prop('readonly',true);
+            $("input.discount-exp").prop('readonly',true);
+        } else {
+            $("div.quotesform-discount").removeClass('inactive');
+            $("input.discount-code").prop('readonly', false);
+            $("input.discount-price").prop('readonly', false);
+            $("input.discount-exp").prop('readonly', false);
+        }
+    });
+    // Change location value
+    $("select.quoteform-locations").unbind('change').change(function (){
+        var loc = $(this).data('location');
+        if ($(this).val()=='0') {
+            $("select.quoteform-locations[data-location='"+loc+"']").addClass('inactive');
+        } else {
+            $("select.quoteform-locations[data-location='"+loc+"']").removeClass('inactive');
+        }
+    });
+    // Show - hide messages
+    $("span.quoteform-expandview").unbind('click').click(function (){
+        var expandview = 0;
+        if ($("#quoteformexpandview").val()==0) {
+            expandview = 1;
+        }
+        $("#quoteformexpandview").val(expandview);
+        if (expandview==1) {
+            $("div.messagequote-block").show();
+            $("span.quoteform-expandview").empty().html('<i class="fa fa-caret-up" aria-hidden="true"></i>');
+            $(".leadquotetabl-body").addClass('shortview');
+            $(".btn-createquote.fixedview").hide();
+        } else {
+            $("div.messagequote-block").hide();
+            $("span.quoteform-expandview").empty().html('<i class="fa fa-caret-down" aria-hidden="true"></i>');
+            $(".leadquotetabl-body").removeClass('shortview');
+            $(".btn-createquote.fixedview").show();
+        }
+    });
+    // Change setup / design
+    $("select.quoteform-setuptype").unbind('change').change(function (){
+        if ($(this).val()=='NEW') {
+            $("input[name='quotesform-setup']").show();
+            $("input[name='quotesform-setupnote']").hide();
+        } else {
+            $("input[name='quotesform-setup']").hide();
+            $("input[name='quotesform-setupnote']").show();
+        }
+    });
+    $("select.quoteform-designtype").unbind('change').change(function (){
+        if ($(this).val()=='NEW') {
+            $("input[name='quotesform-design']").show();
+            $("input[name='quotesform-designnote']").hide();
+        } else {
+            $("input[name='quotesform-design']").hide();
+            $("input[name='quotesform-designnote']").show();
+        }
+    });
+    // Add Quote
+    $(".btn-createquote").unbind('click').click(function (){
+        var numcand = $("input[name='pricecheck']:checked").length;
+        if (parseInt(numcand) > 0) {
+            add_leadquote();
+        }
     })
-
+    // Show Quote PDF
+    $(".leadquotetabl-doc").unbind('click').click(function (){
+        var quote = $(this).data('quote');
+        var url = '/leadquote/quotepdfdoc';
+        $.post(url, {'quote_id': quote}, function (response){
+            if (response.errors=='') {
+                var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Open Quote Details
+    $(".leadquotetabl-quote").unbind('click').click(function (){
+        var quote_id = $(this).data('quote');
+        open_quote_details(quote_id);
+    })
+    // Open Attachment
+    $(".attachfile").unbind('click').click(function (){
+        var docurl = $(this).data('link');
+        var wintitle = $(this).data('title');
+        var newWin = window.open(docurl,wintitle,"width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+    })
+    // Add Proof requst
+    $(".btn-newproofreq").unbind('click').click(function (){
+        var lead_num = $(".leadnumber").find('span').text();
+        var msg="You will now save the updates of the "+lead_num+" by creating the proof request.  Ok?";
+        if (confirm(msg)==true) {
+            var url=mainurl+"/lead_addproofrequst";
+            var params = new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#loader").hide();
+                    // $("#leadformModal").modal('hide');
+                    $("#list-leadhistory").empty().html(response.data.history_view);
+                    $("textarea[data-fld='newhistorymsg']").val('');
+                    $("#leadpopup_list-proofreqbox").empty().html(response.data.proofarts_view);
+                    new SimpleBar(document.getElementById('leadpopup_list-proofreqbox'), { autoHide: false });
+                    artproof_lead(response.data.proof_id,'leadspopup');
+                    init_leadpopupedit();
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    $(".proofreqbox-number").unbind('click').click(function (){
+        var proof = $(this).data('proof');
+        // Save changes in Lead
+        var url = mainurl+'/lead_popup_save';
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#loader").hide();
+                // Change history and message
+                $("#list-leadhistory").empty().html(response.data.history_view);
+                $("textarea[data-fld='newhistorymsg']").val('');
+                // $("#leadformModal").modal('hide');
+                artproof_lead(proof, 'leadspopup');
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    })
+    // Duplicate Lead
+    $(".duplicatelead").unbind('click').click(function (){
+        if (confirm('Duplicate Lead ?')==true) {
+            var params = new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            params.push({name: 'closesession', value: 1});
+            var url = mainurl+'/lead_popup_save';
+            $("#loader").show();
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    var lparams = new Array();
+                    lparams.push({name: 'lead_id', value: response.data.lead_id});
+                    var lurl = mainurl+'/dublicatelead';
+                    $.post(lurl, lparams, function (lresponse){
+                        if (lresponse.errors=='') {
+                            $("#leadformModalLabel").empty().html(lresponse.data.title);
+                            $("#leadformModal").find('div.modal-body').empty().html(lresponse.data.content);
+                            // $("#leadformModal").find('div.modal-footer').empty().html(lresponse.data.footer);
+                            init_leadpopupcontent();
+                            init_quoteformcontent();
+                            init_leadpopupedit();
+                            if (parseInt($("#leadmapuse").val())==1) {
+                                initCustomerAddressAutocomplete();
+                            }
+                            $("#loader").hide();
+                        } else {
+                            $("#loader").hide();
+                            show_error(lresponse);
+                        }
+                    },'json');
+                } else {
+                    $("#loader").hide();
+                    show_error(response);
+                }
+            },'json');
+        }
+    })
+    // Save button
+    $(".lead-savebtn").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'lead', value: $("#leadeditid").val()});
+        params.push({name: 'closesession', value: 1});
+        var url = mainurl+'/lead_popup_save';
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#leadformModal").modal('hide');
+                initLeaddataPagination();
+                init_customform_interest();
+                show_leadpriority();
+                $("#loader").hide();
+            } else {
+                $("#loader").hide();
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
-function restore_leadform(mail_id) {
-    var url=mainurl+"/restore_ledform";
-    $.post(url, {'email_id' : mail_id}, function(response){
+function copyEmailToClipboard(element) {
+    $(element).show();
+    $(element).focus();
+    $(element).select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Msg '+msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
+    $(element).hide();
+}
+
+function add_leadquote() {
+    if ($("input[name=pricecheck]:checked").length==0) {
+        alert('Chose Item Quote QTY');
+    } else if ($("#lead_item").val()=='') {
+        alert('Chose Item for Quote');
+    } else if ($("select.quoteform-setuptype")=='REPEAT' && $("input[name='quotesform-setupnote']").val()=='') {
+        alert('Enter Repeat Note for Setup');
+    } else if ($("select.quoteform-designtype")=='REPEAT' && $("input[name='quotesform-designnote']").val()=='') {
+        alert('Enter Repeat Note for Design');
+    } else {
+        var leadnum = $(".leadnumber").find('span').text();
+        var msg="You will now save the updates of the "+leadnum+" by creating the quote.  Ok?";
+        if (confirm(msg)==true) {
+            // Save lead
+            sparams = new Array();
+            sparams.push({name: 'lead', value: $("#leadeditid").val()});
+            sparams.push({name: 'closesession', value: 0});
+            sparams.push({name: 'savelead', value: 1});
+            var url = mainurl+'/lead_popup_save';
+            $("#loader").show();
+            $.post(url, sparams, function (sresponse){
+                if (sresponse.errors=='') {
+                    // Send quotes
+                    var numquotes = $("input[name='pricecheck']:checked").length;
+                    console.log(numquotes+' quotes in queue');
+                    var leadid = sresponse.data.lead_id;
+                    var chkprice = '';
+                    var quotidx = 0;
+                    var maxquote = 0;
+                    $("input[name='pricecheck']:checked").each(function(index) {
+                        maxquote = $(this).val();
+                    });
+                    $("input[name='pricecheck']:checked").each(function(index) {
+                        chkprice = $(this).val();
+                        var lastquote = 0;
+                        if (chkprice==maxquote) {
+                            lastquote = 1;
+                        }
+                        addquotedoc(chkprice, leadid, lastquote, numquotes);
+                        quotidx++;
+                        // console.log('Quote '+quotidx+' added');
+                    });
+                } else {
+                    $("#loader").hide();
+                    show_error(sresponse);
+                }
+            },'json');
+        }
+    }
+}
+
+function addquotedoc(pricecheck, lead_id, lastquote, numquotes) {
+    var price = 0; var qty = 0;
+    if (pricecheck=='custom') {
+        price = $("input.qtybox-price[data-price='custom']").val();
+        qty = $("input.qtybox-qty[data-price='custom']").val();
+    } else {
+        qty = $("div.qtypricelist-box[data-price='" + pricecheck + "']").data('promoqty');
+        price = $("input.qtybox-price[data-price='"+pricecheck+"']").val();
+    }
+    var design = 0;
+    if ($("input[name='quotesform-design']").length > 0) {
+        design = $("input[name='quotesform-design']").val();
+    }
+    var printprice = $("input[name='quotesform-prints']").val();
+    var setupprice = $("input[name='quotesform-setup']").val();
+    var discount_label = '';
+    var discount_val = 0;
+    var discount_exp = '';
+    if ($("input[name='discountcheckbox']:checked").length > 0) {
+        discount_label = $("input[name='quotesform-discount']").val();
+        // if (discount_label=='') {
+        //     discount_label = 'Courtesy Discount';
+        // }
+        discount_val = $("input[name='quotesform-price']").val();
+        discount_exp = $("input[name='quotesform-exp']").val();
+    }
+    var quotezip = $("input[name='quotesform-zipcode']").val();
+    var other_note = $("textarea.quoteform_othernotes").val();
+    var repcontact_note = $("textarea.quoteform_repcontact").val();
+    var params = new Array();
+    params.push({name: 'lead_id', value: lead_id});
+    params.push({name: 'promoprice', value: pricecheck});
+    params.push({name: 'itemqty', value: qty});
+    params.push({name: 'itemprice', value: price});
+    params.push({name: 'custom_item', value: $("#quoteformcustomitem").val()});
+    params.push({name: 'printprice', value: printprice});
+    params.push({name: 'setupprice', value: setupprice});
+    params.push({name: 'design', value: design});
+    params.push({name: 'discount_label', value: discount_label});
+    params.push({name: 'discount_val', value: discount_val});
+    params.push({name: 'discount_exp', value: discount_exp});
+    params.push({name: 'quotezip', value: quotezip});
+    params.push({name: 'other_note', value: other_note});
+    params.push({name: 'repcontact_note', value: repcontact_note});
+    params.push({name: 'setuptype', value: $("select[name='setuptype']").val()});
+    params.push({name: 'setupnote', value: $("input[name='quotesform-setupnote']").val()});
+    params.push({name: 'designtype', value: $("select[name='designtype']").val()});
+    params.push({name: 'designnote', value: $("input[name='quotesform-designnote']").val()});
+    for (let i = 1; i < 13; i++) {
+        if ($("select.quoteform-locations[data-location='"+i+"']").length > 0) {
+            params.push({name: 'location'+i, value: $("select.quoteform-locations[data-location='"+i+"']").val()});
+        }
+    }
+    var url = mainurl+'/add_leadquote';
+    $("#loader").show();
+    $.post(url, params, function(response){
+        if (response.errors=='') {
+            var quote_id = response.data.quote_id;
+            console.log('Quote '+response.data.quote_id+' Added successfully');
+            if (parseInt(lastquote)==1) {
+                restore_lead_view(lead_id);
+                if (numquotes==1) {
+                    setTimeout(function() {
+                        open_quote_details(quote_id);
+                    }, 1500);
+                }
+            }
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
+
+function init_leadpopup_assign() {
+    $(".leadusrreplicacancel").unbind('click').click(function(){
+        $("input[name='leadusercandidat']").prop('checked',false);
+        $(".leadtopassign-popup").hide();
+    });
+    $(".leadusrreplicasave").unbind('click').click(function (){
+        var usrrepl = new Array();
+        $("input[name='leadusercandidat']:checked").each(function (index){
+            usrrepl[index]=$(this).data('usr');
+        });
+        if (usrrepl.length==0) {
+            $(".leadtopassign-popup").hide();
+        } else {
+            var params = new Array();
+            params.push({name: 'lead', value: $("#leadeditid").val()});
+            params.push({name: 'replicas', value: usrrepl});
+            var url = mainurl+'/userreplica_popup';
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $("#leadtopreplicacontent").empty().html(response.data.content);
+                    $(".leadtopassign-popup").hide();
+                    init_leadpopupedit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+}
+
+function open_quote_details(quote_id) {
+    var url = mainurl+'/lead_popup_save';
+    var params = new Array();
+    params.push({name: 'lead', value: $("#leadeditid").val()});
+    $("#loader").show();
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            // $("#loader").hide();
+            var qparams = new Array();
+            qparams.push({name: 'quote_id', value: quote_id});
+            qparams.push({name: 'edit_mode', value: 1});
+            var qurl = '/leadquote/quoteedit';
+            $.post(qurl, qparams, function (qresponse){
+                if (qresponse.errors=='') {
+                    $("#loader").hide();
+                    $(".leadblockleft").hide();
+                    $(".leadblockright").hide();
+                    $(".lead-quotes").hide();
+                    // Hide Save button and Proof Request
+                    $(".leadfooterleft").css('opacity','0.1');
+                    $(".leadfooterright").css('opacity','0.1');
+                    $(".btn-newproofreq").unbind('click');
+                    $(".duplicatelead").unbind('click');
+                    $(".lead-savebtn").unbind('click');
+                    $(".quote_details_view").show();
+                    $(".quotecontentarea").empty().html(qresponse.data.quotecontent);
+                    new SimpleBar(document.getElementById('quoteitemtabledataarea'), { autoHide: false });
+                    new SimpleBar(document.getElementById('quoteshippingcostarea'), { autoHide: false });
+                    init_leadquotes_content();
+                } else {
+                    $("#loader").hide();
+                    show_error(qresponse);
+                }
+            },'json');
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
+
+function restore_lead_view(lead_id) {
+    var url="/leadmanagement/edit_lead";
+    $.post(url, {'lead_id':lead_id}, function(response){
         if (response.errors=='') {
             $("#leadformModalLabel").empty().html(response.data.title);
             $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
             $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
-            $(document.body).addClass('modal-open');
-            init_lead_cloneemail();
+            // init_lead_cloneemail();
+            init_leadpopupcontent();
+            init_quoteformcontent();
             init_leadpopupedit();
-        } else {
-            show_error(response);
-        }
-    }, 'json')
-}
-
-
-function lead_itemchange(item_id) {
-    var url=mainurl+"/lead_itemchange"
-    $.post(url, {'item_id':item_id}, function(response){
-        if (response.errors=='') {
-            if (response.data.other==1) {
-                $("div.item_otheritemarea").show();
-                $("div.item_otheritem_label").empty().html(response.data.other_label);
-                $("div.lead_history").removeClass('expandhistory');
-            } else {
-                $("div.item_otheritemarea").hide();
-                $("textarea#other_item_name").val('');
-                $("div.lead_history").addClass('expandhistory');
+            if (parseInt($("#leadmapuse").val())==1) {
+                initCustomerAddressAutocomplete();
             }
+            $("#loader").hide();
+            console.log('Lead '+lead_id+' restored');
         } else {
             show_error(response);
         }
     }, 'json');
 }
-
-function duplicatelead() {
-   // var lead_id=$("input#lead_id").val();
-   var dat=$("form#leadeditform").serializeArray();
-    dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
-    dat.push({name:'session_id', value: $("#session").val()});
-    dat.push({name: 'session_attach', value: $("#session_attach").val()});
-    dat.push({name: 'lead_type', value: $("#lead_type").val()});
-   var lead_number=$("div.lead_popup_number").text();
-   if (confirm("Are you sure you want to duplicate "+lead_number+" ?")==true) {
-       var url=mainurl+"/dublicatelead";
-       $.post(url, dat, function(response){
-            if (response.errors=='') {
-                // $("#pageModal").modal('hide');
-                initLeaddataPagination();
-                $("#leadformModalLabel").empty().html(response.data.title);
-                $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
-                $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
-                init_lead_cloneemail();
-                init_leadpopupedit();
-            } else {
-                show_error(response);
-            }
-       }, 'json');
-   }
-}
-
-function save_lead() {
-   var option=$("input[type=checkbox]").filter(":first").prop('disabled');
-   $("input[type=checkbox]").attr('disabled',false);
-   var dat=$("form#leadeditform").serializeArray();
-    dat.push({name:'lead_item_id', value: $("select#lead_item").val()});
-    dat.push({name:'session_id', value: $("#session").val()});
-    dat.push({name: 'session_attach', value: $("#session_attach").val()});
-    dat.push({name: 'lead_type', value: $("#lead_type").val()});
-   var url=mainurl+"/save_lead";
-   $.post(url, dat, function(response){
-       if (response.errors=='') {
-           initLeaddataPagination();
-           initProofPagination();
-           $("#loader").hide();
-           $("#leadformModal").modal('hide');
-           $('.modal-backdrop').hide();
-       } else {
-           if (option==true) {
-                $("input[type=checkbox]").attr('disabled',true);
-           }
-           $("#loader").hide();
-           show_error(response);
-       }
-   }, 'json');
-}
-
-function init_lead_cloneemail() {
-
-    var copyTextareaBtn = document.querySelector('.lead_popup_mailclone');
-
-    copyTextareaBtn.addEventListener('click', function(event) {
-        var copyTextarea = document.querySelector('.js-copytextarea');
-        copyTextarea.focus();
-        copyTextarea.select();
-
-        try {
-            var successful = document.execCommand('copy');
-            var msg = successful ? 'successful' : 'unsuccessful';
-            // alert('Email address copied to clipboard');
-        } catch (err) {
-            console.log('Oops, unable to copy');
-        }
-    });
-
-}
-

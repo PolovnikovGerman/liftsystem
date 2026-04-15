@@ -1362,7 +1362,7 @@ span.taxemptyview {
 .billing_content2{
     float: right;
     height: 6px;
-    width: 180px;
+    width: 192px;
     margin-top: 18px;
 }
 .billing_content2_bl1 {
@@ -2153,7 +2153,7 @@ input.artrepeat {
 }
 .block_8_text {
     text-align: center;
-    width: 135px;
+    width: 147px;
 }
 .block_8_text1 {
     float: left;
@@ -2172,7 +2172,7 @@ input.artrepeat {
     float: right;
     font-size: 17px;
     text-align: right;
-    width: 85px;
+    width: 97px;
 }
 .block_9 {
     background-image: url("/img/leadorder/bacgr_10.png");
@@ -2510,7 +2510,7 @@ input.artrepeat {
 }
 .totalduedataviewarea {
     float: left;
-    width: 155px;
+    width: 160px;
     margin-top: 6px;
 }
 /* System Switcher */

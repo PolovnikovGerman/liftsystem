@@ -68,9 +68,11 @@ class Leads extends My_Controller {
         $newcustomforms = $newwebquotes = $newwebquest = 0;
         foreach ($menu as $row) {
             if ($row['item_link'] == '#leadsview') {
-                $head['styles'][]=array('style'=>'/css/leads/leadsview_new.css');
-                $head['scripts'][]=array('src'=>'/js/leads/leadsview_new.js');
+                $head['styles'][]=array('style'=>'/css/leads/leadsview_rebrand.css');
+                $head['scripts'][]=array('src'=>'/js/leads/leadsview_rebrand.js');
                 // $head['scripts'][] = array('src' => '/js/adminpage/jquery.searchabledropdown-1.0.8.min.js');
+                $head['styles'][] = array('style' => 'https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css');
+                $head['scripts'][] = array('src' => 'https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js');
                 $content_options['leadsview'] = $this->_prepare_leadsview($brand); // $brand, $top_menu
                 if (!empty($this->config->item('google_map_key'))) {
                     $gmaps = 1;
@@ -146,6 +148,7 @@ class Leads extends My_Controller {
         $head['scripts'][] = array('src' => '/js/leads/lead_popup.js');
         if ($gmaps==1) {
             $head['scripts'][] = array('src' => '/js/leads/lead_address.js');
+            $head['scripts'][] = array('src' => '/js/leads/leadpopup_address.js');
         }
         // Lead Quote
         $head['styles'][] = array('style' => '/css/leads/leadquote.css');
@@ -176,7 +179,10 @@ class Leads extends My_Controller {
         if ($gmaps==1) {
             $head['scripts'][] = array('src' => '/js/leads/order_address.js');
         }
-
+        // Interests Popups
+        $head['styles'][] = ['style' => '/css/leads/interest_modal.css'];
+        $head['styles'][] = ['style' => '/css/leads/interest_popup.css'];
+        $head['scripts'][] = ['src' => '/js/leads/interest_popup.js'];
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -236,8 +242,9 @@ class Leads extends My_Controller {
                 $sort = ifset($postdata,'sorttime',1);
                 $this->load->model('leads_model');
                 $leaddat=$this->leads_model->get_leads($options,$sort,$limit,$offset);
+                $mdata['cntrec'] = count($leaddat);
                 if (count($leaddat)==0) {
-                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view',[],TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/leads_emptydata_view',[],TRUE);
                 } else {
                     $options=array(
                         'leads'=>$leaddat,
@@ -275,8 +282,9 @@ class Leads extends My_Controller {
                 $sort = ifset($postdata,'sorttime',1);
                 $this->load->model('leads_model');
                 $leaddat=$this->leads_model->get_priority_leads($options,$sort);
+                $mdata['cntrec'] = count($leaddat);
                 if (count($leaddat)==0) {
-                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view',[],TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/leads_emptydata_view',[],TRUE);
                 } else {
                     $options=array(
                         'leads'=>$leaddat,
@@ -352,15 +360,18 @@ class Leads extends My_Controller {
             if (!empty($brand)) {
                 $error = '';
                 // $sort = ifset($postdata,'sorttime',1);
-                $orders = [];
+                $userrepl = ifset($postdata, 'order_repl',0);
+                $this->load->model('orders_model');
+                $orders = $this->orders_model->get_orders_missinfo($userrepl, $brand);
+                $mdata['cntrec'] = count($orders);
                 if (count($orders)==0) {
-                    $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/leads_emptydata_view', [], TRUE);
                 } else {
                     $options=array(
-                        'leads'=>$orders,
+                        'orders' => $orders,
                         'brand' => $brand,
                     );
-                    $mdata['content']=$this->load->view('leadsview/leads_data_view',$options, TRUE);
+                    $mdata['content']=$this->load->view('leadsview/ordermissinfo_data_view',$options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -829,16 +840,33 @@ class Leads extends My_Controller {
     public function quote_details() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
-            $quote_id=$this->input->post('quote_id');
-            /* Get Data */
-            $this->load->model('quotes_model');
-            $res = $this->quotes_model->get_quote_dat($quote_id);
-            $error = $res['msg'];
-            if ($res['result']==$this->success_result) {
-                $error = '';
-                $data = $res['data'];
-                $mdata['content']=  $this->load->view('leads/quote_details_view',$data,TRUE);
+            $error='Empty Quote Parameter';
+            $postdata = $this->input->post();
+            $quote_id = ifset($postdata,'quote_id', 0);
+            if (!empty($quote_id)) {
+                /* Get Data */
+                $this->load->model('quotes_model');
+                $res = $this->quotes_model->get_quote_dat($quote_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $data = $res['data'];
+                    // $mdata['content']=  $this->load->view('leads/quote_details_view',$data,TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/webquote_details_view',['data' => $data],TRUE);
+                    if (empty($data['leademail_id'])) {
+                        $this->load->model('leads_model');
+                        $leadoptions=array(
+                            'orderby'=>'lead_number',
+                            'direction'=>'desc',
+                            'brand' => $data['brand'],
+                        );
+                        $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                        $leadlist = $this->leads_model->prepare_assign_list($leaddat);
+                        $mdata['footer'] = $this->load->view('leadsview/webquote_footer_view',['leads' => $leadlist, 'brand'=> $data['brand']],TRUE);
+                    } else {
+                        $mdata['footer'] = $this->load->view('leadsview/assigned_footer_view', $data, TRUE);
+                    }
+                }
             }
             $this->ajaxResponse($mdata,$error);
         }
@@ -975,16 +1003,25 @@ class Leads extends My_Controller {
                     }
                 } else {
                     $error='This Request Related with Lead. Please, reload page';
-                    $email_id=$this->input->post('mail_id');
-                    $leademail_id=$this->input->post('leademail_id');
-                    $type=$this->input->post('type');
+                    $email_id = ifset($postdata,'mail_id',0);
+                    $leademail_id = ifset($postdata, 'leademail_id',0);
+                    $type = ifset($postdata, 'type','');
+                    $brand = ifset($postdata, 'brand','ALL');
                     $chkrel=$this->leads_model->check_leadrelation($email_id);
                     if ($chkrel==0) {
+                        $new = 0;
                         switch ($type) {
                             case 'Question':
                                 $this->load->model('questions_model');
                                 $maildat = $this->questions_model->get_quest_data($email_id);
                                 $res = $this->leads_model->create_leadquest($maildat['data'], $leademail_id, $this->USR_ID);
+                                $quuestoptions = [
+                                    'brand' => $brand,
+                                    'assign' => 1,
+                                    'hideincl' => 1,
+                                    'newquest' => 1,
+                                ];
+                                $new = $this->questions_model->get_count_questions($quuestoptions);
                                 break;
                             case 'Quote':
                                 $this->load->model('quotes_model');
@@ -993,6 +1030,13 @@ class Leads extends My_Controller {
                                 if ($maildat['result']==$this->success_result) {
                                     $res = $this->leads_model->create_leadquote($maildat['data'], $leademail_id, $this->USR_ID);
                                 }
+                                $quoteoptions = [
+                                    'brand' => $brand,
+                                    'assign' => 1,
+                                    'hideincl' => 1,
+                                    'newquotes' => 1,
+                                ];
+                                $new = $this->quotes_model->get_count_quotes($quoteoptions);
                                 break;
                             case 'Proof';
                                 $this->load->model('artproof_model');
@@ -1006,6 +1050,7 @@ class Leads extends My_Controller {
                         if ($res['result'] != $this->error_result) {
                             $error = '';
                             $mdata['leadid'] = $res['result'];
+                            $mdata['totalnew'] = $new;
                         }
                     }
                 }
@@ -1153,7 +1198,21 @@ class Leads extends My_Controller {
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $quest=$res['data'];
-                $mdata['content']=$this->load->view('leads/questions_details_view',$quest,TRUE);
+//                $mdata['content']=$this->load->view('leads/questions_details_view',$quest,TRUE);
+                $mdata['content'] = $this->load->view('leadsview/questions_details_view', ['data' => $quest], TRUE);
+                if (empty($quest['leademail_id'])) {
+                    $leadoptions=array(
+                        'orderby'=>'lead_number',
+                        'direction'=>'desc',
+                        'brand' => $quest['brand'],
+                    );
+                    $this->load->model('leads_model');
+                    $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                    $leadlist = $this->leads_model->prepare_assign_list($leaddat);
+                    $mdata['footer'] = $this->load->view('leadsview/questions_footer_view', ['leads' => $leadlist, 'brand'=>$quest['brand']], TRUE);
+                } else {
+                    $mdata['footer'] = $this->load->view('leadsview/assigned_footer_view', $quest, TRUE);
+                }
                 $error = '';
             }
             $this->ajaxResponse($mdata, $error);
@@ -1223,16 +1282,16 @@ class Leads extends My_Controller {
     public function change_leadrelation() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $lead_id=$this->input->post('lead_id');
             if (!$lead_id) {
                 $error='Unknown Lead';
             } else {
                 $this->load->model('leads_model');
-                $leaddata=$this->leads_model->get_lead($lead_id);
-                if (!isset($leaddata['lead_id'])) {
-                    $error='Lead not found';
-                } else {
+                $leadsrc=$this->leads_model->get_lead($lead_id);
+                $error = $leadsrc['msg'];
+                if ($leadsrc['result']==$this->success_result) {
+                    $error = '';
+                    $leaddata = $leadsrc['lead'];
                     $mdata['lead_date']=($leaddata['lead_date']==0 ? '' : 'Date: '.date('m/d/y',$leaddata['lead_date']));
                     $mdata['lead_customer']='Name: '.$leaddata['lead_customer'];
                     $mdata['lead_mail']='Email: '.$leaddata['lead_mail'];
@@ -1245,28 +1304,54 @@ class Leads extends My_Controller {
     public function savequeststatus() {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
+            $error='Message Not Found';
             $quest=$this->input->post();
-            /* Get data about question */
-            $this->load->model('leads_model');
-            $res=$this->leads_model->save_leadrelation($quest);
-            $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
-                $this->load->model('questions_model');
-                $resquest=$this->questions_model->get_quest_data($quest['mail_id']);
-                $error = $resquest['msg'];
-                if ($resquest['result']==$this->success_result) {
-                    $error = '';
-                    $data = $resquest['data'];
-                    $mdata['type']=$data['email_type'];
+            $email_id = $quest['mail_id'];
+            $this->load->model('email_model');
+            $maildat = $this->email_model->get_emaildata($email_id);
+            if (ifset($maildat,'email_id')>0) {
+                $mail_type = $maildat['email_subtype'];
+                /* Get data about question */
+                $this->load->model('leads_model');
+                $res=$this->leads_model->save_leadrelation($quest);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    if ($mail_type=='Question') {
+                        $this->load->model('questions_model');
+                        $resquest=$this->questions_model->get_quest_data($quest['mail_id']);
+                        $error = $resquest['msg'];
+                        if ($resquest['result']==$this->success_result) {
+                            $error = '';
+                            $data = $resquest['data'];
+                            $mdata['type'] = $mail_type;
+                            $quuestoptions = [
+                                'brand' => $data['brand'],
+                                'assign' => 1,
+                                'hideincl' => 1,
+                                'newquest' => 1,
+                            ];
+                            $mdata['totalnew'] = $this->questions_model->get_count_questions($quuestoptions);
+                        }
+                    } elseif ($mail_type=='Quote') {
+                        $this->load->model('quotes_model');
+                        $resquest=$this->quotes_model->get_quote_dat($quest['mail_id']);
+                        $error = $resquest['msg'];
+                        if ($resquest['result']==$this->success_result) {
+                            $error = '';
+                            $data = $resquest['data'];
+                            $mdata['type'] = $mail_type;
+                            $quoteoptiions = [
+                                'brand' => $data['brand'],
+                                'assign' => 1,
+                                'hideincl' => 1,
+                                'newquotes' => 1,
+                            ];
+                            $mdata['totalnew'] = $this->quotes_model->get_count_quotes($quoteoptiions);
+                        }
+                    } elseif ($mail_type=='Art_Submit') {
+
+                    }
                 }
-                // Recalculate Totals New
-//                $mdata['total_proof']=$this->mproofs->get_count_proofs(array('assign'=>1));
-//                $mdata['total_quote']=$this->mquotes->get_count_quotes(array('assign'=>1));
-//                $mdata['total_quest']=$this->mquests->get_count_questions(array('assign'=>1));
-//                $mdata['sumquote']=$this->mquotes->get_todays();
-//                $mdata['sumproofs']=$this->mproofs->get_todays();
-//                $mdata['sumquest']=$this->mquests->get_todays();
 
             }
             $this->ajaxResponse($mdata, $error);
@@ -1330,11 +1415,11 @@ class Leads extends My_Controller {
             $data = $this->customform_model->get_customform_data($postdata);
             $mdata['totals'] = count($data);
             $event = 'hover'; // click
-            $expand = 0;
+            $mdata['expand'] = count($data) >22 ? 1 : 0;
             if (count($data)==0) {
                 $mdata['content'] = $this->load->view('customsbforms/content_empty_view',[],TRUE);
             } else {
-                $mdata['content'] = $this->load->view('customsbforms/content_data_view',['data' => $data, 'event' => $event, 'expand' => $expand], TRUE);
+                $mdata['content'] = $this->load->view('customsbforms/content_data_view',['data' => $data, 'event' => $event, ], TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -1368,25 +1453,54 @@ class Leads extends My_Controller {
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';
+                    $customform = $res['data'];
                     $attachm_view = '';
                     if ($res['attach'] > 0) {
                         $attachm_view = $this->load->view('customsbforms/details_attached_view',['attachs' => $res['attach']], TRUE);
                     }
                     $options = [
-                        'data' => $res['data'],
+                        'data' => $customform,
                         'attach' => $attachm_view,
                     ];
-                    // Build Select
-                    $leadoptions=array(
-                        'orderby'=>'lead_number',
-                        'direction'=>'desc',
-                        'brand' => $res['data']['brand'],
-                    );
-                    $leaddat=$this->leads_model->get_lead_list($leadoptions);
-                    $leadlist = $this->leads_model->prepare_assign_list($leaddat);
-                    $mdata['content'] = $this->load->view('customsbforms/details_view', $options, TRUE);
-                    $mdata['footer'] = $this->load->view('customsbforms/footer_view', ['custom_quote_id' => $postdata['form_id'], 'leads' => $leadlist], TRUE);
+                    if (empty($customform['lead_id'])) {
+                        // Build Select
+                        $leadoptions=array(
+                            'orderby'=>'lead_number',
+                            'direction'=>'desc',
+                            'brand' => $customform['brand'],
+                        );
+                        $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                        $leadlist = $this->leads_model->prepare_assign_list($leaddat);
+                        $footer_options = [
+                            'custom_quote_id' => $postdata['form_id'],
+                            'leads' => $leadlist,
+                            'brand'=>$customform['brand']
+                        ];
+                        $mdata['footer'] = $this->load->view('leadsview/customsbforms_footer_view', $footer_options, TRUE);
+                    } else {
+                        $mdata['footer'] = $this->load->view('leadsview/assigned_footer_view', $customform, TRUE);
+                    }
+                    // $mdata['content'] = $this->load->view('customsbforms/details_view', $options, TRUE);
+                    // $mdata['footer'] = $this->load->view('customsbforms/footer_view', ['custom_quote_id' => $postdata['form_id'], 'leads' => $leadlist], TRUE);
+                    $mdata['content'] = $this->load->view('leadsview/customsbforms_details_view', $options, TRUE);
                 }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customform_update()
+    {
+        if ($this->isAjax()) {
+            $postdata = $this->input->post();
+            $mdata = [];
+            $error = 'Empty Custom Form';
+            $custom_quote_id = ifset($postdata, 'custom_quote_id',0);
+            if (!empty($custom_quote_id)) {
+                $this->load->model('customform_model');
+                $this->customform_model->update_customformdetails($postdata, $custom_quote_id);
+                $error = '';
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -1776,12 +1890,11 @@ class Leads extends My_Controller {
         $this->load->model('leads_model');
         $active = 0;
         $ldat['replicas']=$this->user_model->get_user_leadreplicas($active);
-        $options=array(
-            // 'lead_type'=>1,
+        $options = [
             'usrrepl'=>  $this->USR_ID,
             'brand' => $brand,
             'showclosed' => 0,
-        );
+        ];
         $ldat['totalrec']=$this->leads_model->get_total_leads($options);
 
         $ldat['perpage'] = $this->config->item('leads_perpage');
@@ -1791,7 +1904,10 @@ class Leads extends My_Controller {
         $ldat['user_role'] = $this->USR_ROLE;
         $user_dat=$this->user_model->get_user_data($this->USR_ID);
         $ldat['user_name']=($user_dat['user_leadname']=='' ? $this->USER_NAME : $user_dat['user_leadname']);
-        $content=$this->load->view('leadsview/page_view',$ldat,TRUE);
+        $curdate = date('Y-m-d');
+        $new_timestamp = strtotime($curdate . ' -1 year');
+        $ldat['month'] = date('Y-m', $new_timestamp);
+        $content=$this->load->view('leadsview/page_new_view',$ldat,TRUE);
         return $content;
     }
 
@@ -2068,6 +2184,207 @@ class Leads extends My_Controller {
                 $res = $this->customform_model->get_customform_monthchart($brand);
                 $mdata['data'] = $res['data'];
                 $mdata['labels'] = $res['labels'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customform_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
+            $this->load->model('customform_model');
+            $data = $this->customform_model->get_customform_interest($brand, $showall);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_customform_view',['forms' => $data],TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function webquest_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
+            $this->load->model('questions_model');
+            $data = $this->questions_model->get_webquest_interest($brand, $showall);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_webquest_view',['quests' => $data],TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function webquotes_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
+            $this->load->model('quotes_model');
+            $data = $this->quotes_model->get_webquotes_interest($brand, $showall);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_webquotes_view',['quotes' => $data],TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function proofrequest_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
+            $this->load->model('artproof_model');
+            $data = $this->artproof_model->get_proofrequest_interest($brand, $showall);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_proofrequest_view',['proofs' => $data],TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    public function reminder_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Repeat Remind Date Empty';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $customorders = ifset($postdata, 'customorders', 0);
+            $orderrich = ifset($postdata, 'orderrich', 0);
+            $date = ifset($postdata, 'date', '');
+            if (!empty($date)) {
+                $error = '';
+                $this->load->model('orders_model');
+                $data = $this->orders_model->get_reminders($date, $customorders, $orderrich, $brand);
+                $mdata['cntrec'] = count($data);
+                if ($mdata['cntrec']==0) {
+                    $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+                } else {
+                    $years = [];
+                    $curyear = intval(date('Y'));
+                    for ($i=1; $i <=12; $i++) {
+                        $years[] = [
+                            'key' => $curyear-$i,
+                            'value' => $curyear-$i,
+                        ];
+                    }
+                    $months = [];
+                    for ($i=1; $i <=12; $i++) {
+                        $months[] = [
+                            'key' => str_pad($i, 2, '0', STR_PAD_LEFT),
+                            'value' => date('F', strtotime($curyear.'-'.$i.'-01')),
+                        ];
+                    }
+                    $start_date = strtotime($date.'-01');
+                    $datesarray = explode('-', $date);
+                    $month = $datesarray[1];
+                    $year = $datesarray[0];
+                    $options = [
+                        'orders' => $data,
+                        'date' => date('F, Y', $start_date),
+                        'months'=>$months,
+                        'years' => $years,
+                        'monthdate' => $month,
+                        'yeardate' => $year,
+                    ];
+                    $mdata['content'] = $this->load->view('leadsview/interest_reminder_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function hidereminder()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Repeat Remind Order Not Found';
+            $postdata = $this->input->post();
+            $order_id = ifset($postdata, 'order_id', 0);
+            if (!empty($order_id)) {
+                $this->load->model('orders_model');
+                $res = $this->orders_model->hide_reminder($order_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['hidereminder'] = $res['hidereminder'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function revertassignlead()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty Assigned Data';
+            $postdata = $this->input->post();
+            $leadmail = ifset($postdata,'leadmail',0);
+            $entity = ifset($postdata,'entity','');
+            if (!empty($leadmail) && !empty($entity)) {
+                $this->load->model('leads_model');
+                $res = $this->leads_model->revertassignlead($leadmail);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['entityid'] = $res['entityid'];
+                    $leadoptions=array(
+                        'orderby'=>'lead_number',
+                        'direction'=>'desc',
+                        'brand' => $res['brand'],
+                    );
+                    $leaddat=$this->leads_model->get_lead_list($leadoptions);
+                    $leadlist = $this->leads_model->prepare_assign_list($leaddat);
+                    if ($entity=='customform') {
+                        $footer_options = [
+                            'custom_quote_id' => $res['entityid'],
+                            'leads' => $leadlist,
+                            'brand'=>$res['brand']
+                        ];
+                        $mdata['content'] = $this->load->view('leadsview/customsbforms_footer_view', $footer_options, TRUE);
+                    } elseif ($entity=='quote') {
+                        $mdata['content'] = $this->load->view('leadsview/webquote_footer_view',['leads' => $leadlist, 'brand'=> $res['brand']],TRUE);
+                    } elseif ($entity=='question') {
+                        $mdata['content'] = $this->load->view('leadsview/questions_footer_view', ['leads' => $leadlist, 'brand'=>$res['brand']], TRUE);
+                    }
+                }
             }
             $this->ajaxResponse($mdata, $error);
         }

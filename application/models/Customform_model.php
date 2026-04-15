@@ -83,7 +83,11 @@ class Customform_model extends MY_Model
             $dat['numpp'] = $dat['quote_number'];
             if (!empty($dat['lead_id'])) {
                 $ldat = $this->leads_model->get_lead($dat['lead_id']);
-                $dat['lead_number']=ifset($ldat,'lead_number','');
+                if ($ldat['result']==$this->success_result) {
+                    $lead = $ldat['lead'];
+                    $dat['lead_number']=ifset($lead,'lead_number','');
+                }
+
             }
             if (empty($dat['ship_date'])) {
                 $dat['event_date'] = '';
@@ -107,15 +111,17 @@ class Customform_model extends MY_Model
         if (ifset($data,'custom_quote_id',0)==$custom_quote_id) {
             $out['result'] = $this->success_result;
             if (empty($data['lead_id'])) {
-                $data['lead_date'] = $data['lead_customer'] = $data['lead_mail'] = '';
+                // $data['lead_date'] = $data['lead_customer'] = $data['lead_mail'] = '';
+                $data['lead_number'] = $lead_data = '';
             } else {
-                $this->db->select('lead_date, lead_customer, lead_mail');
+                $this->db->select('lead_date, lead_customer, lead_mail, lead_number');
                 $this->db->from('ts_leads');
                 $this->db->where('lead_id', $data['lead_id']);
                 $leaddat = $this->db->get()->row_array();
                 $data['lead_date'] = $leaddat['lead_date'];
-                $data['lead_customer'] = $leaddat['lead_customer'];
-                $data['lead_mail'] = $leaddat['lead_mail'];
+//                $data['lead_customer'] = $leaddat['lead_customer'];
+//                $data['lead_mail'] = $leaddat['lead_mail'];
+                $data['lead_number'] = $leaddat['lead_number'];
             }
             $out['data'] = $data;
             // Attachments
@@ -319,6 +325,39 @@ class Customform_model extends MY_Model
             $data[] = $result['cnt'];
         }
         return ['labels'=>$labels,'data'=>$data];
+    }
+
+    public function get_customform_interest($brand, $showall=1)
+    {
+        $this->db->select('q.*,le.lead_id');
+        $this->db->from('ts_custom_quotes q');
+        $this->db->join('ts_lead_emails le','le.custom_quote_id=q.custom_quote_id','left');
+        $this->db->where('le.leademail_id is null');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('q.brand', $brand);
+            } else {
+                $this->db->where_in('q.brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('q.active', 1);
+        if ($showall==0) {
+            $limitdate = strtotime('now - 90 days');
+            $this->db->where('unix_timestamp(q.date_add) >= ', $limitdate);
+        }
+        $this->db->order_by('q.custom_quote_id', 'desc');
+        $dats = $this->db->get()->result_array();
+        return $dats;
+    }
+
+    public function update_customformdetails($data, $custom_quote_id)
+    {
+        $fld = $data['fld'];
+        $newval = $data['newval'];
+        $this->db->where('custom_quote_id', $custom_quote_id);
+        $this->db->set($fld, $newval);
+        $this->db->update('ts_custom_quotes');
+        return true;
     }
 
 }

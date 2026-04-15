@@ -18,9 +18,10 @@ class Leadquote_model extends MY_Model
     private $NO_ART = '06_noart';
     private $NO_ART_TXT='Need Art';
     private $template = 'Lead Quote';
-    private $custom_print_price = 0.12;
-    private $custom_setup_price = 30;
-    private $custom_srsetup_price = 28;
+    public $custom_print_price = 0.16;
+    public $custom_srprint_price = 0.12;
+    public $custom_setup_price = 30;
+    public $custom_srsetup_price = 28;
     private $other_print_price = 0.20;
     private $other_setupsb_price = 30;
     private $other_setupsr_price = 28;
@@ -2760,11 +2761,11 @@ class Leadquote_model extends MY_Model
                 $fillrow = ($numpp % 2) == 0 ? 1 : 0;
                 $total = $color['item_qty'] * $color['item_price'];
                 $pdf->SetXY($startPageX, $yStart);
-                if ($numpp==1) {
+                // if ($numpp==1) {
                     $cellheight = 6;
-                } else {
-                    $cellheight = 4.5;
-                }
+//                } else {
+//                    $cellheight = 4.5;
+//                }
                 $precesion = 2;
                 $colorcell = $color['item_price']*1000;
                 if (substr($colorcell,-1,1)!='0') {
@@ -2840,7 +2841,7 @@ class Leadquote_model extends MY_Model
                 $yStart = 21;
             }
         }
-        if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
+        if (!empty($quote['mischrg_label1']) && !empty(floatval($quote['mischrg_value1']))) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], $cellheight, 'SB-misc1','LR',0,'L', $fillrow);
@@ -2857,7 +2858,7 @@ class Leadquote_model extends MY_Model
                 $yStart = 21;
             }
         }
-        if (!empty($quote['mischrg_label2']) && !empty($quote['mischrg_value2'])) {
+        if (!empty($quote['mischrg_label2']) && !empty(floatval($quote['mischrg_value2']))) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], $cellheight, 'SB-misc2','LR',0,'L', $fillrow);
@@ -2874,7 +2875,7 @@ class Leadquote_model extends MY_Model
                 $yStart = 21;
             }
         }
-        if (!empty($shipping)) {
+        if (!empty(floatval($shipping))) {
             $shippref = ' Shipping Charge';
             if (empty($shipping[0]['shipping_name'])) {
                 $shippref = 'Shipping Charge';
@@ -2895,7 +2896,7 @@ class Leadquote_model extends MY_Model
                 $yStart = 21;
             }
         }
-        if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
+        if (!empty($quote['discount_label']) && !empty(floatval($quote['discount_value']))) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], $cellheight, 'SB-disc1','LR',0,'L', $fillrow);
@@ -3310,6 +3311,7 @@ class Leadquote_model extends MY_Model
         $data['newappcreditlink']=0;
         $data['credit_applink']='';
         $data['is_shipping']=1;
+        $data['order_blank'] = $quote['quote_blank'];
         $data['shipping'] = floatval($quote['shipping_cost']);
         $data['showbilladdress']=1;
         $data['brand'] = $quote['brand'];
@@ -3328,6 +3330,7 @@ class Leadquote_model extends MY_Model
         $data['mischrg_label2'] = $quote['mischrg_label2'];
         $data['mischrg_val2'] = $quote['mischrg_value2'];
         $data['discount_label'] = $quote['discount_label'];
+        $data['discount_descript'] = $quote['discount_label'];
         $data['discount_val'] = $quote['discount_value'];
         $data['revenue'] = $quote['quote_total'];
         $data['tax'] = $quote['sales_tax'];
@@ -3546,6 +3549,7 @@ class Leadquote_model extends MY_Model
             $itemid++;
         }
         $data['order_qty'] = $totalitemqty;
+        $data['item_id'] = $item_id;
         // Shipping
         $quoterush = 0;
         if (!empty($quote['lead_time'])) {
@@ -3560,10 +3564,10 @@ class Leadquote_model extends MY_Model
         $this->load->model('shipping_model');
         $rush = [];
         if (!empty($item_id)) {
-            if ($quote['quote_blank']==0) {
-                $rush=$this->shipping_model->get_rushlist($item_id);
-            } else {
+            if ($quote['quote_blank'] && $item_id > 0) {
                 $rush=$this->shipping_model->get_rushlist_blank($item_id);
+            } else {
+                $rush=$this->shipping_model->get_rushlist($item_id);
             }
         }
         if ($quoterush!=0 && count($rush['rush']) > 0) {
@@ -3725,7 +3729,7 @@ class Leadquote_model extends MY_Model
         foreach ($artfld as $fld) {
             $art[$fld]='';
         }
-        $art['artwork_blank']=0;
+        $art['artwork_blank'] = $quote['quote_blank'];
         $art['artwork_rush'] =0;
         $art['customer_art'] =0;
         $art['customer_inv'] =0;
@@ -4244,7 +4248,7 @@ class Leadquote_model extends MY_Model
                     'item_color' => $quote_items[$idx]['items'][0]['item_color'],
                     'colors' => $quote_items[$idx]['items'][0]['colors'],
                 ];
-                if ($quote['brand'] == 'SR') {
+                if (!empty($quote_items[$idx]['inventory_item_id'])) {
                     $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quotesritem_color_choice', $coloropt, true);
                 } else {
                     $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quoteitem_color_choice', $coloropt, true);
@@ -4416,6 +4420,429 @@ class Leadquote_model extends MY_Model
             }
         }
         return $outcolor;
+    }
+
+    public function get_leadquotes_list($lead_id)
+    {
+        $quotes = [];
+        // Select Year data
+        $this->db->select('DATE_FORMAT(from_unixtime(quote_date),\'%Y\') as qyear, count(quote_id) as cnt');
+        $this->db->from('ts_quotes');
+        $this->db->where('lead_id', $lead_id);
+        $this->db->group_by('qyear')->order_by('qyear','desc');
+        $qyears = $this->db->get()->result_array();
+        if (count($qyears) > 0) {
+            $qrow = [
+                'rowtype' => 'total',
+                'year' => $qyears[0]['qyear'],
+                'total' => $qyears[0]['cnt'],
+            ];
+            $quotes[] = $qrow;
+            // Get All quotes
+            $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, sum(qc.item_qty) as item_qty');
+            $this->db->select('group_concat(distinct(qc.item_description)) as item_name');
+            $this->db->from('ts_quotes q');
+            $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
+            $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
+            $this->db->where('q.lead_id', $lead_id);
+            $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source');
+            $this->db->order_by('q.quote_date', 'desc');
+            $lists = $this->db->get()->result_array();
+            $yearlist = date('Y', $lists[0]['quote_date']);
+            foreach ($lists as $list) {
+                if (date('Y',$list['quote_date'])!==$yearlist) {
+                    $yearsearch = date('Y',$list['quote_date']);
+                    // Search Year total
+                    $found = 0;
+                    foreach ($qyears as $qyear) {
+                        if ($qyear['qyear']==$yearsearch) {
+                            $found = 1;
+                            $qrow = [
+                                'rowtype' => 'total',
+                                'year' => $qyear['qyear'],
+                                'total' => $qyear['cnt'],
+                            ];
+                            $quotes[] = $qrow;
+                        }
+                    }
+                    if ($found==1) {
+                        $yearlist = $yearsearch;
+                    }
+                }
+                $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $list['quote_id']);
+                $orddat = $this->db->get()->row_array();
+                $list['orders'] = $orddat['orders'];
+                $this->db->select('GROUP_CONCAT(qpd.num_colors) as impr');
+                $this->db->from('ts_quote_imprindetails qpd');
+                $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qpd.quote_item_id');
+                $this->db->where(['qpd.imprint_active' => 1, 'qi.quote_id' => $list['quote_id']]);
+                $printres = $this->db->get()->row_array();
+                if (empty($printres['impr'])) {
+                    $list['imprints'] = 'Blank';
+                } else {
+                    $list['imprints'] = str_replace('5','F',str_replace(',','+',$printres['impr']));
+                }
+                $list['rowtype'] = 'quote';
+                $quotes[] = $list;
+            }
+        }
+        return $quotes;
+    }
+
+    public function add_leadpopup_quote($quoteparams) {
+        $response = ['result' => $this->error_result, 'msg' => 'USER Not Found'];
+        $lead_data = $quoteparams['lead'];
+        $lead_address = $quoteparams['address'];
+        if (ifset($lead_address,'country_id','')=='') {
+            $lead_address['country_id'] = $this->config->item('default_country');
+        }
+        $lead_contacts = $quoteparams['contacts'];
+        $zipcode = $quoteparams['quotezip'];
+        if (!empty($zipcode)) {
+            if ($zipcode!=$lead_address['zip']) {
+                $lead_address['city'] = '';
+                $lead_address['state'] = '';
+                $lead_address['address1']='';
+                $lead_address['address2']='';
+                // Get new City, etc
+                $this->load->model('shipping_model');
+                $geodat = $this->shipping_model->get_zip_address($lead_address['country_id'], $zipcode);
+                if ($geodat['result']==$this->success_result) {
+                    $lead_address['city'] = $geodat['city'];
+                    $lead_address['state'] = $geodat['state'];
+                }
+            }
+        } else {
+            $zipcode = $lead_address['zip'];
+        }
+        $usr_id = $quoteparams['user_id'];
+        $locations = $quoteparams['locations'];
+        // Get new Quote #
+        $newnum = $this->get_newquote_number($lead_data['brand']);
+        $this->load->model('user_model');
+        $usrdat = $this->user_model->get_user_data($usr_id);
+        if (ifset($usrdat, 'user_id',0) > 0) {
+            $taxcalc = 0;
+            $item_subtotal = 0;
+            // Add a Quote
+            $this->db->set('lead_id', $lead_data['lead_id']);
+            $this->db->set('brand', $lead_data['brand']);
+            $this->db->set('quote_number', $newnum);
+            $this->db->set('quote_date', time());
+            $this->db->set('quote_template', $this->quotetemplates[0]);
+            if (!empty($quoteparams['discount_label']) && !empty($quoteparams['discount'])) {
+                $this->db->set('discount_label', $quoteparams['discount_label']);
+                $this->db->set('discount_value', $quoteparams['discount']);
+                $item_subtotal-=$quoteparams['discount'];
+            }
+            if (!empty($quoteparams['design_price'])) {
+                if ($quoteparams['designtype']=='NEW') {
+                    $this->db->set('mischrg_label1', $this->config->item('custom_mischrg_label'));
+                    $this->db->set('mischrg_value1', $quoteparams['design_price']);
+                    $item_subtotal+=$quoteparams['design_price'];
+                } else {
+                    $this->db->set('mischrg_label1', $this->config->item('custom_mischrgrepeat_label').' ('.$quoteparams['designnote'].')');
+                    $this->db->set('mischrg_value1', 0);
+                }
+            }
+            $this->db->set('shipping_country', $lead_address['country_id']);
+            $this->db->set('shipping_company', $lead_data['lead_company']);
+            $this->db->set('shipping_address1', $lead_address['address_line1']);
+            $this->db->set('shipping_address2', $lead_address['address_line2']);
+            $this->db->set('shipping_zip', $zipcode);
+            $this->db->set('shipping_city', $lead_address['city']);
+            $this->db->set('shipping_state', $lead_address['state']);
+            if ($lead_address['state']==$this->tax_state) {
+                $this->db->set('taxview', 1);
+                $taxcalc = 1;
+            }
+            $this->db->set('billing_country', $lead_address['country_id']);
+            $this->db->set('billing_company', $lead_data['lead_company']);
+            $this->db->set('billing_address1', $lead_address['address_line1']);
+            $this->db->set('billing_address2', $lead_address['address_line2']);
+            $this->db->set('billing_zip', $zipcode);
+            $this->db->set('billing_city', $lead_address['city']);
+            $this->db->set('billing_state', $lead_address['state']);
+            // $this->db->set('billingsame', 1);
+            if ($quoteparams['custom_item']==1) {
+                $quoteparams['repcontact_note'] = $this->config->item('custom_quote_note').$quoteparams['repcontact_note'];
+            }
+            $this->db->set('quote_repcontact', $quoteparams['repcontact_note']);
+            $this->db->set('quote_blank', count($locations)==0 ? 1 : 0);
+            $this->db->set('create_time', date('Y-m-d H:i:s'));
+            $this->db->set('create_user', $quoteparams['user_id']);
+            $this->db->set('update_user', $quoteparams['user_id']);
+            // Save
+            $this->db->insert('ts_quotes');
+            if ($this->db->insert_id()>0) {
+                $response['result'] = $this->success_result;
+                $quote_id = $this->db->insert_id();
+                $response['quote_id'] = $quote_id;
+                // Contacts
+                foreach ($lead_contacts as $contact) {
+                    if (!empty($contact['contact_name'])) {
+                        $this->db->where('quote_id', $quote_id);
+                        $this->db->set('shipping_contact', $contact['contact_name']);
+                        $this->db->set('billing_contact', $contact['contact_name']);
+                        $this->db->update('ts_quotes');
+                    }
+                }
+            }
+            // Add Item
+            $this->load->model('orders_model');
+            $this->load->model('leadorder_model');
+            if ($lead_data['lead_item_id']<0) {
+                $itemdata=$this->orders_model->get_newitemdat($lead_data['lead_item_id']);
+                $item_description=(empty($lead_data['other_item_name']) ? 'Custom Shaped Stress Balls' : $lead_data['other_item_name']);
+            } else {
+                $itemdata=$this->leadorder_model->_get_itemdata($lead_data['lead_item_id']);
+                $item_description=$itemdata['item_name'];
+            }
+            $colors=$itemdata['colors'];
+            $itmcolor='';
+            if ($itemdata['num_colors']>0) {
+                $itmcolor=$colors[0];
+            }
+
+            $this->db->set('quote_id', $quote_id);
+            $this->db->set('item_id', $lead_data['lead_item_id']);
+            $this->db->set('item_qty', $quoteparams['item_qty']);
+            $this->db->set('item_price', $quoteparams['item_price']);
+            $this->db->set('imprint_price', $quoteparams['print_price']);
+            if ($quoteparams['setuptype']=='NEW') {
+                $this->db->set('setup_price', $quoteparams['setup_price']);
+            } else {
+                $this->db->set('setup_price', 0); // $quoteparams['setup_price']
+            }
+            if ($lead_data['lead_item_id'] > 0) {
+                if (!empty($itemdata['item_weigth'])) {
+                    $this->db->set('item_weigth', $itemdata['item_weigth']);
+                }
+                if (!empty($itemdata['cartoon_qty'])) {
+                    $this->db->set('cartoon_qty', $itemdata['cartoon_qty']);
+                }
+                if (!empty($itemdata['cartoon_width'])) {
+                    $this->db->set('cartoon_width', $itemdata['cartoon_width']);
+                }
+                if (!empty($itemdata['cartoon_heigh'])) {
+                    $this->db->set('cartoon_heigh', $itemdata['cartoon_heigh']);
+                }
+                if (!empty($itemdata['cartoon_depth'])) {
+                    $this->db->set('cartoon_depth', $itemdata['cartoon_depth']);
+                }
+                $this->db->set('inventory_item_id', $itemdata['printshop_item_id']);
+            }
+            $this->db->insert('ts_quote_items');
+            if ($this->db->insert_id()>0) {
+                $quote_item_id = $this->db->insert_id();
+                // Insert item colors
+                $invcolor = '';
+                if ($lead_data['lead_item_id'] > 0 && $itemdata['printshop_item_id']) {
+                    $invcolor = $this->_inventory_color($itemdata['printshop_item_id'], $itmcolor);
+                }
+                $item_subtotal+=$quoteparams['item_qty']*$quoteparams['item_price'];
+                $this->db->set('quote_item_id', $quote_item_id);
+                $this->db->set('item_description', $item_description);
+                $this->db->set('item_color', $itmcolor);
+                $this->db->set('item_qty', $quoteparams['item_qty']);
+                $this->db->set('item_price', $quoteparams['item_price']);
+                if ($invcolor) {
+                    $this->db->set('inventory_color_id', $invcolor);
+                }
+                $this->db->insert('ts_quote_itemcolors');
+                if ($this->db->insert_id()) {
+                    $quote_itemcolor_id = $this->db->insert_id();
+                    $numloc = 1;
+                    foreach ($locations as $location) {
+                        $this->db->set('quote_item_id', $quote_item_id);
+                        $this->db->set('imprint_active', 1);
+                        $this->db->set('num_colors', $location['prints']);
+                        if ($location['prints']==1 || $location['prints']>4) {
+                            if ($location['location']==1) {
+                                $this->db->set('print_1',0);
+                            } else {
+                                $this->db->set('print_1', $quoteparams['print_price']);
+                            }
+                            if ($quoteparams['setuptype']=='NEW') {
+                                $this->db->set('setup_1', $quoteparams['setup_price']);
+                            } else {
+                                $this->db->set('setup_1', 0); // $quoteparams['setup_price']
+                            }
+                        }
+                        $this->db->set('print_2', $quoteparams['print_price']);
+                        $this->db->set('print_3', $quoteparams['print_price']);
+                        $this->db->set('print_4', $quoteparams['print_price']);
+                        if ($quoteparams['setuptype']=='NEW') {
+                            $this->db->set('setup_2', $quoteparams['setup_price']);
+                            $this->db->set('setup_3', $quoteparams['setup_price']);
+                            $this->db->set('setup_4', $quoteparams['setup_price']);
+                        } else {
+                            $this->db->set('setup_2', 0);
+                            $this->db->set('setup_3', 0);
+                            $this->db->set('setup_4', 0);
+                        }
+                        $this->db->set('imprint_type', $quoteparams['setuptype']);
+                        if ($quoteparams['setuptype']=='REPEAT') {
+                            $this->db->set('repeat_note', $quoteparams['setupnote']);
+                        }
+                        $this->db->insert('ts_quote_imprindetails');
+                        $numloc++;
+                    }
+                    $start = count($locations)+1;
+                    for ($i=$start; $i<13; $i++) {
+                        $this->db->set('quote_item_id', $quote_item_id);
+                        $this->db->set('imprint_active', 0);
+                        // $this->db->set('num_colors', 1);
+                        if ($i==1) {
+                            $this->db->set('print_1',0);
+                        } else {
+                            $this->db->set('print_1', $quoteparams['print_price']);
+                        }
+                        $this->db->set('print_2', $quoteparams['print_price']);
+                        $this->db->set('print_3', $quoteparams['print_price']);
+                        $this->db->set('print_4', $quoteparams['print_price']);
+                        // if ($quoteparams['setuptype']=='NEW') {
+                            $this->db->set('setup_1', $quoteparams['setup_price']);
+                            $this->db->set('setup_2', $quoteparams['setup_price']);
+                            $this->db->set('setup_3', $quoteparams['setup_price']);
+                            $this->db->set('setup_4', $quoteparams['setup_price']);
+//                        } else {
+//                            $this->db->set('setup_1', 0);
+//                            $this->db->set('setup_2', 0);
+//                            $this->db->set('setup_3', 0);
+//                            $this->db->set('setup_4', 0);
+//                        }
+//                         $this->db->set('imprint_type', $quoteparams['setuptype']);
+                        $this->db->insert('ts_quote_imprindetails');
+                    }
+                    // Add details
+                    $imprint_subtotal = 0;
+                    if (count($locations)==0) {
+                        $this->db->set('quote_item_id', $quote_item_id);
+                        $this->db->set('imprint_description','Blank');
+                        $this->db->set('imprint_qty', $quoteparams['item_qty']);
+                        $this->db->insert('ts_quote_imprints');
+                    } else {
+                        $imprrecs = $this->db->select('*')->from('ts_quote_imprindetails')->where(['quote_item_id'=>$quote_item_id, 'imprint_active' => 1])->get()->result_array();
+                        $numloc = 1;
+                        $setupcnt = 0;
+                        foreach ($imprrecs as $imprint) {
+                            $locatname = 'Loc '.$numloc;
+                            if ($imprint['num_colors']>4) {
+                                $descipt = $locatname.': Full Full Color Imprinting';
+                                $this->db->set('quote_item_id', $quote_item_id);
+                                $this->db->set('imprint_description', $descipt);
+                                $this->db->set('imprint_item', 1);
+                                $this->db->set('imprint_qty', $quoteparams['item_qty']);
+                                $this->db->set('imprint_price', $imprint['print_1']);
+                                $this->db->insert('ts_quote_imprints');
+                                $imprint_subtotal+=$quoteparams['item_qty']*$imprint['print_1'];
+                                $setupcnt++;
+                            } else {
+                                for ($j=1; $j<5; $j++) {
+                                    if ($imprint['num_colors']>=$j) {
+                                        $locid = date('jS', strtotime('2019-01-0'.$j));
+                                        $descipt = $locatname.': '.$locid.' Color Imprinting';
+                                        $this->db->set('quote_item_id', $quote_item_id);
+                                        $this->db->set('imprint_description', $descipt);
+                                        $this->db->set('imprint_item', 1);
+                                        $this->db->set('imprint_qty', $quoteparams['item_qty']);
+                                        $this->db->set('imprint_price', $imprint['print_'.$j]);
+                                        $this->db->insert('ts_quote_imprints');
+                                        $imprint_subtotal+=$quoteparams['item_qty']*$imprint['print_'.$j];
+                                        $setupcnt++;
+                                    }
+                                }
+                            }
+                            $numloc++;
+                        }
+                        // Add setup
+                        if ($quoteparams['setuptype']=='NEW') {
+                            $descipt = 'One Time Art Setup Charge';
+                        } else {
+                            $descipt = 'Repeat Setup Charge '.$quoteparams['setupnote'];
+                        }
+                        $this->db->set('quote_item_id', $quote_item_id);
+                        $this->db->set('imprint_description', $descipt);
+                        $this->db->set('imprint_item', 0);
+                        $this->db->set('imprint_qty', $setupcnt);
+                        if ($quoteparams['setuptype']=='NEW') {
+                            $this->db->set('imprint_price', $quoteparams['setup_price']);
+                            $imprint_subtotal+=$setupcnt*$quoteparams['setup_price'];
+                        } else {
+                            $this->db->set('imprint_price', 0);
+                        }
+                        $this->db->insert('ts_quote_imprints');
+                    }
+                    $item_subtotal+=$imprint_subtotal;
+                    // Update Quote body
+                    $this->db->where('quote_id', $quote_id);
+                    $this->db->set('items_subtotal', $item_subtotal);
+                    $this->db->set('imprint_subtotal', $imprint_subtotal);
+                    $this->db->update('ts_quotes');
+                    // Ship Calendar
+                    $this->load->model('calendars_model');
+                    if ($lead_data['lead_item_id'] > 0) {
+                        $termdat = $this->calendars_model->get_delivery_date($lead_data['lead_item_id'], $lead_data['brand']);
+                        $lead_calendar = json_encode($termdat);
+                        $rush_cost = 0; $rush_days = $rush_terms = '';
+                        foreach ($termdat as $row) {
+                            if ($row['current']==1) {
+                                $rush_cost = $row['price'];
+                                $rush_days = $row['date'];
+                                $rush_terms = $row['name'];
+                            }
+                        }
+                        $this->db->where('quote_id', $quote_id);
+                        $this->db->set('lead_time', $lead_calendar);
+                        $this->db->set('rush_terms', $rush_terms);
+                        $this->db->set('rush_days', $rush_days);
+                        $this->db->set('rush_cost', $rush_cost);
+                        $this->db->update('ts_quotes');
+                        $deliv_date = $rush_days;
+                    } else {
+                        $Date = date('Y-m-d');
+                        $start = strtotime($Date. ' + 1 days');
+                        $deliv_date = $this->calendars_model->get_business_date($start, 1, $this->config->item('custom_id'));
+                    }
+                    $qitems = $this->db->select('*')->from('ts_quote_items')->where('quote_id', $quote_id)->get()->result_array();
+                    $quote = $this->db->select('*')->from('ts_quotes')->where('quote_id', $quote_id)->get()->row_array();
+                    $this->load->model('shipping_model');
+                    $shipcost = 0;
+                    $shipres = $this->shipping_model->count_quoteshiprates($qitems, $quote, $deliv_date, $quote['brand']);
+                    if ($shipres['result']==$this->success_result) {
+                        $ships = $shipres['ships'];
+                        foreach ($ships as $ship) {
+                            $this->db->set('quote_id', $quote_id);
+                            $this->db->set('active', $ship['current']);
+                            $this->db->set('shipping_code', $ship['code']);
+                            $this->db->set('shipping_name', $ship['ServiceName']);
+                            $this->db->set('shipping_rate', $ship['Rate']);
+                            $this->db->set('shipping_date', $ship['DeliveryDate']);
+                            $this->db->insert('ts_quote_shippings');
+                            if ($ship['current']==1) {
+                                $shipcost = $ship['Rate'];
+                            }
+                        }
+                    }
+                    $tax = 0;
+                    if ($taxcalc==1) {
+//                        $tax = round(($quote['mischrg_value1']-$quote['discount_value']+$quote['rush_cost']+$quote['items_subtotal']+$quote['imprint_subtotal'])*($this->config->item('salesnewtax')/100),2);
+                        $tax = round(($quote['rush_cost']+$quote['items_subtotal'])*($this->config->item('salesnewtax')/100),2);
+                    }
+//                    $total = $quote['mischrg_value1']-$quote['discount_value']+$quote['rush_cost']+$quote['items_subtotal']+$quote['imprint_subtotal'] + $tax + $shipcost;
+                    $total = $quote['rush_cost']+$quote['items_subtotal'] + $tax + $shipcost;
+                    $this->db->where('quote_id', $quote_id);
+                    $this->db->set('sales_tax', $tax);
+                    $this->db->set('shipping_cost', $shipcost);
+                    $this->db->set('quote_total', $total);
+                    $this->db->update('ts_quotes');
+
+                }
+            }
+
+        }
+        return $response;
     }
 
 }

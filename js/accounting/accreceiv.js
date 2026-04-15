@@ -41,6 +41,8 @@ function init_accreceive_totals() {
             $(".accreceiv-totalpast").empty().html(response.data.total_past);
             $(".accreceiv-totalrefund").empty().html(response.data.total_refund);
             $(".accreceiv-content-right").empty().html(response.data.totals);
+            $(".accreceiv-totalapproved").empty().html(response.data.total_approved);
+            $(".accreceiv-totalnotapproved").empty().html(response.data.total_notapproved);
         } else {
             show_error(response);
         }
@@ -64,7 +66,13 @@ function init_accreceive_details() {
         if (response.errors=='') {
             // $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
             // $(".accreceiv-content-center").find("div.accreceiv-details").empty().html(response.data.refunddetails);
-            $(".accreceiv-details").empty().html(response.data.content);
+            // $(".accreceiv-details").empty().html(response.data.content);
+            $(".approvedowntablebody").empty().html(response.data.approved_content);
+            new SimpleBar(document.getElementById('approvedowntablebody'), { autoHide: false });
+            $(".notapprovedowntablebody").empty().html(response.data.notapproved_content);
+            new SimpleBar(document.getElementById('notapprovedowntablebody'), { autoHide: false });
+            $(".accreceiv-refunddetails-body").empty().html(response.data.refund_content);
+            new SimpleBar(document.getElementById('accreceiv-refunddetails-body'), { autoHide: false });
             leftmenu_alignment();
             init_accreceive_content();
         } else {
@@ -361,8 +369,10 @@ function edit_ownstatus(order) {
         if (response.errors=='') {
             $("#loader").show();
             $("#loaderimg").hide();
-            $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty().html(response.data.content);
-            $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").show();
+            // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty().html(response.data.content);
+            // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").show();
+            $(".accreceiv-owndetails-bodystatusedit").empty().html(response.data.content);
+            $(".accreceiv-owndetails-bodystatusedit").show();
             init_accstatus_edit(order);
         }
     },'json');
@@ -370,8 +380,10 @@ function edit_ownstatus(order) {
 
 function init_accstatus_edit(order) {
     $(".debtstatuscancel").unbind('click').click(function (){
-        $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
-        $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+        // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
+        // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+        $(".accreceiv-owndetails-bodystatusedit").empty();
+        $(".accreceiv-owndetails-bodystatusedit").hide();
         $("#loaderimg").show();
         $("#loader").hide();
     });
@@ -382,8 +394,10 @@ function init_accstatus_edit(order) {
         var url = '/accounting/debtstatus';
         $.post(url, params, function (response){
             if (response.errors=='') {
-                $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
-                $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+                // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").empty();
+                // $(".accreceiv-owndetails-bodystatusedit[data-order='"+order+"']").hide();
+                $(".accreceiv-owndetails-bodystatusedit").empty();
+                $(".accreceiv-owndetails-bodystatusedit").hide();
                 $("#loaderimg").show();
                 $("#loader").hide();
                 $(".accreceiv-owndetails-bodystatus[data-order='"+order+"']").empty().html(response.data.content);

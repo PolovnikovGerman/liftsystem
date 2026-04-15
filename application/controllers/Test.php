@@ -5106,4 +5106,91 @@ class Test extends CI_Controller
         echo 'File '.$filenorm.' ready'.PHP_EOL;
     }
 
+    public function add_leadcontacts()
+    {
+        $this->load->model('leads_model');
+        $this->leads_model->add_leadcontacts();
+    }
+
+    public function customitems_orders()
+    {
+        $this->load->model('test_model');
+        $orders = $this->test_model->custom_orders_table(2025);
+        // $this->load->config('uploader');
+        $filereport = $this->config->item('upload_path_preload').'custom_orders2025.xlsx';
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Custom orders 2025');
+        $sheet->setCellValue('A1', 'Order #');
+        $sheet->setCellValue('B1', 'Date');
+        $sheet->setCellValue('C1', 'Customer');
+        $sheet->setCellValue('D1', 'Item');
+        $sheet->setCellValue('E1', 'Quantity');
+        $sheet->setCellValue('F1', 'Revenue');
+        $sheet->setCellValue('G1', 'Ship cost');
+        $sheet->setCellValue('H1', 'PO 1 amnt');
+        $sheet->setCellValue('I1', 'PO 1 vendor');
+        $sheet->setCellValue('J1', 'PO 2 amnt');
+        $sheet->setCellValue('K1', 'PO 2 vendor');
+        $sheet->setCellValue('L1', 'PO 3 amnt');
+        $sheet->setCellValue('M1', 'PO 3 vendor');
+        $sheet->setCellValue('N1', 'Profit');
+        $nrow = 2;
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A'.$nrow, $order['order_num']);
+            $sheet->setCellValue('B'.$nrow, date('m/d/Y', $order['order_date']));
+            $sheet->setCellValue('C'.$nrow, $order['customer']);
+            $sheet->setCellValue('D'.$nrow, $order['itemname']);
+            $sheet->setCellValue('E'.$nrow, $order['order_qty']);
+            $sheet->setCellValue('F'.$nrow, $order['revenue']);
+            $sheet->setCellValue('G'.$nrow, $order['shipping']);
+            $sheet->setCellValue('H'.$nrow, $order['po1_amnt']);
+            $sheet->setCellValue('I'.$nrow, $order['po1_vendor']);
+            $sheet->setCellValue('J'.$nrow, $order['po2_amnt']);
+            $sheet->setCellValue('K'.$nrow, $order['po2_vendor']);
+            $sheet->setCellValue('L'.$nrow, $order['po3_amnt']);
+            $sheet->setCellValue('M'.$nrow, $order['po3_vendor']);
+            $sheet->setCellValue('N'.$nrow, $order['profit']);
+            $nrow++;
+        }
+        // Save
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filereport);    // download file
+        echo 'File '.$filereport.' ready'.PHP_EOL;
+    }
+
+    public function restore_leadquote()
+    {
+        $quotes = $this->db->select('*')->from('ts_quotes')->get()->result_array();
+        foreach ($quotes as $quote) {
+            $this->db->select('count(qpr.quote_imprint_id) as cnt, sum(qpr.imprint_price) as imprtotal');
+            $this->db->from('ts_quote_imprints qpr');
+            $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qpr.quote_item_id');
+            $this->db->where('qi.quote_id', $quote['quote_id']);
+            $imprdat = $this->db->get()->row_array();
+            $imprtotal = 0;
+            if ($imprdat['cnt'] > 0) {
+                $imprtotal = $imprdat['imprtotal'];
+            }
+            $this->db->select('count(qc.quote_item_id) as cnt, sum(qc.item_qty*qc.item_price) as item_total');
+            $this->db->from('ts_quote_itemcolors qc');
+            $this->db->join('ts_quote_items qi','qi.quote_item_id = qc.quote_item_id');
+            $this->db->where('qi.quote_id', $quote['quote_id']);
+            $itemdat = $this->db->get()->row_array();
+            if ($itemdat['cnt'] > 0) {
+                $item_subtotal = floatval($itemdat['item_total']);
+                echo 'Items calc '.$item_subtotal.PHP_EOL;
+                echo 'Imprints '.$imprtotal.' Misch1 '.$quote['mischrg_value1'].' Misch2 '.$quote['mischrg_value2'].' Discount '.$quote['discount_value'].PHP_EOL;
+                $item_subtotal+=$imprtotal+$quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value'];
+                echo 'New Calc '.$item_subtotal.PHP_EOL;
+                if ($item_subtotal!=$quote['items_subtotal']) {
+                    $this->db->where('quote_id', $quote['quote_id']);
+                    $this->db->set('items_subtotal', $item_subtotal);
+                    $this->db->set('imprint_subtotal', $imprtotal);
+                    $this->db->update('ts_quotes');
+                    echo 'Sub Total Updated for '.$quote['quote_number'].PHP_EOL;
+                }
+            }
+        }
+    }
 }

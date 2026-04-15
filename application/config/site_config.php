@@ -279,8 +279,20 @@ $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
 $config['default_country'] = 223;
 $config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');
 $config['srrepeat_cost'] = 12;
-$config['custom_quote_note'] = '4-5 Week Lead Time'.PHP_EOL.'Add\'l Print Locations: $0.12 ea & $30 setup'.PHP_EOL.PHP_EOL;
+$config['custom_quote_note'] = '4-5 Week Lead Time'.PHP_EOL.'Add\'l Print Locations: $0.16 ea & $30 setup'.PHP_EOL.PHP_EOL;
 $config['custom_mischrg_label'] = 'Custom Design Charge';
+$config['custom_mischrgrepeat_label'] = 'Existing Design';
 $config['custom_mischrg_value'] = 200;
 $config['custom_mischrg_srvalue'] = 160;
 $config['custom_itemprice'] = 3.00;
+$config['quote_customitem_price'] = array(
+    array('promo_price_id' => -1, 'item_qty' => 500, 'sale_price' => 3.80),
+    array('promo_price_id' => -2, 'item_qty' => 750, 'sale_price' => 3.45),
+    array('promo_price_id' => -3, 'item_qty' => 1000, 'sale_price' => 3.05),
+    array('promo_price_id' => -4, 'item_qty' => 2000, 'sale_price' => 2.78),
+    array('promo_price_id' => -5, 'item_qty' => 5000, 'sale_price' => 2.51),
+    array('promo_price_id' => -6, 'item_qty' => 10000, 'sale_price' => 2.35),
+);
+// Default shipping prices
+$config['custom_ship_price'] = 0.15;
+$config['regular_ship_price'] = 0.12;

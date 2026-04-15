@@ -112,7 +112,7 @@ Class Quotes_model extends My_Model {
         $res=$this->db->get()->row_array();
         if (isset($res['email_id'])) {
             $res['email_date']=date('m/d/Y',strtotime($res['email_date']));
-            $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
+            // $res['lead_date']=(intval($res['lead_date'])==0 ? '' : date('m/d/y',$res['lead_date']));
             $res['email_sendermaillnk']=($res['email_status']==0 ? '<a href="javascript:void(0);" onclick="replyquestmail(\''.$res['email_sendermail'].'\');return false;">'.$res['email_sendermail'].'</a>' : $res['email_sendermail']);
             $colorprint=get_json_param($res['email_other_info'], 'colorprint', 0);
             if ($colorprint==0) {
@@ -130,6 +130,24 @@ Class Quotes_model extends My_Model {
             $res['itemcost']=($res['itemcost']==0 ? '' : '$'.number_format($res['itemcost'],2,'.',','));
             $res['total']=get_json_param($res['email_other_info'], 'total', 0);
             $res['total']=($res['total']==0 ? '' : '$'.number_format($res['total'],2,'.',','));
+            $res['country_id'] = $res['city'] = $res['state'] = $res['country'] = '';
+            $this->load->model('shipping_model');
+            if (!empty($res['quote_country'])) {
+                $country = $this->shipping_model->get_country_bycode2($res['quote_country']);
+                $res['country_id'] = $country['country_id'];
+                if ($country['country_id']==$this->config->item('default_country')) {
+                    $res['country'] = $country['country_iso_code_3'];
+                } else {
+                    $res['country'] = $country['country_name'];
+                }
+                if (!empty($res['quote_postcode'])) {
+                    $adrdat = $this->shipping_model->get_zip_address($res['country_id'], $res['quote_postcode']);
+                    if ($adrdat['result']==$this->success_result) {
+                        $res['city'] = $adrdat['city'];
+                        $res['state'] = $adrdat['state'];
+                    }
+                }
+            }
             $out['result']=$this->success_result;
             $out['data'] = $res;
         }
@@ -194,6 +212,33 @@ Class Quotes_model extends My_Model {
         return $out;
     }
 
+    public function get_webquotes_interest($brand, $showall=1)
+    {
+        if ($showall==0) {
+            $curdate = date('Y-m-d');
+            // $new_timestamp = strtotime($curdate . ' -1 year');
+            $new_timestamp = strtotime($curdate . ' -90 days');
+        }
+        $this->db->select('e.*');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('e.email_subtype', $this->EMAIL_SUBTYPE);
+        $this->db->where('lem.email_id is null');
+        $this->db->where('e.email_include_lead',1);
+        if (isset($options['brand']) && $options['brand']!=='ALL') {
+            if ($options['brand']=='SR') {
+                $this->db->where('e.brand', $options['brand']);
+            } else {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            }
+        }
+        if ($showall==0) {
+            $this->db->where('unix_timestamp(e.email_date) >=', $new_timestamp);
+        }
+        $this->db->order_by('e.email_date','desc');
+        return $this->db->get()->result_array();
+    }
 
 }
 /* End of file quotes_model.php */
