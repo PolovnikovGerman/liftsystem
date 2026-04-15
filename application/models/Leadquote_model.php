@@ -2761,11 +2761,11 @@ class Leadquote_model extends MY_Model
                 $fillrow = ($numpp % 2) == 0 ? 1 : 0;
                 $total = $color['item_qty'] * $color['item_price'];
                 $pdf->SetXY($startPageX, $yStart);
-                if ($numpp==1) {
+                // if ($numpp==1) {
                     $cellheight = 6;
-                } else {
-                    $cellheight = 4.5;
-                }
+//                } else {
+//                    $cellheight = 4.5;
+//                }
                 $precesion = 2;
                 $colorcell = $color['item_price']*1000;
                 if (substr($colorcell,-1,1)!='0') {
@@ -2841,7 +2841,7 @@ class Leadquote_model extends MY_Model
                 $yStart = 21;
             }
         }
-        if (!empty($quote['mischrg_label1']) && !empty($quote['mischrg_value1'])) {
+        if (!empty($quote['mischrg_label1']) && !empty(floatval($quote['mischrg_value1']))) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], $cellheight, 'SB-misc1','LR',0,'L', $fillrow);
@@ -2858,7 +2858,7 @@ class Leadquote_model extends MY_Model
                 $yStart = 21;
             }
         }
-        if (!empty($quote['mischrg_label2']) && !empty($quote['mischrg_value2'])) {
+        if (!empty($quote['mischrg_label2']) && !empty(floatval($quote['mischrg_value2']))) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], $cellheight, 'SB-misc2','LR',0,'L', $fillrow);
@@ -2875,7 +2875,7 @@ class Leadquote_model extends MY_Model
                 $yStart = 21;
             }
         }
-        if (!empty($shipping)) {
+        if (!empty(floatval($shipping))) {
             $shippref = ' Shipping Charge';
             if (empty($shipping[0]['shipping_name'])) {
                 $shippref = 'Shipping Charge';
@@ -2896,7 +2896,7 @@ class Leadquote_model extends MY_Model
                 $yStart = 21;
             }
         }
-        if (!empty($quote['discount_label']) && !empty($quote['discount_value'])) {
+        if (!empty($quote['discount_label']) && !empty(floatval($quote['discount_value']))) {
             $pdf->SetXY($startPageX, $yStart);
             $fillrow=($numpp%2)==0 ? 1 : 0;
             $pdf->Cell($colWidth[0], $cellheight, 'SB-disc1','LR',0,'L', $fillrow);
