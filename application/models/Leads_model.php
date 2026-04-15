@@ -2896,6 +2896,7 @@ Class Leads_model extends MY_Model
                     }
                     $contacts[$idx]['contact_phone'] = $phonenum;
                     $out['contact_phone'] = $phonenum;
+                    $newval = $phonenum;
                 }
                 $contacts[$idx][$field] = $newval;
                 break;
