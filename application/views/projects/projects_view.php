@@ -47,6 +47,9 @@
         <div class="ts-button_project orderleadsview">
             <p>Orders & Leads Popup</p>
         </div>
+        <div class="ts-button_project orderleaddataview">
+            <p>Dual View (Order & Lead)</p>
+        </div>
     <?php else : ?>
         <div class="ts-button_project testorders">
             <a href="<?=$testorderlink?>" target="_blank">
