@@ -24,6 +24,31 @@
     margin-top: 7px;
     margin-bottom: 10px;
 }
+.ts-button_project {
+    width: 324px;
+    height: 130px;
+    margin-right: 20px;
+    border: 1px solid #000;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.ts-button_project:last-child {
+    margin-right: 0;
+}
+.ts-button_project a {
+    text-decoration: none;
+    color: unset;
+}
+.ts-button_project p {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 41px;
+    margin-bottom: 10px;
+}
+.ts-button_project.leadcustomview p {
+    margin-top: 28px;
+}
 .ts-button.lift p span {
     color: #000;
 }
