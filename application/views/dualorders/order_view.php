@@ -4,7 +4,7 @@
         <div class="ordernumber">
             <div class="ordernumber-title">ORDER</div>
             <div class="ordernumber-box">
-                <div class="ordernumber-one">21015</div>
+                <div class="ordernumber-one">#21015</div>
                 <div class="ordernumber-two">36624-MT</div>
             </div>
         </div>
