@@ -1316,14 +1316,14 @@ select.addnewquoteitem {
     line-height: 19px !important;
 }
 .quoteitemcolor_adddata {
-    width: 152px;
+    width: 64px;
     padding-left: 3px;
 }
 .quoteitemcolor_adddata span.addnewcolor {
     cursor: pointer;
 }
 .quoteitems_content_addqty {
-    width: 53px;
+    width: 42px; /* 53px; */
 }
 input.quoteitemadd_input {
     height: 19px;

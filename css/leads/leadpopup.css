@@ -348,7 +348,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .leadblockright {
     float: right !important;
-    width: 200px;
+    width: 197px; /* 200px; */
 }
 .lead-itemdescr {
     width: 283px;
@@ -1175,6 +1175,7 @@ input.discount-exp {
 .leadquotetabl-prints {
     /*width: 53px;*/
     width: 44px;
+    padding: 0 3px;
 }
 .leadquotetabl-descr {
     /*width: 190px;*/
