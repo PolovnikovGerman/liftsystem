@@ -123,7 +123,8 @@ class Projects extends MY_Controller
                 $mdata['content'] = $this->load->view('dualorders/leads_view', $viewoptions, true);
                 $mdata['modalwidth'] = $this->leadorderwidth;
             } elseif ($content=='orderleaddataview') {
-                $viewoptions['order_view'] = $this->load->view('dualorders/order_view', $viewoptions, true);
+                $viewoptions['order_view'] = $this->load->view('dualorders/order_view', [], true);
+                $viewoptions['lead_view'] = $this->load->view('dualorders/lead_view', [], true);
                 $mdata['content'] = $this->load->view('dualorders/orderlead_view', $viewoptions, true);
                 $mdata['modalwidth'] = $this->doubleorderwidth;
             } else {

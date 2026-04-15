@@ -886,7 +886,8 @@ ul.address-list li {
 }
 .ordernumber {
     background: url(/img/doubleorders/order-bg.svg) no-repeat;
-    width: 251px;
+    /*width: 251px;*/
+    width: 248px;
     height: 29px;
     position: relative;
     top: -6px;
@@ -1206,7 +1207,7 @@ ul.keyslist li:last-child {
     background: #fff;
     padding: 0 5px;
     /* height: 717px; */
-    height: 686px;
+    height: 709px;
     border-radius: 0 0 5px 5px;
 }
 .boxsection-title {
@@ -3060,13 +3061,17 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     font-weight: 600;
 }
 .leadblockleft {
-    width: 284px;
+    /* width: 284px; */
+    width: 298px;
 }
 .leadblockright {
     float: right !important;
-    width: 200px;
+    /*width: 200px;*/
+    width: 192px;
 }
-
+.leadblockcenter {
+    width: 90px;
+}
 
 
 .lead-itemdescr {
@@ -3076,6 +3081,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     border: 1px solid #86856b;
     border-radius: 5px;
     padding: 5px;
+    margin-bottom: 10px;
 }
 .lead-itemdescrtitle {
     width: 100%;
@@ -3155,7 +3161,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 .lead-statushistory .tab-content > .active {
     display: block;
     width: 193px;
-    height: 160px;
+    height: 240px;
     background: #e0dcdc;
     border: 1px solid #86856b;
     border-radius: 0 0 5px 5px;
@@ -3167,8 +3173,8 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 .lead-statushistory {
     width: 193px;
     height: 182px;
-    margin-top: 9px;
-    /*background: #d9d8c5;
+    /*margin-top: 9px;
+    background: #d9d8c5;
     border: 1px solid #86856b;
     border-radius: 5px;
     padding: 5px;*/
@@ -3208,7 +3214,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 .lead-historybox {
     width: 100%;
     /*height: 99px;*/
-    height: 93px;
+    height: 173px;
     border: 1px solid #585858;
     background: #fff;
     font-size: 11px;
@@ -3245,7 +3251,8 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 
 .lead-attachments {
     width: 84px;
-    height: 182px;
+    /*height: 182px;*/
+    height: 170px;
     margin-left: 5px;
 }
 .lead-attachmentstitle {
@@ -3289,7 +3296,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 
 .lead-needbynotes {
     width: 200px;
-    height: 272px;
+    /*height: 272px;*/
     background: #e0dcdc;
     border: 1px solid #86856b;
     border-radius: 5px;
@@ -3325,7 +3332,8 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .lead-notesbox {
     width: 100%;
-    height: 218px;
+    /*height: 218px;*/
+    height: 117px;
     border: 1px solid #585858;
     background: #fff;
     font-size: 11px;
