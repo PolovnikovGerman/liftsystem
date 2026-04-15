@@ -879,7 +879,7 @@ ul.address-list li {
 
 
 .ordertopline {
-    width: calc(100% - 10px);
+    width: 100%;
     padding: 0 5px;
     padding-top: 6px;
     padding-bottom: 5px;
@@ -888,34 +888,43 @@ ul.address-list li {
     background: url(/img/doubleorders/order-bg.svg) no-repeat;
     width: 251px;
     height: 29px;
+    position: relative;
+    top: -6px;
+    left: -5px;
 }
 
 .ordernumber-title {
     font-size: 16px;
-    line-height: 21px;
     font-weight: 600;
+    color: #fff;
+    margin-left: 7px;
+    line-height: 29px;
 }
 .ordernumber-box {
-    width: 152px;
-    height: 21px;
+    /* width: 152px; */
+    height: 26px;
     padding: 0 5px;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
     border-radius: 4px;
-    background: #fff;
+    /* background: #fff; */
     margin-left: 5px;
-    box-shadow: 1px 1px 5px rgba(122,122,122,0.5);
+    /* box-shadow: 1px 1px 5px rgba(122, 122, 122, 0.5); */
 }
 .ordernumber-one {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 21px;
     font-weight: 600;
+    color: #fff;
+    line-height: 29px;
 }
 .ordernumber-two {
     float: right !important;
     font-size: 13px;
     line-height: 21px;
     font-weight: 600;
-    color: #acacac;
+    color: #abb1d0;
+    line-height: 29px;
+    margin-left: 35px;
 }
 .orderbuttons {
     float: right !important;
@@ -2944,7 +2953,16 @@ input.shipaddr-inpt {
     background: url(/img/doubleorders/lead-bg.svg) no-repeat;
     width: 154px;
     height: 29px;
+    position: relative;
+    top: -10px;
+    left: -6px;
+    color: #fff;
+    line-height: 29px;
+    padding-left: 15px;
+    text-transform: uppercase;
+    font-weight: 600;
 }
+.leadnumber span {margin-left: 4px;}
 .leadtopstatus {
     margin-left: 28px;
 }
