@@ -41,6 +41,7 @@
                 <div class="orderpoinfo-box">55-72918105</div>
             </div>
         </div>
+        <!--
         <div class="orderstates">
             <div class="orderstatebox status-one">
                 <span class="noticket">No Ticket</span>
@@ -50,6 +51,21 @@
             </div>
             <div class="orderstatebox status-three">
                 <div class="totalpaid"><span>Total Due:</span><br>PAID</div>
+            </div>
+        </div>
+        -->
+        <div class="inforder">
+            <div class="inforder-left">
+                <div class="inforder-txt">
+                    <div class="inforder-status">DRAFT</div>
+                    <div class="inforder-note">Need Payment</div>
+                </div>
+            </div>
+            <div class="inforder-right">
+                <div class="inforder-greenbox">
+                    <div class="inforder-price">$1,020.00</div>
+                    <div class="inforder-percent">58.2%</div>
+                </div>
             </div>
         </div>
     </div>
