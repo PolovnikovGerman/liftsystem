@@ -1,654 +1,595 @@
 <div class="contant-popup">
     <div class="section-customer"><?=$customer_view?></div>
     <div class="section-content dualblocks">
-        <div class="orderblock">
+        <div class="leadblock">
             <div class="btnclose"><i class="fa fa-times" aria-hidden="true"></i></div>
+            <div class="leadblock-header">
+                <div class="leadnumber">Lead: <span>#L41134</span></div>
+                <div class="leadtopstatus">
+                    <label>Status:</label>
+                    <select class="leadtopstatusselect" data-width="131px;">
+                        <option data-content="<span class='leadtopstatus-star'><i class='fa fa-star' aria-hidden='true'></i></span>Priority">Priority</option>
+                        <option>Option 2</option>
+                    </select>
+                </div>
+                <div class="leadtopreps">
+                    <div class="leadtopreps-txt">Reps:</div>
+                    <div class="leadtopreps-box">
+                        <div class="repsusers">
+                            <div class="repsuserbox">
+                                <div class="repsuserbox-icn"><i class="fa fa-trash" aria-hidden="true"></i></div>
+                                <div class="repsuserbox-name">Sage</div>
+                            </div>
+                            <div class="repsuserbox">
+                                <div class="repsuserbox-icn"><i class="fa fa-trash" aria-hidden="true"></i></div>
+                                <div class="repsuserbox-name">Sean</div>
+                            </div>
+                        </div>
+                        <div class="leadtopreps-addbtn">+</div>
+                    </div>
+                </div>
+            </div>
             <div class="datarow">
-                <div class="ordertopline">
-                    <div class="ordernumber">
-                        <div class="ordernumber-title">ORDER</div>
-                        <div class="ordernumber-box">
-                            <div class="ordernumber-one">21015</div>
-                            <div class="ordernumber-two">36624-MT</div>
+                <div class="leadblockleft">
+                    <div class="lead-itemdescr">
+                        <div class="lead-itemdescrtitle">Item & Description:</div>
+                        <div class="lead-item">
+                            <select>
+                                <option>22-SS003 - Round Stress Balls</option>
+                                <option>22-SS003 - Round Stress Balls</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="orderbuttons">
-                        <ul class="orderbuttons-list">
-                            <li>
-                                <div class="orderbtn btnreorder">reorder</div>
-                            </li>
-                            <li>
-                                <div class="orderbtn btnrequote">requote</div>
-                            </li>
-                            <li>
-                                <div class="orderbtn btnpdf">pdf</div>
-                            </li>
-                            <li>
-                                <div class="orderbtn btnsend">send</div>
-                            </li>
-                            <li>
-                                <div class="orderbtn btnedit">edit</div>
-                            </li>
-                            <li>
-                                <div class="btnlock"><span class="btnlock-icon"><i class="fa fa-lock" aria-hidden="true"></i></span>Shanequa</div>
-                            </li>
+                    <div class="lead-statushistory">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#stock-status-history" aria-controls="stock-status-history" role="tab" data-toggle="tab">Status & History:</a></li>
+                            <li role="presentation"><a href="#stock-interest-history" aria-controls="stock-interest-history" role="tab" data-toggle="tab">Interest History</a></li>
                         </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="stock-status-history">
+                                <div class="lead-status">
+                                    <div class="lead-statusbox">&nbsp;</div>
+                                </div>
+                                <div class="lead-history">
+                                    <div class="lead-historybox">
+                                        <div class="list-leadhistory">
+                                            <div class="leadhistory-box">
+                                                <div class="leadhistory-titlebox"><span class="leadhistory-name">Sean</span> - 12/02/2025 16:29:25</div>
+                                                <div class="leadhistory-txtbox">She emailed for a reorder with new art. I am sending quotes. She asked for 500, 1000, 1500</div>
+                                            </div>
+                                            <div class="leadhistory-box">
+                                                <div class="leadhistory-titlebox"><span class="leadhistory-name">Sean</span> - 12/02/2025 15:07:15</div>
+                                                <div class="leadhistory-txtbox">She emailed asking for more with slightly artwork. She asked for lead time. I told her 3-4 weeks but after Dec 9 will be March. I asked how many and said I could rush it.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="stock-interest-history">
+                                <div class="list-quests">
+                                    <div class="questionbox">
+                                        <div class="quests-icon">
+                                            <span class="questionbox-icn"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                        </div>
+                                        <div class="quests-date">01/20/26 -</div>
+                                        <div class="quests-type">Custom SB Form</div>
+                                        <div class="quests-link">
+                                            <div class="quests-unlink">unlink</div>
+                                        </div>
+                                    </div>
+                                    <div class="questionbox">
+                                        <div class="quests-icon">
+                                            <span class="questionbox-icn"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                        </div>
+                                        <div class="quests-date">01/1/26 -</div>
+                                        <div class="quests-type">Web Question</div>
+                                        <div class="quests-link">
+                                            <div class="quests-unlink">unlink</div>
+                                        </div>
+                                    </div>
+                                    <div class="questionbox">
+                                        <div class="quests-icon">
+                                            <span class="questionbox-icn"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                        </div>
+                                        <div class="quests-date">01/10/26 -</div>
+                                        <div class="quests-type">Custom SB Form</div>
+                                        <div class="quests-link">
+                                            <div class="quests-unlink">unlink</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lead-attachments">
+                        <div class="lead-attachmentstitle">Attachments:</div>
+                        <div class="btn-attach">+ add attachment</div>
+                        <div class="list-attachfiles">
+                            <div class="attachfile truncateoverflowtext">
+                                <span class="attachfile-icn"><i class="fa fa-file-o" aria-hidden="true"></i></span>
+                                <span class="attachfile-name">Cartoon King Leon</span>
+                            </div>
+                            <div class="attachfile truncateoverflowtext">
+                                <span class="attachfile-icn"><i class="fa fa-file-o" aria-hidden="true"></i></span>
+                                <span class="attachfile-name">The Great King</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="leadblockright">
+                    <div class="lead-needbynotes">
+                        <div class="lead-needby">
+                            <div class="lead-needbytitle">Need by Date:</div>
+                            <div class="lead-needbybox">Fri - Dec 13, 2025</div>
+                        </div>
+                        <div class="lead-notes">
+                            <div class="lead-notestitle">Notes:</div>
+                            <div class="lead-notesbox">Emailed SG, he forwarded to me, loooking for reorder</div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="datarow">
-                <div class="ordertwoline">
-                    <div class="orderinfo">
-                        <div class="orderdate">Tue - Jan 23, 2025</div>
-                        <div class="orderpoinfo">
-                            <div class="orderpoinfo-title">Cust<br>PO</div>
-                            <div class="orderpoinfo-box">55-72918105</div>
+                <div class="lead-quotes">
+                    <div class="lead-quotestitle">Quotes:</div>
+                    <div class="lead-quotesbody">
+                        <div class="lead-quotesform">
+                            <div class="leadquotesform-top">
+                                <div class="qtypricetitle">
+                                    <div class="qtyprice-rowqty">Qty:</div>
+                                    <div class="qtyprice-rowprice">Price Ea:</div>
+                                </div>
+                                <div class="qtypricelist">
+                                    <div class="qtypricelist-box">
+                                        <div class="qtyprice-rowqty">
+                                            <div class="qtyprice-qtybox">
+                                                <input type="radio" name="option2" value="a2">
+                                                <input class="qtybox-qty" type="text" name="qtybox">
+                                            </div>
+                                        </div>
+                                        <div class="qtyprice-rowprice">
+                                            <div class="qtyprice-pricebox">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                    <div class="qtypricelist-box">
+                                        <div class="qtyprice-rowqty">
+                                            <div class="qtyprice-qtybox">
+                                                <input type="radio" name="option2" value="a2">
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div class="qtyprice-rowprice">
+                                            <div class="qtyprice-pricebox">$2.65</div>
+                                        </div>
+                                    </div>
+                                    <div class="qtypricelist-box active">
+                                        <div class="qtyprice-rowqty">
+                                            <div class="qtyprice-qtybox">
+                                                <input type="radio" name="option3" value="a3">
+                                                <span>750</span>
+                                            </div>
+                                        </div>
+                                        <div class="qtyprice-rowprice">
+                                            <div class="qtyprice-pricebox">$2.50</div>
+                                        </div>
+                                    </div>
+                                    <div class="qtypricelist-box">
+                                        <div class="qtyprice-rowqty">
+                                            <div class="qtyprice-qtybox">
+                                                <input type="radio" name="option4" value="a4">
+                                                <span>1000</span>
+                                            </div>
+                                        </div>
+                                        <div class="qtyprice-rowprice">
+                                            <div class="qtyprice-pricebox">$2.35</div>
+                                        </div>
+                                    </div>
+                                    <div class="qtypricelist-box">
+                                        <div class="qtyprice-rowqty">
+                                            <div class="qtyprice-qtybox">
+                                                <input type="radio" name="option5" value="a5">
+                                                <span>2500</span>
+                                            </div>
+                                        </div>
+                                        <div class="qtyprice-rowprice">
+                                            <div class="qtyprice-pricebox">$2.27</div>
+                                        </div>
+                                    </div>
+                                    <div class="qtypricelist-box">
+                                        <div class="qtyprice-rowqty">
+                                            <div class="qtyprice-qtybox">
+                                                <input type="radio" name="option6" value="a6">
+                                                <span>3000</span>
+                                            </div>
+                                        </div>
+                                        <div class="qtyprice-rowprice">
+                                            <div class="qtyprice-pricebox">$2.22</div>
+                                        </div>
+                                    </div>
+                                    <div class="qtypricelist-box">
+                                        <div class="qtyprice-rowqty">
+                                            <div class="qtyprice-qtybox">
+                                                <input type="radio" name="option7" value="a7">
+                                                <span>5000</span>
+                                            </div>
+                                        </div>
+                                        <div class="qtyprice-rowprice">
+                                            <div class="qtyprice-pricebox">$2.15</div>
+                                        </div>
+                                    </div>
+                                    <div class="qtypricelist-box">
+                                        <div class="qtyprice-rowqty">
+                                            <div class="qtyprice-qtybox">
+                                                <input type="radio" name="option8" value="a8">
+                                                <span>10000</span>
+                                            </div>
+                                        </div>
+                                        <div class="qtyprice-rowprice">
+                                            <div class="qtyprice-pricebox">$2.12</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="leadquotesform-row">
+                                <div class="quotesform-locs">
+                                    <label>Locs:</label>
+                                    <select>
+                                        <option>F</option>
+                                        <option>A</option>
+                                    </select>
+                                    <select>
+                                        <option>2</option>
+                                        <option>2+2</option>
+                                    </select>
+                                    <select class="inactive">
+                                        <option>-</option>
+                                    </select>
+                                    <select class="inactive">
+                                        <option>-</option>
+                                    </select>
+                                    <select class="inactive">
+                                        <option>-</option>
+                                    </select>
+                                    <select class="inactive">
+                                        <option>-</option>
+                                    </select>
+                                </div>
+                                <div class="quotesform-prints">
+                                    <label>Prints:</label>
+                                    <input type="text" name="quotesform-prints">
+                                </div>
+                                <div class="quotesform-setup">
+                                    <label>Setup:</label>
+                                    <input type="text" name="quotesform-setup">
+                                </div>
+                                <div class="quotesform-design">
+                                    <label>Design:</label>
+                                    <input type="text" name="quotesform-design">
+                                </div>
+                            </div>
+                            <div class="leadquotesform-row">
+                                <div class="quotesform-zipcode">
+                                    <label>Zip Code:</label>
+                                    <input type="text" name="quotesform-zipcode">
+                                </div>
+                                <div class="quotesform-discount inactive">
+                                    <input type="text" name="quotesform-zipcode" placeholder="Enter Discount"
+                                           class="discount-code">
+                                    <input type="text" name="quotesform-zipcode" class="discount-price">
+                                    <label>Exp:</label>
+                                    <input type="text" name="quotesform-zipcode" class="discount-exp">
+                                </div>
+                                <div class="btn-createquote" id="createquotezip">Create Quote</div>
+                            </div>
+                            <div class="messagequote-block" style="display:none;">
+                                <div class="messagequote-box">
+                                    <textarea></textarea>
+                                </div>
+                                <div class="messagequote-box">
+                                    <textarea></textarea>
+                                </div>
+                                <div class="btn-createquote">Create Quote</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="orderstates">
-                        <div class="orderstatebox status-one">
-                            <span class="noticket">No Ticket</span>
-                        </div>
-                        <div class="orderstatebox status-pink">
-                            <span>Change Req’d<br>Send Clay</span>
-                        </div>
-                        <div class="orderstatebox status-three">
-                            <div class="totalpaid"><span>Total Due:</span><br>PAID</div>
+                        <div class="btn-messagequote">Message on Quote <span><i class="fa fa-caret-down" aria-hidden="true"></i></span></div>
+                        <div class="lead-quotestable">
+                            <div class="leadquotetabl-header">
+                                <div class="leadquotetabl-tr">
+                                    <div class="leadquotetabl-td leadquotetabl-date">Date</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">Quote #</div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">Web</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">Qty</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">Prints</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr">Description</div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">Sub-total</div>
+                                </div>
+                            </div>
+                            <div class="leadquotetabl-body" id="leadquotetable">
+                                <div class="leadquotetabl-tr yeartotal">
+                                    <div class="yeartotal-year">2025</div>
+                                    <div class="yeartotal-quotes">5 quotes</div>
+                                </div>
+                                <div class="leadquotetabl-tr whitedatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">12/12</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox">QB-16999</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">Web</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">1500</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">Blank</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$4,679</div>
+                                </div>
+                                <div class="leadquotetabl-tr greydatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">12/13</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox blueactive">QB-17004</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">10000</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">4</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$25,245</div>
+                                </div>
+                                <div class="leadquotetabl-tr whitedatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">12/12</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox">QB-17005</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">6000</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">F</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$16,207</div>
+                                </div>
+                                <div class="leadquotetabl-tr greydatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">12/13</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox">QB-17006</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">3500</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">F+F</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$14,647</div>
+                                </div>
+                                <div class="leadquotetabl-tr whitedatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">12/12</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox">QB-17005</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">1500</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">2+2</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$10,191</div>
+                                </div>
+                                <div class="leadquotetabl-tr yeartotal">
+                                    <div class="yeartotal-year">2024</div>
+                                    <div class="yeartotal-quotes">7 quotes</div>
+                                </div>
+                                <div class="leadquotetabl-tr greydatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">12/13</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox">QB-17006</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">6000</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">F+F</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$9,316</div>
+                                </div>
+                                <div class="leadquotetabl-tr whitedatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">11/28</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox">QB-16999</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">Web</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">1500</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">Blank</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$4,679</div>
+                                </div>
+                                <div class="leadquotetabl-tr greydatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">11/28</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox blueactive">QB-17004</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">10000</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">4</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$25,245</div>
+                                </div>
+                                <div class="leadquotetabl-tr whitedatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">10/14</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox blueactive">QB-17005</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">6000</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">F</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$16,207</div>
+                                </div>
+                                <div class="leadquotetabl-tr greydatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">10/07</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox">QB-17006</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">3500</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">F+F</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$14,647</div>
+                                </div>
+                                <div class="leadquotetabl-tr whitedatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">09/25</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox">QB-17005</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">1500</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">2+2</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$10,191</div>
+                                </div>
+                                <div class="leadquotetabl-tr greydatarow">
+                                    <div class="leadquotetabl-td leadquotetabl-date">09/25</div>
+                                    <div class="leadquotetabl-td leadquotetabl-quote">
+                                        <div class="leadquotetabl-quotebox">QB-17006</div>
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-web">&nbsp;</div>
+                                    <div class="leadquotetabl-td leadquotetabl-qty">6000</div>
+                                    <div class="leadquotetabl-td leadquotetabl-prints">F+F</div>
+                                    <div class="leadquotetabl-td leadquotetabl-descr truncateoverflowtext">Custom Cargo
+                                        Van Vehicle Stress Balls
+                                    </div>
+                                    <div class="leadquotetabl-td leadquotetabl-subtotal">$9,316</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="datarow">
-                <div class="tabsline">
-                    <ul class="tabslist">
-                        <li>
-                            <div class="tabbox active">Main</div>
-                        </li>
-                        <li>
-                            <div class="tabbox">Artwork</div>
-                        </li>
-                        <li>
-                            <div class="tabbox">Fulfillment</div>
-                        </li>
-                        <li>
-                            <div class="tabbox">Print/Ship</div>
-                        </li>
-                    </ul>
-                    <ul class="keyslist">
-                        <li><span class="keybox pink">&nbsp;</span>Actions for Us</li>
-                        <li><span class="keybox teal">&nbsp;</span>Actions for Customer</li>
-                    </ul>
+                <div class="leadfooterleft">
+                    <div class="lead-proofreq">
+                        <div class="lead-proofreqtitle">Proof Requests:</div>
+                        <div class="lead-proofreqbody">
+                            <div class="btn-newproofreq">New Proof Request</div>
+                            <div class="list-proofreq">
+                                <div class="list-proofreqtitle">
+                                    <div class="proofreqtitle-box">Art</div>
+                                    <div class="proofreqtitle-box">Red</div>
+                                    <div class="proofreqtitle-box">Vec</div>
+                                    <div class="proofreqtitle-box">Pro</div>
+                                    <div class="proofreqtitle-box">Apr</div>
+                                </div>
+                                <div class="list-proofreqbox" id="list-proofreqbox">
+                                    <div class="proofreqbox-row whitedatarow">
+                                        <div class="proofreqbox-date">11/20/25 -</div>
+                                        <div class="proofreqbox-number">pr023-679</div>
+                                        <div class="proofreqbox-info truncateoverflowtext">- 0 Stacked Pallet S</div>
+                                        <div class="proofreqbox-arrows">
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox">&nbsp;</div>
+                                            <div class="proofreqbox-arrowbox">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                    <div class="proofreqbox-row greydatarow">
+                                        <div class="proofreqbox-date">11/20/25 -</div>
+                                        <div class="proofreqbox-number">pr023-679</div>
+                                        <div class="proofreqbox-info truncateoverflowtext">- 0 Stacked Pallet S</div>
+                                        <div class="proofreqbox-arrows">
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="proofreqbox-row whitedatarow">
+                                        <div class="proofreqbox-date">11/20/25 -</div>
+                                        <div class="proofreqbox-number">pr023-679</div>
+                                        <div class="proofreqbox-info truncateoverflowtext">- 0 Stacked Pallet S</div>
+                                        <div class="proofreqbox-arrows">
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                    <div class="proofreqbox-row greydatarow">
+                                        <div class="proofreqbox-date">11/20/25 -</div>
+                                        <div class="proofreqbox-number">pr023-679</div>
+                                        <div class="proofreqbox-info truncateoverflowtext">- 0 Stacked Pallet S</div>
+                                        <div class="proofreqbox-arrows">
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                            <div class="proofreqbox-arrowbox active">
+                                                <img src="/img/doubleorders/proofreq-arrow.svg" alt="proofreq-arrow">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="datarow">
-                <div class="mainbody">
-                    <div class="sectionline">
-                        <div class="boxsection contact-block">
-                            <div class="boxsection-title">Contact</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    <div class="cb-contactline">
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-name"><input class="cbinp-name" type="text" name=""></div>
-                                            <div class="cb-buttons">
-                                                <div class="cb-btnbox active">Art</div>
-                                                <div class="cb-btnbox active">Inv</div>
-                                                <div class="cb-btnbox active">Trk</div>
-                                            </div>
-                                        </div>
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-phone"><input class="cbinp-phone" type="text" name=""></div>
-                                        </div>
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-email"><input class="cbinp-email" type="text" name=""><span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
-                                        </div>
-                                    </div>
-                                    <div class="cb-contactline">
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-name"><input class="cbinp-name" type="text" name=""></div>
-                                            <div class="cb-buttons">
-                                                <div class="cb-btnbox">Art</div>
-                                                <div class="cb-btnbox">Inv</div>
-                                                <div class="cb-btnbox">Trk</div>
-                                            </div>
-                                        </div>
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-phone"><input class="cbinp-phone" type="text" name=""></div>
-                                        </div>
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-email"><input class="cbinp-email" type="text" name=""><span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="boxsection note-block">
-                            <div class="boxsection-title">Notes</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    <div class="noteblock-left">
-                                        <div class="nb-notes">
-                                            <textarea></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="noteblock-right">
-                                        <div class="nb-update">
-                                            <div class="nb-update-title">Update:</div>
-                                            <textarea></textarea>
-                                        </div>
-                                        <div class="nb-history">
-                                            <div class="nb-history-title">History:</div>
-                                            <div class="btn-update">update</div>
-                                            <div class="nb-history-box">
-                                                <div class="tbl-history">
-                                                    <div class="tbl-historybox">
-                                                        <div class="tr-history-info">
-                                            <span class="httd-icon">
-                                              <i class="fa fa-search" aria-hidden="true"></i>
-                                            </span>
-                                                            <span class="httd-date">02/14/25</span> -
-                                                            <span class="httd-time">4:00PM</span> -
-                                                            <span class="httd-name">Sean</span>
-                                                        </div>
-                                                        <div class="tr-history-text">Tracking for Mailine items returned 1Z084YR70343677548</div>
-                                                    </div>
-                                                    <div class="tbl-historybox">
-                                                        <div class="tr-history-info">
-                                            <span class="httd-icon">
-                                              <i class="fa fa-search" aria-hidden="true"></i>
-                                            </span>
-                                                            <span class="httd-date">02/14/25</span> -
-                                                            <span class="httd-time">4:00PM</span> -
-                                                            <span class="httd-name">Sean</span>
-                                                        </div>
-                                                        <div class="tr-history-text">ML po total entry in previous note was from 07/12/25</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="leadfooterright">
+                    <div class="lead-samplereq">
+                        <div class="lead-samplereqtitle">Sample Request:</div>
+                        <div class="lead-samplereqbody">&nbsp;</div>
                     </div>
-                    <div class="sectionline">
-                        <div class="boxsection item-block">
-                            <div class="boxsection-title">Items</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    <div class="itemblock-table">
-                                        <div class="itemtabl-tr itemtabl-trtitle">
-                                            <div class="itemtabl-td itemtabl-item">Item#</div>
-                                            <div class="itemtabl-td itemtabl-description">Description</div>
-                                            <div class="itemtabl-td itemtabl-color">Color</div>
-                                            <div class="itemtabl-td itemtabl-qty">Qty</div>
-                                            <div class="itemtabl-td itemtabl-each">Each</div>
-                                            <div class="itemtabl-td itemtabl-subtotal">Sub-Total</div>
-                                        </div>
-                                        <div class="itemtabl-tr">
-                                            <div class="itemtabl-td itemtabl-item">00-ZZ000</div>
-                                            <div class="itemtabl-td itemtabl-description truncateoverflowtext">Custom Cargo Van Vehicle Stress Balls</div>
-                                            <div class="itemtabl-td itemtabl-color">&nbsp;</div>
-                                            <div class="itemtabl-td itemtabl-qty">999,999</div>
-                                            <div class="itemtabl-td itemtabl-each">999.99</div>
-                                            <div class="itemtabl-td itemtabl-subtotal">$999,999.99</div>
-                                        </div>
-                                        <div class="itemtabl-tr">
-                                            <div class="itemtabl-td itemtabl-info">2 Locations (Colors: 2 + 1)<span class="itemtabl-setups">Setups:  New</span></div>
-                                            <div class="itemtabl-td itemtabl-subtotal">$999,999.99</div>
-                                        </div>
-                                    </div>
-                                    <div class="itemblock-bottom">
-                                        <div class="ib-extcharges">
-                                            <div class="ib-bottomtitle">Extra Charges:</div>
-                                            <div class="ib-extcharges-box">$200.00</div>
-                                        </div>
-                                        <div class="ib-discounts">
-                                            <div class="ib-bottomtitle">Discounts:</div>
-                                            <div class="ib-discounts-box">($50.00)</div>
-                                        </div>
-                                        <div class="ib-subtotal">
-                                            <span class="ib-subtotal-title">Item Sub-total:</span>
-                                            <span class="ib-subtotal-price">$993,150.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sectionline">
-                        <div class="boxsection shipping-block">
-                            <div class="boxsection-title">SHIPPING & TAX</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    <div class="shipaddr">
-                                        <div class="shipaddr-title">
-                                            <div class="shipaddrinpt-country">
-                                                <select>
-                                                    <option>United States</option>
-                                                    <option>Canada</option>
-                                                </select>
-                                            </div>
-                                            <div class="shipaddr-titleblind">BLIND</div>
-                                        </div>
-                                        <div class="shipaddr-box">
-                                            <input class="shipaddr-inpt" type="text" name="shipaddr-name"  placeholder="Name">
-                                            <input class="shipaddr-inpt" type="text" name="shipaddr-company"  placeholder="Company">
-                                            <input class="shipaddr-inpt" type="text" name="shipaddr-address1"  placeholder="Address Line 1">
-                                            <input class="shipaddr-inpt" type="text" name="shipaddr-address2"  placeholder="Address Line 2">
-                                            <input class="shipaddr-inpt shipaddrinpt-city" type="text" name="shipaddr-city"  placeholder="City">
-                                            <div class="shipaddrinpt-state">
-                                                <select>
-                                                    <option>NJ</option>
-                                                    <option>TX</option>
-                                                </select>
-                                            </div>
-                                            <input class="shipaddr-inpt shipaddrinpt-zipcode" type="text" name="shipaddr-zipcode"  placeholder="Zip Code">
-                                            <div class="shipaddrcopy">
-                                                <i class="fa fa-copy"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="shipping-topsidebare">
-                                        <div class="shipstatus">Next Day Rush</div>
-                                        <div class="shipdates">
-                                            <div class="ship-date">
-                                                <div class="shipdate-title">Ships on:</div>
-                                                <div class="shipdate-box">Nov 14</div>
-                                            </div>
-                                            <div class="ship-date">
-                                                <div class="shipdate-title">Arives on:</div>
-                                                <div class="shipdate-box">Nov 16</div>
-                                            </div>
-                                            <div class="ship-date">
-                                                <div class="shipdate-title">Event Date:</div>
-                                                <div class="shipdate-box">Nov 17</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="shipinfo">
-                                        <div class="shipdocs">
-                                            Ship Docs:
-                                            <div class="shipdocs-icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></div>
-                                        </div>
-                                        <div class="shipinfo-line">
-                                            <div class="shipinfo-txt">[Next Day Rush - $1.00] - <span>Production:</span></div>
-                                            <div class="shipinfo-box">$90.00</div>
-                                        </div>
-                                        <div class="shipinfo-line">
-                                            <div class="shipinfo-txt">[Ground - $97.04 - <span class="bluetxt">Wed - Dec 17</span>] - <span>Shipping:</span></div>
-                                            <div class="shipinfo-box">$116.55</div>
-                                        </div>
-                                        <div class="shipinfo-line">
-                                            <div class="shipinfo-txt">[Out of State - <span class="italictxt">No sales tax</span>] - <span>Sale Tax:</span></div>
-                                            <div class="shipinfo-box">$0.00</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sectionline">
-                        <div class="total-block">
-                            <div class="totalblock-title">ORDER TOTAL:</div>
-                            <div class="totalblock-price">$3,545.45</div>
-                        </div>
-                    </div>
-                    <div class="sectionline">
-                        <div class="boxsection art-block">
-                            <div class="boxsection-title">ART</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    ART body
-                                </div>
-                            </div>
-                        </div>
-                        <div class="boxsection-txt">+</div>
-                        <div class="boxsection payment-block">
-                            <div class="boxsection-title">PAYMENT</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    PAYMENT body
-                                </div>
-                            </div>
-                        </div>
-                        <div class="boxsection-txt">=</div>
-                        <div class="boxsection fulfilment-block">
-                            <div class="boxsection-title">FULFILLMENT</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    FULFILLMENT body
-                                </div>
-                            </div>
-                        </div>
+                    <div class="lead-footerbtn">
+                        <div class="duplicatelead">Duplicate Lead</div>
+                        <div class="lead-savebtn">SAVE</div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="orderblock">
-            <div class="btnclose"><i class="fa fa-times" aria-hidden="true"></i></div>
-            <div class="datarow">
-                <div class="ordertopline">
-                    <div class="ordernumber">
-                        <div class="ordernumber-title">ORDER</div>
-                        <div class="ordernumber-box">
-                            <div class="ordernumber-one">21015</div>
-                            <div class="ordernumber-two">36624-MT</div>
-                        </div>
-                    </div>
-                    <div class="orderbuttons">
-                        <ul class="orderbuttons-list">
-                            <li>
-                                <div class="orderbtn btnreorder">reorder</div>
-                            </li>
-                            <li>
-                                <div class="orderbtn btnrequote">requote</div>
-                            </li>
-                            <li>
-                                <div class="orderbtn btnpdf">pdf</div>
-                            </li>
-                            <li>
-                                <div class="orderbtn btnsend">send</div>
-                            </li>
-                            <li>
-                                <div class="orderbtn btnedit">edit</div>
-                            </li>
-                            <li>
-                                <div class="btnlock"><span class="btnlock-icon"><i class="fa fa-lock" aria-hidden="true"></i></span>Shanequa</div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="datarow">
-                <div class="ordertwoline">
-                    <div class="orderinfo">
-                        <div class="orderdate">Tue - Jan 23, 2025</div>
-                        <div class="orderpoinfo">
-                            <div class="orderpoinfo-title">Cust<br>PO</div>
-                            <div class="orderpoinfo-box">55-72918105</div>
-                        </div>
-                    </div>
-                    <div class="orderstates">
-                        <div class="orderstatebox status-one">
-                            <span class="noticket">No Ticket</span>
-                        </div>
-                        <div class="orderstatebox status-pink">
-                            <span>Change Req’d<br>Send Clay</span>
-                        </div>
-                        <div class="orderstatebox status-three">
-                            <div class="totalpaid"><span>Total Due:</span><br>PAID</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="datarow">
-                <div class="tabsline">
-                    <ul class="tabslist">
-                        <li>
-                            <div class="tabbox active">Main</div>
-                        </li>
-                        <li>
-                            <div class="tabbox">Artwork</div>
-                        </li>
-                        <li>
-                            <div class="tabbox">Fulfillment</div>
-                        </li>
-                        <li>
-                            <div class="tabbox">Print/Ship</div>
-                        </li>
-                    </ul>
-                    <ul class="keyslist">
-                        <li><span class="keybox pink">&nbsp;</span>Actions for Us</li>
-                        <li><span class="keybox teal">&nbsp;</span>Actions for Customer</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="datarow">
-                <div class="mainbody">
-                    <div class="sectionline">
-                        <div class="boxsection contact-block">
-                            <div class="boxsection-title">Contact</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    <div class="cb-contactline">
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-name"><input class="cbinp-name" type="text" name="" disabled></div>
-                                            <div class="cb-buttons">
-                                                <div class="cb-btnbox active">Art</div>
-                                                <div class="cb-btnbox active">Inv</div>
-                                                <div class="cb-btnbox active">Trk</div>
-                                            </div>
-                                        </div>
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-phone"><input class="cbinp-phone" type="text" name="" disabled></div>
-                                        </div>
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-email"><input class="cbinp-email" type="text" name="" disabled><span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
-                                        </div>
-                                    </div>
-                                    <div class="cb-contactline">
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-name"><input class="cbinp-name" type="text" name="" disabled></div>
-                                            <div class="cb-buttons">
-                                                <div class="cb-btnbox">Art</div>
-                                                <div class="cb-btnbox">Inv</div>
-                                                <div class="cb-btnbox">Trk</div>
-                                            </div>
-                                        </div>
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-phone"><input class="cbinp-phone" type="text" name="" disabled></div>
-                                        </div>
-                                        <div class="inputgroup-contact">
-                                            <div class="cb-email"><input class="cbinp-email" type="text" name="" disabled><span class="cb-email-icon"><i class="fa fa-clone" aria-hidden="true"></i></span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="boxsection note-block">
-                            <div class="boxsection-title">Notes</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    <div class="noteblock-left">
-                                        <div class="nb-notes">
-                                            <textarea disabled></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="noteblock-right not-update">
-                                        <div class="nb-update">
-                                            <div class="nb-update-title">Update:</div>
-                                            <textarea disabled></textarea>
-                                        </div>
-                                        <div class="nb-history">
-                                            <div class="nb-history-title">History:</div>
-                                            <div class="btn-update">update</div>
-                                            <div class="nb-history-box">
-                                                <div class="tbl-history">
-                                                    <div class="tbl-historybox">
-                                                        <div class="tr-history-info">
-                                            <span class="httd-icon">
-                                              <i class="fa fa-search" aria-hidden="true"></i>
-                                            </span>
-                                                            <span class="httd-date">02/14/25</span> -
-                                                            <span class="httd-time">4:00PM</span> -
-                                                            <span class="httd-name">Sean</span>
-                                                        </div>
-                                                        <div class="tr-history-text">Tracking for Mailine items returned 1Z084YR70343677548</div>
-                                                    </div>
-                                                    <div class="tbl-historybox">
-                                                        <div class="tr-history-info">
-                                            <span class="httd-icon">
-                                              <i class="fa fa-search" aria-hidden="true"></i>
-                                            </span>
-                                                            <span class="httd-date">02/14/25</span> -
-                                                            <span class="httd-time">4:00PM</span> -
-                                                            <span class="httd-name">Sean</span>
-                                                        </div>
-                                                        <div class="tr-history-text">ML po total entry in previous note was from 07/12/25</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sectionline">
-                        <div class="boxsection item-block">
-                            <div class="boxsection-title">Items</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    <div class="itemblock-table">
-                                        <div class="itemtabl-tr itemtabl-trtitle">
-                                            <div class="itemtabl-td itemtabl-item">Item#</div>
-                                            <div class="itemtabl-td itemtabl-description">Description</div>
-                                            <div class="itemtabl-td itemtabl-color">Color</div>
-                                            <div class="itemtabl-td itemtabl-qty">Qty</div>
-                                            <div class="itemtabl-td itemtabl-each">Each</div>
-                                            <div class="itemtabl-td itemtabl-subtotal">Sub-Total</div>
-                                        </div>
-                                        <div class="itemtabl-tr">
-                                            <div class="itemtabl-td itemtabl-item">00-ZZ000</div>
-                                            <div class="itemtabl-td itemtabl-description truncateoverflowtext">Custom Cargo Van Vehicle Stress Balls</div>
-                                            <div class="itemtabl-td itemtabl-color">&nbsp;</div>
-                                            <div class="itemtabl-td itemtabl-qty">999,999</div>
-                                            <div class="itemtabl-td itemtabl-each">999.99</div>
-                                            <div class="itemtabl-td itemtabl-subtotal">$999,999.99</div>
-                                        </div>
-                                        <div class="itemtabl-tr">
-                                            <div class="itemtabl-td itemtabl-info">2 Locations (Colors: 2 + 1)<span class="itemtabl-setups">Setups:  New</span></div>
-                                            <div class="itemtabl-td itemtabl-subtotal">$999,999.99</div>
-                                        </div>
-                                    </div>
-                                    <div class="itemblock-bottom">
-                                        <div class="ib-extcharges">
-                                            <div class="ib-bottomtitle">Extra Charges:</div>
-                                            <div class="ib-extcharges-box">$200.00</div>
-                                        </div>
-                                        <div class="ib-discounts">
-                                            <div class="ib-bottomtitle">Discounts:</div>
-                                            <div class="ib-discounts-box">($50.00)</div>
-                                        </div>
-                                        <div class="ib-subtotal">
-                                            <span class="ib-subtotal-title">Item Sub-total:</span>
-                                            <span class="ib-subtotal-price">$993,150.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sectionline">
-                        <div class="boxsection shipping-block">
-                            <div class="boxsection-title">SHIPPING & TAX</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    <div class="shipaddr">
-                                        <div class="shipaddr-title">
-                                            <div class="shipaddrinpt-country">
-                                                <select>
-                                                    <option>United States</option>
-                                                    <option>Canada</option>
-                                                </select>
-                                            </div>
-                                            <div class="shipaddr-titleblind">BLIND</div>
-                                        </div>
-                                        <div class="shipaddr-box">
-                                            <input class="shipaddr-inpt" type="text" name="shipaddr-name"  placeholder="Name">
-                                            <input class="shipaddr-inpt" type="text" name="shipaddr-company"  placeholder="Company">
-                                            <input class="shipaddr-inpt" type="text" name="shipaddr-address1"  placeholder="Address Line 1">
-                                            <input class="shipaddr-inpt" type="text" name="shipaddr-address2"  placeholder="Address Line 2">
-                                            <input class="shipaddr-inpt shipaddrinpt-city" type="text" name="shipaddr-city"  placeholder="City">
-                                            <div class="shipaddrinpt-state">
-                                                <select>
-                                                    <option>NJ</option>
-                                                    <option>TX</option>
-                                                </select>
-                                            </div>
-                                            <input class="shipaddr-inpt shipaddrinpt-zipcode" type="text" name="shipaddr-zipcode"  placeholder="Zip Code">
-                                            <div class="shipaddrcopy">
-                                                <i class="fa fa-copy"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="shipping-topsidebare">
-                                        <div class="shipstatus">Next Day Rush</div>
-                                        <div class="shipdates">
-                                            <div class="ship-date">
-                                                <div class="shipdate-title">Ships on:</div>
-                                                <div class="shipdate-box">Nov 14</div>
-                                            </div>
-                                            <div class="ship-date">
-                                                <div class="shipdate-title">Arives on:</div>
-                                                <div class="shipdate-box">Nov 16</div>
-                                            </div>
-                                            <div class="ship-date">
-                                                <div class="shipdate-title">Event Date:</div>
-                                                <div class="shipdate-box">Nov 17</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="shipinfo">
-                                        <div class="shipdocs">
-                                            Ship Docs:
-                                            <div class="shipdocs-icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></div>
-                                        </div>
-                                        <div class="shipinfo-line">
-                                            <div class="shipinfo-txt">[Next Day Rush - $1.00] - <span>Production:</span></div>
-                                            <div class="shipinfo-box">$90.00</div>
-                                        </div>
-                                        <div class="shipinfo-line">
-                                            <div class="shipinfo-txt">[Ground - $97.04 - <span class="bluetxt">Wed - Dec 17</span>] - <span>Shipping:</span></div>
-                                            <div class="shipinfo-box">$116.55</div>
-                                        </div>
-                                        <div class="shipinfo-line">
-                                            <div class="shipinfo-txt">[Out of State - <span class="italictxt">No sales tax</span>] - <span>Sale Tax:</span></div>
-                                            <div class="shipinfo-box">$0.00</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sectionline">
-                        <div class="total-block">
-                            <div class="totalblock-title">ORDER TOTAL:</div>
-                            <div class="totalblock-price">$3,545.45</div>
-                        </div>
-                    </div>
-                    <div class="sectionline">
-                        <div class="boxsection art-block">
-                            <div class="boxsection-title">ART</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    ART body
-                                </div>
-                            </div>
-                        </div>
-                        <div class="boxsection-txt">+</div>
-                        <div class="boxsection payment-block">
-                            <div class="boxsection-title">PAYMENT</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    PAYMENT body
-                                </div>
-                            </div>
-                        </div>
-                        <div class="boxsection-txt">=</div>
-                        <div class="boxsection fulfilment-block">
-                            <div class="boxsection-title">FULFILLMENT</div>
-                            <div class="boxsection-body">
-                                <div class="boxsection-contant">
-                                    FULFILLMENT body
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="orderblock"><?=$order_view?></div>
     </div>
 
 </div>
