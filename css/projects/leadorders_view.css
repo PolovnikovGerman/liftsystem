@@ -1205,7 +1205,8 @@ ul.keyslist li:last-child {
     width: 100%;
     background: #fff;
     padding: 0 5px;
-    height: 717px;
+    /* height: 717px; */
+    height: 686px;
     border-radius: 0 0 5px 5px;
 }
 .boxsection-title {
