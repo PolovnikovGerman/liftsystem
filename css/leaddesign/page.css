@@ -3,6 +3,9 @@
 /*Lead - 765x625 #b2b08b*/
 /*Oreder - 765x625 #e4e3e3*/
 /*margin - 20px*/
+.maincontentmenu {
+    display: none!important;
+}
 .contentdata_view {
     width: 1572px!important;
 }
