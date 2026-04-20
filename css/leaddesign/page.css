@@ -8,32 +8,41 @@
 }
 .contentdata_view {
     width: 1572px!important;
+    background: #3736fe!important;
 }
 .customerdataarea {
     width: 765px;
     height: 398px;
     background: #7373fe;
     margin: 10px;
-    border: 1px solid #000000;
+    /*border: 1px solid #000000;*/
+    border-radius: 5px;
+    overflow: hidden;
 }
 .emaildataarea {
     width: 765px;
     height: 398px;
     background: #ffffff;
     margin: 10px;
-    border: 1px solid #000000;
+    /*border: 1px solid #000000;*/
+    border-radius: 5px;
+    overflow: hidden;
 }
 .leaddataarea {
     width: 765px;
     height: 625px;
     margin: 10px;
     background: #b2b08b;
-    border: 1px solid #000000;
+    /*border: 1px solid #000000;*/
+    border-radius: 5px;
+    overflow: hidden;
 }
 .orderdataarea {
     width: 765px;
     height: 625px;
     margin: 10px;
     background: #e4e3e3;
-    border: 1px solid #000000;
+    /*border: 1px solid #000000;*/
+    border-radius: 5px;
+    overflow: hidden;
 }
