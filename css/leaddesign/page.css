@@ -1,0 +1,33 @@
+/*Customer - W 765x H 398 px #7373fe*/
+/*Email - W 765x H 398 px #ffffff*/
+/*Lead - 765x625 #b2b08b*/
+/*Oreder - 765x625 #e4e3e3*/
+/*margin - 20px*/
+.customerdataarea {
+    width: 765px;
+    height: 398px;
+    background: #7373fe;
+    margin: 10px;
+    border: 1px solid #000000;
+}
+.emaildataarea {
+    width: 765px;
+    height: 398px;
+    background: #ffffff;
+    margin: 10px;
+    border: 1px solid #000000;
+}
+.leaddataarea {
+    width: 765px;
+    height: 625px;
+    margin: 10px;
+    background: #b2b08b;
+    border: 1px solid #000000;
+}
+.orderdataarea {
+    width: 765px;
+    height: 625px;
+    margin: 10px;
+    background: #e4e3e3;
+    border: 1px solid #000000;
+}
