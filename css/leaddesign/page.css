@@ -6,9 +6,14 @@
 .maincontentmenu {
     display: none!important;
 }
+.maincontent_view {
+    padding-top: 0!important;
+    width: 1572px!important;
+}
 .contentdata_view {
     width: 1572px!important;
     background: #3736fe!important;
+    border-top: none!important;
 }
 .customerdataarea {
     width: 765px;
