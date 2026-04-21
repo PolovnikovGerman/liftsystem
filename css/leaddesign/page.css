@@ -8,46 +8,62 @@
 }
 .maincontent_view {
     padding-top: 0!important;
-    width: 1572px!important;
+    /*width: 1572px!important;*/
 }
 .contentdata_view {
-    width: 1572px!important;
+    /*width: 1572px!important;*/
     background: #3736fe!important;
     border-top: none!important;
 }
 .customerdataarea {
-    width: 765px;
-    height: 398px;
+    width: 740px; /* 765px; */
+    /*height: 398px;*/
     background: #7373fe;
     margin: 10px;
     /*border: 1px solid #000000;*/
     border-radius: 5px;
     overflow: hidden;
 }
+.customerdataarea img {
+    width: 100%;
+    height: auto;
+}
 .emaildataarea {
-    width: 765px;
-    height: 398px;
+    width: 740px; /* 765px; */
+    /*height: 398px;*/
     background: #ffffff;
     margin: 10px;
     /*border: 1px solid #000000;*/
     border-radius: 5px;
     overflow: hidden;
 }
+.emaildataarea img {
+    width: 100%;
+    height: auto;
+}
 .leaddataarea {
-    width: 765px;
-    height: 625px;
+    width: 740px; /* 765px; */
+    /*height: 625px;*/
     margin: 10px;
     background: #b2b08b;
     /*border: 1px solid #000000;*/
     border-radius: 5px;
     overflow: hidden;
 }
+.leaddataarea img {
+    width: 100%;
+    height: auto;
+}
 .orderdataarea {
-    width: 765px;
-    height: 625px;
+    width: 740px; /* 765px; */
+    /*height: 625px;*/
     margin: 10px;
     background: #e4e3e3;
     /*border: 1px solid #000000;*/
     border-radius: 5px;
     overflow: hidden;
+}
+.orderdataarea img {
+    width: 100%;
+    height: auto;
 }
