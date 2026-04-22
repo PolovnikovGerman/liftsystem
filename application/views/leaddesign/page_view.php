@@ -10,9 +10,15 @@
     </div>
     <div class="datarow">
         <div class="leaddataarea">
+            <button class="close">
+                <span aria-hidden="true">×</span>
+            </button>
             <img src="/img/leaddesign/block-lead-01.png" alt="Lead"/>
         </div>
         <div class="orderdataarea">
+            <button class="close">
+                <span aria-hidden="true">×</span>
+            </button>
             <img src="/img/leaddesign/block-order-01.png" alt="Order"/>
         </div>
     </div>
