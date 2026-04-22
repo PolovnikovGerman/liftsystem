@@ -48,7 +48,8 @@
     background: #b2b08b;
     /*border: 1px solid #000000;*/
     border-radius: 5px;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    position: relative;
 }
 .leaddataarea img {
     width: 100%;
@@ -61,7 +62,8 @@
     background: #e4e3e3;
     /*border: 1px solid #000000;*/
     border-radius: 5px;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    position: relative;
 }
 .orderdataarea img {
     width: 100%;
