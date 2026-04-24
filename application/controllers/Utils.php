@@ -642,25 +642,25 @@ Class Utils extends CI_Controller
             if (ifset($chkres,'user_id',0)==$user_id) {
                 $out['result'] = 1;
                 // Emulate user log in
-                $res['token']=uniq_link(30);
+                $token = uniq_link(30);
                 /* Save token to DB */
                 $this->db->set('token_created',date('Y-m-d H:i:s'));
-                $this->db->set('access_token',$res['token']);
+                $this->db->set('access_token',$token);
                 $this->db->set('user_id',$user_id);
                 $this->db->insert('ts_acces_tokens');
                 // Add Access token into cookies
                 $server= $_SERVER['SERVER_NAME'];
                 $cookie = array(
                     'name'   => 'acctoken',
-                    'value'  => $res['token'],
+                    'value'  => $token,
                     'expire' => '86500',
                     'domain' => $server,
                 );
                 set_cookie($cookie);
-                $out['token'] = $res['token'];
+                $out['token'] = $token;
                 $this->load->model('useractivity_model');
                 $this->useractivity_model->userlog($user_id,'Sign in', 1);
-                log_message('error','Sign in to '.$server.' Token '.$res['token']);
+                log_message('error','Sign in to '.$server.' Token '.$token);
             }
         }
         echo json_encode($out);
