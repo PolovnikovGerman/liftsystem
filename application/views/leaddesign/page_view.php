@@ -5,7 +5,7 @@
             <img src="/img/leaddesign/block-customer-01.png" alt="Customer"/>
         </div>
         <div class="emaildataarea">
-            <img src="/img/leaddesign/block-email-01.png" alt="Email"/>
+            <img src="/img/leaddesign/block-email-02.png" alt="Email"/>
         </div>
     </div>
     <div class="datarow">
@@ -19,7 +19,7 @@
             <button class="close">
                 <span aria-hidden="true">×</span>
             </button>
-            <img src="/img/leaddesign/block-order-01.png" alt="Order"/>
+            <img src="/img/leaddesign/block-order-02.png" alt="Order"/>
         </div>
     </div>
 </div>
