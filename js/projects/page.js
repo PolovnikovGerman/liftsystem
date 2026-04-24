@@ -129,7 +129,6 @@ function init_projects_content() {
             }
         },'json');
     });
-    });
     $(".ts-buttonaccess").unbind('click').click(function (){
         var viewurl = $(this).data('url');
         var url = '/projects/getaccess';
