@@ -135,6 +135,7 @@ function init_projects_content() {
         $.post(url, {}, function (response){
             if (response.errors=='') {
                 // Manage content
+                var outurl = viewurl+'?token='+response.data.token
                 window.open(viewurl);
             } else {
                 show_error(response);
