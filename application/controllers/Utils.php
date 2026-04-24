@@ -642,13 +642,15 @@ Class Utils extends CI_Controller
             if (ifset($chkres,'user_id',0)==$user_id) {
                 $out['result'] = 1;
                 // Emulate user log in
-                $this->load->helper('cookie');
+                $this->load->helper('cookie_helper');
+                log_message('error','Add Cookie Helper');
                 $token = uniq_link(30);
                 /* Save token to DB */
                 $this->db->set('token_created',date('Y-m-d H:i:s'));
                 $this->db->set('access_token',$token);
                 $this->db->set('user_id',$user_id);
                 $this->db->insert('ts_acces_tokens');
+                log_message('error','Add Token '.$token);
                 // Add Access token into cookies
                 $server= $_SERVER['SERVER_NAME'];
                 $cookie = array(
