@@ -992,6 +992,33 @@ Class User_model extends MY_Model
         return $users;
     }
 
+    public function projectaccess($userid)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Unknown error'];
+        $postdata=['user' => $userid];
+        $curl = curl_init(); //Init
+        curl_setopt($curl, CURLOPT_USERPWD, "{$this->config->item('project_user')}:{$this->config->item('project_password')}");
+        curl_setopt($curl, CURLOPT_URL, $this->config->item('project_url')); //POST URL
+        curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
+        curl_setopt($curl, CURLOPT_POST, 1); // Send data via POST
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //curl return response
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata); // data for send via POST
+        $res = curl_exec($curl);
+        if(!$res) {
+            $error = curl_error($curl).'('.curl_errno($curl).')';
+            echo $error;
+        } else {
+            $array = json_decode($res, true);
+            if ($array['result']==1) {
+                $out['result'] = $this->success_result;
+                $out['token'] = $array['token'];
+            } else {
+                log_message('error','Project Access Error '.$res['msg']);
+            }
+        }
+        return $out;
+    }
+
 }
 /* End of file user_model.php */
 /* Location: ./application/models/user_model.php */
