@@ -710,7 +710,6 @@ Class Utils extends CI_Controller
                 $out['token'] = $token;
                 $this->load->model('useractivity_model');
                 $this->useractivity_model->userlog($user_id,'Sign in', 1);
-                log_message('error','Sign in to '.$server.' Token '.$token);
             }
         }
         echo json_encode($out);
