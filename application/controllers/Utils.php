@@ -646,7 +646,7 @@ Class Utils extends CI_Controller
                 /* Save token to DB */
                 $this->db->set('token_created',date('Y-m-d H:i:s'));
                 $this->db->set('access_token',$res['token']);
-                $this->db->set('user_id',$res['user_id']);
+                $this->db->set('user_id',$user_id);
                 $this->db->insert('ts_acces_tokens');
                 // Add Access token into cookies
                 $server= $_SERVER['SERVER_NAME'];
