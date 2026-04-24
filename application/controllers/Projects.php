@@ -134,9 +134,16 @@ class Projects extends MY_Controller
     public function getaccess()
     {
         if ($this->isAjax()) {
+            $mdata = [];
             $user_id = $this->USR_ID;
             $this->load->model('user_model');
-
+            $res = $this->user_model->projectaccess($user_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['token'] = $res['token'];
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
