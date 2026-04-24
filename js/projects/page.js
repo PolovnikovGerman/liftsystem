@@ -130,13 +130,14 @@ function init_projects_content() {
         },'json');
     });
     $(".ts-buttonaccess").unbind('click').click(function (){
-        var viewurl = $(this).data('url');
+        var params new Array();
+        params.push({name: 'url', value: $(this).data('url')});
         var url = '/projects/getaccess';
-        $.post(url, {}, function (response){
+        $.post(url, params, function (response){
             if (response.errors=='') {
                 // Manage content
-                var outurl = viewurl+'?token='+response.data.token
-                window.open(viewurl);
+                // var outurl = viewurl+'?token='+response.data.token
+                window.open(response.data.viewurl);
             } else {
                 show_error(response);
             }

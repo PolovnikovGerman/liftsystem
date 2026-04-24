@@ -146,7 +146,8 @@ class Projects extends MY_Controller
             $error = $res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
-                $mdata['token'] = $res['token'];
+                $mdata['viewurl'] = 'http://lifttest.stressballs.com/easylogin?token='.$res['token'].'&url=projects';
+                // $mdata['token'] = $res['token'];
             }
             $this->ajaxResponse($mdata, $error);
         }
