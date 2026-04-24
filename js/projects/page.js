@@ -114,7 +114,7 @@ function init_projects_content() {
         },'json');
     });
     $(".ts-buttonaccess").unbind('click').click(function (){
-        var params new Array();
+        var params= new Array();
         params.push({name: 'url', value: $(this).data('url')});
         var url = '/projects/getaccess';
         $.post(url, params, function (response){
