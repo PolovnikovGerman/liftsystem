@@ -131,6 +131,16 @@ class Projects extends MY_Controller
         show_404();
     }
 
+    public function getaccess()
+    {
+        if ($this->isAjax()) {
+            $user_id = $this->USR_ID;
+            $this->load->model('user_model');
+
+        }
+        show_404();
+    }
+
     private function _prepare_projects_view() {
         $options = [
             'liftlink' => getenv('LIFTTEST'),

@@ -112,5 +112,17 @@ function init_projects_content() {
                 init_leadsorders_content();
             }
         },'json');
-    })
+    });
+    $(".ts-buttonaccess").unbind('click').click(function (){
+        var viewurl = $(this).data('url');
+        var url = '/projects/getaccess';
+        $.post(url, {}, function (response){
+            if (response.errors=='') {
+                // Manage content
+                window.open(viewurl);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
