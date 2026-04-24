@@ -632,6 +632,9 @@ Class Utils extends CI_Controller
     public function getprojectaccess() {
         $out = ['result' => 0, 'msg' => 'Unknown error'];
         $postdata = $this->input->post();
+        foreach ($postdata as $key => $value) {
+            log_message('error', 'Post PARAM '.$key.' Value - '.$value);
+        }
         if (ifset($postdata, 'user',0) > 0) {
             $user_id = $postdata['user'];
             $this->load->model('user_model');
@@ -657,6 +660,7 @@ Class Utils extends CI_Controller
                 $out['token'] = $res['token'];
                 $this->load->model('useractivity_model');
                 $this->useractivity_model->userlog($user_id,'Sign in', 1);
+                log_message('error','Sign in to '.$server.' Token '.$res['token']);
             }
         }
         echo json_encode($out);
