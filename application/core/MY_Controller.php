@@ -113,7 +113,6 @@ class MY_Controller extends Base_Controller
         $this->load->model('useractivity_model');
         $this->load->model('menuitems_model');
         date_default_timezone_set('America/New_York');
-
         $user = $this->user_model->current_user();
         if ($user['result']==0) {
             if ($this->isAjax()) {

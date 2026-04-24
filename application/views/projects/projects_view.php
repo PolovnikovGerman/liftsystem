@@ -25,13 +25,13 @@
         </div>
         </a>
     </div>
-    <div class="ts-button lift">
-        <a href="<?=$liftlink?>" target="_blank">
+    <div class="ts-buttonaccess lift" data-url="<?=$liftlink?>">
+<!--        <a href="--><?php //=$liftlink?><!--" target="_blank">-->
         <p>Test <span>Site</span></p>
         <div class="logo-company">
             <div class="logo-lift">LI<span>FT</span></div>
         </div>
-        </a>
+<!--        </a>-->
     </div>
     <?php endif; ?>
     <?php if ($this->config->item('test_server')==1) : ?>
@@ -51,11 +51,11 @@
 <!--            <p>Blocked Customer</p>-->
 <!--        </div>-->
     <?php else : ?>
-        <div class="ts-button testorders">
-            <a href="<?=$testorderlink?>" target="_blank">
+        <div class="ts-buttonaccess testorders" data-url="<?=$testorderlink?>">
+<!--            <a href="--><?php //=$testorderlink?><!--" target="_blank">-->
             <p>Test Orders</p>
             <div class="logo-company-empty">&nbsp;</div>
-            </a>
+<!--            </a>-->
         </div>
     <?php endif; ?>
 </div>

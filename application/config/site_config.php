@@ -296,3 +296,7 @@ $config['quote_customitem_price'] = array(
 // Default shipping prices
 $config['custom_ship_price'] = 0.15;
 $config['regular_ship_price'] = 0.12;
+// Project access
+$config['project_user'] = getenv('PROJECT_USER');
+$config['project_password'] = getenv('PROJECT_PASSWORD');
+$config['project_url'] = getenv('PROJECT_URL');
