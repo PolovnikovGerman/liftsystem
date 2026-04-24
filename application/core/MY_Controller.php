@@ -113,23 +113,7 @@ class MY_Controller extends Base_Controller
         $this->load->model('useractivity_model');
         $this->load->model('menuitems_model');
         date_default_timezone_set('America/New_York');
-        $token = $this->input->get('token');
-        if (!empty($token)) {
-            log_message('error','Try to connect with token '.$token);
-            $chkuser = $this->user_model->get_user_accesstoken($token);
-            log_message('error','Token '.$token.' Check result - '.$chkuser['result'].'!');
-            if ($chkuser['result']==$this->error_result) {
-                if ($this->isAjax()) {
-                    $this->ajaxResponse(array('url'=>'/login'),'Your connection has been lost. Please log in');
-                } else {
-                    redirect('/login');
-                }
-            } else {
-                return redirect('/');
-            }
-        } else {
-            $user = $this->user_model->current_user();
-        }
+        $user = $this->user_model->current_user();
         if ($user['result']==0) {
             if ($this->isAjax()) {
                 $this->ajaxResponse(array('url'=>'/login'),'Your connection has been lost. Please log in');
