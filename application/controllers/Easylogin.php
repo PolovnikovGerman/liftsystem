@@ -9,6 +9,7 @@ class Easylogin extends Base_Controller
     {
         parent::__construct();
         $this->load->model('user_model');
+        $this->load->helper('cookie_helper');
     }
 
     public function index()
