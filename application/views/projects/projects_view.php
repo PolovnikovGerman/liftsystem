@@ -1,61 +1,57 @@
-<div class="buttons-testsites">
-    <?php if ($this->config->item('test_server')==0) : ?>
-    <div class="ts-button stressballsbluetrack">
-        <a href="<?=$bluelink?>" target="_blank">
-            <p>Test Site</p>
-            <div class="logo-company">
-                <img src="/img/projects/logo-stressballs-white.svg">
-                <img src="/img/projects/blue_logo.png" class="bluetrackcompany">
-            </div>
-        </a>
-    </div>
-    <div class="ts-button stressrelievers">
-        <a href="<?=$relivlink?>" target="_blank">
-        <p>Test Site</p>
-        <div class="logo-company">
-            <img src="/img/projects/sr-newlogo.svg">
-        </div>
-        </a>
-    </div>
-    <div class="ts-button stressballs">
-        <a href="<?=$designlink?>" target="_blank">
-        <p>Test Site</p>
-        <div class="logo-company">
-            <img src="/img/projects/logo-stressballs-white.svg">
-        </div>
-        </a>
-    </div>
-    <div class="ts-buttonaccess lift" data-url="<?=$liftlink?>">
-<!--        <a href="--><?php //=$liftlink?><!--" target="_blank">-->
-        <p>Test <span>Site</span></p>
-        <div class="logo-company">
-            <div class="logo-lift">LI<span>FT</span></div>
-        </div>
-<!--        </a>-->
-    </div>
-    <?php endif; ?>
-    <?php if ($this->config->item('test_server')==1) : ?>
+<div class="projectslist_part">
+    <div class="datarow">
         <div class="ts-button dualorders">
-            <p>Dual Orders Popup</p>
+            <div class="logo-company">
+                <img src="/img/projects/test_lift_btn.png"/>
+            </div>
         </div>
+        <div class="projectlabel">
+            <div class="projectlabel_text">Popup</div>
+            <div class="projectlabel_text">Dual Orders</div>
+        </div>
+    </div>
+    <div class="datarow">
         <div class="ts-button leadsview">
-            <p>Lead Popup (Stock)</p>
+            <div class="logo-company">
+                <img src="/img/projects/test_lift_btn.png"/>
+            </div>
         </div>
+        <div class="projectlabel">
+            <div class="projectlabel_text">Lead  Popup</div>
+            <div class="projectlabel_text">(Stock)</div>
+        </div>
+    </div>
+    <div class="datarow">
+        <!-- ???? -->
         <div class="ts-button leadcustomview">
-            <p>Lead Popup (Custom) + dumbed LEFT Panel</p>
+            <div class="logo-company">
+                <img src="/img/projects/test_lift_btn.png"/>
+            </div>
         </div>
+        <div class="projectlabel">
+            <div class="projectlabel_text">Lead Popup (Custom) + </div>
+            <div class="projectlabel_text">dumbed LEFT Panel</div>
+        </div>
+    </div>
+    <div class="datarow">
         <div class="ts-button orderleadsview">
-            <p>Orders & Leads Popup</p>
+            <div class="logo-company">
+                <img src="/img/projects/test_lift_btn.png"/>
+            </div>
         </div>
-<!--        <div class="ts-button blockview">-->
-<!--            <p>Blocked Customer</p>-->
-<!--        </div>-->
-    <?php else : ?>
-        <div class="ts-buttonaccess testorders" data-url="<?=$testorderlink?>">
-<!--            <a href="--><?php //=$testorderlink?><!--" target="_blank">-->
-            <p>Test Orders</p>
-            <div class="logo-company-empty">&nbsp;</div>
-<!--            </a>-->
+        <div class="projectlabel">
+            <div class="projectlabel_text">Orders & Leads Popup</div>
         </div>
-    <?php endif; ?>
+    </div>
+    <div class="datarow">
+        <div class="ts-button orderleaddataview">
+            <div class="logo-company">
+                <img src="/img/projects/test_lift_btn.png"/>
+            </div>
+        </div>
+        <div class="projectlabel">
+            <div class="projectlabel_text">Dual View</div>
+            <div class="projectlabel_text">(Order & Lead)</div>
+        </div>
+    </div>
 </div>

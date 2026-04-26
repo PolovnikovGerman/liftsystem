@@ -97,22 +97,22 @@ function init_projects_content() {
             }
         },'json');
     })
-    $(".blockview").unbind('click').click(function (){
-        var params = new Array();
-        params.push({name: 'blocked', value: 1});
-        params.push({name: 'content', value: 'orderleadview'});
-        var url = '/projects/viewcontent';
-        $.post(url, params, function (response){
-            if (response.errors=='') {
-                $("#modal-dualorders").find('div.modal-dialog').css('width',response.data.modalwidth);
-                $("#modal-dualorders").find('div.modal-body').empty().html(response.data.content);
-                $("#modal-dualorders").modal({keyboard: false, show: true});
-                // Manage content
-                init_manageproj_content();
-                init_leadsorders_content();
-            }
-        },'json');
-    });
+    // $(".blockview").unbind('click').click(function (){
+    //     var params = new Array();
+    //     params.push({name: 'blocked', value: 1});
+    //     params.push({name: 'content', value: 'orderleadview'});
+    //     var url = '/projects/viewcontent';
+    //     $.post(url, params, function (response){
+    //         if (response.errors=='') {
+    //             $("#modal-dualorders").find('div.modal-dialog').css('width',response.data.modalwidth);
+    //             $("#modal-dualorders").find('div.modal-body').empty().html(response.data.content);
+    //             $("#modal-dualorders").modal({keyboard: false, show: true});
+    //             // Manage content
+    //             init_manageproj_content();
+    //             init_leadsorders_content();
+    //         }
+    //     },'json');
+    // });
     $(".ts-buttonaccess").unbind('click').click(function (){
         var params= new Array();
         params.push({name: 'url', value: $(this).data('url')});
@@ -127,4 +127,11 @@ function init_projects_content() {
             }
         },'json');
     });
+    $(".ts-button").unbind('click').click(function (){
+        var viewurl = $(this).data('viewurl');
+        if (viewurl===undefined) {
+        } else {
+            window.open(viewurl);
+        }
+    })
 }
