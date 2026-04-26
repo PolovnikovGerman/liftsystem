@@ -65,22 +65,22 @@ function init_projects_content() {
             }
         },'json');
     });
-    $(".leadsview").unbind('click').click(function (){
-        var params = new Array();
-        params.push({name: 'blocked', value: 0});
-        params.push({name: 'content', value: 'leadsview'});
-        var url = '/projects/viewcontent';
-        $.post(url, params, function (response){
-            if (response.errors=='') {
-                $("#modal-dualorders").find('div.modal-dialog').css('width',response.data.modalwidth);
-                $("#modal-dualorders").find('div.modal-body').empty().html(response.data.content);
-                $("#modal-dualorders").modal({keyboard: false, show: true});
-                // Manage content
-                init_manageproj_content();
-                init_leadquote_content();
-            }
-        },'json');
-    })
+    // $(".leadsview").unbind('click').click(function (){
+    //     var params = new Array();
+    //     params.push({name: 'blocked', value: 0});
+    //     params.push({name: 'content', value: 'leadsview'});
+    //     var url = '/projects/viewcontent';
+    //     $.post(url, params, function (response){
+    //         if (response.errors=='') {
+    //             $("#modal-dualorders").find('div.modal-dialog').css('width',response.data.modalwidth);
+    //             $("#modal-dualorders").find('div.modal-body').empty().html(response.data.content);
+    //             $("#modal-dualorders").modal({keyboard: false, show: true});
+    //             // Manage content
+    //             init_manageproj_content();
+    //             init_leadquote_content();
+    //         }
+    //     },'json');
+    // })
     $(".orderleadsview").unbind('click').click(function (){
         var params = new Array();
         params.push({name: 'blocked', value: 0});
@@ -113,6 +113,22 @@ function init_projects_content() {
     //         }
     //     },'json');
     // });
+    $(".orderleaddataview").unbind('click').click(function (){
+        var params = new Array();
+        params.push({name: 'blocked', value: 0});
+        params.push({name: 'content', value: 'orderleaddataview'});
+        var url = '/projects/viewcontent';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#modal-dualorders").find('div.modal-dialog').css('width',response.data.modalwidth);
+                $("#modal-dualorders").find('div.modal-body').empty().html(response.data.content);
+                $("#modal-dualorders").modal({keyboard: false, show: true});
+                // Manage content
+                init_manageproj_content();
+                init_leadsorders_content();
+            }
+        },'json');
+    });
     $(".ts-buttonaccess").unbind('click').click(function (){
         var params= new Array();
         params.push({name: 'url', value: $(this).data('url')});

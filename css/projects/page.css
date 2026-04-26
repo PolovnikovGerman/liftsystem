@@ -1,7 +1,7 @@
 .projectslist_part {
     width: 780px;
 }
-.ts-button, .ts-buttonaccess {
+.ts-button, .ts-buttonaccess, .ts-buttontest {
     width: 317px;
     height: 108px;
     /*margin-left: 20px;*/
