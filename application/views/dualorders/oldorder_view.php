@@ -56,7 +56,7 @@
 </div>
 <div class="datarow">
     <div class="tabsline">
-        <ul class="tabslist">
+        <ul class="tabslist_old">
             <li>
                 <div class="tabbox active">Main</div>
             </li>
