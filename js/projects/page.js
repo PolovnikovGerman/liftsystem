@@ -12,15 +12,6 @@ $(document).ready(function(){
     //     init_page(objid);
     // })
     init_page('projectsview');
-    var start = '';
-    if ($("#projectviewstart").length > 0) {
-        start = $("#projectviewstart").val();
-    }
-    if (start!='') {
-        if (start=='dualorders') {
-            $(".dualorders").click();
-        }
-    }
 });
 
 function init_page(objid) {
@@ -31,6 +22,15 @@ function init_page(objid) {
         case 'projectsview':
             $("#projectsview").show();
             init_projects_content();
+            var start = '';
+            if ($("#projectviewstart").length > 0) {
+                start = $("#projectviewstart").val();
+            }
+            if (start!='') {
+                if (start=='dualorders') {
+                    $(".dualorders").click();
+                }
+            }
             break;
     }
 }
