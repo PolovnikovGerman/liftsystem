@@ -129,6 +129,9 @@ function init_projects_content() {
             }
         },'json');
     });
+    $(".complexlead").unbind('click').click(function (){
+
+    });
     $(".ts-buttonaccess").unbind('click').click(function (){
         var params= new Array();
         params.push({name: 'url', value: $(this).data('url')});
