@@ -132,10 +132,6 @@ $(document).ready(function () {
     $("#inventory").unbind('click').click(function () {
         window.location.href='/fulfillment?start=printshopinventview';
     })
-    // Lead design
-    $("#leaddesign").unbind('click').click(function (){
-        window.location.href='/leaddesign';
-    })
     // $("select.publicsearch_type").unbind('change').change(function(){
     //     var newval = $(this).val();
     //     if (newval=='Orders') {

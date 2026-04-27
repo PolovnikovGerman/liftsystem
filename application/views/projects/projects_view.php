@@ -1,3 +1,4 @@
+<input type="hidden" id="projectviewstart" value="<?=$start?>"/>
 <div class="projectslist_part">
     <div class="datarow">
         <div class="ts-buttontest dualorders">

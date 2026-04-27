@@ -1,16 +1,23 @@
 $(document).ready(function(){
     // Find first item
-    var start = '';
-    if ($(".contentsubmenu_item.active").length > 0 ) {
-        start = $(".contentsubmenu_item.active").data('link');
-    } else {
-        start = $(".contentsubmenu_item:first").data('link');
+    // var start = '';
+    // if ($(".contentsubmenu_item.active").length > 0 ) {
+    //     start = $(".contentsubmenu_item.active").data('link');
+    // } else {
+    //     start = $(".contentsubmenu_item:first").data('link');
+    // }
+    // init_page(start);
+    // $(".contentsubmenu_item").unbind('click').click(function () {
+    //     var objid = $(this).data('link');
+    //     init_page(objid);
+    // })
+    init_page('projectsview');
+    var start = $("#projectviewstart").val();
+    if (start!='') {
+        if (start=='dualorders') {
+            $(".dualorders").click();
+        }
     }
-    init_page(start);
-    $(".contentsubmenu_item").unbind('click').click(function () {
-        var objid = $(this).data('link');
-        init_page(objid);
-    })
 });
 
 function init_page(objid) {
@@ -130,7 +137,8 @@ function init_projects_content() {
         },'json');
     });
     $(".complexlead").unbind('click').click(function (){
-
+        var url = '/leaddesign';
+        window.location.replace(url);
     });
     $(".ts-buttonaccess").unbind('click').click(function (){
         var params= new Array();

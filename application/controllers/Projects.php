@@ -167,8 +167,10 @@ class Projects extends MY_Controller
             'liftlink' => getenv('LIFTTEST'),
             'bluelink' => getenv('BLUETRACKTEST'),
             'relivlink' => getenv('RELIVERSTEST'),
-            'designlink' => getenv('DESIGSTEST'),
-            'testorderlink' => getenv('TESTORDERLINK'),
+            'dualorders' => getenv('DUALORDERS'),
+            'orderleads' => getenv('ORDERLEADS'),
+            'orderleaddata' => getenv('ORDERLEADDATA'),
+            'complexlead' => getenv('COMPLEXLEAD'),
             'brand' => $projoptions['brand'],
             'start' => $projoptions['start'],
         ];

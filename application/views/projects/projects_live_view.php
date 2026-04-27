@@ -29,10 +29,8 @@
 </div>
 <div class="projectslist_part">
     <div class="datarow">
-        <div class="ts-buttonaccess lift" data-url="<?=$liftlink?>">
-            <div class="logo-company">
-                <img src="/img/projects/test_lift_btn.png"/>
-            </div>
+        <div class="ts-buttonaccess" data-url="<?=$dualorders?>">
+            <img src="/img/projects/test_lift_btn.png"/>
         </div>
         <div class="projectlabel">
             <div class="projectlabel_text">Popup</div>
@@ -40,29 +38,7 @@
         </div>
     </div>
     <div class="datarow">
-        <div class="ts-buttonaccess" data-url="<?=$liftlink?>">
-            <div class="logo-company">
-                <img src="/img/projects/test_lift_btn.png"/>
-            </div>
-        </div>
-        <div class="projectlabel">
-            <div class="projectlabel_text">Lead  Popup</div>
-            <div class="projectlabel_text">(Stock)</div>
-        </div>
-    </div>
-    <div class="datarow">
-        <div class="ts-buttonaccess" data-url="<?=$liftlink?>">
-            <div class="logo-company">
-                <img src="/img/projects/test_lift_btn.png"/>
-            </div>
-        </div>
-        <div class="projectlabel">
-            <div class="projectlabel_text">Lead Popup (Custom) + </div>
-            <div class="projectlabel_text">dumbed LEFT Panel</div>
-        </div>
-    </div>
-    <div class="datarow">
-        <div class="ts-buttonaccess" data-url="<?=$liftlink?>">
+        <div class="ts-buttonaccess" data-url="<?=$orderleads?>">
             <div class="logo-company">
                 <img src="/img/projects/test_lift_btn.png"/>
             </div>
@@ -72,7 +48,7 @@
         </div>
     </div>
     <div class="datarow">
-        <div class="ts-buttonaccess" data-url="<?=$liftlink?>">
+        <div class="ts-buttonaccess" data-url="<?=$orderleaddata?>">
             <div class="logo-company">
                 <img src="/img/projects/test_lift_btn.png"/>
             </div>
@@ -80,6 +56,17 @@
         <div class="projectlabel">
             <div class="projectlabel_text">Dual View</div>
             <div class="projectlabel_text">(Order & Lead)</div>
+        </div>
+    </div>
+    <div class="datarow">
+        <div class="ts-buttonaccess" data-url="<?=$complexlead?>">
+            <div class="logo-company">
+                <img src="/img/projects/test_lift_btn.png"/>
+            </div>
+        </div>
+        <div class="projectlabel">
+            <div class="projectlabel_text">Customer + Email</div>
+            <div class="projectlabel_text">Order & Lead</div>
         </div>
     </div>
 </div>

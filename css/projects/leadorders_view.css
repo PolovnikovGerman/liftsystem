@@ -3,28 +3,28 @@
 /*    background: #fff !important;*/
 /*    height: 500px;*/
 /*}*/
-.ts-button {
-    width: 324px;
-    height: 130px;
-    margin-right: 20px;
-    border: 1px solid #000;
-    cursor: pointer;
-    margin-top: 10px;
-}
-.ts-button p {
-    text-align: center;
-    font-size: 24px;
-    line-height: 105px;
-    font-weight: bold;
-    margin-top: -26px;
-    margin-bottom: 10px;
-}
-.ts-button.leadcustomview p {
-    line-height: 52px;
-}
-ts-button.testorders p {
-    margin-top: 7px;
-}
+/*.ts-button {*/
+/*    width: 324px;*/
+/*    height: 130px;*/
+/*    margin-right: 20px;*/
+/*    border: 1px solid #000;*/
+/*    cursor: pointer;*/
+/*    margin-top: 10px;*/
+/*}*/
+/*.ts-button p {*/
+/*    text-align: center;*/
+/*    font-size: 24px;*/
+/*    line-height: 105px;*/
+/*    font-weight: bold;*/
+/*    margin-top: -26px;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+/*.ts-button.leadcustomview p {*/
+/*    line-height: 52px;*/
+/*}*/
+/*ts-button.testorders p {*/
+/*    margin-top: 7px;*/
+/*}*/
 
 
 
