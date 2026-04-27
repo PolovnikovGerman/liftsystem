@@ -1429,7 +1429,7 @@ ul.nb-taskslist li {
 .nb-taskbox {
     width: 80px;
     height: 18px;
-    border: 1px solod #000;
+    border: 1px solid #000;
     background: #f605ff;
     border-radius: 3px;
 }
