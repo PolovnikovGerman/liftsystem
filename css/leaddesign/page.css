@@ -3,6 +3,13 @@
 /*Lead - 765x625 #b2b08b*/
 /*Oreder - 765x625 #e4e3e3*/
 /*margin - 20px*/
+.designback {
+    margin-left: 10px;
+    color: #fff;
+    font-size: 12px;
+    height: 12px;
+    cursor: pointer;
+}
 .maincontentmenu {
     display: none!important;
 }
@@ -35,7 +42,12 @@
     margin: 10px;
     /*border: 1px solid #000000;*/
     border-radius: 5px;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    cursor: pointer;
+    position: relative;
+}
+.emaildataarea button.close {
+    display: none;
 }
 .emaildataarea img {
     width: 100%;
@@ -86,4 +98,7 @@
     font-size: 18px;
     line-height: 18px;
     text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+}
+.close:hover {
+    opacity: 1!important;
 }

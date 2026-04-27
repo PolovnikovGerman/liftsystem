@@ -1,11 +1,18 @@
 <?=$menu_view?>
+<input type="hidden" id="emailview" value="inbox"/>
 <div class="contentdata_view">
+    <div class="datarow">
+        <div class="designback"><i class="fa fa-arrow-left"></i> Back</div>
+    </div>
     <div class="datarow">
         <div class="customerdataarea">
             <img src="/img/leaddesign/block-customer-01.png" alt="Customer"/>
         </div>
         <div class="emaildataarea">
-            <img src="/img/leaddesign/block-email-02.png" alt="Email"/>
+            <button class="close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <img class="emailpic" src="/img/leaddesign/block-email-02.png" alt="Email"/>
         </div>
     </div>
     <div class="datarow">
