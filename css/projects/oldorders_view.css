@@ -1,3 +1,20 @@
+.tabslist_old {
+    float: left;
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+ul.tabslist_old li {
+    float: left;
+    margin-right: 3px;
+}
+ul.tabslist_old li:last-child {
+    margin-right: 0;
+}
+.tabslist_old .tabbox.active {
+    background: #e4e3e3;
+}
 .sectionline_old {
     width: 100%;
     padding: 0 5px;
