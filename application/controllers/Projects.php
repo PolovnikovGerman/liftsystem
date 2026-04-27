@@ -58,6 +58,7 @@ class Projects extends MY_Controller
         $head['styles'][] = array('style' => '/css/projects/leadorders_view.css');
         $head['scripts'][] = array('src' => 'https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js');
         $head['scripts'][] = array('src' => '/js/projects/leadorders_view.js');
+        $head['styles'][] = array('style' => '/css/projects/oldorders_view.css');
         $options = [
             'title' => $head['title'],
             'user_id' => $this->USR_ID,
@@ -122,8 +123,10 @@ class Projects extends MY_Controller
                 'customer_view' => $customer_view,
             ];
             if ($content=='dualorders') {
-                $mdata['content'] = $this->load->view('dualorders/page_orders_view', $viewoptions, true);
+                $viewoptions['order_view'] = $this->load->view('dualorders/oldorder_view', [], true);
+                $mdata['content'] = $this->load->view('dualorders/page_dualorders_view', $viewoptions, true);
                 $mdata['modalwidth'] = $this->doubleorderwidth;
+//                $mdata['content'] = $this->load->view('dualorders/page_orders_view', $viewoptions, true);
 //            } elseif ($content=='leadsview') {
 //                $mdata['content'] = $this->load->view('dualorders/leads_view', $viewoptions, true);
 //                $mdata['modalwidth'] = $this->leadorderwidth;
