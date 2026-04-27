@@ -2,7 +2,7 @@
 <input type="hidden" id="emailview" value="inbox"/>
 <div class="contentdata_view">
     <div class="datarow">
-        <div class="designback"><i class="fa fa-arrow-left"></i> Back</div>
+        <div class="designback"><i class="fa fa-long-arrow-left"></i> Back</div>
     </div>
     <div class="datarow">
         <div class="customerdataarea">
