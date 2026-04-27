@@ -29,6 +29,10 @@ function init_page(objid) {
             if (start!='') {
                 if (start=='dualorders') {
                     $(".dualorders").click();
+                } else if (start=='orderleads') {
+                    $(".orderleadsview").click();
+                } else if (start=='orderleaddata') {
+                    $(".orderleaddataview").click();
                 }
             }
             break;
