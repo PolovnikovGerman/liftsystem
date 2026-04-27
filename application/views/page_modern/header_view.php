@@ -67,12 +67,6 @@
                 </div>
             </div>
         <?php endif; ?>
-        <div class="inforeports" id="leaddesign">
-            <div class="icon">
-                <img src="/img/page_view/noun-palette-white.svg" class="img-responsive" alt="Lead Design"/>
-            </div>
-            <div class="infotext">Leads</div>
-        </div>
         <?php if ($adminchk) : ?>
             <div class="infoalerts" title="Admin">
                 <div class="alerticon admin" id="admin">

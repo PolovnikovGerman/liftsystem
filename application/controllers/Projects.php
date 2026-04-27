@@ -34,6 +34,7 @@ class Projects extends MY_Controller
         $head['title'] = 'Projects';
         $brand = $this->current_brand;
         $menu = $this->menuitems_model->get_itemsubmenu($this->USR_ID, $this->pagelink, $brand);
+        $start = $this->input->get('start', TRUE);
 
         $content_options = [];
         $start = $this->input->get('start', TRUE);
@@ -41,7 +42,11 @@ class Projects extends MY_Controller
             if ($row['item_link']=='#projectsview') {
                 // $head['styles'][] = array('style' => '/css/projects/projects.css');
                 // $head['scripts'][] = array('src' => '/js/projects/projects.js');
-                $content_options['projectsview'] = $this->_prepare_projects_view();
+                $projoptions = [
+                    'brand' => $brand,
+                    'start' => $start,
+                ];
+                $content_options['projectsview'] = $this->_prepare_projects_view($projoptions);
             }
         }
         $content_options['menu'] = $menu;
@@ -119,9 +124,9 @@ class Projects extends MY_Controller
             if ($content=='dualorders') {
                 $mdata['content'] = $this->load->view('dualorders/page_orders_view', $viewoptions, true);
                 $mdata['modalwidth'] = $this->doubleorderwidth;
-            } elseif ($content=='leadsview') {
-                $mdata['content'] = $this->load->view('dualorders/leads_view', $viewoptions, true);
-                $mdata['modalwidth'] = $this->leadorderwidth;
+//            } elseif ($content=='leadsview') {
+//                $mdata['content'] = $this->load->view('dualorders/leads_view', $viewoptions, true);
+//                $mdata['modalwidth'] = $this->leadorderwidth;
             } elseif ($content=='orderleaddataview') {
                 $viewoptions['order_view'] = $this->load->view('dualorders/order_view', [], true);
                 $viewoptions['lead_view'] = $this->load->view('dualorders/lead_view', [], true);
@@ -157,16 +162,24 @@ class Projects extends MY_Controller
         show_404();
     }
 
-    private function _prepare_projects_view() {
+    private function _prepare_projects_view($projoptions) {
         $options = [
             'liftlink' => getenv('LIFTTEST'),
             'bluelink' => getenv('BLUETRACKTEST'),
             'relivlink' => getenv('RELIVERSTEST'),
-            'designlink' => getenv('DESIGSTEST'),
-            'testorderlink' => getenv('TESTORDERLINK'),
+            'dualorders' => getenv('DUALORDERS'),
+            'orderleads' => getenv('ORDERLEADS'),
+            'orderleaddata' => getenv('ORDERLEADDATA'),
+            'complexlead' => getenv('COMPLEXLEAD'),
+            'brand' => $projoptions['brand'],
+            'start' => $projoptions['start'],
         ];
         // $options['doubleorder'] = $this->load->view('dualorders/page_view',[], true);
-        $content = $this->load->view('projects/projects_view', $options, TRUE);
+        if ($this->config->item('test_server')==0) {
+            $content = $this->load->view('projects/projects_live_view', $options, TRUE);
+        } else {
+            $content = $this->load->view('projects/projects_view', $options, TRUE);
+        }
         return $content;
     }
 }
