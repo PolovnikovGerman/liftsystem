@@ -12,7 +12,10 @@ $(document).ready(function(){
     //     init_page(objid);
     // })
     init_page('projectsview');
-    var start = $("#projectviewstart").val();
+    var start = '';
+    if ($("#projectviewstart").length > 0) {
+        start = $("#projectviewstart").val();
+    }
     if (start!='') {
         if (start=='dualorders') {
             $(".dualorders").click();
