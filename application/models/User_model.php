@@ -64,6 +64,8 @@ Class User_model extends MY_Model
         $this->db->from('ts_acces_tokens');
         $this->db->where('access_token',$access_token);
         $res=$this->db->get()->result_array();
+        log_message('error','Token Check: '.$this->db->last_query());
+        log_message('error','Results: '.count($res));
         if (count($res)==1) {
             $user_id=$res[0]['user_id'];
             $chkres=$this->get_user_details($user_id);

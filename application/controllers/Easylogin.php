@@ -19,7 +19,10 @@ class Easylogin extends Base_Controller
         } else {
             $token = $this->input->get('token', TRUE);
             $url = $this->input->get('url', TRUE);
+            log_message('error','Token: '.$token);
+            log_message('error','URL: '.$url);
             $chkuser = $this->user_model->get_user_accesstoken($token);
+
             if ($chkuser['result']==$this->success_result) {
                 $user=$chkuser['user'];
                 usersession('usr_data', $user);
