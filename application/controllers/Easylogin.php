@@ -21,14 +21,10 @@ class Easylogin extends Base_Controller
             $url = $this->input->get('url', TRUE);
             $chkuser = $this->user_model->get_user_accesstoken($token);
             if ($chkuser['result']==$this->success_result) {
-                log_message('error','URL: '.$url);
                 $user=$chkuser['user'];
-                log_message('error','User: '.$user['id'].' '.$user['user_name']);
-                log_message('error','Token: '.$token);
                 usersession('usr_data', $user);
                 // If empty cookie
                 $server=$this->input->server('SERVER_NAME');
-                log_message('error','Server: '.$server);
                 $cookienew = array(
                     'name'   => 'acctoken',
                     'value'  => $token,
@@ -37,10 +33,8 @@ class Easylogin extends Base_Controller
                 );
                 set_cookie($cookienew);
                 if ($url=='home') {
-                    log_message('error','Redirect Home Page');
                     redirect('/');
                 } else {
-                    log_message('error','Redirect '.$url);
                     redirect('/'.$url);
                 }
             } else {
