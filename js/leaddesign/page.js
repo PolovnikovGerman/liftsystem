@@ -10,14 +10,14 @@ function init_design_page() {
     $("img.emailpic").unbind('click').click(function (){
         var mode = $("#emailview").val();
         if (mode=='inbox') {
-            $(".emaildataarea").find('img.emailpic').attr('src','/img/leaddesign/block-email-01.png');
+            $(".emaildataarea").find('img.emailpic').attr('src','/img/leaddesign/block-email-03-1.png');
             $(".emaildataarea").find('button.close').show();
             $("#emailview").val('message');
             $(".emaildataarea").unbind('click');
         }
     })
     $(".emaildataarea").find('button.close').unbind('click').click(function(){
-        $(".emaildataarea").find('img.emailpic').attr('src','/img/leaddesign/block-email-02.png');
+        $(".emaildataarea").find('img.emailpic').attr('src','/img/leaddesign/block-email-03-2.png');
         $(".emaildataarea").find('button.close').hide();
         $("#emailview").val('inbox');
         init_design_page();

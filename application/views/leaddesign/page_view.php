@@ -2,7 +2,7 @@
 <input type="hidden" id="emailview" value="inbox"/>
 <div class="contentdata_view">
     <div class="datarow">
-        <div class="designback"><i class="fa fa-long-arrow-left"></i> Back</div>
+        <div class="designback"><i class="fa fa-long-arrow-left"></i> Back to Orders List</div>
     </div>
     <div class="datarow">
         <div class="customerdataarea">
@@ -12,7 +12,7 @@
             <button class="close">
                 <span aria-hidden="true">×</span>
             </button>
-            <img class="emailpic" src="/img/leaddesign/block-email-02.png" alt="Email"/>
+            <img class="emailpic" src="/img/leaddesign/block-email-03-2.png" alt="Email"/>
         </div>
     </div>
     <div class="datarow">
