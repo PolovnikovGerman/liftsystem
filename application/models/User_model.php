@@ -16,11 +16,7 @@ Class User_model extends MY_Model
         $out = ['result' =>$this->error_result,];
         $user=usersession('usr_data');
         // $user = [];
-        if (!empty($user)) {
-            log_message('error','Current user logged in successfully - '.$user['id']);
-        }
         $cookie=get_cookie('acctoken');
-        log_message('error','Cookie - '.$cookie);
         if (empty($user)) {
             if ($cookie) {
                 $res=$this->get_user_accesstoken($cookie);
@@ -73,7 +69,6 @@ Class User_model extends MY_Model
             $chkres=$this->get_user_details($user_id);
             if ($chkres['result']==$this->success_result) {
                 $user=$chkres['data'];
-                log_message('error', 'Check Success ID '.$user_id.' Name '.$user['user_name']);
                 $out['user']=[
                     'id' => $user['user_id'],
                     'user_logged_in'=> $user['role_short'],
