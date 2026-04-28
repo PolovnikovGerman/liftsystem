@@ -37,8 +37,10 @@ class Easylogin extends Base_Controller
                 );
                 set_cookie($cookienew);
                 if ($url=='home') {
+                    log_message('error','Redirect Home Page');
                     redirect('/');
                 } else {
+                    log_message('error','Redirect '.$url);
                     redirect('/'.$url);
                 }
             } else {
