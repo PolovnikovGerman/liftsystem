@@ -6,7 +6,7 @@
     </div>
     <div class="datarow">
         <div class="customerdataarea">
-            <img src="/img/leaddesign/block-customer-01.png" alt="Customer"/>
+            <img src="/img/leaddesign/block-customer-02.png" alt="Customer"/>
         </div>
         <div class="emaildataarea">
             <button class="close">
