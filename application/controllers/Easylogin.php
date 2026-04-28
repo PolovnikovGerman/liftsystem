@@ -19,15 +19,16 @@ class Easylogin extends Base_Controller
         } else {
             $token = $this->input->get('token', TRUE);
             $url = $this->input->get('url', TRUE);
-            log_message('error','Token: '.$token);
-            log_message('error','URL: '.$url);
             $chkuser = $this->user_model->get_user_accesstoken($token);
-
             if ($chkuser['result']==$this->success_result) {
+                log_message('error','Token: '.$token);
+                log_message('error','URL: '.$url);
                 $user=$chkuser['user'];
+                log_message('error','User: '.$user['user_id'].' '.$user['user_name']);
                 usersession('usr_data', $user);
                 // If empty cookie
                 $server=$this->input->server('SERVER_NAME');
+                log_message('error','Server: '.$server);
                 $cookienew = array(
                     'name'   => 'acctoken',
                     'value'  => $token,
