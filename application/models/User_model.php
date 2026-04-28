@@ -16,7 +16,11 @@ Class User_model extends MY_Model
         $out = ['result' =>$this->error_result,];
         $user=usersession('usr_data');
         // $user = [];
+        if (!empty($user)) {
+            log_message('error','Current user logged in successfully - '.$user['id']);
+        }
         $cookie=get_cookie('acctoken');
+        log_message('error','Cookie - '.$cookie);
         if (empty($user)) {
             if ($cookie) {
                 $res=$this->get_user_accesstoken($cookie);
