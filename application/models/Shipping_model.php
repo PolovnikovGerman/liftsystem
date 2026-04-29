@@ -1856,6 +1856,13 @@ Class Shipping_model extends MY_Model
                     if ($transitres['error']==0) {
                         $out['cityname'] = $candidate['city'];
                     }
+                } else {
+                    $shipTo['Address']['City'] = '';
+                    $transitres = $upsservice->timeInTransit($token, $shipFrom['Address'], $shipTo['Address'], $tntweigth, $tntpacks, $package_price,  date('Y-m-d', $startdeliv), '10:00:00');
+                    $out['msg'] = $transitres['msg'];
+                    if (isset($transitres['city'])) {
+                        $out['cityname'] = $transitres['city'];
+                    }
                 }
             }
             if ($transitres['error']==0) {
