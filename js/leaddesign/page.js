@@ -9,10 +9,12 @@ function init_design_page() {
     });
     $(".designshowmenu").unbind('click').click(function (){
         $(".maincontentmenu").show();
+        $(".maincontent_view").css('padding-top','7px');
         $(".designshowmenu").hide();
     });
     $(".specialhidemainmenu").unbind('click').click(function (){
         $(".maincontentmenu").hide();
+        $(".maincontent_view").css('padding-top','0');
         $(".designshowmenu").show();
     })
     $("img.emailpic").unbind('click').click(function (){
