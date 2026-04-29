@@ -526,7 +526,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .list-leadhistory {
     width: 100%;
-    height: 175px;
+    height: 109px; /* 175px; */
 }
 .leadhistory-box {
     width: 100%;
