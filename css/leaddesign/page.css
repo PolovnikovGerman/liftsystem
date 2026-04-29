@@ -5,30 +5,36 @@
 /*margin - 20px*/
 .designback, .designshowmenu {
     margin-left: 10px;
-    color: #fff;
-    font-size: 12px;
-    height: 12px;
+    color: #000; /* #fff; */
+    font-size: 14px;
+    height: 14px;
     cursor: pointer;
 }
+.designshowmenu i {
+    position: relative;
+    top: -1px;
+    margin-right: 3px;
+}
+.designback i {margin-right: 3px;}
 .maincontentmenu {
     display: none;
-    margin-bottom: 5px;
+    /*margin-bottom: 5px;*/
 }
 .maincontent_view {
-    padding-top: 0!important;
+    padding-top: 0; /* !important;*/
     /*width: 1572px!important;*/
 }
 .contentdata_view {
     /*width: 1572px!important;*/
-    background: #3736fe!important;
-    border-top: none!important;
+    /*background: #3736fe!important;*/
+    /*border-top: none!important;*/
 }
 .customerdataarea {
     width: 740px; /* 765px; */
     /*height: 398px;*/
     background: #7373fe;
     margin: 10px;
-    /*border: 1px solid #000000;*/
+    border: 1px solid #000000;
     border-radius: 5px;
     overflow: hidden;
 }
@@ -41,7 +47,7 @@
     /*height: 398px;*/
     background: #ffffff;
     margin: 10px;
-    /*border: 1px solid #000000;*/
+    border: 1px solid #000000;
     border-radius: 5px;
     /*overflow: hidden;*/
     cursor: pointer;
@@ -59,7 +65,7 @@
     /*height: 625px;*/
     margin: 10px;
     background: #b2b08b;
-    /*border: 1px solid #000000;*/
+    border: 1px solid #000000;
     border-radius: 5px;
     /*overflow: hidden;*/
     position: relative;
@@ -73,7 +79,7 @@
     /*height: 625px;*/
     margin: 10px;
     background: #e4e3e3;
-    /*border: 1px solid #000000;*/
+    border: 1px solid #000000;
     border-radius: 5px;
     /*overflow: hidden;*/
     position: relative;
