@@ -7,6 +7,14 @@ function init_design_page() {
         var url = '/projects';
         window.location.replace(url);
     });
+    $(".designshowmenu").unbind('click').click(function (){
+        $(".maincontentmenu").show();
+        $(".designshowmenu").hide();
+    });
+    $(".specialhidemainmenu").unbind('click').click(function (){
+        $(".maincontentmenu").hide();
+        $(".designshowmenu").show();
+    })
     $("img.emailpic").unbind('click').click(function (){
         var mode = $("#emailview").val();
         if (mode=='inbox') {

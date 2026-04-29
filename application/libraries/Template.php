@@ -187,11 +187,16 @@ class Template
             $dat['header_view'] = $this->CI->load->view('page_modern/header_view', $topmenu_options, TRUE);
 //        }
         $brandclass = ($brand=='SB' ? 'stressballs' : ($brand=='SR' ? 'relievers' : 'sigmasystem'));
+        $showhidemenu = 0;
+        if (isset($options['showhidemenu']) && $options['showhidemenu']==1) {
+            $showhidemenu = 1;
+        }
         $leftoptions = [
             'brand' => $brand,
             'brandclass' => $brandclass,
             'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
             'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
+            'showhidemenu' => $showhidemenu,
         ];
         $dat['main_menu'] = $this->CI->load->view('page_modern/main_menu_view', $leftoptions, TRUE);
         $dat['brandclass'] = $brandclass;

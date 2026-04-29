@@ -28,6 +28,7 @@ class Leaddesign extends MY_Controller
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
             'brand' => $brand,
+            'showhidemenu' => 1,
         ];
 //        if ($gmaps==1) {
 //            $options['gmaps'] = $gmaps;
