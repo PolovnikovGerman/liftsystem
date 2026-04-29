@@ -496,17 +496,18 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 }
 .lead-statusbox {
     width: 100%;
-    height: 48px;
+    height: 114px; /* 48px; */
 }
 .lead-statusbox textarea {
     width: 100%;
-    height: 48px;
+    height: 114px; /* 48px; */
     border: 1px solid #585858;
     background: #fff;
     font-size: 12px;
-    line-height: 11px;
+    line-height: 13px;
     padding: 3px;
     resize: none;
+    overflow-y: auto;
 }
 .lead-history {
     width: 100%;
@@ -515,7 +516,7 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
 .lead-historybox {
     width: 100%;
     /*height: 93px;*/
-    height: 177px;
+    height: 111px; /* 177px; */
     border: 1px solid #585858;
     background: #fff;
     font-size: 11px;
