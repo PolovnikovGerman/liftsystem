@@ -5,10 +5,13 @@
 /*margin - 20px*/
 .designback, .designshowmenu {
     margin-left: 10px;
-    color: #000; /* #fff; */
+    color: #fff;
     font-size: 14px;
     height: 14px;
     cursor: pointer;
+}
+.designback.showmenu {
+    color: #000000;
 }
 .designshowmenu i {
     position: relative;
@@ -24,19 +27,28 @@
     padding-top: 0; /* !important;*/
     /*width: 1572px!important;*/
 }
+.maincontent_view.showmenu {
+    padding-top: 7px;
+}
 .contentdata_view {
     /*width: 1572px!important;*/
-    /*background: #3736fe!important;*/
-    /*border-top: none!important;*/
+    background: #3736fe;
+    border-top: none;
+}
+.contentdata_view.showmenu {
+    background: #FFFFFF;
+    border-top: 1px solid #000000;
 }
 .customerdataarea {
     width: 740px; /* 765px; */
     /*height: 398px;*/
     background: #7373fe;
     margin: 10px;
-    border: 1px solid #000000;
     border-radius: 5px;
     overflow: hidden;
+}
+.customerdataarea.showmenu {
+    border: 1px solid #000000;
 }
 .customerdataarea img {
     width: 100%;
@@ -47,11 +59,13 @@
     /*height: 398px;*/
     background: #ffffff;
     margin: 10px;
-    border: 1px solid #000000;
     border-radius: 5px;
     /*overflow: hidden;*/
     cursor: pointer;
     position: relative;
+}
+.emaildataarea.showmenu {
+    border: 1px solid #000000;
 }
 .emaildataarea button.close {
     display: none;
@@ -65,10 +79,12 @@
     /*height: 625px;*/
     margin: 10px;
     background: #b2b08b;
-    border: 1px solid #000000;
     border-radius: 5px;
     /*overflow: hidden;*/
     position: relative;
+}
+.leaddataarea.showmenu {
+    border: 1px solid #000000;
 }
 .leaddataarea img {
     width: 100%;
@@ -79,10 +95,12 @@
     /*height: 625px;*/
     margin: 10px;
     background: #e4e3e3;
-    border: 1px solid #000000;
     border-radius: 5px;
     /*overflow: hidden;*/
     position: relative;
+}
+.orderdataarea.showmenu {
+    border: 1px solid #000000;
 }
 .orderdataarea img {
     width: 100%;
