@@ -798,9 +798,9 @@ body div {
 /* Hide main menu */
 .specialhidemainmenu {
     color: #ffffff;
-    font-family: Helvetica;
-    font-size: 14px;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 12px;
     margin-right: 7px;
     cursor: pointer;
-    padding-top: 6px;
+    padding-top: 8px;
 }

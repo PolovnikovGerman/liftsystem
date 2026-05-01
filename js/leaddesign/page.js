@@ -16,6 +16,7 @@ function init_design_page() {
         // $(".leaddataarea").addClass('showmenu');
         // $(".orderdataarea").addClass('showmenu');
         $(".maincontent_view").addClass('showmenu');
+        $(".contentdata_view").addClass('showmenu');
         $(".contentsubmenu").show();
         $(".maincontentmenu").show();
         $(".pagemenurow").hide();
@@ -33,6 +34,7 @@ function init_design_page() {
         $(".maincontent_view").removeClass('showmenu');
         $(".contentsubmenu").hide();
         $(".maincontentmenu").hide();
+        $(".contentdata_view").removeClass('showmenu');
         $(".pagemenurow").show();
     })
     $("img.emailpic").unbind('click').click(function (){

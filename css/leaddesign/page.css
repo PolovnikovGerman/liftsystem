@@ -7,16 +7,15 @@
     display: none;
 }
 .pagemenurow {
-    background: #fff;
-    height: 27px;
+    background: #3736fe;
     width: 100%;
-    padding-top: 7px;
 }
 .designback, .designshowmenu {
     margin-left: 10px;
-    color: #000000; /* #fff;*/
+    color: #fff;
     font-size: 12px;
-    height: 12px;
+    height: 18px;
+    line-height: 18px;
     cursor: pointer;
 }
 /* .designback.showmenu {
@@ -41,7 +40,7 @@
 }
 .contentdata_view {
     /*width: 1572px!important;*/
-    background: #3736fe;
+    /*background: #3736fe;*/
     border-top: none;
 }
 .contentdata_view.showmenu {
@@ -55,6 +54,7 @@
     margin: 10px;
     border-radius: 5px;
     overflow: hidden;
+    border: 1px solid #000000;
 }
 .customerdataarea.showmenu {
     border: 1px solid #000000;
@@ -72,6 +72,7 @@
     /*overflow: hidden;*/
     cursor: pointer;
     position: relative;
+    border: 1px solid #000000;
 }
 .emaildataarea.showmenu {
     border: 1px solid #000000;
@@ -91,6 +92,7 @@
     border-radius: 5px;
     /*overflow: hidden;*/
     position: relative;
+    border: 1px solid #000000;
 }
 .leaddataarea.showmenu {
     border: 1px solid #000000;
@@ -107,6 +109,7 @@
     border-radius: 5px;
     /*overflow: hidden;*/
     position: relative;
+    border: 1px solid #000000;
 }
 .orderdataarea.showmenu {
     border: 1px solid #000000;
