@@ -22,11 +22,15 @@
 }
 .pagemenurow {
     background: #3736fe;
+    color: #fff;
     width: 100%;
+}
+.pagemenurow.relievers  {
+    background: #fdff44;
+    color: #000000;
 }
 .designback, .designshowmenu {
     margin-left: 10px;
-    color: #fff;
     font-size: 12px;
     height: 18px;
     line-height: 18px;
