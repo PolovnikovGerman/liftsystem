@@ -3,6 +3,20 @@
 /*Lead - 765x625 #b2b08b*/
 /*Oreder - 765x625 #e4e3e3*/
 /*margin - 20px*/
+/* LOGOS and head */
+.content_tab_header {
+    height: 37px!important;
+}
+.stressballs_logo {
+    width: 106px!important;
+}
+.relievers_logo {
+    width: 115px!important;
+}
+.sigma_logo {
+    width: 12px;
+    margin: 8px 15px;
+}
 .contentsubmenu {
     display: none;
 }
