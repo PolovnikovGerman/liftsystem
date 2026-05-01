@@ -5,17 +5,17 @@
 /*margin - 20px*/
 /* LOGOS and head */
 .content_tab_header {
-    height: 37px!important;
+    height: 40px!important;
 }
 .stressballs_logo {
-    width: 106px!important;
+    width: 121px!important;
 }
 .relievers_logo {
-    width: 115px!important;
+    width: 133px!important;
 }
 .sigma_logo {
-    width: 12px;
-    margin: 8px 15px;
+    width: 14px;
+    margin: 10px 15px;
 }
 .contentsubmenu {
     display: none;
@@ -31,6 +31,9 @@
     height: 18px;
     line-height: 18px;
     cursor: pointer;
+}
+.designback {
+    display: none;
 }
 /* .designback.showmenu {
     color: #000000;
