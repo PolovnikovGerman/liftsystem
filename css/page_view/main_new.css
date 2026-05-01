@@ -798,11 +798,11 @@ body div {
 /* Hide main menu */
 .specialhidemainmenu {
     color: #ffffff;
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    /*font-family: Helvetica Neue, Helvetica, Arial, sans-serif;*/
     font-size: 12px;
     margin-right: 7px;
     cursor: pointer;
-    padding-top: 8px;
+    /*padding-top: 8px;*/
 }
 .specialhidemainmenu.relievers {
     color: #000000;
