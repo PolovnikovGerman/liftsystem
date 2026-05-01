@@ -2,8 +2,10 @@
 <input type="hidden" id="emailview" value="inbox"/>
 <div class="contentdata_view">
     <div class="datarow">
-        <div class="designshowmenu"><i class="fa fa-chevron-down"></i> Open Main Menu</div>
-        <div class="designback"><i class="fa fa-long-arrow-left"></i> Back to Orders List</div>
+        <div class="pagemenurow" style="">
+            <div class="designshowmenu"><i class="fa fa-chevron-down"></i> Open Main Menu</div>
+            <div class="designback"><i class="fa fa-long-arrow-left"></i> Back to Orders List</div>
+        </div>
     </div>
     <div class="datarow">
         <div class="customerdataarea">
