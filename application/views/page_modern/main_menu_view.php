@@ -1,3 +1,8 @@
+<?php if ($showhidemenu==1) : ?>
+    <div class="specialhidemainmenu <?=$brandclass?>">
+        <i class="fa fa-chevron-up"></i> Hide Menu
+    </div>
+<?php endif ?>
 <?php if ($brand!=='SG') : ?>
 <div class="publicsearch">
     <input type="text" class="publicsearch_template" id="publicsearch_template" autocomplete="off" placeholder="Find Orders"/>

@@ -168,6 +168,7 @@ $(document).ready(function () {
     jQuery.balloon.init();
     // Init Header Totals
     init_totalinfo_content();
+    init_menumanage_view();
 });
 
 function init_submenu(brand) {
@@ -347,4 +348,21 @@ function init_totalinfo_content() {
             }
         },'json');
     });
+}
+
+function init_menumanage_view() {
+    $(".linkshowmainmenu").unbind('click').click(function (){
+        $(".maincontent_view").addClass('showmenu');
+        $(".contentdata_view").addClass('showmenu');
+        $(".contentsubmenu").show();
+        $(".maincontentmenu").show();
+        $(".pagemenurow").hide();
+    });
+    $(".specialhidemainmenu").unbind('click').click(function (){
+        $(".maincontent_view").removeClass('showmenu');
+        $(".contentsubmenu").hide();
+        $(".maincontentmenu").hide();
+        $(".contentdata_view").removeClass('showmenu');
+        $(".pagemenurow").show();
+    })
 }
