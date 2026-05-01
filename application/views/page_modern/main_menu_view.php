@@ -1,6 +1,6 @@
 <?php if ($showhidemenu==1) : ?>
 <div class="specialhidemainmenu">
-    <i class="fa fa-chevron-up"></i> Hide menu
+    <i class="fa fa-chevron-up"></i> Hide Menu
 </div>
 <?php endif ?>
 <?php if ($brand!=='SG') : ?>
