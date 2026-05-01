@@ -192,6 +192,7 @@ class Leads extends My_Controller {
             'scripts' => $head['scripts'],
             'gmaps' => $gmaps,
             'brand' => $brand,
+            'showhidemenu' => 1,
         ];
         if (isset($head['outscripts'])) {
             $options['outscripts'] = $head['outscripts'];
@@ -209,6 +210,8 @@ class Leads extends My_Controller {
             'webquestions' => $newwebquest,
         ];
         $content_options['menu_view'] = $this->load->view('leads/submenu_view', $menuoptions , TRUE);
+        $content_options['showhidemenu'] = 1;
+        $content_options['brandclass'] = $brandclass;
         $content_view = $this->load->view('leads/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('leads/modal_view', [], TRUE);

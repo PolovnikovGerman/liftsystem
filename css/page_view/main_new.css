@@ -79,8 +79,8 @@ body div {
 }
 .content_tab_header {
     cursor: pointer;
-    /* width: 157px; */
-    height: 44px;
+    /*height: 44px;*/
+    height: 40px;
 }
 .content_tab_header.stressballs {
     background: #3537fc;
@@ -95,16 +95,20 @@ body div {
     background: #fdff44;
 }
 .relievers_logo {
-    width: 146px;
+    /*width: 146px;*/
+    width: 133px;
     margin: 5px 12.5px;
 }
 .stressballs_logo {
-    width: 133px;
+    /*width: 133px;*/
+    width: 121px;
     margin: 8px 15px;
 }
 .sigma_logo {
-    width: 15px;
-    margin: 13px 15px;
+    /*width: 15px;*/
+    /*margin: 13px 15px;*/
+    width: 14px;
+    margin: 10px 15px;
 }
 .content_tab_header.sigmasystem {
     background: #595959;
@@ -246,7 +250,6 @@ body div {
     width: 15px;
     padding-top: 4px;
     height: 22px;
-    color: #ffffff;
 }
 .right-box {
     float: right!important;
@@ -298,7 +301,8 @@ body div {
     background: #606060;
 }
 .maincontentmenu {
-    margin-left: 8px
+    margin-left: 8px;
+    display: none;
 }
 .maincontentmenu_item {
     cursor: pointer;
@@ -377,6 +381,9 @@ body div {
     background: #d7d7d7;
     border-top: 1px solid #000000;
     margin-top: -1px;
+    padding-top: 0;
+}
+.maincontent_view.showmenu {
     padding-top: 7px;
 }
 .maincontent_view.stressballs {
@@ -387,6 +394,7 @@ body div {
 }
 .contentsubmenu {
     margin-left: 10px;
+    display: none;
 }
 .contentsubmenu_item {
     background: #ffffff;
@@ -435,12 +443,16 @@ body div {
     width: 60px;
 }
 .contentdata_view {
-    border-top: 1px solid #000000;
+    border-top: none; /* 1px solid #000000; */
     /* padding: 0 15px; */
     width: 100%;
     background: #FFFFFF;
     min-height: 650px;
     margin-top: -1px;
+}
+.contentdata_view.showmenu {
+    /*background: #FFFFFF;*/
+    border-top: 1px solid #000000;
 }
 /* Colors rows */
 .whitedatarow {
@@ -795,7 +807,7 @@ body div {
     background: #efefef;
     margin-right: -25px;
 }
-/* Hide main menu */
+/* Hide main menu link */
 .specialhidemainmenu {
     color: #ffffff;
     /*font-family: Helvetica Neue, Helvetica, Arial, sans-serif;*/
@@ -807,3 +819,26 @@ body div {
 .specialhidemainmenu.relievers {
     color: #000000;
 }
+/* Open menu link */
+.pagemenurow {
+    background: #3736fe;
+    color: #fff;
+    width: 100%;
+}
+.pagemenurow.relievers  {
+    background: #fdff44;
+    color: #000000;
+}
+.linkshowmainmenu {
+    margin-left: 10px;
+    font-size: 11px;
+    height: 18px;
+    line-height: 18px;
+    cursor: pointer;
+}
+.linkshowmainmenu i {
+    position: relative;
+    top: -1px;
+    margin-right: 3px;
+}
+

@@ -966,7 +966,8 @@ if (!function_exists('trackcodeurl')) {
             } elseif ($service=='FedEx') {
                 $url='https://www.fedex.com/fedextrack?trknbr='.$trackcode;
             } elseif ($service=='DHL') {
-                $url='https://mydhl.express.dhl/tracking?id='.$trackcode;
+                $url='https://mydhl.express.dhl/us/en/tracking.html#/results?id='.$trackcode;
+//                $url='https://mydhl.express.dhl/tracking?id='.$trackcode;
             } elseif ($service=='USPS') {
                 $url='https://tools.usps.com/go/TrackConfirmAction_input?strOrigTrackNum='.$trackcode;
             }
