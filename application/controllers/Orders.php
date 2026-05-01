@@ -96,7 +96,8 @@ class Orders extends MY_Controller
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
             'brand' => $brand,
-            'showhidemenu' => 1,        ];
+            'showhidemenu' => 1,
+        ];
         if ($gmaps==1) {
             $options['gmaps'] = $gmaps;
         }
