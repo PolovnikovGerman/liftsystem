@@ -96,7 +96,7 @@ class Orders extends MY_Controller
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
             'brand' => $brand,
-        ];
+            'showhidemenu' => 1,        ];
         if ($gmaps==1) {
             $options['gmaps'] = $gmaps;
         }
@@ -104,6 +104,8 @@ class Orders extends MY_Controller
         $content_options['brand'] = $brand;
         $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
         $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
+        $content_options['brandclass'] = $brandclass;
+        $content_options['showhidemenu'] = 1;
         $content_view = $this->load->view('orders/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('orders/modal_view', [], TRUE);
