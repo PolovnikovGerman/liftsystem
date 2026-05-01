@@ -8,26 +8,32 @@ function init_design_page() {
         window.location.replace(url);
     });
     $(".designshowmenu").unbind('click').click(function (){
-        $(".designshowmenu").hide();
-        $(".designback").addClass('showmenu');
+        // $(".designshowmenu").hide();
+        // $(".designback").addClass('showmenu');
+        // $(".contentdata_view").addClass('showmenu');
+        // $(".customerdataarea").addClass('showmenu');
+        // $(".emaildataarea").addClass('showmenu');
+        // $(".leaddataarea").addClass('showmenu');
+        // $(".orderdataarea").addClass('showmenu');
         $(".maincontent_view").addClass('showmenu');
-        $(".contentdata_view").addClass('showmenu');
-        $(".customerdataarea").addClass('showmenu');
-        $(".emaildataarea").addClass('showmenu');
-        $(".leaddataarea").addClass('showmenu');
-        $(".orderdataarea").addClass('showmenu');
+        $(".contentsubmenu").show();
         $(".maincontentmenu").show();
+        $(".pagemenurow").hide();
     });
     $(".specialhidemainmenu").unbind('click').click(function (){
-        $(".designback").removeClass('showmenu');
+        // $(".designback").removeClass('showmenu');
+        // $(".maincontent_view").removeClass('showmenu');
+        // $(".contentdata_view").removeClass('showmenu');
+        // $(".customerdataarea").removeClass('showmenu');
+        // $(".emaildataarea").removeClass('showmenu');
+        // $(".leaddataarea").removeClass('showmenu');
+        // $(".orderdataarea").removeClass('showmenu');
+        // $(".designshowmenu").show();
+        // $(".maincontentmenu").hide();
         $(".maincontent_view").removeClass('showmenu');
-        $(".contentdata_view").removeClass('showmenu');
-        $(".customerdataarea").removeClass('showmenu');
-        $(".emaildataarea").removeClass('showmenu');
-        $(".leaddataarea").removeClass('showmenu');
-        $(".orderdataarea").removeClass('showmenu');
-        $(".designshowmenu").show();
+        $(".contentsubmenu").hide();
         $(".maincontentmenu").hide();
+        $(".pagemenurow").show();
     })
     $("img.emailpic").unbind('click').click(function (){
         var mode = $("#emailview").val();
