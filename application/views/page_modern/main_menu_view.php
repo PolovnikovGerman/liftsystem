@@ -1,5 +1,5 @@
 <?php if ($showhidemenu==1) : ?>
-<div class="specialhidemainmenu">
+<div class="specialhidemainmenu <?=$brandclass?>">
     <i class="fa fa-chevron-up"></i> Hide Menu
 </div>
 <?php endif ?>

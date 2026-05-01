@@ -804,3 +804,6 @@ body div {
     cursor: pointer;
     padding-top: 8px;
 }
+.specialhidemainmenu.relievers {
+    color: #000000;
+}
