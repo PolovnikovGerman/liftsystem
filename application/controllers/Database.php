@@ -314,7 +314,7 @@ class Database extends MY_Controller
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
             'brand' => $brand,
-            'showhidemenu' => 1,
+            'showhidemenu' => 0,
         ];
         $dat = $this->template->prepare_pagecontent($options);
         // $content_options['left_menu'] = $dat['left_menu'];
@@ -324,7 +324,7 @@ class Database extends MY_Controller
         $content_options['mastersection'] = $mastersection;
         $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
         $content_options['branclass'] = $brandclass;
-        $content_options['showhidemenu'] = 1;
+        $content_options['showhidemenu'] = 0;
         $content_view = $this->load->view('database_center/modern_database_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('database_center/modal_view', [], TRUE);
