@@ -168,6 +168,7 @@ $(document).ready(function () {
     jQuery.balloon.init();
     // Init Header Totals
     init_totalinfo_content();
+    showhidemainmenu();
     init_menumanage_view();
 });
 
@@ -350,6 +351,23 @@ function init_totalinfo_content() {
     });
 }
 
+function showhidemainmenu() {
+    var hideflag = 0;
+    if ($("#showhidemenu").length > 0) {
+        hideflag = $("#showhidemenu").val();
+    }
+    if (hideflag==0) {
+        $(".maincontent_view").addClass('showmenu');
+        $(".contentdata_view").addClass('showmenu');
+        $(".contentsubmenu").show();
+        $(".maincontentmenu").show();
+    } else {
+        $(".maincontent_view").removeClass('showmenu');
+        $(".contentdata_view").removeClass('showmenu');
+        $(".contentsubmenu").hide();
+        $(".maincontentmenu").hide();
+    }
+}
 function init_menumanage_view() {
     $(".linkshowmainmenu").unbind('click').click(function (){
         $(".maincontent_view").addClass('showmenu');
