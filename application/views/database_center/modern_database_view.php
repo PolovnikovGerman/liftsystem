@@ -17,6 +17,13 @@
     <?php endif; ?>
 </div>
 <div class="contentdata_view">
+    <?php if ($showhidemenu==1) : ?>
+        <div class="datarow">
+            <div class="pagemenurow <?=$brandclass?>">
+                <div class="linkshowmainmenu"><i class="fa fa-chevron-down"></i> Open Menu</div>
+            </div>
+        </div>
+    <?php endif; ?>
     <?php if (isset($itemsview)) { ?>
         <div class="dbcontentarea" id="btitemsview" style="display: none;"><?=$itemsview?></div>
     <?php } ?>

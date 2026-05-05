@@ -1,0 +1,89 @@
+/*Customer - W 765x H 398 px #7373fe*/
+/*Email - W 765x H 398 px #ffffff*/
+/*Lead - 765x625 #b2b08b*/
+/*Oreder - 765x625 #e4e3e3*/
+/*margin - 20px*/
+.maincontentmenu {
+    display: none!important;
+}
+.maincontent_view {
+    padding-top: 0!important;
+    /*width: 1572px!important;*/
+}
+.contentdata_view {
+    /*width: 1572px!important;*/
+    background: #3736fe!important;
+    border-top: none!important;
+}
+.customerdataarea {
+    width: 740px; /* 765px; */
+    /*height: 398px;*/
+    background: #7373fe;
+    margin: 10px;
+    /*border: 1px solid #000000;*/
+    border-radius: 5px;
+    overflow: hidden;
+}
+.customerdataarea img {
+    width: 100%;
+    height: auto;
+}
+.emaildataarea {
+    width: 740px; /* 765px; */
+    /*height: 398px;*/
+    background: #ffffff;
+    margin: 10px;
+    /*border: 1px solid #000000;*/
+    border-radius: 5px;
+    overflow: hidden;
+}
+.emaildataarea img {
+    width: 100%;
+    height: auto;
+}
+.leaddataarea {
+    width: 740px; /* 765px; */
+    /*height: 625px;*/
+    margin: 10px;
+    background: #b2b08b;
+    /*border: 1px solid #000000;*/
+    border-radius: 5px;
+    /*overflow: hidden;*/
+    position: relative;
+}
+.leaddataarea img {
+    width: 100%;
+    height: auto;
+}
+.orderdataarea {
+    width: 740px; /* 765px; */
+    /*height: 625px;*/
+    margin: 10px;
+    background: #e4e3e3;
+    /*border: 1px solid #000000;*/
+    border-radius: 5px;
+    /*overflow: hidden;*/
+    position: relative;
+}
+.orderdataarea img {
+    width: 100%;
+    height: auto;
+}
+.close {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    border: 1px solid #000!important;
+    background: #ff0000!important;
+    color: #fff;
+    text-align: center;
+    /*cursor: pointer;*/
+    opacity: 1;
+    z-index: 1;
+    font-size: 18px;
+    line-height: 18px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+}
