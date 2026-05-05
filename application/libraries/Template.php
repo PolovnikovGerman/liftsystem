@@ -163,6 +163,10 @@ class Template
             $dat['head_view'] = $this->CI->load->view('page_modern/head_view', $head_options, TRUE);
 //        }
 
+        $showhidemenu = 0;
+        if (isset($options['showhidemenu'])) {
+            $showhidemenu = $options['showhidemenu'];
+        }
 
         $topmenu_options = [
             'user_name' => $userdat['first_name'],
@@ -180,6 +184,7 @@ class Template
             'debtpermiss' => $debt_permissions,
             'debttotal' => $debt_total,
             'mailboxchk' => $mailbox_permission,
+            'showhidemenu' => $showhidemenu,
         ];
 //        if (ifset($options,'adaptive',0)==1) {
 //            $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
@@ -187,10 +192,6 @@ class Template
             $dat['header_view'] = $this->CI->load->view('page_modern/header_view', $topmenu_options, TRUE);
 //        }
         $brandclass = ($brand=='SB' ? 'stressballs' : ($brand=='SR' ? 'relievers' : 'sigmasystem'));
-        $showhidemenu = 0;
-        if (isset($options['showhidemenu']) && $options['showhidemenu']==1) {
-            $showhidemenu = 1;
-        }
         $leftoptions = [
             'brand' => $brand,
             'brandclass' => $brandclass,

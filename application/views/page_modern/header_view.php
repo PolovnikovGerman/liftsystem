@@ -1,3 +1,4 @@
+<input type="hidden" id="showhidemenu" value="<?=$showhidemenu?>"/>
 <div class="mainheader">
     <div class="content_tabs_headers">
         <?php if ($brand=='SB') : ?>
