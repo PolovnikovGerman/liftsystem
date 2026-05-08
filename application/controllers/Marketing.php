@@ -93,13 +93,14 @@ class Marketing extends MY_Controller
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
             'brand' => $brand,
+            'showhidemenu' => 0,
         ];
         $dat = $this->template->prepare_pagecontent($options);
-        // $content_options['menu'] = $menu;
-        // $content_options['left_menu'] = $dat['left_menu'];
         $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
         $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
         $content_options['brand'] = $brand;
+        $content_options['brandclass'] = $brandclass;
+        $content_options['showhidemenu'] = 0;
         $content_view = $this->load->view('marketing/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('marketing/modal_view', [], TRUE);

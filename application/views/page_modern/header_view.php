@@ -1,3 +1,4 @@
+<input type="hidden" id="showhidemenu" value="<?=$showhidemenu?>"/>
 <div class="mainheader">
     <div class="content_tabs_headers">
         <?php if ($brand=='SB') : ?>
@@ -67,7 +68,6 @@
             </div>
         </div>
         <?php endif; ?>
-
     </div>
     <div class="right-box">
         <div class="userinfo">

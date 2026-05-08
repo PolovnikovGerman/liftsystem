@@ -26,7 +26,7 @@
             <div class="leadquotetabl-doc" data-quote="<?=$quote['quote_id']?>"><i class="fa fa-file-pdf-o"></i></div>
             <div class="leadquotetabl-web"><?=$quote['quote_source']=='WEB' ? $quote['quote_source'] : '&nbsp;'?></div>
             <div class="leadquotetabl-qty"><?=$quote['item_qty']?></div>
-            <div class="leadquotetabl-prints"><?=$quote['imprints']?></div>
+            <div class="leadquotetabl-prints truncateoverflowtext"><?=$quote['imprints']?></div>
             <div class="leadquotetabl-descr truncateoverflowtext"><?=$quote['item_name']?></div>
             <div class="leadquotetabl-subtotal"><?=MoneyOutput($quote['quote_total'])?></div>
         </div>

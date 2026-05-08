@@ -257,6 +257,9 @@ class UPS_service
                     $outservices[] = $newservice;
                 }
                 $out['services'] = $outservices;
+                if (isset($apiResponse['emsResponse']['destinationCityName'])) {
+                    $out['city'] = ucfirst($apiResponse['emsResponse']['destinationCityName']);
+                }
             } else {
                 $out['error'] = 2;
                 $msg = ifset($apiResponse, 'validationList', 'Invalid Parameters');

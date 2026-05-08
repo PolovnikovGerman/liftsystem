@@ -142,6 +142,10 @@ class Template
             $dat['head_view'] = $this->CI->load->view('page_modern/head_view', $head_options, TRUE);
 //        }
 
+        $showhidemenu = 0;
+        if (isset($options['showhidemenu'])) {
+            $showhidemenu = $options['showhidemenu'];
+        }
 
         $topmenu_options = [
             'user_name' => $userdat['first_name'],
@@ -157,6 +161,7 @@ class Template
             'usrrole' => $userdat['user_logged_in'],
             'debtpermiss' => $debt_permissions,
             'debttotal' => $debt_total,
+            'showhidemenu' => $showhidemenu,
         ];
 //        if (ifset($options,'adaptive',0)==1) {
 //            $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
@@ -169,6 +174,7 @@ class Template
             'brandclass' => $brandclass,
             'activelnk'=>(isset($options['activelnk']) ? $options['activelnk'] : ''),
             'permissions' => $this->CI->menuitems_model->get_user_permissions($options['user_id'], $brand),
+            'showhidemenu' => $showhidemenu,
         ];
         $dat['main_menu'] = $this->CI->load->view('page_modern/main_menu_view', $leftoptions, TRUE);
         $dat['brandclass'] = $brandclass;
