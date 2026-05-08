@@ -599,6 +599,8 @@ Class Utils extends CI_Controller
             $upltype = 'customquote';
         } elseif (ifset($postdata, 'type','')=='proofrequest') {
             $upltype = 'proofrequest';
+        } elseif (ifset($postdata, 'type','')=='artlocation') {
+            $upltype = 'artlocation';
         }
         if ($upltype == 'preload') {
             $savepath = $this->config->item('upload_path_preload');
@@ -607,6 +609,9 @@ Class Utils extends CI_Controller
             $savepath = $this->config->item('upload_customquote');
             $respons_path = $this->config->item('upload_customquote_relative');
         } elseif ($upltype=='proofrequest') {
+            $savepath = $this->config->item('artwork_logo');
+            $respons_path = $this->config->item('artwork_logo_relative');
+        } elseif ($upltype=='artlocation') {
             $savepath = $this->config->item('artwork_logo');
             $respons_path = $this->config->item('artwork_logo_relative');
         }
