@@ -1035,9 +1035,9 @@ class Exportexcell_model extends CI_Model
             if ($brand=='SR') {
                 $sheet->setCellValue('E'.$j, $owed['customer_ponum']);
                 $sheet->setCellValue('F'.$j, $owed['customer_name']);
-                $sheet->setCellValue('F'.$j, $owed['type']);
-                $sheet->setCellValue('G'.$j, $owed['approved']==0 ? 'Not Approved' : 'Approved');
-                $sheet->setCellValue('H'.$j, $owed['debt_status']);
+                $sheet->setCellValue('G'.$j, $owed['type']);
+                $sheet->setCellValue('H'.$j, $owed['approved']==0 ? 'Not Approved' : 'Approved');
+                $sheet->setCellValue('I'.$j, $owed['debt_status']);
             } else {
                 $sheet->setCellValue('E'.$j, $owed['customer_name']);
                 $sheet->setCellValue('F'.$j, $owed['type']);
