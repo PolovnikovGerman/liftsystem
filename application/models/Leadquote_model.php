@@ -3335,30 +3335,63 @@ class Leadquote_model extends MY_Model
         $data['revenue'] = $quote['quote_total'];
         $data['tax'] = $quote['sales_tax'];
         // Contacts
-        $contacts=array();
-        for ($i=1; $i<=3; $i++) {
-            if ($i==1) {
-                $contacts[]=[
+        $this->load->model('leads_model');
+        $lcontacts = $this->leads_model->get_lead_contacts($lead['lead_id']);
+        $contacts = [];
+        if (empty($lcontacts)) {
+            for ($i=1; $i<=3; $i++) {
+                if ($i==1) {
+                    $contacts[]=[
+                        'order_contact_id'=>($i)*(-1),
+                        'order_id'=>0,
+                        'contact_name'=> $lead['lead_customer'],
+                        'contact_phone'=> $lead['lead_phone'],
+                        'contact_emal'=> $lead['lead_mail'],
+                        'contact_art'=>1,
+                        'contact_inv'=>1,
+                        'contact_trk'=>1,
+                    ];
+                } else {
+                    $contacts[]=[
+                        'order_contact_id'=>($i)*(-1),
+                        'order_id'=>0,
+                        'contact_name'=>'',
+                        'contact_phone'=>'',
+                        'contact_emal'=>'',
+                        'contact_art'=>0,
+                        'contact_inv'=>0,
+                        'contact_trk'=>0,
+                    ];
+                }
+            }
+        } else {
+            $i=1;
+            foreach ($lcontacts as $lcontact) {
+                $contacts[] = [
                     'order_contact_id'=>($i)*(-1),
                     'order_id'=>0,
-                    'contact_name'=> $lead['lead_customer'],
-                    'contact_phone'=> $lead['lead_phone'],
-                    'contact_emal'=> $lead['lead_mail'],
-                    'contact_art'=>1,
-                    'contact_inv'=>1,
-                    'contact_trk'=>1,
+                    'contact_name'=> $lcontact['contact_name'],
+                    'contact_phone'=> $lcontact['contact_phone'],
+                    'contact_emal'=> $lcontact['contact_email'],
+                    'contact_art'=>(!empty($lcontact['contact_phone']) || !empty($lcontact['contact_email'])) ? 1 : 0,
+                    'contact_inv'=>(!empty($lcontact['contact_phone']) || !empty($lcontact['contact_email'])) ? 1 : 0,
+                    'contact_trk'=>(!empty($lcontact['contact_phone']) || !empty($lcontact['contact_email'])) ? 1 : 0,
                 ];
-            } else {
-                $contacts[]=[
-                    'order_contact_id'=>($i)*(-1),
-                    'order_id'=>0,
-                    'contact_name'=>'',
-                    'contact_phone'=>'',
-                    'contact_emal'=>'',
-                    'contact_art'=>0,
-                    'contact_inv'=>0,
-                    'contact_trk'=>0,
-                ];
+                $i++;
+            }
+            if ($i<4) {
+                for ($j=$i; $j<=3; $j++) {
+                    $contacts[]=[
+                        'order_contact_id'=>($j)*(-1),
+                        'order_id'=>0,
+                        'contact_name'=>'',
+                        'contact_phone'=>'',
+                        'contact_emal'=>'',
+                        'contact_art'=>0,
+                        'contact_inv'=>0,
+                        'contact_trk'=>0,
+                    ];
+                }
             }
         }
         $out['contacts']=$contacts;
