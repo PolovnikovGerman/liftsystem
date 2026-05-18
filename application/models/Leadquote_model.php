@@ -4696,11 +4696,11 @@ class Leadquote_model extends MY_Model
                             } else {
                                 $this->db->set('print_1', $quoteparams['print_price']);
                             }
-                            if ($quoteparams['setuptype']=='NEW') {
-                                $this->db->set('setup_1', $quoteparams['setup_price']);
-                            } else {
-                                $this->db->set('setup_1', 0); // $quoteparams['setup_price']
-                            }
+                        }
+                        if ($quoteparams['setuptype']=='NEW') {
+                            $this->db->set('setup_1', $quoteparams['setup_price']);
+                        } else {
+                            $this->db->set('setup_1', 0); // $quoteparams['setup_price']
                         }
                         $this->db->set('print_2', $quoteparams['print_price']);
                         $this->db->set('print_3', $quoteparams['print_price']);
