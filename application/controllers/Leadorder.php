@@ -3112,6 +3112,70 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
+    // Shipping doc management
+    public function shipdocremove()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $shipdoc = ifset($postdata,'shipdoc', 0);
+                if (!empty($shipdoc)) {
+                    $res = $this->leadorder_model->shipdocremove($shipdoc, $leadorder, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['content'] = $this->load->view('leadorderdetails/shipdoc_empty_view',['shipdoc' => $shipdoc], true);
+                    }
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function saveshipdocload()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata,'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (!empty($ordersession)) {
+                $doclink = ifset($postdata, 'doclink','');
+                $docsource = ifset($postdata, 'docsource', '');
+                $shipdoc = ifset($postdata, 'shipdoc', 0);
+                $error = 'Some parameters empty';
+                if (!empty($doclink) && !empty($docsource) && !empty($shipdoc)) {
+                    $res = $this->leadorder_model->saveshipdocload($doclink, $docsource, $shipdoc, $leadorder, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'doclink' => $doclink,
+                            'docsource' => $docsource,
+                            'shipdoc' => $shipdoc,
+                        ];
+                        $mdata['content'] = $this->load->view('leadorderdetails/shipdoc_data_view', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function change_shipcost() {
         if ($this->isAjax()) {
             $mdata=array();
