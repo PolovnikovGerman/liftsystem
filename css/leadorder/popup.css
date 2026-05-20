@@ -1204,7 +1204,7 @@ input.ship_tax_textareainpt {
     width: 55px;
 }
 .ship_tax_cont_bl2.viewdata {
-    margin-left: 10px;
+    /*margin-left: 10px;*/
 }
 .ship_tax_cont_bl2 > .line {
     clear: both;
@@ -2164,9 +2164,9 @@ input.artrepeat {
     padding-left: 5px;    
 }
 .block_8_text2 {
-    float: left;
+    float: right!important;
     text-align: right;
-    width: 70px;
+    /* width: 70px; */
 }
 .block_8_text3 {
     float: right;
