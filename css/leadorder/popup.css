@@ -913,7 +913,8 @@ input.items_discount {
     font-size: 12px;
     margin-left: 15px;
     padding-top: 5px;
-    width: 120px;
+    /*width: 120px;*/
+    margin-right: 7px;
 }
 .multishipadresslist {
     float: left;
@@ -1021,15 +1022,25 @@ span.text_bold {
     width: 46px;
 }
 .shipdocs_addbtn {
-    float: left;
+    /*float: left;*/
     background: #efefef;
-    cursor: pointer;
+    /*cursor: pointer;*/
     padding: 1px 8px;
     border: 1px solid #000;
     border-radius: 5px;
     height: 18px;
     line-height: 16px;
     margin-left: 3px;
+}
+.shipdocupload.qq-upload-button {
+    background: none;
+    height: 18px;
+    line-height: 16px;
+    width: 44px;
+}
+.shipdocupload qq-upload-button span {
+    clear: both;
+    float: left;
 }
 .shipotherparamsarea {
     float: left;

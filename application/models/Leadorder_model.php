@@ -5659,8 +5659,9 @@ Class Leadorder_model extends My_Model {
         $srcpathfull = $this->config->item('upload_path_preload');
         $targpathsh = $this->config->item('orderattach_path');
         $targpathfull = $this->config->item('orderattach');
+        createPath($targpathsh);
         if (!empty($shipping['shipdoc1_link'])) {
-            if (strpos($shipping['shipdoc1_link'], $srcpathsh)==true) {
+            if (strpos($shipping['shipdoc1_link'], $srcpathsh)!==false) {
                 $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc1_link']);
                 $srcfile = $srcpathfull.$filesrc;
                 $targfile = $targpathfull.$filesrc;
@@ -5674,7 +5675,7 @@ Class Leadorder_model extends My_Model {
             }
         }
         if (!empty($shipping['shipdoc2_link'])) {
-            if (strpos($shipping['shipdoc2_link'], $srcpathsh)==true) {
+            if (strpos($shipping['shipdoc2_link'], $srcpathsh)!==false) {
                 $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc2_link']);
                 $srcfile = $srcpathfull.$filesrc;
                 $targfile = $targpathfull.$filesrc;

@@ -3255,15 +3255,19 @@ function init_leadorder_shipping() {
 
 function init_shipdocupload(shipdoc) {
     var btnlink = 'shipdocadd'+shipdoc;
-    var upload_templ = '';
+    var upload_templ= '<div class="qq-uploader"><div class="shipdocupload qq-upload-button"><span><em>Add</em></span></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>' +
+        '<div class="clear"></div></div>';
+
     var uploader = new qq.FileUploader({
         element: document.getElementById(btnlink),
         action: '/utils/save_shipdoc',
         uploadButtonText: '',
         multiple: true,
         debug: false,
-        // template: upload_templ,
-        allowedExtensions: ['pdf','PDF'],
+        template: upload_templ,
+        // allowedExtensions: ['pdf','PDF', 'doc', 'DOC', 'docx','DOCX',''],
         onComplete: function(id, fileName, responseJSON){
             if (responseJSON.success==true) {
                 $(".qq-upload-list").hide();

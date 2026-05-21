@@ -4881,6 +4881,7 @@ class Leadorder extends MY_Controller
                                 'rushview' => $rushview,
                                 'taxview' => $taxview,
                                 'shipaddress' => $this->shipping_model->prepare_shipaddress($shipping_address[0]),
+                                'shipcntcode' => $shipping_address[0]['out_country'],
                             );
                             $shippingview = $this->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
                         } else {
