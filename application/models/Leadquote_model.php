@@ -1903,8 +1903,10 @@ class Leadquote_model extends MY_Model
                 // Get additional data about item
                 if ($item['item_id'] < 0) {
                     $itemdata=$this->orders_model->get_newitemdat($item['item_id']);
+                    $newprice = $item['item_price'];
                 } else {
                     $itemdata=$this->leadorder_model->_get_itemdata($item['item_id']);
+                    $newprice = $this->leadorder_model->_get_item_priceqty($item['item_id'], '', $item['item_qty']);
                 }
                 $colors = $itemdata['colors'];
                 $curcolors = $curimprints = $curimprdetails = [];
@@ -1915,17 +1917,19 @@ class Leadquote_model extends MY_Model
                 $itemcolors = $this->db->get()->result_array();
                 $colorid = 1;
                 $colorrow = 1;
-                $colorssubtotal = 0;
+
                 foreach ($itemcolors as $itemcolor) {
                     foreach ($itemcolor as $ckey=>$cval) {
                         if ($ckey=='quote_itemcolor_id') {
                             $itemcolor['item_id'] = $colorid*(-1);
                         } elseif ($ckey=='quote_item_id') {
                             $itemcolor[$key] = $itemid * (-1);
+                        } elseif ($ckey=='item_price') {
+                            $itemcolor['item_price'] = $newprice;
                         }
                     }
                     $itemcolor['item_subtotal'] = $itemcolor['item_qty'] * $itemcolor['item_price'];
-                    $colorssubtotal+=$itemcolor['item_qty'] * $itemcolor['item_price'];
+
                     $itemcolor['item_number'] = $itemdata['item_number'];
                     $itemcolor['item_row'] = $colorrow;
                     $itemcolor['colors'] = $colors;
@@ -2030,11 +2034,12 @@ class Leadquote_model extends MY_Model
                     $item['vendor_zipcode']=ifset($itemdata, 'vendor_zipcode','');
                     $item['charge_perorder']=ifset($itemdata, 'charge_perorder',0);
                     $item['charge_pereach']=ifset($itemdata,'charge_pereach',0);
-                    $item['item_subtotal']=$colorssubtotal;
+
                     // Add Imprins, colors, details
                     $item['items'] = $curcolors;
                     $item['imprints'] = $curimprints;
                     $item['imprint_details'] = $curimprdetails;
+
                 }
                 $quoteitems[] = $item;
                 $itemid++;
@@ -2057,6 +2062,42 @@ class Leadquote_model extends MY_Model
                 $curship[] = $ship;
                 $shipid++;
             }
+            // Recalc totals
+            $items_subtotal = 0;
+            $total = 0;
+            $itmidx = 0;
+            foreach ($quoteitems as $item) {
+                $item_subtotal = 0;
+                $imprint_subtotal = 0;
+                $colors = $item['items'];
+                foreach ($colors as $color) {
+                    $colorqty = ifset($color,'item_qty',0);
+                    $colorprice = ifset($color,'item_price',0);
+                    $item_subtotal+=intval($colorqty)*floatval($colorprice);
+                }
+                $quoteitems[$itmidx]['item_subtotal'] = $item_subtotal;
+                $imprints = ifset($item, 'imprints',[]);
+                foreach ($imprints as $imprint) {
+                    $imprint_subtotal += $imprint['imprint_qty'] * $imprint['imprint_price'];
+                }
+                $quoteitems[$itmidx]['imprint_subtotal'] = $imprint_subtotal;
+                $items_subtotal+=($item_subtotal + $imprint_subtotal);
+                $total+=($item_subtotal + $imprint_subtotal);
+                $itmidx++;
+            }
+            $items_subtotal+=($quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value']);
+            $total+=($quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value']);
+            $quotedat['sales_tax'] = 0;
+            if ($quotedat['taxview']==1 && $quotedat['tax_exempt']==0) {
+                // Calc tax
+                $basecost = $total + $quotedat['rush_cost']+$quotedat['shipping_cost'];
+                $tax = round($basecost * ($this->config->item('salesnewtax')/100),2);
+                $quotedat['sales_tax'] = $tax;
+            }
+            $total+=$quotedat['sales_tax'] + $quotedat['rush_cost'] + $quotedat['shipping_cost'];
+            $quotedat['quote_total'] = $total;
+            $quotedat['items_subtotal'] = $items_subtotal;
+            // End recalc
             $out['quote'] = $quotedat;
             $out['items'] = $quoteitems;
             $out['shippings'] = $curship;

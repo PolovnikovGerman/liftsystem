@@ -10459,10 +10459,10 @@ Class Orders_model extends MY_Model
             $ship = empty($order['shipcnt']) ? 0 : 1;
             $shipclass = $ship==0 ? $missclass : $readyclass;
             if (empty($order['amntcnt'])) {
-                $payment = 0;
+                $payment = $order['revenue']; // 0;
                 $payment_class = $missclass;
             } else {
-                $payment = $order['amntsum'];
+                $payment = $order['revenue']-$order['amntsum']; // $order['amntsum'];
                 if ($order['amntsum']>=$order['revenue']) {
                     $payment_class = $readyclass;
                 } else {
