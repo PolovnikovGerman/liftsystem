@@ -3731,9 +3731,9 @@ function init_taxdocupload(shipadr) {
                 var url="/leadorder/taxexcptdocsave";
                 $("ul.qq-upload-list").css('display','none');
                 var params = new Array();
-                params.push({name: 'shipdoc', value: shipadr});
+                params.push({name: 'shipadr', value: shipadr});
                 params.push({name: 'newdoc', value: responseJSON.filename});
-                params.push({name: 'srcname', value: fileName}); // responseJSON.source
+                params.push({name: 'srcname', value: responseJSON.source});
                 params.push({name: 'ordersession', value: $("input#ordersession").val()});
                 $.post(url, params, function(response){
                     if (response.errors=='') {
