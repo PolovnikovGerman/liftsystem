@@ -240,6 +240,7 @@ Class Leads_model extends MY_Model
         foreach ($fields as $fld) {
             $res[$fld]='';
         }
+        $res['newhistorymsg'] = '';
         return $res;
 
     }
