@@ -913,7 +913,8 @@ input.items_discount {
     font-size: 12px;
     margin-left: 15px;
     padding-top: 5px;
-    width: 120px;
+    /*width: 120px;*/
+    margin-right: 7px;
 }
 .multishipadresslist {
     float: left;
@@ -993,11 +994,59 @@ span.text_bold {
 .ship_tax_tabs2.active {
     cursor: pointer;
 }
+/* Shipping docs */
+.shipdocsarea {
+    float: left;
+}
+.shipdocs_label {
+    float: left;
+    font-weight: 600;
+    margin-left: 5px;
+    margin-top: 1px;
+    margin-right: 3px;
+}
+.shipdocs_link {
+    float: left;
+    /* width: 32px; */
+    margin-right: 3px;
+    cursor: pointer;
+}
+.shipdocs_delete {
+    float: left;
+    /*width: 12px;*/
+    margin-right: 2px;
+    cursor: pointer;
+}
+.shipdocs_empty {
+    float: left;
+    width: 46px;
+}
+.shipdocs_addbtn {
+    /*float: left;*/
+    background: #efefef;
+    /*cursor: pointer;*/
+    padding: 1px 8px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    height: 18px;
+    line-height: 16px;
+    margin-left: 3px;
+}
+.shipdocupload.qq-upload-button {
+    background: none;
+    height: 18px;
+    line-height: 16px;
+    width: 44px;
+}
+.shipdocupload qq-upload-button span {
+    clear: both;
+    float: left;
+}
 .shipotherparamsarea {
     float: left;
-    margin-left: 16px;
+    margin-left: 6px; /* 16px; */
     height: 18px;
-    width: 391px;
+    /*width: 391px;*/
 }
 .eventdate {
     float: left;
@@ -1040,8 +1089,8 @@ input.rushpastvalue.arrivelate {
 }
 .rushselectarea {
     float: left;
-    width: 223px;
-    margin-left: 114px;
+    /*width: 223px;*/
+    /*margin-left: 114px;*/
 }
 .rushselectarea.admin {
     margin-left: 0;
@@ -1051,6 +1100,8 @@ input.rushpastvalue.arrivelate {
     font-size: 12px;
     width: 65px;
     color:  #000000;
+    padding: 0;
+    margin-top: 3px;
 }
 .rushselectarea > .rushdataselect {
     float: left;
@@ -1061,7 +1112,7 @@ select.shiprashselect {
     font-size: 11px;
     height: 19px;
     margin: 0 2px;
-    width: 145px;
+    width: 135px; /* 145px; */
 }
 input.shiprushcost, input.shippingcost, input.salestaxcost {
     height: 18px;

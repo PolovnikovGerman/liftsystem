@@ -1,14 +1,28 @@
 <div class="bl_ship_tax_content">            
     <div class="ship_tax_content_line1">
         <div class="viewmultishipdetails text_blue">edit ship details</div>
+        <div class="shipdocs_label">Docs:</div>
+        <div class="shipdocsarea" data-shipdoc="1">
+            <?php if (!empty($shipping['shipdoc1_link'])) : ?>
+                <div class="shipdocs_link" data-shipdoc="1" data-link="<?=$shipping['shipdoc1_link']?>" data-source="<?=$shipping['shipdoc1_src']?>">Doc1</div>
+                <div class="shipdocs_delete" data-shipdoc="1"><i class="fa fa-trash-o"></i></div>
+            <?php else : ?>
+                <div class="shipdocs_empty">
+                    <div class="shipdocs_addbtn" id="shipdocadd1" data-shipdoc="1">Add</div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <div class="shipdocsarea" data-shipdoc="2">
+            <?php if (!empty($shipping['shipdoc2_link'])) : ?>
+                <div class="shipdocs_link" data-shipdoc="2" data-link="<?=$shipping['shipdoc2_link']?>" data-source="<?=$shipping['shipdoc2_src']?>">Doc2</div>
+                <div class="shipdocs_delete" data-shipdoc="2"><i class="fa fa-trash-o"></i></div>
+            <?php else : ?>
+                <div class="shipdocs_empty">
+                    <div class="shipdocs_addbtn" id="shipdocadd2" data-shipdoc="2">Add</div>
+                </div>
+            <?php endif; ?>
+        </div>
         <div class="shipotherparamsarea">
-<!--            --><?php //if ($user_role=='masteradmin') { ?>
-<!--                <div class="rushadmindate">-->
-<!--                    <label>Ship in past:</label>-->
-<!--                    <input type="text" readonly="readonly" class="shiprushpast input_border_black" id="rushpast" value=""/>-->
-<!--                </div>-->
-<!--            --><?php //} ?>
-<!--            <div class="rushselectarea --><?//=$user_role=='masteradmin' ? 'admin' : ''?><!--">-->
             <div class="rushselectarea">
                 <div class="label">Ships on:</div>
                 <div class="rushdataselect" id="rushdatalistarea"><?= $rushview ?></div>
