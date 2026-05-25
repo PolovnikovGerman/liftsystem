@@ -9,21 +9,6 @@
                 </select>
             </div>
             <div class="ship_tax_tabs2 active">&nbsp;</div>
-            <div class="shipdocs_label">Docs:</div>
-            <div class="shipdocs_empty">
-                <?php if (!empty($shipping['shipdoc1_link'])) : ?>
-                    <div class="shipdocs_link" data-shipdoc="1" data-link="<?=$shipping['shipdoc1_link']?>" data-source="<?=$shipping['shipdoc1_src']?>">Doc1</div>
-                <?php else : ?>
-                    &nbsp;
-                <?php endif; ?>
-            </div>
-            <div class="shipdocs_empty">
-                <?php if (!empty($shipping['shipdoc2_link'])) : ?>
-                    <div class="shipdocs_link" data-shipdoc="2" data-link="<?=$shipping['shipdoc2_link']?>" data-source="<?=$shipping['shipdoc2_src']?>">Doc2</div>
-                <?php else : ?>
-                    &nbsp;
-                <?php endif; ?>
-            </div>
             <div class="shipotherparamsarea">
                 <div class="rushselectarea">
                     <div class="label">Ships on:</div>
@@ -68,8 +53,37 @@
                     <input type="checkbox" <?=$shipadr['ship_blind']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" disabled="disabled" style="float: left;"/>
                     <div class="label <?=$shipadr['ship_blind']==1 ? '' : 'shipblind'?>" id="shblindlabel">Ship Blind</div>                    
                 </div>
+                <div class="line">
+                    <div class="shipdocs_label">Ship Docs:</div>
+                </div>
+                <div class="line">
+                    <?php if (!empty($shipping['shipdoc1_link'])) : ?>
+                        <div class="shipdocs_link view" data-shipdoc="1" data-link="<?=$shipping['shipdoc1_link']?>" data-source="<?=$shipping['shipdoc1_src']?>" title="<?=$shipping['shipdoc1_src']?>">
+                            <?php if ($shipping['shipdoc1_type']=='pdf') : ?>
+                                <i class="fa fa-file-pdf-o"></i>
+                            <?php elseif ($shipping['shipdoc1_type']=='word') : ?>
+                                <i class="fa fa-file-word-o"></i>
+                            <?php else : ?>
+                                <i class="fa fa-file-excel-o"></i>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($shipping['shipdoc2_link'])) : ?>
+                        <div class="shipdocs_link view" data-shipdoc="2" data-link="<?=$shipping['shipdoc2_link']?>" data-source="<?=$shipping['shipdoc2_src']?>" title="<?=$shipping['shipdoc2_src']?>">
+                            <?php if ($shipping['shipdoc2_type']=='pdf') : ?>
+                                <i class="fa fa-file-pdf-o"></i>
+                            <?php elseif ($shipping['shipdoc2_type']=='word') : ?>
+                                <i class="fa fa-file-word-o"></i>
+                            <?php else : ?>
+                                <i class="fa fa-file-excel-o"></i>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
-            <div class="ship_tax_cont_bl3"><?=$taxview?></div>
+            <div class="taxdataarea <?=(empty($shipping['shipdoc1_link']) && empty($shipping['shipdoc2_link'])) ? 'noshipdocs' : ''?>">
+                <div class="ship_tax_cont_bl3"><?=$taxview?></div>
+            </div>
         </div>
         <div class="ship_tax_container2" data-shipadr="<?=$shipadr['order_shipaddr_id']?>">                    
             <?= $shipcostview ?>

@@ -975,6 +975,7 @@ span.text_bold {
 }
 .ship_tax_tabs {
     float: left;
+    width: 100%;
 }
 .ship_tax_tabs1 {
     float: left;
@@ -998,52 +999,77 @@ span.text_bold {
 .shipdocsarea {
     float: left;
 }
+.shipdocsarea.first {
+    margin-left: -8px;
+    margin-right: 3px;
+}
 .shipdocs_label {
     float: left;
     font-weight: 600;
-    margin-left: 5px;
-    margin-top: 1px;
-    margin-right: 3px;
+    font-size: 11px;
+    margin-left: -5px;
+}
+.shipdocs_label.multyship {
+    margin-left: 0;
+    margin-top: 3px;
+    margin-right: 5px;
 }
 .shipdocs_link {
     float: left;
+    font-size: 14px;
     /* width: 32px; */
     margin-right: 3px;
     cursor: pointer;
 }
+.shipdocs_link.view {
+    margin-right: 5px;
+}
+.shipdocs_link.multyship {
+    margin-top: 3px;
+}
+.shipdocs_link i {
+    /*font-weight: 600;*/
+}
 .shipdocs_delete {
-    float: left;
+    float: right;
     /*width: 12px;*/
-    margin-right: 2px;
+    margin-right: 3px;
     cursor: pointer;
+}
+.shipdocs_delete.multyship {
+    margin-top: 3px;
 }
 .shipdocs_empty {
     float: left;
-    width: 46px;
+    width: 40px;
 }
 .shipdocs_addbtn {
-    /*float: left;*/
+    float: left;
     background: #efefef;
-    /*cursor: pointer;*/
-    padding: 1px 8px;
     border: 1px solid #000;
     border-radius: 5px;
     height: 18px;
     line-height: 16px;
-    margin-left: 3px;
+    text-align: center;
+}
+.shipdocs_addbtn.multyship {
+    margin-top: 2px;
 }
 .shipdocupload.qq-upload-button {
     background: none;
     height: 18px;
     line-height: 16px;
-    width: 44px;
+    width: 27px;
+    float: left;
+    font-size: 11px;
 }
 .shipdocupload qq-upload-button span {
     clear: both;
     float: left;
 }
 .shipotherparamsarea {
-    float: left;
+    float: right;
+    margin-right: 12px;
     margin-left: 6px; /* 16px; */
     height: 18px;
     /*width: 391px;*/
@@ -1106,13 +1132,17 @@ input.rushpastvalue.arrivelate {
 .rushselectarea > .rushdataselect {
     float: left;
     width: 148px;
+    margin-right: 9px;
+}
+.rushselectarea.multyship > .rushdataselect {
+    margin-right: 27px;
 }
 select.shiprashselect {
     float: left;
     font-size: 11px;
     height: 19px;
     margin: 0 2px;
-    width: 135px; /* 145px; */
+    width: 145px;
 }
 input.shiprushcost, input.shippingcost, input.salestaxcost {
     height: 18px;
@@ -1276,16 +1306,21 @@ input.ship_tax_textareainpt {
     /* height: 28px; */
     /* opacity: 0.5; */
 }
-.ship_tax_cont_bl3 {
+.taxdataarea {
+    width: 301px;
     float: left;
+    margin-top: -2px;
+}
+.taxdataarea.noshipdocs {
+    margin-top: 15px;
+}
+.ship_tax_cont_bl3 {
+    float: right;
     height: 17px;
     line-height: 17px;
-    margin-top: 33px;
-    /*width: 244px;*/
-    /*margin-left: 67px;*/
-    width: 266px;
-    margin-left: 40px;
-    text-align: right;
+    /*width: 266px;*/
+    /*margin-left: 40px;*/
+    /*text-align: right;*/
 }
 .taxlabel {
     color: #000d6e;
