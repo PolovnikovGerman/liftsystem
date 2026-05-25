@@ -1903,7 +1903,6 @@ class Leadquote_model extends MY_Model
                 // Get additional data about item
                 if ($item['item_id'] < 0) {
                     $itemdata=$this->orders_model->get_newitemdat($item['item_id']);
-                    $newprice = $item['item_price'];
                 } else {
                     $itemdata=$this->leadorder_model->_get_itemdata($item['item_id']);
                     $newprice = $this->leadorder_model->_get_item_priceqty($item['item_id'], '', $item['item_qty']);
@@ -1917,7 +1916,6 @@ class Leadquote_model extends MY_Model
                 $itemcolors = $this->db->get()->result_array();
                 $colorid = 1;
                 $colorrow = 1;
-
                 foreach ($itemcolors as $itemcolor) {
                     foreach ($itemcolor as $ckey=>$cval) {
                         if ($ckey=='quote_itemcolor_id') {
@@ -1925,7 +1923,11 @@ class Leadquote_model extends MY_Model
                         } elseif ($ckey=='quote_item_id') {
                             $itemcolor[$key] = $itemid * (-1);
                         } elseif ($ckey=='item_price') {
-                            $itemcolor['item_price'] = $newprice;
+                            if ($item['item_id']>0) {
+                                $itemcolor['item_price'] = $newprice;
+                            } else {
+                                $itemcolor['item_price'] = $cval;
+                            }
                         }
                     }
                     $itemcolor['item_subtotal'] = $itemcolor['item_qty'] * $itemcolor['item_price'];

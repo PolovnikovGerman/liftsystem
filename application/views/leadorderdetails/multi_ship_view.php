@@ -1,8 +1,31 @@
 <div class="bl_ship_tax_content">
     <div class="ship_tax_content_line1">
         <div class="viewmultishipdetails text_blue">view ship details</div>
+        <div class="shipdocs_label multyship">Ship Docs:</div>
+        <?php if (!empty($shipping['shipdoc1_link'])) : ?>
+            <div class="shipdocs_link multyship view" data-shipdoc="1" data-link="<?=$shipping['shipdoc1_link']?>" data-source="<?=$shipping['shipdoc1_src']?>">
+                <?php if ($shipping['shipdoc1_type']=='pdf') : ?>
+                    <i class="fa fa-file-pdf-o"></i>
+                <?php elseif ($shipping['shipdoc1_type']=='word') : ?>
+                    <i class="fa fa-file-word-o"></i>
+                <?php else : ?>
+                    <i class="fa fa-file-excel-o"></i>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+        <?php if (!empty($shipping['shipdoc2_link'])) : ?>
+            <div class="shipdocs_link multyship view" data-shipdoc="2" data-link="<?=$shipping['shipdoc2_link']?>" data-source="<?=$shipping['shipdoc2_src']?>">
+                <?php if ($shipping['shipdoc2_type']=='pdf') : ?>
+                    <i class="fa fa-file-pdf-o"></i>
+                <?php elseif ($shipping['shipdoc2_type']=='word') : ?>
+                    <i class="fa fa-file-word-o"></i>
+                <?php else : ?>
+                    <i class="fa fa-file-excel-o"></i>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
         <div class="shipotherparamsarea">
-            <div class="rushselectarea">
+            <div class="rushselectarea multyship">
                 <div class="label">Ships on:</div>
                 <div class="rushdataselect" id="rushdatalistarea"><?=$rushview?></div>
             </div>
