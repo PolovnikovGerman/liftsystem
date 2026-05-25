@@ -3286,6 +3286,7 @@ function init_shipdocupload(shipdoc) {
                 params.push({name: 'ordersession', value: $("input#ordersession").val()});
                 params.push({name: 'doclink', value: responseJSON.filename});
                 params.push({name: 'docsource', value: responseJSON.srcname});
+                params.push({name: 'filetype', value: responseJSON.filetype});
                 params.push({name: 'shipdoc', value: shipdoc})
                 $.post(url, params, function (response) {
                     if (response.errors=='') {

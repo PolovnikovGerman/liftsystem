@@ -712,7 +712,20 @@ Class Utils extends CI_Controller
             } else {
                 $ressave = $file->save($path . $filename . '.' . $ext);
                 if ($ressave) {
-                    echo (json_encode(array('success' => true, 'filename' => $path_sh.$filename . '.' . $ext, 'filesize' => $filesize, 'srcname'=>$filenamesrc)));
+                    $filetype = 'pdf';
+                    if (in_array($ext,['doc','docx', 'rtf','odt'])) {
+                        $filetype = 'word';
+                    } elseif (in_array($ext,['xlsx','xls', 'csv'])) {
+                        $filetype = 'excel';
+                    }
+                    $out = [
+                        'success' => true,
+                        'filename' => $path_sh.$filename . '.' . $ext,
+                        'filesize' => $filesize,
+                        'srcname'=>$filenamesrc,
+                        'filetype' => $filetype,
+                    ];
+                    echo (json_encode($out));
                 } else {
                     echo (json_encode(array('success' => false,'error'=> 'Error During save File')));
                 }

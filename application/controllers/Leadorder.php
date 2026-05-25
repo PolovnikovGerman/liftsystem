@@ -3161,16 +3161,19 @@ class Leadorder extends MY_Controller
                 $doclink = ifset($postdata, 'doclink','');
                 $docsource = ifset($postdata, 'docsource', '');
                 $shipdoc = ifset($postdata, 'shipdoc', 0);
+                $shiptype = ifset($postdata,'filetype','pdf');
                 $error = 'Some parameters empty';
                 if (!empty($doclink) && !empty($docsource) && !empty($shipdoc)) {
-                    $res = $this->leadorder_model->saveshipdocload($doclink, $docsource, $shipdoc, $leadorder, $ordersession);
+                    $res = $this->leadorder_model->saveshipdocload($doclink, $docsource, $shiptype, $shipdoc, $leadorder, $ordersession);
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';
                         $options = [
                             'doclink' => $doclink,
                             'docsource' => $docsource,
+                            'doctype' => $shiptype,
                             'shipdoc' => $shipdoc,
+                            'multyship' => $res['multyship'],
                         ];
                         $mdata['content'] = $this->load->view('leadorderdetails/shipdoc_data_view', $options, TRUE);
                     }
