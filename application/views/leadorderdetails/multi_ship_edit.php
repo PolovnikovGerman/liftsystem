@@ -1,15 +1,45 @@
 <div class="bl_ship_tax_content">            
     <div class="ship_tax_content_line1">
         <div class="viewmultishipdetails text_blue">edit ship details</div>
+        <div class="shipdocs_label multyship">Ship Docs:</div>
+        <div class="shipdocsarea" data-shipdoc="1">
+            <?php if (!empty($shipping['shipdoc1_link'])) : ?>
+                <div class="shipdocs_link multyship" data-shipdoc="1" data-link="<?=$shipping['shipdoc1_link']?>" data-source="<?=$shipping['shipdoc1_src']?>">
+                    <?php if ($shipping['shipdoc1_type']=='pdf') : ?>
+                        <i class="fa fa-file-pdf-o"></i>
+                    <?php elseif ($shipping['shipdoc1_type']=='word') : ?>
+                        <i class="fa fa-file-word-o"></i>
+                    <?php else : ?>
+                        <i class="fa fa-file-excel-o"></i>
+                    <?php endif; ?>
+                </div>
+                <div class="shipdocs_delete multyship" data-shipdoc="1"><i class="fa fa-times"></i></div>
+            <?php else : ?>
+                <div class="shipdocs_empty">
+                    <div class="shipdocs_addbtn multyship" id="shipdocadd1" data-shipdoc="1">Add</div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <div class="shipdocsarea" data-shipdoc="2">
+            <?php if (!empty($shipping['shipdoc2_link'])) : ?>
+                <div class="shipdocs_link multyship" data-shipdoc="2" data-link="<?=$shipping['shipdoc2_link']?>" data-source="<?=$shipping['shipdoc2_src']?>">
+                    <?php if ($shipping['shipdoc2_type']=='pdf') : ?>
+                        <i class="fa fa-file-pdf-o"></i>
+                    <?php elseif ($shipping['shipdoc2_type']=='word') : ?>
+                        <i class="fa fa-file-word-o"></i>
+                    <?php else : ?>
+                        <i class="fa fa-file-excel-o"></i>
+                    <?php endif; ?>
+                </div>
+                <div class="shipdocs_delete multyship" data-shipdoc="2"><i class="fa fa-times"></i></div>
+            <?php else : ?>
+                <div class="shipdocs_empty">
+                    <div class="shipdocs_addbtn multyship" id="shipdocadd2" data-shipdoc="2">Add</div>
+                </div>
+            <?php endif; ?>
+        </div>
         <div class="shipotherparamsarea">
-<!--            --><?php //if ($user_role=='masteradmin') { ?>
-<!--                <div class="rushadmindate">-->
-<!--                    <label>Ship in past:</label>-->
-<!--                    <input type="text" readonly="readonly" class="shiprushpast input_border_black" id="rushpast" value=""/>-->
-<!--                </div>-->
-<!--            --><?php //} ?>
-<!--            <div class="rushselectarea --><?//=$user_role=='masteradmin' ? 'admin' : ''?><!--">-->
-            <div class="rushselectarea">
+            <div class="rushselectarea multyship">
                 <div class="label">Ships on:</div>
                 <div class="rushdataselect" id="rushdatalistarea"><?= $rushview ?></div>
             </div>
