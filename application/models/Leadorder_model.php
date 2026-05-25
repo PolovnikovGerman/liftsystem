@@ -1086,6 +1086,15 @@ Class Leadorder_model extends My_Model {
                 // Start
                 $order=$leadorder['order'];
                 $order['shipdate']=$shipping['shipdate'];
+                $order_items = $leadorder['order_items'];
+                $itmidx = 0;
+                foreach ($order_items as $order_item) {
+                    if (isset($order_item['print_date'])) {
+                        $order_items[$itmidx]['print_date'] = $params[0];
+                    }
+                    $itmidx++;
+                }
+                $leadorder['order_items'] = $order_items;
                 // Calculate shipping
                 $this->load->model('shipping_model');
                 $shiprate=0;
@@ -5475,6 +5484,9 @@ Class Leadorder_model extends My_Model {
             $this->db->set('setup_price', $row['setup_price']);
             $this->db->set('base_price', $row['base_price']);
             $this->db->set('inventory_item_id', empty($row['inventory_item_id']) ? NULL : $row['inventory_item_id']);
+            if (isset($row['print_date'])) {
+                $this->db->set('print_date', $row['print_date']);
+            }
             if ($row['order_item_id']<0) {
                 $this->db->set('order_id', $order_id);
                 $this->db->set('print_date', $printdate);
@@ -6385,6 +6397,7 @@ Class Leadorder_model extends My_Model {
                 'base_price' => $row['base_price'],
                 'vendor_item_id' => '',
                 'inventory_item_id' => $row['inventory_item_id'],
+                'print_date' => $row['print_date'],
             );
             $qty_class='normal';
             if ($item_id<0) {
@@ -10668,6 +10681,7 @@ Class Leadorder_model extends My_Model {
         // Calc proof date
         $order = $leadorder['order'];
         $shipping = $leadorder['shipping'];
+        $order_items = $leadorder['order_items'];
         $item_id = $order['item_id'];
         if ($order['order_blank']==1) {
             $proofdate = $newval;
@@ -10697,6 +10711,14 @@ Class Leadorder_model extends My_Model {
                 $out['current']=$row['id'];
             }
         }
+        $itemidx = 0;
+        foreach ($order_items as $order_item) {
+            if (isset($order_item['print_date'])) {
+                $order_items[$itemidx]['print_date'] = $shipping['shipdate'];
+            }
+            $itemidx++;
+        }
+        $leadorder['order_items'] = $order_items;
         $leadorder['shipping']=$shipping;
         $leadorder['order']=$order;
         $out['shipdate']=$shipping['shipdate'];

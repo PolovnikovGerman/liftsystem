@@ -476,7 +476,7 @@ class Printcalendar extends MY_Controller
                     if ($olddate >= strtotime(date('Y-m-d'))) {
                         $oldlate = 0;
                     }
-                    if ($printdate >= strtotime(date('Y-m-d'))) {
+                    if ($printdate !=='late' && $printdate >= strtotime(date('Y-m-d'))) {
                         $newlate = 0;
                     }
                     if ($newlate != $oldlate) {
