@@ -1813,7 +1813,7 @@ Class Shipping_model extends MY_Model
         $later = new DateTime(date('Y-m-d', $startdeliv));
         $daydiff = $later->diff($earlier)->format("%r%a");
 
-        $token = usersession('upstoken');
+        $token = @usersession('upstoken');
         $tokenres = $this->_UpsAuthToken($token);
         $out['msg'] = $tokenres['msg'];
         if ($tokenres['result']==$this->success_result) {

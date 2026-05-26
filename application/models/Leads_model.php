@@ -350,9 +350,9 @@ Class Leads_model extends MY_Model
             $oldlead=$this->get_lead($leadpost['lead_id']);
         }
         /* Check incoming */
-        if (count($lead_usr)==0) {
-            $out['msg']='Assign Lead executor';
-        } else {
+//        if (count($lead_usr)==0) {
+//            $out['msg']='Assign Lead executor';
+//        } else {
             /* Save Lead main data */
             $newhistory='';
             $newval=(floatval($leadpost['lead_value']));
@@ -529,7 +529,7 @@ Class Leads_model extends MY_Model
                 $out['msg']='';
                 $out['result']=$leadpost['lead_id'];
             }
-        }
+//        }
         return $out;
     }
 
@@ -3137,6 +3137,101 @@ Class Leads_model extends MY_Model
             $this->db->update('ts_leads');
         }
         return true;
+    }
+
+    public function onlinequote_addlead($leadpost)
+    {
+        $newhistory='';
+        $newval=(floatval($leadpost['lead_value']));
+        if ($newval==0) {
+            $newval=NULL;
+        }
+        $this->db->set('lead_company',$leadpost['lead_company']);
+        $this->db->set('lead_phone',$leadpost['lead_phone']);
+        // $this->db->set('lead_value',$leadpost['lead_value']);
+        $this->db->set('lead_value',$newval);
+        $this->db->set('lead_needby',$leadpost['lead_needby']);
+        $this->db->set('lead_customer',$leadpost['lead_customer']);
+        $this->db->set('lead_mail',$leadpost['lead_mail']);
+        $this->db->set('lead_itemqty',$leadpost['lead_itemqty']);
+        $this->db->set('lead_note',$leadpost['lead_note']);
+        if (isset($leadpost['lead_item_id'])) {
+            if ($leadpost['lead_item_id']=='') {
+                $leadpost['lead_item_id']=NULL;
+                $leadpost['lead_item']='';
+            } else {
+                /* Get DATA about Item */
+                $itemdat=$this->search_itemid($leadpost['lead_item_id']);
+                if ($itemdat['result']==$this->error_result) {
+                    $leadpost['lead_item']='';
+                    $leadpost['lead_item_id']=NULL;
+                } else {
+                    $leadpost['lead_item']=$itemdat['item_name'];
+                }
+            }
+            $this->db->set('lead_item',$leadpost['lead_item']);
+            $this->db->set('lead_item_id',$leadpost['lead_item_id']);
+        }
+        if (isset($leadpost['other_item_name'])) {
+            $this->db->set('other_item_name',$leadpost['other_item_name']);
+        }
+        if ($leadpost['lead_status']!='') {
+            $this->db->set('lead_status',$leadpost['lead_status']);
+            $this->db->set('update_date', date('Y-m-d H:i:s'));
+            $newhistory=$leadpost['lead_status'];
+        }
+        if (isset($leadpost['lead_customtype']) && !empty($leadpost['lead_customtype'])) {
+            $this->db->set('lead_customtype',$leadpost['lead_customtype']);
+        }
+        $this->db->set('lead_type',$leadpost['lead_type']);
+        $this->db->set('brand', $leadpost['brand']);
+        $this->db->set('lead_date',time());
+        $this->db->set('lead_assign_time',time());
+        $this->db->set('create_date',date('Y-m-d H:i:s'));
+        $leadnum=$this->get_leadnum($leadpost['brand']);
+        $this->db->set('lead_number',$leadnum);
+        if (isset($leadpost['country_id'])) {
+            $this->db->set('country_id', $leadpost['country_id']);
+        }
+        if (isset($leadpost['state'])) {
+            $this->db->set('state', $leadpost['state']);
+        }
+        if (isset($leadpost['city'])) {
+            $this->db->set('city', $leadpost['city']);
+        }
+        if (isset($leadpost['zip'])) {
+            $this->db->set('zip', $leadpost['zip']);
+        }
+        if (isset($leadpost['address_1'])) {
+            $this->db->set('address_line1', $leadpost['address_1']);
+        }
+        if (isset($leadpost['address_2'])) {
+            $this->db->set('address_line2', $leadpost['address_2']);
+        }
+        $this->db->insert('ts_leads');
+        $lead_id=$this->db->insert_id();
+        if ($lead_id==0) {
+            $out['msg']='Unable to add record. Try later';
+        } else {
+            $leadpost['lead_id']=$lead_id;
+            $leadpost['lead_number']=$leadnum;
+            // Add Lead Contact
+            $this->db->set('contact_name', $leadpost['lead_customer']);
+            $this->db->set('contact_phone', $leadpost['lead_phone']);
+            $this->db->set('contact_email', $leadpost['lead_mail']);
+            $this->db->set('lead_id', $lead_id);
+            $this->db->insert('ts_lead_contacts');
+            // Empty Contact
+            $this->db->set('contact_name', null);
+            $this->db->set('contact_phone', null);
+            $this->db->set('contact_email', null);
+            $this->db->set('lead_id', $lead_id);
+            $this->db->insert('ts_lead_contacts');
+        }
+        /* Update - create related data */
+        $out['msg'] = '';
+        $out['result'] = $leadpost['lead_id'];
+        return $out;
     }
 
     private function _prepare_leads_session($lead_id)
