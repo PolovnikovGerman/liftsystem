@@ -164,6 +164,7 @@ class Leadmanagement extends MY_Controller
                 $sessionid = 'lead'.uniq_link('15');
                 usersession($sessionid, $leaddata);
                 $content_options = [
+                    'leadunsign' => count($lead_usr)==0 ? 1 : 0,
                     'customer_view' => $customer_view,
                     'lead' => $lead_data,
                     'replica_view' => $replica_view,
@@ -1416,6 +1417,7 @@ class Leadmanagement extends MY_Controller
                             'users' => $usrrepl,
                         ];
                         $mdata['content'] = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
+                        $mdata['users'] = count($res['users']);
                     }
                 }
             }
@@ -1448,6 +1450,7 @@ class Leadmanagement extends MY_Controller
                             'added' => 1,
                             'users' => $usrrepl,
                         ];
+                        $mdata['users'] = count($res['users']);
                         if (count($res['users']) > 0) {
                             $mdata['content'] = $this->load->view('leadpopupnew/assigned_lead_view', $replica_options, true);
                         } else {
@@ -1563,13 +1566,8 @@ class Leadmanagement extends MY_Controller
             $prices = [];
             $active = 0;
             foreach ($pricesdat as $pricerow) {
-                if ($pricerow['item_qty'] >= 150 && $pricerow['item_qty'] < 10000 && floatval($pricerow['sale_price']) > 0) {
-//                    if ($pricerow['item_qty']>=$priceqty && $active==0) {
-//                        $active = 1;
-//                        $pricerow['active'] = 1;
-//                    } else {
-                        $pricerow['active'] = 0;
-//                    }
+                if ($pricerow['item_qty'] >= 150 && $pricerow['item_qty'] < 15000 && floatval($pricerow['sale_price']) > 0) {
+                    $pricerow['active'] = 0;
                     $prices[] = $pricerow;
                 }
             }

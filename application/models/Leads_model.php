@@ -3267,6 +3267,34 @@ Class Leads_model extends MY_Model
         ];
         return $leaddata;
     }
+
+    public function get_unassignleads_interest($brand, $showall)
+    {
+        $this->db->select('lead_id, count(leaduser_id) as cnt');
+        $this->db->from('ts_lead_users');
+        $this->db->group_by('lead_id');
+        $leadusr = $this->db->get_compiled_select();
+
+        $this->db->select('l.*, coalesce(lu.cnt,0) as cnt');
+        $this->db->from('ts_leads l');
+        $this->db->join('('.$leadusr.') lu','lu.lead_id=l.lead_id','left');
+        $this->db->having('cnt',0);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('l.brand', $brand);
+            } else {
+                $this->db->where_in('l.brand', ['SB','BT']);
+            }
+        }
+        // $this->db->where('q.active', 1);
+        if ($showall==0) {
+            $limitdate = strtotime('now - 90 days');
+            $this->db->where('l.lead_date >= ', $limitdate);
+        }
+        $this->db->order_by('l.lead_id', 'desc');
+        $dats = $this->db->get()->result_array();
+        return $dats;
+    }
 }
 /* End of file leads_model.php */
 /* Location: ./application/models/leads_model.php */
