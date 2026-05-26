@@ -52,6 +52,7 @@
  * @property Btitemdetails_model btitemdetails_model
  * @property Sritems_model sritems_model
  * @property Printscheduler_model printscheduler_model
+ * @property Printcalendar_model printcalendar_model
  */
 
 class MY_Model extends CI_Model
@@ -66,6 +67,7 @@ class MY_Model extends CI_Model
     public function __construct()
     {
         date_default_timezone_set('America/New_York');
+        $this->db->query('SET time_zone = "' . date('P') . '"');
         parent::__construct();
     }
 

@@ -118,6 +118,16 @@ class Fulfillment extends MY_Controller
                 $head['styles'][] = array('style' => '/css/database_center/relieveitemdetails.css');
                 $head['scripts'][]=array('src' => '/js/database_center/relieveitemdetails.js');
                 $content_options['sritemsview'] = $this->_prepare_sritems_content();
+            } elseif ($row['item_link']=='#printcalendar') {
+//                $head['styles'][]=array('style'=>'/css/printcalendar/printcalendar.css');
+//                $head['styles'][]=array('style'=>'/css/printcalendar/printdetails.css');
+//                $head['styles'][]=array('style' => '/css/printcalendar/printreshedule.css');
+//                $head['scripts'][]=array('src' => '/js/printcalendar/printcalendar.js');
+//                $head['scripts'][]=array('src' => '/js/printcalendar/printdaily.js');
+//                $head['scripts'][]=array('src' => '/js/printcalendar/printreshedule.js');
+                $head['styles'][]=array('style'=>'/css/printcalendar/printcalendar_new.css');
+                $head['scripts'][]=array('src' => '/js/printcalendar/printcalendar_new.js');
+                $content_options['printcalendarview'] = $this->_prepare_printcalendar();
             }
         }
         $content_options['menu'] = $menu;
@@ -2359,6 +2369,18 @@ class Fulfillment extends MY_Controller
             'vendors' => $vendors,
         ];
         $content = $this->load->view('relieveritems/page_view', $options,TRUE);
+        return $content;
+    }
+
+    private function _prepare_printcalendar()
+    {
+        $this->load->model('printcalendar_model');
+        $years = $this->printcalendar_model->get_printshops_years();
+        $options = [
+            'years' => $years,
+            'yearprint' => $years[0]['yearprint'],
+        ];
+        $content = $this->load->view('printcalendar/page_new_view', $options, TRUE);
         return $content;
     }
 
