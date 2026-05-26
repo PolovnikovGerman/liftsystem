@@ -2,6 +2,10 @@
 $config['sb_smtp_host'] = getenv('SB_SMTP_HOST');
 $config['sb_smtp_port'] = getenv('SB_SMTP_PORT');
 $config['sb_smtp_crypto'] = 'ssl';
+$config['sr_smtp_host'] = getenv('SR_SMTP_HOST');
+$config['sr_smtp_port'] = getenv('SR_SMTP_PORT');
+$config['sr_smtp_crypto'] = 'ssl';
+// Quote
 $config['sb_quote_smtp'] = getenv('SB_QUOTE_SMTP');
 $config['sb_quote_user'] = getenv('SB_QUOTE_USER');
 $config['sb_quote_pass'] = getenv('SB_QUOTE_PASS');
@@ -28,12 +32,12 @@ $config['sb_attemptrep_smtp'] = getenv('SB_ATTEMPTREP_SMTP');
 $config['sb_attemptrep_user'] = getenv('SB_ATTEMPTREP_USER');
 $config['sb_attemptrep_pass'] = getenv('SB_ATTEMPTREP_PASS');
 // Bonus Report
-$config['sb_bonusreport_smtp'] = getenv('SB_BONUSREPORT_SMTP');
-$config['sb_bonusreport_user'] = getenv('SB_BONUSREPORT_USER');
-$config['sb_bonusreport_pass'] = getenv('SB_BONUSREPORT_PASS');
-$config['sr_bonusreport_smtp'] = getenv('SR_BONUSREPORT_SMTP');
-$config['sr_bonusreport_user'] = getenv('SR_BONUSREPORT_USER');
-$config['sr_bonusreport_pass'] = getenv('SR_BONUSREPORT_PASS');
+$config['bonusreport_smtp'] = getenv('BONUSREPORT_SMTP');
+$config['bonusreport_user'] = getenv('BONUSREPORT_USER');
+$config['bonusreport_pass'] = getenv('BONUSREPORT_PASS');
+//$config['sr_bonusreport_smtp'] = getenv('SR_BONUSREPORT_SMTP');
+//$config['sr_bonusreport_user'] = getenv('SR_BONUSREPORT_USER');
+//$config['sr_bonusreport_pass'] = getenv('SR_BONUSREPORT_PASS');
 // Week Orders, Quotes, Leads
 $config['quoteweek_smtp'] = getenv('QUOTEWEEK_SMTP');
 $config['quoteweek_user'] = getenv('QUOTEWEEK_USER');
@@ -47,6 +51,13 @@ $config['searchreport_smtp'] = getenv('SEARCHREP_SMTP');
 $config['searchreport_user'] = getenv('SEARCHREP_USER');
 $config['searchreport_pass'] = getenv('SEARCHREP_PASS');
 // User add code
-$config['usercode_smtp'] = getenv('USERCODE_SMTP');
-$config['usercode_user'] = getenv('USERCODE_USER');
-$config['usercode_pass'] = getenv('USERCODE_PASS');
+$config['printschedule_smtp'] = getenv('PRINTSCHEDULE_SMTP');
+$config['printschedule_user'] = getenv('PRINTSCHEDULE_USER');
+$config['printschedule_pass'] = getenv('PRINTSCHEDULE_PASS');
+// TASK notifications
+$config['arttasksb_smtp'] = getenv('SB_ARTDEPT_SMTP');
+$config['arttasksb_user'] = getenv('SB_ARTDEPT_EMAIL');
+$config['arttasksb_pass'] = getenv('SB_ARTDEPT_PASS');
+$config['arttasksr_smtp'] = getenv('SR_ARTDEPT_SMTP');
+$config['arttasksr_user'] = getenv('SR_ARTDEPT_EMAIL');
+$config['arttasksr_pass'] = getenv('SR_ARTDEPT_PASS');

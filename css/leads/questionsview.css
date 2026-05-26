@@ -143,11 +143,12 @@ a.find_questbnt {
     border-right: 1px solid #000000;
     border-bottom: 1px solid #000000;
     margin-bottom: 10px;
+    scrollbar-width: none;
 }
 .quest_tabrow {
     clear: both;
     float: left;
-    width: 962px;
+    width: 100%; /* 962px; */
     font-size: 12px;
     color: #000000;
 }
@@ -237,7 +238,8 @@ a.find_questbnt {
     text-align: left;
     overflow: hidden;
     white-space: nowrap;
-    width: 83px;
+    /*width: 83px;*/
+    width: 91px;
     text-overflow: ellipsis;
 }
 /* Popup */

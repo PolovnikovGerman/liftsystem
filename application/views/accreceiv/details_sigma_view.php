@@ -8,19 +8,11 @@
         <div class="accreceiv-owndetails-headrunningtotal">Running Total</div>
         <div class="accreceiv-owndetails-headdue ownsort" data-sort="batch_due">Due </div>
         <div class="accreceiv-owndetails-headdays"># Days</div>
-<!--        --><?php //=$ownsort=='batch_due' ? 'activesortsigma' : ''?>
         <div class="accreceiv-owndetails-headbalance ownsort" data-sort="balance">Balance</div>
-<!--        --><?php //=$ownsort=='balance' ? 'activesortsigma' : ''?>
         <div class="accreceiv-owndetails-headbrand ownsort" data-sort="brand"><span></span></div>
-<!--        --><?php //=$ownsort=='brand' ? 'activesortsigma' : ''?>
         <div class="accreceiv-owndetails-headordersigma ownsort" data-sort="order_num">Order</div>
-<!--        --><?php //=$ownsort=='order_num' ? 'activesortsigma' : ''?>
-<!--        <div class="accreceiv-owndetails-headponumber ownsort" data-sort="customer_ponum">PO #</div>-->
-<!--        --><?php //=$ownsort=='customer_ponum' ? 'activesortsigma' : ''?>
         <div class="accreceiv-owndetails-headcustomer ownsort" data-sort="customer_name">Customer <span></span></div>
-<!--        --><?php //=$ownsort=='customer_name' ? 'activesortsigma' : ''?>
         <div class="accreceiv-owndetails-headstatus ownsort" data-sort="debt_status">Status</div>
-<!--        --><?php //=$ownsort=='debt_status' ? 'activesortsigma' : ''?>
     </div>
     <div class="accreceiv-owndetails-body">
         <?php if (count($owns)==0) { ?>
@@ -29,10 +21,14 @@
             <?php $numpp=1;?>
             <?php $curtype = '' ?>
             <?php foreach ($owns as $own) { ?>
-                <?php if ($own['type']!==$curtype) : ?>
-                    <?php $rowtype = $own['type']; $curtype = $own['type']; ?>
-                <?php else: ?>
-                    <?php $rowtype = '----'; ?>
+                <?php if ($ownsort=='owntype') : ?>
+                    <?php if ($own['type']!==$curtype) : ?>
+                        <?php $rowtype = $own['type']; $curtype = $own['type']; ?>
+                    <?php else: ?>
+                        <?php $rowtype = '----'; ?>
+                    <?php endif; ?>
+                <?php else : ?>
+                    <?php $rowtype = $own['type']; ?>
                 <?php endif; ?>
                 <div class="accreceiv-owndetails-bodyrow <?=$numpp%2 == 0 ? 'greydatarow' : 'whitedatarow'?> <?=$own['datclass']?>">
                     <div class="accreceiv-owndetails-bodynum"><?=$numpp?></div>
@@ -40,7 +36,13 @@
                     <div class="accreceiv-owndetails-bodytype <?=$own['typeclass']?>"><?=$rowtype?></div>
                     <div class="accreceiv-owndetails-bodyrunningtotal"><?=MoneyOutput($own['rundebt'],0)?></div>
                     <div class="accreceiv-owndetails-bodydue <?=$own['dueclass']?>"><?=date('m/d/y', $own['batch_due'])?></div>
-                    <div class="accreceiv-owndetails-bodydays <?=$own['dayclass']?>"><?=$own['daysshow']?></div>
+                    <div class="accreceiv-owndetails-bodydays <?=$own['dayclass']?>">
+                        <?php if ($ownsort=='owntype') : ?>
+                            <?=$own['daysshow']?>
+                        <?php else : ?>
+                            <?=$own['days']?>
+                        <?php endif; ?>
+                    </div>
                     <div class="accreceiv-owndetails-bodybalance"><?=TotalOutput($own['balance'],1)?></div>
                     <div class="accreceiv-owndetails-bodybrand <?=$own['brand']=='SR' ? 'stressrelievers' : 'bluetrack'?>"><?=$own['brand']?></div>
                     <div class="accreceiv-owndetails-bodyordersigma" data-brand="<?=$own['brand']?>" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>

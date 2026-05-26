@@ -1,1 +1,1 @@
-<div class="taskdata_row emptytasklist">No Records</div>
+<div class="<?=$short==1 ? 'taskdatashort_row' : 'taskdata_row'?> emptytasklist">No Records</div>

@@ -1,5 +1,8 @@
 <div class="debtstatuseditarea">
     <div class="datarow">
+        <div class="debtstatustitle">Status Edit - Order # <?=$order_num?></div>
+    </div>
+    <div class="datarow">
         <input type="text" class="debtstatusinpt" placeholder="Debt Status" value="<?=$debt_status?>" data-order="<?=$order_id?>"/>
     </div>
     <div class="datarow">

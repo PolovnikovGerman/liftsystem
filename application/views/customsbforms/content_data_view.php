@@ -1,5 +1,4 @@
 <?php $numpp=0;?>
-<div class="customform_tabledat">
 <?php $curdate = '';?>
 <?php $curweek = $data[0]['weeknum'];?>
 <?php foreach ($data as $dat) { ?>
@@ -18,23 +17,29 @@
             <?php } ?>
         </div>
         <div class="status">
-            <?php if (empty($dat['lead_number'])) { ?>
-                <div class="sbformnew">New</div>
-            <?php } else { ?>
-                L<?=$dat['lead_number']?>
-            <?php } ?>
+            <?php if (empty($dat['lead_number'])) : ?>
+                <div class="sbformnew" data-form="<?=$dat['custom_quote_id']?>">New</div>
+            <?php else : ?>
+                <div class="customformlead" style="width: 100%;" data-lead="<?=$dat['lead_id']?>">L<?=$dat['lead_number']?></div>
+            <?php endif; ?>
         </div>
         <div class="date  showformdetails"><?=date('m/d/y', strtotime($dat['date_add']))==$curdate ? '&mdash;' : date('m/d/y', strtotime($dat['date_add']))?></div>
         <div class="customname  showformdetails"><?=$dat['customer_name']?></div>
         <div class="custommail showformdetails"><?=$dat['customer_email']?></div>
         <div class="customphone showformdetails"><?=$dat['customer_phone']?></div>
+        <?php if (!empty($dat['shape_type']))  : ?>
+            <div class="customshapetype showformdetails truncateoverflowtext" data-event="<?=$event?>" data-css="customform_popmessage" data-position="left" data-balloon="<?=shapetype_view($dat['shape_type'])?>">
+                <?=shapetype_view($dat['shape_type']) ?>
+            </div>
+        <?php else : ?>
+            <div class="customshapetype showformdetails">&nbsp;</div>
+        <?php endif; ?>
         <div class="itemdescription showformdetails" data-event="<?=$event?>" data-css="customform_popmessage" data-position="left" data-balloon="<?=$dat['shape_desription']?>">
             <?=$dat['shape_desription']?>
         </div>
         <div class="itemqty showformdetails"><?=empty($dat['quota_qty']) ? '' : QTYOutput($dat['quota_qty'])?></div>
-        <div class="eventdate showformdetails <?=$expand==1 ? 'expand' : ''?>"><?=$dat['event_date']?></div>
+        <div class="eventdate showformdetails"><?=$dat['event_date']?></div>
     </div>
     <?php $numpp++?>
     <?php $curdate = date('m/d/y', strtotime($dat['date_add']))?>
 <?php } ?>
-</div>

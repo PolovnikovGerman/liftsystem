@@ -32,6 +32,7 @@
             <!--<input type="checkbox" id="hidedelproofs" value="1" /> -->
         </div>
         <div class="proof_titlecentr proof_leadnum">Lead #</div>
+        <div class="websourcerequest">Orig</div>
         <div class="lead_salesrep">Sales Rep</div>
         <div class="proof_titlecentr proof_brand">Req #</div>
         <div class="proof_titlecentr proof_date">Date</div>
@@ -48,11 +49,11 @@
         <div class="proof_titlecentr proof_note">&nbsp;</div>
         <div class="proof_titlecentr ordernun">Order #</div>
     </div>
-    <div class="proof_tabledat"></div>
-    <div class="quest_tablefoot">
-        <div class="quest_tablefoot_left">&nbsp;</div>
-        <div class="quest_tablefoot_center">&nbsp;</div>
-        <div class="quest_tablefoot_right">&nbsp;</div>
-    </div>
+    <div class="proof_tabledat" id="proofrequest_tabledat"></div>
+<!--    <div class="quest_tablefoot">-->
+<!--        <div class="quest_tablefoot_left">&nbsp;</div>-->
+<!--        <div class="quest_tablefoot_center">&nbsp;</div>-->
+<!--        <div class="quest_tablefoot_right">&nbsp;</div>-->
+<!--    </div>-->
     <div id="proof_dialog" style="display: none; width: 895px; height: 443px;"></div>
 </div>

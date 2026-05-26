@@ -536,10 +536,7 @@ Class Prices_model extends My_Model
     }
 
     public function get_itemlist_price($item_id) {
-        $this->db->select('*');
-        $this->db->from('sb_promo_price');
-        $this->db->where('item_id', $item_id);
-        $this->db->order_by('item_qty');
+        $this->db->select('*')->from('sb_promo_price')->where('item_id', $item_id)->order_by('item_qty');
         $res = $this->db->get()->result_array();
         return $res;
     }
@@ -697,6 +694,11 @@ Class Prices_model extends My_Model
             $out['discount'] = $res;
         }
         return $out;
+    }
+
+    public function get_promoprice($promo_price_id)
+    {
+        return $this->db->select('*')->from('sb_promo_price')->where('promo_price_id', $promo_price_id)->get()->row_array();
     }
 
 

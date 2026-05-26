@@ -25,7 +25,7 @@ Class Artproof_model extends MY_Model
     private $JUST_APPROVED = '01_notplaced';
     private $NO_VECTOR = '04_notvector';
 
-
+    private $oldterms = 120;
     function __construct() {
         parent::__construct();
     }
@@ -65,11 +65,14 @@ Class Artproof_model extends MY_Model
         return $res['cnt'];
     }
 
-    public function get_tasks_stage($stage, $taskview, $inclreq, $order_by, $direction, $brand, $viewall=0) {
+    public function get_tasks_stage($stage, $taskview, $inclreq, $order_by, $direction, $brand, $hideold=0) {
         /* Get with data More then then 24 hours */
-        $olddat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 0 , $brand, $viewall);
+        if ($stage=='need_plates') {
+            return [];
+        }
+        $olddat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 0 , $brand, $hideold);
         /* Current day */
-        $curdat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 1, $brand, $viewall);
+        $curdat=$this->get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, 1, $brand, $hideold);
         if ($stage=='just_approved' && $order_by=='time' && $direction=='asc') {
             $res=array_merge($curdat,$olddat);
         } else {
@@ -96,12 +99,11 @@ Class Artproof_model extends MY_Model
         $rushimg="<img src='/img/art/task_rushicon.png' alt='Rush'/>";
         foreach ($res as $row) {
             $taskclass='';
+            $diff='';
             switch ($stage) {
                 case 'noart':
-                    if ($row['update_date']==0) {
-                        $diff='';
-                    } else {
-                        $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                    if ($row['update_date']>0) {
+                        $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d'); //.($row['hour_diff']-($row['day_diff']*24)).'h');
                         if ($row['order_rush_val']==1 && $row['commondiff']>$this->noart_rush_overdue) {
                             $taskclass='taskoverdue';
                         } elseif ($row['order_rush_val']==0 && $row['commondiff']>$this->noart_common_overdue) {
@@ -111,10 +113,8 @@ Class Artproof_model extends MY_Model
                     break;
                 case 'redrawn':
                     if ($row['order_art_update']==0) {
-                        if ($row['update_date']==0) {
-                            $diff='';
-                        } else {
-                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        if ($row['update_date']>0) {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d'); // .($row['hour_diff']-($row['day_diff']*24)).'h');
                             if ($row['order_rush_val']==1 && $row['commondiff']>$this->redraw_rush_overdue) {
                                 $taskclass='taskoverdue';
                             } elseif($row['order_rush_val']==0 && $row['commondiff']>$this->redraw_common_overdue) {
@@ -122,7 +122,7 @@ Class Artproof_model extends MY_Model
                             }
                         }
                     } else {
-                        $diff=($row['art_day_diff']==0 ? $row['art_hour_diff'].' h' : $row['art_day_diff'].' d '.($row['art_hour_diff']-($row['art_day_diff']*24)).'h');
+                        $diff=($row['art_day_diff']==0 ? $row['art_hour_diff'].' h' : $row['art_day_diff'].' d'); // .($row['art_hour_diff']-($row['art_day_diff']*24)).'h');
                         if ($row['order_rush_val']==1 && $row['specialdiff']>$this->redraw_rush_overdue) {
                             $taskclass='taskoverdue';
                         } elseif($row['order_rush_val']==0 && $row['specialdiff']>$this->redraw_common_overdue) {
@@ -132,10 +132,8 @@ Class Artproof_model extends MY_Model
                     break;
                 case 'need_approve':
                     if ($row['order_proofed_update']==0) {
-                        if ($row['update_date']==0) {
-                            $diff='';
-                        } else {
-                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        if ($row['update_date']>0) {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d'); // .($row['hour_diff']-($row['day_diff']*24)).'h');
                             if ($row['order_rush_val']==1 && $row['commondiff']>$this->needapproval_rush_overdue) {
                                 $taskclass='taskoverdue';
                             } elseif($row['order_rush_val']==0 && $row['commondiff']>$this->needapproval_common_overdue) {
@@ -143,7 +141,7 @@ Class Artproof_model extends MY_Model
                             }
                         }
                     } else {
-                        $diff=($row['proofed_day_diff']==0 ? $row['proofed_hour_diff'].' h' : $row['proofed_day_diff'].' d '.($row['proofed_hour_diff']-($row['proofed_day_diff']*24)).'h');
+                        $diff=($row['proofed_day_diff']==0 ? $row['proofed_hour_diff'].' h' : $row['proofed_day_diff'].' d'); //.($row['proofed_hour_diff']-($row['proofed_day_diff']*24)).'h');
                         if ($row['order_rush_val']==1 && $row['specialdiff']>$this->needapproval_rush_overdue) {
                             $taskclass='taskoverdue';
                         } elseif($row['order_rush_val']==0 && $row['specialdiff']>$this->needapproval_common_overdue) {
@@ -153,10 +151,8 @@ Class Artproof_model extends MY_Model
                     break;
                 case 'need_proof':
                     if ($row['order_vectorized_update']==0) {
-                        if ($row['update_date']==0) {
-                            $diff='';
-                        } else {
-                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        if ($row['update_date']>0) {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d');// .($row['hour_diff']-($row['day_diff']*24)).'h');
                             if ($row['order_rush_val']==1 && $row['commondiff']>$this->toproof_rush_overdue) {
                                 $taskclass='taskoverdue';
                             } elseif($row['order_rush_val']==0 && $row['commondiff']>$this->toproof_common_overdue) {
@@ -164,7 +160,7 @@ Class Artproof_model extends MY_Model
                             }
                         }
                     } else {
-                        $diff=($row['vectorized_day_diff']==0 ? $row['vectorized_hour_diff'].' h' : $row['vectorized_day_diff'].' d '.($row['vectorized_hour_diff']-($row['vectorized_day_diff']*24)).'h');
+                        $diff=($row['vectorized_day_diff']==0 ? $row['vectorized_hour_diff'].' h' : $row['vectorized_day_diff'].' d'); // .($row['vectorized_hour_diff']-($row['vectorized_day_diff']*24)).'h');
                         if ($row['order_rush_val']==1 && $row['specialdiff']>$this->toproof_rush_overdue) {
                             $taskclass='taskoverdue';
                         } elseif($row['order_rush_val']==0 && $row['specialdiff']>$this->toproof_common_overdue) {
@@ -174,13 +170,11 @@ Class Artproof_model extends MY_Model
                     break;
                 case 'just_approved':
                     if ($row['order_approved_update']==0) {
-                        if ($row['update_date']==0) {
-                            $diff='';
-                        } else {
-                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d '.($row['hour_diff']-($row['day_diff']*24)).'h');
+                        if ($row['update_date']>0) {
+                            $diff=($row['day_diff']==0 ? $row['hour_diff'].' h' : $row['day_diff'].' d'); //.($row['hour_diff']-($row['day_diff']*24)).'h');
                         }
                     } else {
-                        $diff=($row['approved_day_diff']==0 ? $row['approved_hour_diff'].' h' : $row['approved_day_diff'].' d '.($row['approved_hour_diff']-($row['approved_day_diff']*24)).'h');
+                        $diff=($row['approved_day_diff']==0 ? $row['approved_hour_diff'].' h' : $row['approved_day_diff'].' d'); // .($row['approved_hour_diff']-($row['approved_day_diff']*24)).'h');
                     }
                     break;
             }
@@ -192,8 +186,9 @@ Class Artproof_model extends MY_Model
             $row['order_rush']=($row['order_rush_val']==1 ? $rushimg : '&nbsp;');
             $row['order_overclass']=$taskclass;
             $row['order_num']=str_replace('pr','', $row['order_num']);
+            $row['customitem'] = 0;
             if ($row['item_id']==$this->config->item('custom_id')) {
-                $row['order_num'].=' <i class="fa fa-diamond" aria-hidden="true"></i>';
+                $row['customitem'] = 1;
             }
             $row['task_title']=($row['customer_name'] ? 'Customer - <b>'.htmlspecialchars($row['customer_name']).'</b>' : '');
             $row['task_title'].=($row['item_name'] ? '<br/>Item - <b>'.  htmlspecialchars($row['item_name']).'</b>' : '');
@@ -338,7 +333,7 @@ Class Artproof_model extends MY_Model
         return $out;
     }
 
-    private function get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, $less, $brand, $viewall) {
+    private function get_stagedat($stage, $taskview, $inclreq, $order_by, $direction, $less, $brand, $hideold) {
         $daylimit=24*60*60;
         $maxlimit = 180*24*60*60;
         /* Get with data More then then 24 hours */
@@ -383,6 +378,7 @@ Class Artproof_model extends MY_Model
                 $this->db->select('v.order_approved_update, v.approved_hour_diff, v.approved_day_diff');
                 $this->db->where('v.order_proj_status',  $this->JUST_APPROVED);
                 $this->db->where('v.order_approved_view',0);
+                $this->db->where('v.day_diff <=', 3);
                 break;
             default:
                 break;
@@ -391,13 +387,15 @@ Class Artproof_model extends MY_Model
         if ($less==0) {
             $this->db->where('v.specialdiff > ',$daylimit);
             $this->db->where('v.specialdiff <= ',$maxlimit);
-            if ($stage=='just_approved' && $viewall==0) {
-                $this->db->limit($this->needapproval_limit);
-            }
+//            if ($stage=='just_approved' && $viewall==0) {
+//                $this->db->limit($this->needapproval_limit);
+//            }
         } else {
             $this->db->where('v.specialdiff <= ',$daylimit);
         }
-
+        if ($hideold==1) {
+            $this->db->where('v.day_diff < ', $this->oldterms);
+        }
         if ($stage!='need_approve') {
             switch ($taskview) {
                 case 'orders':
@@ -608,6 +606,10 @@ Class Artproof_model extends MY_Model
             if ($row['order_proj_status']=='01_notplaced') {
                 $row['orderedit'] = $this->load->view('artrequest/prooforder_edit_view',['proof_order' => $row['proof_order'], 'email_id' => $row['email_id']], TRUE);
             }
+            $row['websource'] = 'WEB';
+            if (empty($row['email_ipaddress'])) {
+                $row['websource'] = '';
+            }
             $out[]=$row;
             $ordnum--;
         }
@@ -615,7 +617,6 @@ Class Artproof_model extends MY_Model
     }
 
     public function get_proof_data($email_id) {
-        $ci=&get_instance();
         $this->db->select('e.*,lem.leademail_id, l.lead_id, l.lead_number, l.lead_date, l.lead_customer, l.lead_mail');
         $this->db->from('ts_emails e');
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
@@ -768,6 +769,7 @@ Class Artproof_model extends MY_Model
             $lastmsg=$this->get_lastupdate($row['email_id'],'artproofs');
             $artlastupdat=($lastmsg=='' ? '' : 'title="'.$lastmsg.'"');
             $row['art_class']=$row['redrawn_class']=$row['vectorized_class']=$row['proofed_class']=$row['approved_class']='';
+            $row['art_stage']=$row['redrawn_stage']=$row['vectorized_stage']=$row['proofed_stage']=$row['approved_stage']=0;
             $row['approved_cell']=$row['proofed_cell']=$row['vectorized_cell']=$row['redrawn_cell']=$row['art_cell']='&nbsp';
             $row['art_title']=$row['redrawn_title']=$row['vectorized_title']=$row['proofed_title']=$row['approved_title']='';
             switch ($row['order_proj_status']) {
@@ -777,6 +779,7 @@ Class Artproof_model extends MY_Model
                     $row['art_class']='chk-ordoption';
                     $row['art_cell']=$curimg;
                     $row['art_title']=$artlastupdat;
+                    $row['art_stage']=1;
                     break;
                 case $this->NO_VECTOR:
                     $row['art_class']='chk-ordoption';
@@ -788,6 +791,8 @@ Class Artproof_model extends MY_Model
                     $row['art_cell']=$prvimg;
                     $row['redrawn_cell']=$curimg;
                     $row['redrawn_title']=$artlastupdat;
+                    $row['art_stage']=1;
+                    $row['redrawn_stage']=1;
                     break;
                 case $this->TO_PROOF:
                     $row['art_class']='chk-ordoption';
@@ -797,6 +802,9 @@ Class Artproof_model extends MY_Model
                     $row['redrawn_cell']=$prvimg;
                     $row['vectorized_cell']=$curimg;
                     $row['vectorized_title']=$artlastupdat;
+                    $row['art_stage']=1;
+                    $row['redrawn_stage']=1;
+                    $row['vectorized_stage']=1;
                     break;
                 case $this->NEED_APPROVAL:
                     $row['art_class']='chk-ordoption';
@@ -808,6 +816,10 @@ Class Artproof_model extends MY_Model
                     $row['vectorized_cell']=$prvimg;
                     $row['proofed_cell']=$curimg;
                     $row['proofed_title']=$artlastupdat;
+                    $row['art_stage']=1;
+                    $row['redrawn_stage']=1;
+                    $row['vectorized_stage']=1;
+                    $row['proofed_stage']=1;
                     break;
                 case $this->JUST_APPROVED:
                     $row['art_class']='chk-ordoption';
@@ -821,6 +833,11 @@ Class Artproof_model extends MY_Model
                     $row['proofed_cell']=$prvimg;
                     $row['approved_cell']=$curimg;
                     $row['approved_title']=$artlastupdat;
+                    $row['art_stage']=1;
+                    $row['redrawn_stage']=1;
+                    $row['vectorized_stage']=1;
+                    $row['proofed_stage']=1;
+                    $row['approved_stage']=1;
                     break;
                 default :
                     break;
@@ -1038,5 +1055,28 @@ Class Artproof_model extends MY_Model
         return $out;
     }
 
+    public function get_proofrequest_interest($brand, $showall=1)
+    {
+        $this->db->select('e.*');
+        $this->db->from('ts_emails e');
+        $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->where('e.email_type', $this->EMAIL_TYPE);
+        $this->db->where('lem.email_id is null');
+        $this->db->where('e.email_include_lead',1);
+        $this->db->where('e.email_status < ',$this->order_status);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('e.brand', $brand);
+            } else {
+                $this->db->where_in('e.brand', ['BT','SB']);
+            }
+        }
+        if ($showall==0) {
+            $limitdat = strtotime('now - 90 days');
+            $this->db->where('unix_timestamp(e.email_date) >=', $limitdat);
+        }
+        $this->db->order_by('e.email_date','desc');
+        return $this->db->get()->result_array();
+    }
 
 }

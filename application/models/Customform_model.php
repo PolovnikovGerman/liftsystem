@@ -83,7 +83,11 @@ class Customform_model extends MY_Model
             $dat['numpp'] = $dat['quote_number'];
             if (!empty($dat['lead_id'])) {
                 $ldat = $this->leads_model->get_lead($dat['lead_id']);
-                $dat['lead_number']=ifset($ldat,'lead_number','');
+                if ($ldat['result']==$this->success_result) {
+                    $lead = $ldat['lead'];
+                    $dat['lead_number']=ifset($lead,'lead_number','');
+                }
+
             }
             if (empty($dat['ship_date'])) {
                 $dat['event_date'] = '';
@@ -107,15 +111,17 @@ class Customform_model extends MY_Model
         if (ifset($data,'custom_quote_id',0)==$custom_quote_id) {
             $out['result'] = $this->success_result;
             if (empty($data['lead_id'])) {
-                $data['lead_date'] = $data['lead_customer'] = $data['lead_mail'] = '';
+                // $data['lead_date'] = $data['lead_customer'] = $data['lead_mail'] = '';
+                $data['lead_number'] = $lead_data = '';
             } else {
-                $this->db->select('lead_date, lead_customer, lead_mail');
+                $this->db->select('lead_date, lead_customer, lead_mail, lead_number');
                 $this->db->from('ts_leads');
                 $this->db->where('lead_id', $data['lead_id']);
                 $leaddat = $this->db->get()->row_array();
                 $data['lead_date'] = $leaddat['lead_date'];
-                $data['lead_customer'] = $leaddat['lead_customer'];
-                $data['lead_mail'] = $leaddat['lead_mail'];
+//                $data['lead_customer'] = $leaddat['lead_customer'];
+//                $data['lead_mail'] = $leaddat['lead_mail'];
+                $data['lead_number'] = $leaddat['lead_number'];
             }
             $out['data'] = $data;
             // Attachments
@@ -143,11 +149,12 @@ class Customform_model extends MY_Model
         $monday = $dats['start_week'];
         $sunday = $dats['end_week'];
         $weeks = [];
-        for ($i=0; $i<52; $i++) {
+        $numweeks = 52 * 3;
+        for ($i=0; $i < $numweeks; $i++) {
             $startd = strtotime("-".$i." week", $monday);
             $finishd = strtotime("-".$i." week", $sunday);
             $curweek = [
-                'week' => date('M j', $startd),
+                'week' => date('M j, y', $startd),
                 'mon' => 0,
                 'tue' => 0,
                 'wed' => 0,
@@ -201,7 +208,8 @@ class Customform_model extends MY_Model
         $monday = $dats['start_week'];
         $sunday = $dats['end_week'];
         $maxdat = $sunday;
-        $mindat = strtotime('-52 weeks', $monday);
+//         $mindat = strtotime('-52 weeks', $monday);
+        $mindat = strtotime('-156 weeks', $monday);
         $this->db->select('date_format(date_add, "%X-%V") as dayw, count(custom_quote_id) as cnt')->from('ts_custom_quotes');
         if ($brand!=='ALL') {
             if ($brand=='SR') {
@@ -225,6 +233,131 @@ class Customform_model extends MY_Model
             $data[] = $result['cnt'];
         }
         return ['labels'=>$labels,'data'=>$data];
+    }
+
+    public function get_customform_monthtotals($brand)
+    {
+        $months = [];
+        $years = [];
+        $curyear = intval(date('Y'));
+        for ($i=3; $i >= 0; $i--) {
+            $years[] = $curyear-$i;
+        }
+        for($j=1; $j<=12; $j++) {
+            $monthname = date('F', strtotime('2012-'.str_pad($j,2,'0',STR_PAD_LEFT).'-01'));
+            $monthrow = [
+                'month_id' => str_pad($j,2,'0',STR_PAD_LEFT),
+                'month' => $monthname,
+            ];
+            foreach ($years as $year) {
+                $monthrow[str_pad($j,2,'0',STR_PAD_LEFT).'-'.$year] = 0;
+            }
+            $months[] = $monthrow;
+        }
+        $monthrow = [
+            'month_id' => 0,
+            'month' => 'Total',
+        ];
+        foreach ($years as $year) {
+            $monthrow['0-'.$year] = 0;
+        }
+        $months[] = $monthrow;
+        $startdate = strtotime($years[0].'-01-01');
+        $this->db->select('date_format(date_add, "%m-%Y") as dayw, count(custom_quote_id) as cnt')->from('ts_custom_quotes');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('unix_timestamp(date_add) >= ', $startdate);
+        $this->db->group_by('dayw');
+        $results = $this->db->get()->result_array();
+        foreach ($results as $result) {
+            $dd = 1;
+            $datkey = explode('-', $result['dayw']);
+            $mdat = $datkey[0];
+            $ydat = $datkey[1];
+            $idx = 0;
+            foreach ($months as $month) {
+                if ($month['month_id']==$mdat) {
+                    $months[$idx][$result['dayw']]+=$result['cnt'];
+                    break;
+                }
+                $idx++;
+            }
+            $idx = 0;
+            foreach ($months as $month) {
+                if ($month['month_id']==0) {
+                    $months[$idx]['0-'.$ydat]+=$result['cnt'];
+                    break;
+                }
+                $idx++;
+            }
+        }
+        return ['totals' => $months, 'years' => $years];
+    }
+
+    public function get_customform_monthchart($brand)
+    {
+        $curyear = intval(date('Y'));
+        $yearstart = $curyear-3;
+        $datestart = strtotime($yearstart.'-01-01');
+
+        $this->db->select('date_format(date_add, "%Y-%m") as dayw, count(custom_quote_id) as cnt')->from('ts_custom_quotes');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('unix_timestamp(date_add) >=', $datestart);
+        $this->db->group_by('dayw');
+        $results = $this->db->get()->result_array();
+        $data = [];
+        $labels = [];
+        foreach ($results as $result) {
+            $days = explode('-', $result['dayw']);
+            $date = strtotime($days[0].'-'.$days[1].'-01');
+            $labels[] = date('M`y', $date);
+            $data[] = $result['cnt'];
+        }
+        return ['labels'=>$labels,'data'=>$data];
+    }
+
+    public function get_customform_interest($brand, $showall=1)
+    {
+        $this->db->select('q.*,le.lead_id');
+        $this->db->from('ts_custom_quotes q');
+        $this->db->join('ts_lead_emails le','le.custom_quote_id=q.custom_quote_id','left');
+        $this->db->where('le.leademail_id is null');
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('q.brand', $brand);
+            } else {
+                $this->db->where_in('q.brand', ['SB','BT']);
+            }
+        }
+        $this->db->where('q.active', 1);
+        if ($showall==0) {
+            $limitdate = strtotime('now - 90 days');
+            $this->db->where('unix_timestamp(q.date_add) >= ', $limitdate);
+        }
+        $this->db->order_by('q.custom_quote_id', 'desc');
+        $dats = $this->db->get()->result_array();
+        return $dats;
+    }
+
+    public function update_customformdetails($data, $custom_quote_id)
+    {
+        $fld = $data['fld'];
+        $newval = $data['newval'];
+        $this->db->where('custom_quote_id', $custom_quote_id);
+        $this->db->set($fld, $newval);
+        $this->db->update('ts_custom_quotes');
+        return true;
     }
 
 }

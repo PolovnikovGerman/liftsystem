@@ -1,5 +1,10 @@
 <?=$menu_view?>
 <div class="contentdata_view">
+    <div class="datarow">
+        <div class="pagemenurow <?=$brandclass?>" style="display: <?=$showhidemenu==1 ? 'block' : 'none'?>">
+            <div class="linkshowmainmenu"><i class="fa fa-chevron-down"></i> Open Menu</div>
+        </div>
+    </div>
     <?php if (isset($leadsview)) { ?>
         <div class="leadscontentarea" id="leadsview" style="display: none;"><?=$leadsview?></div>
     <?php } ?>

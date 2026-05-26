@@ -13,9 +13,13 @@
                     next <img src="/img/leadorder/arrow_r.png" width="8" height="10" alt="arrow left">
                 </div>
                 <img src="/img/leadorder/partition.png" width="1" height="23" alt="partition" style="float: left; margin: 2px 4px;">
+                <?php if ($brand=='SR') : ?>
                 <div class="block_4_text2 active dublicateorder" data-order="<?=$order_dublcnum?>">
                     <?=$brand=='SR' ? 'Copy Cust' : 'duplicate'?> <img src="/img/leadorder/arrow_up.png" width="10" height="8" alt="arrow left">
                 </div>
+                <?php else : ?>
+                    <div class="block_4_text2 hidden dublicateorder">duplicate <img src="/img/leadorder/arrow_up.png" width="10" height="8" alt="arrow left"></div>
+                <?php endif; ?>
                 <img src="/img/leadorder/partition.png" width="1" height="23" alt="partition" style="float: left; margin: 2px 4px;">
                 <div class="block_4_text2 sendorder <?=$order_system=='old' ? 'hidden' : 'active'?>">send</div>
                 <img src="/img/leadorder/partition.png" width="1" height="23" alt="partition" style="float: left; margin: 2px 4px;">

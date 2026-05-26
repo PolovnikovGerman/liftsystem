@@ -906,7 +906,7 @@ class Leadorder extends MY_Controller
                     'usrtxt'=>$leadorder['order']['discount_descript'],
                     /* 'title'=>'Type Discount Description', */
                 );
-                $mdata['content']=$this->load->view('artpage/newarttext_view', $options, TRUE);
+                $mdata['content']=$this->load->view('leadorderdetails/newarttext_view', $options, TRUE);
                 $mdata['title']='Type Discount Description';
                 $error='';
             }
@@ -3112,6 +3112,73 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
+    // Shipping doc management
+    public function shipdocremove()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $shipdoc = ifset($postdata,'shipdoc', 0);
+                if (!empty($shipdoc)) {
+                    $res = $this->leadorder_model->shipdocremove($shipdoc, $leadorder, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['content'] = $this->load->view('leadorderdetails/shipdoc_empty_view',['shipdoc' => $shipdoc], true);
+                    }
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function saveshipdocload()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata,'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (!empty($ordersession)) {
+                $doclink = ifset($postdata, 'doclink','');
+                $docsource = ifset($postdata, 'docsource', '');
+                $shipdoc = ifset($postdata, 'shipdoc', 0);
+                $shiptype = ifset($postdata,'filetype','pdf');
+                $error = 'Some parameters empty';
+                if (!empty($doclink) && !empty($docsource) && !empty($shipdoc)) {
+                    $res = $this->leadorder_model->saveshipdocload($doclink, $docsource, $shiptype, $shipdoc, $leadorder, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'doclink' => $doclink,
+                            'docsource' => $docsource,
+                            'doctype' => $shiptype,
+                            'shipdoc' => $shipdoc,
+                            'multyship' => $res['multyship'],
+                        ];
+                        $mdata['content'] = $this->load->view('leadorderdetails/shipdoc_data_view', $options, TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function change_shipcost() {
         if ($this->isAjax()) {
             $mdata=array();
@@ -3689,7 +3756,12 @@ class Leadorder extends MY_Controller
                     $error=$locres['msg'];
                     $this->ajaxResponse($mdata, $error);
                 }
-
+                $brand = $leadorder['order']['brand'];
+                if ($brand=='SR') {
+                    $template = 'SR '.$template;
+                } else {
+                    $template = 'SB '.$template;
+                }
                 $this->load->model('artlead_model');
                 $res=$this->artlead_model->prepare_proofdocapproveemail($leadorder, $template, $this->USR_ID, $ordersession);
                 if ($res['result']==$this->error_result) {
@@ -4812,6 +4884,7 @@ class Leadorder extends MY_Controller
                                 'rushview' => $rushview,
                                 'taxview' => $taxview,
                                 'shipaddress' => $this->shipping_model->prepare_shipaddress($shipping_address[0]),
+                                'shipcntcode' => $shipping_address[0]['out_country'],
                             );
                             $shippingview = $this->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
                         } else {

@@ -68,7 +68,7 @@ Class Leadorder_model extends My_Model {
     ,array('Name'=>'Diners Club Carte Blanche','cardLength'=>array(14),'cardPrefix'=>array('300','305'))
     ,array('Name'=>'Laser','cardLength'=>array(16, 17, 18, 19),'cardPrefix'=>array('6304', '6706', '6771', '6709'))
     );
-    private $custom_print_price = 0.12;
+    private $custom_print_price = 0.16; /* 0.12 */
     private $custom_setup_price = 30;
     private $other_print_price = 0.20;
     private $other_setupsb_price = 30;
@@ -173,7 +173,7 @@ Class Leadorder_model extends My_Model {
         $this->db->select('o.is_invoiced, o.order_system, o.order_arthide, o.order_itemnumber, o.deliverydate');
         $this->db->select('oa.cnt as cnt_amnt, colordat.item_color as itemcolor');
         // ART Stages
-        $this->db->select('o.order_art, o.order_redrawn, o.order_proofed, o.order_vectorized, o.order_approved, o.is_canceled');
+        $this->db->select('o.order_art, o.order_redrawn, o.order_proofed, o.order_vectorized, o.order_approved, o.order_blank');
         $this->db->select('itm.item_name');
         // $this->db->select("coalesce(oa.cnt_amnt,0)  as cnt_amnt",FALSE);
         $this->db->select('u.user_leadname, u.user_name, bil.customer_ponum');
@@ -264,9 +264,14 @@ Class Leadorder_model extends My_Model {
 //            $row['artstage'] = ifset($art,'artstage','');
             $row['proofclass'] = 'notapproved';
             $row['proofstage'] = 'Not Approved';
-            if (!empty($row['proofdocs'])) {
+            if ($row['order_blank']==1) {
                 $row['proofclass'] = 'approved';
-                $row['proofstage'] = 'Approved';
+                $row['proofstage'] = 'Blank'; // 'Approved';
+            } else {
+                if (!empty($row['proofdocs'])) {
+                    $row['proofclass'] = 'approved';
+                    $row['proofstage'] = 'Approved';
+                }
             }
             $row['itemcolorclass']='';
             if (!empty($row['itemcolor']) && strlen($row['itemcolor'])>9) {
@@ -1081,6 +1086,15 @@ Class Leadorder_model extends My_Model {
                 // Start
                 $order=$leadorder['order'];
                 $order['shipdate']=$shipping['shipdate'];
+                $order_items = $leadorder['order_items'];
+                $itmidx = 0;
+                foreach ($order_items as $order_item) {
+                    if (isset($order_item['print_date'])) {
+                        $order_items[$itmidx]['print_date'] = $params[0];
+                    }
+                    $itmidx++;
+                }
+                $leadorder['order_items'] = $order_items;
                 // Calculate shipping
                 $this->load->model('shipping_model');
                 $shiprate=0;
@@ -1179,10 +1193,10 @@ Class Leadorder_model extends My_Model {
                 $this->load->model('shipping_model');
                 $order = $leadorder['order'];
                 $item_id = $order['item_id'];
-                if ($order['order_blank']==0) {
-                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
-                } else {
+                if ($order['order_blank'] && $item_id > 0 ) {
                     $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                } else {
+                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
                 }
                 $out['rushlist']=$rush;
                 $shipping=$leadorder['shipping'];
@@ -1535,10 +1549,10 @@ Class Leadorder_model extends My_Model {
             $order['order_qty']=intval($order['order_qty'])+intval($defqty);
             //
             $this->load->model('shipping_model');
-            if ($order['order_blank']==0) {
-                $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
-            } else {
+            if ($order['order_blank'] && $item_id > 0) {
                 $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+            } else {
+                $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
             }
             $out['rushlist']=$rush;
             $shipping=$leadorder['shipping'];
@@ -1846,7 +1860,7 @@ Class Leadorder_model extends My_Model {
             // Rebuild Rush View
             $item_id=$neworder[0]['item_id'];
             $this->load->model('shipping_model');
-            if ($order['order_blank']==1) {
+            if ($order['order_blank']==1 && $item_id > 0) {
                 $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
             } else {
                 $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
@@ -2449,24 +2463,27 @@ Class Leadorder_model extends My_Model {
             $out['shiprebuild']=1;
             if (count($order_items)==1) {
                 $shipping=$leadorder['shipping'];
-                if ($order_blank==1) {
-                    $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                if ($order['item_id']==$this->config->item('custom_id') && !empty($shipping['rush_list'])) {
                 } else {
-                    $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
-                }
-                $shipping['rush_list']=serialize($rush);
-                $shipping['out_rushlist']=$rush;
-                foreach ($rush['rush'] as $row) {
-                    if ($row['current']==1) {
-                        $shipping['shipdate']=$row['date'];
-                        $shipping['shipdate_orig']=$row['date'];
-                        $shipping['shipdate_class']='';
-                        $shipping['rush_price']=$row['price'];
-                        $shipping['rush_idx']=$row['id'];
+                    if ($order_blank==1 && $item_id > 0) {
+                        $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                    } else {
+                        $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
                     }
+                    $shipping['rush_list']=serialize($rush);
+                    $shipping['out_rushlist']=$rush;
+                    foreach ($rush['rush'] as $row) {
+                        if ($row['current']==1) {
+                            $shipping['shipdate']=$row['date'];
+                            $shipping['shipdate_orig']=$row['date'];
+                            $shipping['shipdate_class']='';
+                            $shipping['rush_price']=$row['price'];
+                            $shipping['rush_idx']=$row['id'];
+                        }
+                    }
+                    $order['shipdate'] = $shipping['shipdate'];
+                    $leadorder['shipping']=$shipping;
                 }
-                $order['shipdate'] = $shipping['shipdate'];
-                $leadorder['shipping']=$shipping;
                 if ($item_id<0) {
                     $itemdata=$this->orders_model->get_newitemdat($item_id);
                 } else {
@@ -2498,24 +2515,27 @@ Class Leadorder_model extends My_Model {
             // Rebuild shipping
             $this->load->model('shipping_model');
             $shipping=$leadorder['shipping'];
-            if ($order_blank==1) {
-                $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
+            if ($order['item_id']==$this->config->item('custom_id') && !empty($shipping['rush_list'])) {
             } else {
-                $rush=$this->shipping_model->get_rushlist($order['item_id'], $order['order_date']);
-            }
-
-            $shipping['rush_list']=serialize($rush);
-            $shipping['out_rushlist']=$rush;
-            foreach ($rush['rush'] as $row) {
-                if ($row['current']==1) {
-                    $shipping['shipdate']=$row['date'];
-                    $shipping['shipdate_orig']=$row['date'];
-                    $shipping['shipdate_class']='';
-                    $shipping['rush_price']=$row['price'];
-                    $shipping['rush_idx']=$row['id'];
+                if ($order_blank==1 && $order['item_id'] > 0) {
+                    $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $order['order_date']);
+                } else {
+                    $rush=$this->shipping_model->get_rushlist($order['item_id'], $order['order_date']);
                 }
+
+                $shipping['rush_list']=serialize($rush);
+                $shipping['out_rushlist']=$rush;
+                foreach ($rush['rush'] as $row) {
+                    if ($row['current']==1) {
+                        $shipping['shipdate']=$row['date'];
+                        $shipping['shipdate_orig']=$row['date'];
+                        $shipping['shipdate_class']='';
+                        $shipping['rush_price']=$row['price'];
+                        $shipping['rush_idx']=$row['id'];
+                    }
+                }
+                $leadorder['shipping']=$shipping;
             }
-            $leadorder['shipping']=$shipping;
         }
 
         if ($order_blank==1) {
@@ -5076,7 +5096,7 @@ Class Leadorder_model extends My_Model {
             $res['msg']='Empty Misc Charge Notification (row 2)';
             return $res;
         }
-        if (abs(floatval($data['discount_val']))>0 && empty($data['discount_descript'])) {
+        if (abs(floatval($data['discount_val']))>0 && empty($data['discount_label'])) { // discount_descript
             $res['msg']='All Discounts Must Have Valid Reason Explaining Why';
             return $res;
         }
@@ -5450,6 +5470,9 @@ Class Leadorder_model extends My_Model {
             $this->db->set('setup_price', $row['setup_price']);
             $this->db->set('base_price', $row['base_price']);
             $this->db->set('inventory_item_id', empty($row['inventory_item_id']) ? NULL : $row['inventory_item_id']);
+            if (isset($row['print_date'])) {
+                $this->db->set('print_date', $row['print_date']);
+            }
             if ($row['order_item_id']<0) {
                 $this->db->set('order_id', $order_id);
                 $this->db->set('print_date', $printdate);
@@ -5644,12 +5667,57 @@ Class Leadorder_model extends My_Model {
     // Save Shipping Info for Order
     private function _save_order_shipping($shipping, $order_id, $user_id) {
         $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
+        $srcpathsh = $this->config->item('pathpreload');
+        $srcpathfull = $this->config->item('upload_path_preload');
+        $targpathsh = $this->config->item('orderattach_path');
+        $targpathfull = $this->config->item('orderattach');
+        createPath($targpathsh);
+        if (!empty($shipping['shipdoc1_link'])) {
+            if (strpos($shipping['shipdoc1_link'], $srcpathsh)!==false) {
+                $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc1_link']);
+                $srcfile = $srcpathfull.$filesrc;
+                $filedet = extract_filename($filesrc);
+                $newfile = 'shipdoc_'.$order_id.'_01.'.$filedet['ext'];
+                $targfile = $targpathfull.$newfile;
+                $cpres = @copy($srcfile, $targfile);
+                if ($cpres) {
+                    $shipping['shipdoc1_link'] = $targpathsh.$newfile;
+                } else {
+                    $shipping['shipdoc1_link'] = null;
+                    $shipping['shipdoc1_src'] = null;
+                    $shipping['shipdoc1_type'] = null;
+                }
+            }
+        }
+        if (!empty($shipping['shipdoc2_link'])) {
+            if (strpos($shipping['shipdoc2_link'], $srcpathsh)!==false) {
+                $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc2_link']);
+                $srcfile = $srcpathfull.$filesrc;
+                $filedet = extract_filename($filesrc);
+                $newfile = 'shipdoc_'.$order_id.'_02.'.$filedet['ext'];
+                $targfile = $targpathfull.$newfile;
+                $cpres = @copy($srcfile, $targfile);
+                if ($cpres) {
+                    $shipping['shipdoc2_link'] = $targpathsh.$newfile;
+                } else {
+                    $shipping['shipdoc2_link'] = null;
+                    $shipping['shipdoc2_src'] = null;
+                    $shipping['shipdoc2_type'] = null;
+                }
+            }
+        }
         $this->db->set('event_date', (empty($shipping['event_date']) ? NULL : $shipping['event_date']));
         $this->db->set('rush_idx', $shipping['rush_idx']);
         $this->db->set('rush_price', floatval($shipping['rush_price']));
         $this->db->set('shipdate', intval($shipping['shipdate']));
         $this->db->set('arrive_date', intval($shipping['arrive_date']));
         $this->db->set('rush_list', $shipping['rush_list']);
+        $this->db->set('shipdoc1_link', $shipping['shipdoc1_link']);
+        $this->db->set('shipdoc1_src', $shipping['shipdoc1_src']);
+        $this->db->set('shipdoc1_type', $shipping['shipdoc1_type']);
+        $this->db->set('shipdoc2_link', $shipping['shipdoc2_link']);
+        $this->db->set('shipdoc2_src', $shipping['shipdoc2_src']);
+        $this->db->set('shipdoc2_type', $shipping['shipdoc2_type']);
         if ($shipping['order_shipping_id']<0) {
             $this->db->set('order_id', $order_id);
             $this->db->insert('ts_order_shippings');
@@ -6315,6 +6383,7 @@ Class Leadorder_model extends My_Model {
                 'base_price' => $row['base_price'],
                 'vendor_item_id' => '',
                 'inventory_item_id' => $row['inventory_item_id'],
+                'print_date' => $row['print_date'],
             );
             $qty_class='normal';
             if ($item_id<0) {
@@ -7943,10 +8012,10 @@ Class Leadorder_model extends My_Model {
             $shipping['shipdate_class'] = '';
             $shipping['arrivedate_class'] = '';
         } else {
-            if ($order['order_blank']==0) {
-                $rush=$this->shipping_model->get_rushlist($order['item_id'], $neworder['order_date']);
-            } else {
+            if ($order['order_blank'] && $order['item_id'] > 0) {
                 $rush=$this->shipping_model->get_rushlist_blank($order['item_id'], $neworder['order_date']);
+            } else {
+                $rush=$this->shipping_model->get_rushlist($order['item_id'], $neworder['order_date']);
             }
 
             foreach ($rush['rush'] as $row) {
@@ -10598,6 +10667,7 @@ Class Leadorder_model extends My_Model {
         // Calc proof date
         $order = $leadorder['order'];
         $shipping = $leadorder['shipping'];
+        $order_items = $leadorder['order_items'];
         $item_id = $order['item_id'];
         if ($order['order_blank']==1) {
             $proofdate = $newval;
@@ -10627,6 +10697,14 @@ Class Leadorder_model extends My_Model {
                 $out['current']=$row['id'];
             }
         }
+        $itemidx = 0;
+        foreach ($order_items as $order_item) {
+            if (isset($order_item['print_date'])) {
+                $order_items[$itemidx]['print_date'] = $shipping['shipdate'];
+            }
+            $itemidx++;
+        }
+        $leadorder['order_items'] = $order_items;
         $leadorder['shipping']=$shipping;
         $leadorder['order']=$order;
         $out['shipdate']=$shipping['shipdate'];
@@ -11882,6 +11960,46 @@ Class Leadorder_model extends My_Model {
         if ($amntres['cnt'] > 0 && $cog != 0) {
             $out['project'] = round(($cog - $amntres['itemtotal']) / $cog * 100,2);
         }
+        return $out;
+    }
+
+    public function shipdocremove($shipdoc, $leadorder, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $shipping = $leadorder['shipping'];
+        if ($shipdoc==1) {
+            $shipping['shipdoc1_link'] = null;
+            $shipping['shipdoc1_src'] = null;
+            $out['result'] = $this->success_result;
+        } elseif ($shipdoc==2) {
+            $shipping['shipdoc2_link'] = null;
+            $shipping['shipdoc2_src'] = null;
+            $out['result'] = $this->success_result;
+        }
+        $out['multyship'] = count($leadorder['shipping_address']) > 1 ? 1 : 0;
+        $leadorder['shipping'] = $shipping;
+        usersession($session_id, $leadorder);
+        return $out;
+    }
+
+    public function saveshipdocload($doclink, $docsource, $doctype, $shipdoc, $leadorder, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $shipping = $leadorder['shipping'];
+        if ($shipdoc==1) {
+            $shipping['shipdoc1_link'] = $doclink;
+            $shipping['shipdoc1_src'] = $docsource;
+            $shipping['shipdoc1_type'] = $doctype;
+            $out['result'] = $this->success_result;
+        } elseif ($shipdoc==2) {
+            $shipping['shipdoc2_link'] = $doclink;
+            $shipping['shipdoc2_src'] = $docsource;
+            $shipping['shipdoc2_type'] = $doctype;
+            $out['result'] = $this->success_result;
+        }
+        $out['multyship'] = count($leadorder['shipping_address']) > 1 ? 1 : 0;
+        $leadorder['shipping'] = $shipping;
+        usersession($session_id, $leadorder);
         return $out;
     }
 }

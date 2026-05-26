@@ -38,5 +38,5 @@
         <div class="quote_item">Item</div>
         <div class="quote_total">Total</div>
     </div>
-    <div class="quotes_tabledat"></div>
+    <div class="quotes_tabledat" id="quotes_tabledat"></div>
 </div>

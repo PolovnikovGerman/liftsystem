@@ -913,7 +913,8 @@ input.items_discount {
     font-size: 12px;
     margin-left: 15px;
     padding-top: 5px;
-    width: 120px;
+    /*width: 120px;*/
+    margin-right: 7px;
 }
 .multishipadresslist {
     float: left;
@@ -974,6 +975,7 @@ span.text_bold {
 }
 .ship_tax_tabs {
     float: left;
+    width: 100%;
 }
 .ship_tax_tabs1 {
     float: left;
@@ -993,11 +995,84 @@ span.text_bold {
 .ship_tax_tabs2.active {
     cursor: pointer;
 }
-.shipotherparamsarea {
+/* Shipping docs */
+.shipdocsarea {
     float: left;
-    margin-left: 16px;
+}
+.shipdocsarea.first {
+    margin-left: -8px;
+    margin-right: 3px;
+}
+.shipdocs_label {
+    float: left;
+    font-weight: 600;
+    font-size: 11px;
+    margin-left: -5px;
+}
+.shipdocs_label.multyship {
+    margin-left: 0;
+    margin-top: 3px;
+    margin-right: 5px;
+}
+.shipdocs_link {
+    float: left;
+    font-size: 14px;
+    /* width: 32px; */
+    margin-right: 3px;
+    cursor: pointer;
+}
+.shipdocs_link.view {
+    margin-right: 5px;
+}
+.shipdocs_link.multyship {
+    margin-top: 3px;
+}
+.shipdocs_link i {
+    /*font-weight: 600;*/
+}
+.shipdocs_delete {
+    float: right;
+    /*width: 12px;*/
+    margin-right: 3px;
+    cursor: pointer;
+}
+.shipdocs_delete.multyship {
+    margin-top: 3px;
+}
+.shipdocs_empty {
+    float: left;
+    width: 40px;
+}
+.shipdocs_addbtn {
+    float: left;
+    background: #efefef;
+    border: 1px solid #000;
+    border-radius: 5px;
     height: 18px;
-    width: 391px;
+    line-height: 16px;
+    text-align: center;
+}
+.shipdocs_addbtn.multyship {
+    margin-top: 2px;
+}
+.shipdocupload.qq-upload-button {
+    background: none;
+    height: 18px;
+    line-height: 16px;
+    width: 27px;
+    float: left;
+    font-size: 11px;
+}
+.shipdocupload qq-upload-button span {
+    clear: both;
+    float: left;
+}
+.shipotherparamsarea {
+    float: right;
+    margin-right: 12px;
+    margin-left: 6px; /* 16px; */
+    height: 18px;
+    /*width: 391px;*/
 }
 .eventdate {
     float: left;
@@ -1040,8 +1115,8 @@ input.rushpastvalue.arrivelate {
 }
 .rushselectarea {
     float: left;
-    width: 223px;
-    margin-left: 114px;
+    /*width: 223px;*/
+    /*margin-left: 114px;*/
 }
 .rushselectarea.admin {
     margin-left: 0;
@@ -1051,10 +1126,16 @@ input.rushpastvalue.arrivelate {
     font-size: 12px;
     width: 65px;
     color:  #000000;
+    padding: 0;
+    margin-top: 3px;
 }
 .rushselectarea > .rushdataselect {
     float: left;
     width: 148px;
+    margin-right: 9px;
+}
+.rushselectarea.multyship > .rushdataselect {
+    margin-right: 27px;
 }
 select.shiprashselect {
     float: left;
@@ -1204,7 +1285,7 @@ input.ship_tax_textareainpt {
     width: 55px;
 }
 .ship_tax_cont_bl2.viewdata {
-    margin-left: 10px;
+    /*margin-left: 10px;*/
 }
 .ship_tax_cont_bl2 > .line {
     clear: both;
@@ -1225,16 +1306,21 @@ input.ship_tax_textareainpt {
     /* height: 28px; */
     /* opacity: 0.5; */
 }
-.ship_tax_cont_bl3 {
+.taxdataarea {
+    width: 301px;
     float: left;
+    margin-top: -2px;
+}
+.taxdataarea.noshipdocs {
+    margin-top: 15px;
+}
+.ship_tax_cont_bl3 {
+    float: right;
     height: 17px;
     line-height: 17px;
-    margin-top: 33px;
-    /*width: 244px;*/
-    /*margin-left: 67px;*/
-    width: 266px;
-    margin-left: 40px;
-    text-align: right;
+    /*width: 266px;*/
+    /*margin-left: 40px;*/
+    /*text-align: right;*/
 }
 .taxlabel {
     color: #000d6e;
@@ -1362,7 +1448,7 @@ span.taxemptyview {
 .billing_content2{
     float: right;
     height: 6px;
-    width: 180px;
+    width: 192px;
     margin-top: 18px;
 }
 .billing_content2_bl1 {
@@ -2153,7 +2239,7 @@ input.artrepeat {
 }
 .block_8_text {
     text-align: center;
-    width: 135px;
+    width: 147px;
 }
 .block_8_text1 {
     float: left;
@@ -2164,15 +2250,15 @@ input.artrepeat {
     padding-left: 5px;    
 }
 .block_8_text2 {
-    float: left;
+    float: right!important;
     text-align: right;
-    width: 70px;
+    /* width: 70px; */
 }
 .block_8_text3 {
     float: right;
     font-size: 17px;
     text-align: right;
-    width: 85px;
+    width: 97px;
 }
 .block_9 {
     background-image: url("/img/leadorder/bacgr_10.png");
@@ -2510,7 +2596,7 @@ input.artrepeat {
 }
 .totalduedataviewarea {
     float: left;
-    width: 155px;
+    width: 160px;
     margin-top: 6px;
 }
 /* System Switcher */

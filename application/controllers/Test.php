@@ -1901,8 +1901,8 @@ class Test extends CI_Controller
         $this->db->select('b.*, o.order_num, o.customer_name');
         $this->db->from('ts_order_batches b');
         $this->db->join('ts_orders o','o.order_id=b.order_id');
-        $this->db->where('b.batch_date >= ', strtotime('2024-09-01'));
-        $this->db->where('b.batch_date < ', strtotime('2025-01-01'));
+        $this->db->where('b.batch_date >= ', strtotime('2025-01-01'));
+        $this->db->where('b.batch_date < ', strtotime('2026-01-01'));
         $batchs = $this->db->get()->result_array();
         $out = [];
         foreach ($batchs as $batch) {
@@ -1938,7 +1938,7 @@ class Test extends CI_Controller
         }
         echo count($out).' Batches '.PHP_EOL;
         $this->load->config('uploader');
-        $file_name = $this->config->item('upload_path_preload').'payment_report_2024_sep_dec.csv';
+        $file_name = $this->config->item('upload_path_preload').'payment_report_2025.csv';
         @unlink($file_name);
         $fh = fopen($file_name, FOPEN_WRITE_CREATE);
         if ($fh) {
@@ -2609,38 +2609,47 @@ class Test extends CI_Controller
         $this->load->config('siteart_config');
         // Stressball items
         // Imprints - 12
-        $this->db->select('*')->from('sb_items')->where('item_template', $normal_template)->order_by('item_number');
+//         $this->db->select('*')->from('sb_items')->where('item_template', $normal_template)->order_by('item_number');
+        $this->db->select('*')->from('sb_items')->where('brand','BT')->order_by('item_number');
         $items = $this->db->get()->result_array();
         $this->load->config('uploader');
         $filenorm = $this->config->item('upload_path_preload').'stressballs_items.xlsx';
         @unlink($filenorm);
+//        $titles = [
+//            'Item #','Item Name','Active','New','Sale Tag','Template','Lead A','Lead B','Lead C','Lead Blank','Material','Weight','Size','Options','Colors',
+//            'Similar 1','Similar 2','Similar 3',
+//            'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
+//            'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
+//        ];
         $titles = [
-            'Item #','Item Name','Active','New','Sale Tag','Template','Lead A','Lead B','Lead C','Lead Blank','Material','Weight','Size','Options','Colors',
-            'Similar 1','Similar 2','Similar 3',
-            'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
-            'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
+            'Item #','Item Name','Active', 'Vendor',
         ];
-        $numpp=1;
-        for ($i=1; $i<=7; $i++) {
-            array_push($titles, 'Vendor Price QTY '.$numpp);
-            array_push($titles, 'Price (blank) '.$numpp);
-            array_push($titles, 'Price '.$numpp);
-            $numpp++;
-        }
-        array_push($titles, 'Vendor Price Exprint');
-        array_push($titles, 'Vendor Price Setup');
+//        $numpp=1;
+//        for ($i=1; $i<=7; $i++) {
+//            array_push($titles, 'Vendor Price QTY '.$numpp);
+//            array_push($titles, 'Price (blank) '.$numpp);
+//            array_push($titles, 'Price '.$numpp);
+//            $numpp++;
+//        }
+//        array_push($titles, 'Vendor Price Exprint');
+//        array_push($titles, 'Vendor Price Setup');
         // Imprints
-        $numpp=1;
-        for ($i=1;$i<=12;$i++) {
-            array_push($titles, 'Imprint Location '.$numpp);
-            array_push($titles,'Imprint Size '.$numpp);
-            $numpp++;
-        }
+//        $numpp=1;
+//        for ($i=1;$i<=12;$i++) {
+//            array_push($titles, 'Imprint Location '.$numpp);
+//            array_push($titles,'Imprint Size '.$numpp);
+//            $numpp++;
+//        }
         // Prices
-        $pricetypes = $this->config->item('price_types');
-        foreach ($pricetypes as $pricetype) {
-            array_push($titles,'Price '.$pricetype['type']);
-            array_push($titles, 'Sale '.$pricetype['type']);
+//        $pricetypes = $this->config->item('price_types');
+//        foreach ($pricetypes as $pricetype) {
+//            array_push($titles,'Price '.$pricetype['type']);
+//            array_push($titles, 'Sale '.$pricetype['type']);
+//        }
+        for ($j=1; $j<11; $j++) {
+            array_push($titles,'Qty '.$j);
+            array_push($titles,'Price '.$j);
+            array_push($titles, 'Sale '.$j);
         }
         array_push($titles, 'Price Exprint');
         array_push($titles, 'Sale Exprint');
@@ -2672,51 +2681,51 @@ class Test extends CI_Controller
         $nrow = 2;
         foreach ($items as $item) {
             $ncol = 0;
-            $this->db->select('group_concat(item_color) as colorstr')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
-            $colors = $this->db->get()->row_array();
+//            $this->db->select('group_concat(item_color) as colorstr')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
+//            $colors = $this->db->get()->row_array();
 
             $sheet->setCellValue($cols[$ncol].$nrow, $item['item_number']);$ncol++;
             $sheet->setCellValue($cols[$ncol].$nrow, $item['item_name']);$ncol++;
             $sheet->setCellValue($cols[$ncol].$nrow, $item['item_active']==1 ? 'Yes' : 'No');$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_new']==1 ? 'Yes' : 'No');$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_sale']==1 ? 'Yes' : 'No');$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_template']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_a']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_b']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_c']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_blank']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_material']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_weigth']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_size']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['options']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $colors['colorstr']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_new']==1 ? 'Yes' : 'No');$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_sale']==1 ? 'Yes' : 'No');$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_template']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_a']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_b']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_c']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_lead_blank']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_material']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_weigth']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_size']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['options']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $colors['colorstr']);$ncol++;
             // Similar
-            $this->db->select('concat(i.item_number,\'-\', i.item_name) as simitem');
-            $this->db->from('sb_item_similars s');
-            $this->db->join('sb_items i','s.item_similar_similar = i.item_id');
-            $this->db->where('s.item_similar_item', $item['item_id']);
-            $simils = $this->db->get()->result_array();
-            $numpp=0;
-            foreach ($simils as $simil) {
-                $sheet->setCellValue($cols[$ncol].$nrow, $simil['simitem']);$ncol++;
-                $numpp++;
-            }
-            if ($numpp < 3) {
-                for ($i=$numpp; $i<3; $i++) {
-                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
-                }
-            }
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_meta_title']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_url']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_keywords']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_metakeywords']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_metadescription']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_description1']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_qty']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_width']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_heigh']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_depth']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $item['charge_pereach']);$ncol++;
+//            $this->db->select('concat(i.item_number,\'-\', i.item_name) as simitem');
+//            $this->db->from('sb_item_similars s');
+//            $this->db->join('sb_items i','s.item_similar_similar = i.item_id');
+//            $this->db->where('s.item_similar_item', $item['item_id']);
+//            $simils = $this->db->get()->result_array();
+//            $numpp=0;
+//            foreach ($simils as $simil) {
+//                $sheet->setCellValue($cols[$ncol].$nrow, $simil['simitem']);$ncol++;
+//                $numpp++;
+//            }
+//            if ($numpp < 3) {
+//                for ($i=$numpp; $i<3; $i++) {
+//                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+//                }
+//            }
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_meta_title']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_url']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_keywords']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_metakeywords']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_metadescription']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['item_description1']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_qty']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_width']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_heigh']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['cartoon_depth']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $item['charge_pereach']);$ncol++;
             // Get vendor, vendor item
             $this->db->select('v.vendor_name, vi.*');
             $this->db->from('sb_vendor_items vi');
@@ -2724,53 +2733,73 @@ class Test extends CI_Controller
             $this->db->where('vi.vendor_item_id', $item['vendor_item_id']);
             $vdata = $this->db->get()->row_array();
             $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_name']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_number']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_name']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_blankcost']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_cost']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_number']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_name']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_blankcost']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_cost']);$ncol++;
             // Vendor Prices
-            $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color')->from('sb_vendor_prices')->where('vendor_item_id', $item['vendor_item_id']);
-            $vprices = $this->db->get()->result_array();
-            $numpp = 0;
-            foreach ($vprices as $vprice) {
-                $sheet->setCellValue($cols[$ncol].$nrow, $vprice['vendorprice_qty']);$ncol++;
-                $sheet->setCellValue($cols[$ncol].$nrow, $vprice['vendorprice_val']);$ncol++;
-                $sheet->setCellValue($cols[$ncol].$nrow, $vprice['vendorprice_color']);$ncol++;
-                $numpp++;
-            }
-            if ($numpp < 7) {
-                for ($i=$numpp;$i<7;$i++) {
-                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
-                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
-                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+//            $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color')->from('sb_vendor_prices')->where('vendor_item_id', $item['vendor_item_id']);
+//            $vprices = $this->db->get()->result_array();
+//            $numpp = 0;
+//            foreach ($vprices as $vprice) {
+//                $sheet->setCellValue($cols[$ncol].$nrow, $vprice['vendorprice_qty']);$ncol++;
+//                $sheet->setCellValue($cols[$ncol].$nrow, $vprice['vendorprice_val']);$ncol++;
+//                $sheet->setCellValue($cols[$ncol].$nrow, $vprice['vendorprice_color']);$ncol++;
+//                $numpp++;
+//            }
+//            if ($numpp < 7) {
+//                for ($i=$numpp;$i<7;$i++) {
+//                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+//                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+//                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+//                }
+//            }
+//            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_exprint']);$ncol++;
+//            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_setup']);$ncol++;
+            // Get inprints
+//            $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item', $item['item_id']);
+//            $prints = $this->db->get()->result_array();
+//            $numpp=0;
+//            foreach ($prints as $print) {
+//                $sheet->setCellValue($cols[$ncol].$nrow, $print['item_inprint_location']);$ncol++;
+//                $sheet->setCellValue($cols[$ncol].$nrow, $print['item_inprint_size']);$ncol++;
+//                $numpp++;
+//            }
+//            if ($numpp < 12) {
+//                for ($i=$numpp; $i<12; $i++) {
+//                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+//                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+//                }
+//            }
+            // Get Promo Prices
+            $this->db->select('item_qty, price, sale_price')->from('sb_promo_price')->where('item_id', $item['item_id'])->order_by('item_qty');
+            $promprices = $this->db->get()->result_array();
+            $numpp=0;
+            foreach ($promprices as $promprice) {
+                if (empty($promprice['price']) && empty($promprice['sale_price'])) {
+                } else {
+                    $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['item_qty']);$ncol++;
+                    $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['price']);$ncol++;
+                    $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['sale_price']);$ncol++;
+                    $numpp++;
                 }
             }
-            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_exprint']);$ncol++;
-            $sheet->setCellValue($cols[$ncol].$nrow, $vdata['vendor_item_setup']);$ncol++;
-            // Get inprints
-            $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item', $item['item_id']);
-            $prints = $this->db->get()->result_array();
-            $numpp=0;
-            foreach ($prints as $print) {
-                $sheet->setCellValue($cols[$ncol].$nrow, $print['item_inprint_location']);$ncol++;
-                $sheet->setCellValue($cols[$ncol].$nrow, $print['item_inprint_size']);$ncol++;
-                $numpp++;
-            }
-            if ($numpp < 12) {
-                for ($i=$numpp; $i<12; $i++) {
-                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
-                    $sheet->setCellValue($cols[$ncol].$nrow, '');$ncol++;
+            if ($numpp < 9) {
+                for($i=$numpp; $i<9; $i++) {
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
                 }
             }
             $this->db->select('*')->from('sb_item_prices')->where('item_price_itemid', $item['item_id']);
             $iprice = $this->db->get()->row_array();
             if (ifset($iprice, 'item_price_id',0)==$item['item_id']) {
-                foreach ($pricetypes as $pricetype) {
-                    $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_'.$pricetype['type']]);$ncol++;
-                }
-                foreach ($pricetypes as $pricetype) {
-                    $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_sale_'.$pricetype['type']]);$ncol++;
-                }
+//                foreach ($pricetypes as $pricetype) {
+//                    $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_'.$pricetype['type']]);$ncol++;
+//                }
+//                foreach ($pricetypes as $pricetype) {
+//                    $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_sale_'.$pricetype['type']]);$ncol++;
+//                }
                 $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_print']);$ncol++;
                 $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_sale_print']);$ncol++;
                 $sheet->setCellValue($cols[$ncol].$nrow, $iprice['item_price_setup']);$ncol++;
@@ -2782,232 +2811,232 @@ class Test extends CI_Controller
         $writer->save($filenorm);    // download file
         echo 'File '.$filenorm.' ready'.PHP_EOL;
         // Promo Items
-        $this->db->select('*')->from('sb_items')->where('item_template', $other_template)->order_by('item_number');
-        $items = $this->db->get()->result_array();
-        $this->load->config('uploader');
-        $fileprom = $this->config->item('upload_path_preload').'promo_items.xlsx';
-        @unlink($fileprom);
-        $titles = [
-            'Item #','Item Name','Active','New','Sale Tag','Template','Lead A','Lead B','Lead C','Lead Blank','Material','Weight','Size','Options','Colors',
-            'Similar 1','Similar 2','Similar 3',
-            'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
-            'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
-        ];
-        $numpp=1;
-        for ($i=1; $i<=7; $i++) {
-            array_push($titles, 'Vendor Price QTY '.$numpp);
-            array_push($titles, 'Price (blank) '.$numpp);
-            array_push($titles, 'Price '.$numpp);
-            $numpp++;
-        }
-        array_push($titles, 'Vendor Price Exprint');
-        array_push($titles, 'Vendor Price Setup');
-        // Imprints
-        $numpp=1;
-        for ($i=1;$i<=12;$i++) {
-            array_push($titles, 'Imprint Location '.$numpp);
-            array_push($titles,'Imprint Size '.$numpp);
-            $numpp++;
-        }
-        // Prices
-        $numpp=1;
-        for ($i=0; $i<9; $i++) {
-            array_push($titles, 'Price QTY '.$numpp);
-            array_push($titles, 'Price '.$numpp);
-            array_push($titles, 'Sale '.$numpp);
-            $numpp++;
-        }
-        array_push($titles, 'Price Exprint');
-        array_push($titles, 'Sale Exprint');
-        array_push($titles, 'Price Setup');
-        array_push($titles, 'Sale Setup');
-        $cols = [];
-        $cellname = '';
-        $numpp = 1;
-        $ncel = 1;
-        foreach ($titles as $title) {
-            $newcell = $cellname.chr(64 + $numpp);
-            array_push($cols, $newcell);
-            $numpp++;
-            if ($numpp==27) {
-                $cellname=chr(64+$ncel);
-                $numpp=1;
-                $ncel++;
-            }
-        }
-        /* create report */
-        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('DB Export');
-        $ncol = 0;
-        foreach ($titles as $title) {
-            $sheet->setCellValue($cols[$ncol].'1', $title);
-            $ncol++;
-        }
-        $nrow = 2;
-        foreach ($items as $item) {
-            $ncol = 0;
-            $this->db->select('group_concat(item_color) as colorstr')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
-            $colors = $this->db->get()->row_array();
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_number']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_name']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_active'] == 1 ? 'Yes' : 'No');
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_new'] == 1 ? 'Yes' : 'No');
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_sale'] == 1 ? 'Yes' : 'No');
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_template']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_a']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_b']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_c']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_blank']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_material']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_weigth']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_size']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['options']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $colors['colorstr']);
-            $ncol++;
-            // Similar
-            $this->db->select('concat(i.item_number,\'-\', i.item_name) as simitem');
-            $this->db->from('sb_item_similars s');
-            $this->db->join('sb_items i', 's.item_similar_similar = i.item_id');
-            $this->db->where('s.item_similar_item', $item['item_id']);
-            $simils = $this->db->get()->result_array();
-            $numpp = 0;
-            foreach ($simils as $simil) {
-                $sheet->setCellValue($cols[$ncol] . $nrow, $simil['simitem']);
-                $ncol++;
-                $numpp++;
-            }
-            if ($numpp < 3) {
-                for ($i = $numpp; $i < 3; $i++) {
-                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
-                    $ncol++;
-                }
-            }
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_meta_title']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_url']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_keywords']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_metakeywords']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_metadescription']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_description1']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_qty']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_width']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_heigh']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_depth']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $item['charge_pereach']);
-            $ncol++;
-            // Get vendor, vendor item
-            $this->db->select('v.vendor_name, vi.*');
-            $this->db->from('sb_vendor_items vi');
-            $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor', 'left');
-            $this->db->where('vi.vendor_item_id', $item['vendor_item_id']);
-            $vdata = $this->db->get()->row_array();
-            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_name']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_number']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_name']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_blankcost']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_cost']);
-            $ncol++;
-            // Vendor Prices
-            $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color')->from('sb_vendor_prices')->where('vendor_item_id', $item['vendor_item_id']);
-            $vprices = $this->db->get()->result_array();
-            $numpp = 0;
-            foreach ($vprices as $vprice) {
-                $sheet->setCellValue($cols[$ncol] . $nrow, $vprice['vendorprice_qty']);
-                $ncol++;
-                $sheet->setCellValue($cols[$ncol] . $nrow, $vprice['vendorprice_val']);
-                $ncol++;
-                $sheet->setCellValue($cols[$ncol] . $nrow, $vprice['vendorprice_color']);
-                $ncol++;
-                $numpp++;
-            }
-            if ($numpp < 7) {
-                for ($i = $numpp; $i < 7; $i++) {
-                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
-                    $ncol++;
-                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
-                    $ncol++;
-                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
-                    $ncol++;
-                }
-            }
-            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_exprint']);
-            $ncol++;
-            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_setup']);
-            $ncol++;
-            // Get inprints
-            $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item', $item['item_id']);
-            $prints = $this->db->get()->result_array();
-            $numpp = 0;
-            foreach ($prints as $print) {
-                $sheet->setCellValue($cols[$ncol] . $nrow, $print['item_inprint_location']);
-                $ncol++;
-                $sheet->setCellValue($cols[$ncol] . $nrow, $print['item_inprint_size']);
-                $ncol++;
-                $numpp++;
-            }
-            if ($numpp < 12) {
-                for ($i = $numpp; $i < 12; $i++) {
-                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
-                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
-                }
-            }
-            $this->db->select('item_qty, price, sale_price')->from('sb_promo_price')->where('item_id', $item['item_id'])->order_by('item_qty');
-            $promprices = $this->db->get()->result_array();
-            $numpp=0;
-            foreach ($promprices as $promprice) {
-                $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['item_qty']);$ncol++;
-                $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['price']);$ncol++;
-                $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['sale_price']);$ncol++;
-                $numpp++;
-            }
-            if ($numpp < 9) {
-                for($i=$numpp; $i<9; $i++) {
-                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
-                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
-                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
-                }
-            }
-            $this->db->select('*')->from('sb_item_prices')->where('item_price_itemid', $item['item_id']);
-            $iprice = $this->db->get()->row_array();
-            if (ifset($iprice, 'item_price_id', 0) == $item['item_id']) {
-                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_price_print']);$ncol++;
-                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_sale_print']);$ncol++;
-                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_price_setup']);$ncol++;
-                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_sale_setup']);$ncol++;
-            }
-            $nrow++;
-        }
-        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
-        $writer->save($fileprom);    // download file
-        echo 'File '.$fileprom.' ready'.PHP_EOL;
+//        $this->db->select('*')->from('sb_items')->where('item_template', $other_template)->order_by('item_number');
+//        $items = $this->db->get()->result_array();
+//        $this->load->config('uploader');
+//        $fileprom = $this->config->item('upload_path_preload').'promo_items.xlsx';
+//        @unlink($fileprom);
+//        $titles = [
+//            'Item #','Item Name','Active','New','Sale Tag','Template','Lead A','Lead B','Lead C','Lead Blank','Material','Weight','Size','Options','Colors',
+//            'Similar 1','Similar 2','Similar 3',
+//            'Meta Title','URL','Keywords for search','Meta Keywords','Meta Description','Item Description','Cartoon: QTY','Width','Height','Deep','Add Price Each',
+//            'Vendor','Vendor Item #','Vendor Item Name','Vendor min cost (blank)','Vendor min cost',
+//        ];
+//        $numpp=1;
+//        for ($i=1; $i<=7; $i++) {
+//            array_push($titles, 'Vendor Price QTY '.$numpp);
+//            array_push($titles, 'Price (blank) '.$numpp);
+//            array_push($titles, 'Price '.$numpp);
+//            $numpp++;
+//        }
+//        array_push($titles, 'Vendor Price Exprint');
+//        array_push($titles, 'Vendor Price Setup');
+//        // Imprints
+//        $numpp=1;
+//        for ($i=1;$i<=12;$i++) {
+//            array_push($titles, 'Imprint Location '.$numpp);
+//            array_push($titles,'Imprint Size '.$numpp);
+//            $numpp++;
+//        }
+//        // Prices
+//        $numpp=1;
+//        for ($i=0; $i<9; $i++) {
+//            array_push($titles, 'Price QTY '.$numpp);
+//            array_push($titles, 'Price '.$numpp);
+//            array_push($titles, 'Sale '.$numpp);
+//            $numpp++;
+//        }
+//        array_push($titles, 'Price Exprint');
+//        array_push($titles, 'Sale Exprint');
+//        array_push($titles, 'Price Setup');
+//        array_push($titles, 'Sale Setup');
+//        $cols = [];
+//        $cellname = '';
+//        $numpp = 1;
+//        $ncel = 1;
+//        foreach ($titles as $title) {
+//            $newcell = $cellname.chr(64 + $numpp);
+//            array_push($cols, $newcell);
+//            $numpp++;
+//            if ($numpp==27) {
+//                $cellname=chr(64+$ncel);
+//                $numpp=1;
+//                $ncel++;
+//            }
+//        }
+//        /* create report */
+//        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+//        $sheet = $spreadsheet->getActiveSheet();
+//        $sheet->setTitle('DB Export');
+//        $ncol = 0;
+//        foreach ($titles as $title) {
+//            $sheet->setCellValue($cols[$ncol].'1', $title);
+//            $ncol++;
+//        }
+//        $nrow = 2;
+//        foreach ($items as $item) {
+//            $ncol = 0;
+//            $this->db->select('group_concat(item_color) as colorstr')->from('sb_item_colors')->where('item_color_itemid', $item['item_id']);
+//            $colors = $this->db->get()->row_array();
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_number']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_name']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_active'] == 1 ? 'Yes' : 'No');
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_new'] == 1 ? 'Yes' : 'No');
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_sale'] == 1 ? 'Yes' : 'No');
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_template']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_a']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_b']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_c']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_lead_blank']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_material']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_weigth']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_size']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['options']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $colors['colorstr']);
+//            $ncol++;
+//            // Similar
+//            $this->db->select('concat(i.item_number,\'-\', i.item_name) as simitem');
+//            $this->db->from('sb_item_similars s');
+//            $this->db->join('sb_items i', 's.item_similar_similar = i.item_id');
+//            $this->db->where('s.item_similar_item', $item['item_id']);
+//            $simils = $this->db->get()->result_array();
+//            $numpp = 0;
+//            foreach ($simils as $simil) {
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $simil['simitem']);
+//                $ncol++;
+//                $numpp++;
+//            }
+//            if ($numpp < 3) {
+//                for ($i = $numpp; $i < 3; $i++) {
+//                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
+//                    $ncol++;
+//                }
+//            }
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_meta_title']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_url']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_keywords']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_metakeywords']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_metadescription']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['item_description1']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_qty']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_width']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_heigh']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['cartoon_depth']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $item['charge_pereach']);
+//            $ncol++;
+//            // Get vendor, vendor item
+//            $this->db->select('v.vendor_name, vi.*');
+//            $this->db->from('sb_vendor_items vi');
+//            $this->db->join('vendors v', 'v.vendor_id=vi.vendor_item_vendor', 'left');
+//            $this->db->where('vi.vendor_item_id', $item['vendor_item_id']);
+//            $vdata = $this->db->get()->row_array();
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_name']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_number']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_name']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_blankcost']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_cost']);
+//            $ncol++;
+//            // Vendor Prices
+//            $this->db->select('vendorprice_qty, vendorprice_val, vendorprice_color')->from('sb_vendor_prices')->where('vendor_item_id', $item['vendor_item_id']);
+//            $vprices = $this->db->get()->result_array();
+//            $numpp = 0;
+//            foreach ($vprices as $vprice) {
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $vprice['vendorprice_qty']);
+//                $ncol++;
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $vprice['vendorprice_val']);
+//                $ncol++;
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $vprice['vendorprice_color']);
+//                $ncol++;
+//                $numpp++;
+//            }
+//            if ($numpp < 7) {
+//                for ($i = $numpp; $i < 7; $i++) {
+//                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
+//                    $ncol++;
+//                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
+//                    $ncol++;
+//                    $sheet->setCellValue($cols[$ncol] . $nrow, '');
+//                    $ncol++;
+//                }
+//            }
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_exprint']);
+//            $ncol++;
+//            $sheet->setCellValue($cols[$ncol] . $nrow, $vdata['vendor_item_setup']);
+//            $ncol++;
+//            // Get inprints
+//            $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item', $item['item_id']);
+//            $prints = $this->db->get()->result_array();
+//            $numpp = 0;
+//            foreach ($prints as $print) {
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $print['item_inprint_location']);
+//                $ncol++;
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $print['item_inprint_size']);
+//                $ncol++;
+//                $numpp++;
+//            }
+//            if ($numpp < 12) {
+//                for ($i = $numpp; $i < 12; $i++) {
+//                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+//                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+//                }
+//            }
+//            $this->db->select('item_qty, price, sale_price')->from('sb_promo_price')->where('item_id', $item['item_id'])->order_by('item_qty');
+//            $promprices = $this->db->get()->result_array();
+//            $numpp=0;
+//            foreach ($promprices as $promprice) {
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['item_qty']);$ncol++;
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['price']);$ncol++;
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $promprice['sale_price']);$ncol++;
+//                $numpp++;
+//            }
+//            if ($numpp < 9) {
+//                for($i=$numpp; $i<9; $i++) {
+//                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+//                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+//                    $sheet->setCellValue($cols[$ncol] . $nrow, '');$ncol++;
+//                }
+//            }
+//            $this->db->select('*')->from('sb_item_prices')->where('item_price_itemid', $item['item_id']);
+//            $iprice = $this->db->get()->row_array();
+//            if (ifset($iprice, 'item_price_id', 0) == $item['item_id']) {
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_price_print']);$ncol++;
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_sale_print']);$ncol++;
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_price_setup']);$ncol++;
+//                $sheet->setCellValue($cols[$ncol] . $nrow, $iprice['item_sale_setup']);$ncol++;
+//            }
+//            $nrow++;
+//        }
+//        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+//        $writer->save($fileprom);    // download file
+//        echo 'File '.$fileprom.' ready'.PHP_EOL;
 
     }
 
@@ -4340,8 +4369,17 @@ class Test extends CI_Controller
 //            }
 //        }
 //        echo 'That is All, folk '.PHP_EOL;
-        $this->load->model('email_model');
-        $this->email_model->generate_quota(26662); // 26662
+        $start_time = strtotime('2025-09-01');
+        $this->db->select('*')->from('ts_emails')->where(['email_type'=>'Leads','email_subtype'=> 'Quote'])->where('unix_timestamp(email_date) >= ', $start_time);
+        $emails = $this->db->get()->result_array();
+        foreach ($emails as $email) {
+            $details = json_decode($email['email_other_info'],true);
+            if (isset($details['sale_price']) && $details['sale_price']==0) {
+                echo 'Email '.$email['email_id'].' from '.$email['email_date'].PHP_EOL;
+            }
+        }
+//        $this->load->model('email_model');
+//        $this->email_model->newquote_generate(28353); // 28336
     }
 
     public function rebuild_item_titles()
@@ -4562,7 +4600,8 @@ class Test extends CI_Controller
 
     public function leadsreport()
     {
-        $reportbgn = strtotime('2018-01-01');
+        $reportbgn = strtotime('2025-06-23');
+        $reportstart = '2025-12-01';
         $this->db->select('lu.user_id, u.user_leadname, count(l.lead_id) as cnt');
         $this->db->from('ts_lead_users lu');
         $this->db->join('users u','u.user_id = lu.user_id');
@@ -4570,7 +4609,7 @@ class Test extends CI_Controller
         $this->db->where('unix_timestamp(l.update_date) >= ', $reportbgn);
         $this->db->group_by('lu.user_id, u.user_leadname');
         $leadusers = $this->db->get()->result_array();
-        $startdate = strtotime('2025-06-23');
+        $startdate = strtotime($reportstart);
         $enddate = strtotime('+7 day', $startdate)-1;
         $out=[];
         while (1==1) {
@@ -4601,7 +4640,7 @@ class Test extends CI_Controller
             $enddate = $startdate - 1;
             $startdate = strtotime('-7 day', $startdate);
 
-            if ($enddate <= strtotime('2018-01-01')) {
+            if ($enddate <= $reportbgn) {
                 break;
             }
         }
@@ -4628,7 +4667,7 @@ class Test extends CI_Controller
         // Userss
         $i=1;
         foreach ($leadusers as $user) {
-            $startdate = strtotime('2025-06-23');
+            $startdate = strtotime($reportstart);
             $enddate = strtotime('+7 day', $startdate)-1;
             $out=[];
             while (1==1) {
@@ -4653,7 +4692,7 @@ class Test extends CI_Controller
                 // new dates
                 $enddate = $startdate - 1;
                 $startdate = strtotime('-7 day', $startdate);
-                if ($enddate <= strtotime('2018-01-01')) {
+                if ($enddate <= $reportbgn) {
                     break;
                 }
             }
@@ -4887,6 +4926,271 @@ class Test extends CI_Controller
             $this->load->model('exportexcell_model');
             $res = $this->exportexcell_model->fullfill_orders($errorders, $brand);
             echo 'Report '.$res.' builded'.PHP_EOL;
+        }
+    }
+
+    public function sendtest()
+    {
+        $config = [
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+//                    'smtp_user' => $brand=='SR' ? $this->config->item('sr_unpaid_user') : $this->config->item('sb_unpaid_user'),
+//                    'smtp_pass' => $brand=='SR' ? $this->config->item('sr_unpaid_pass') : $this->config->item('sb_unpaid_pass'),
+            'smtp_user' => $this->config->item('printschedule_user'),
+            'smtp_pass' => $this->config->item('printschedule_pass'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        ];
+        $email_from = $config['smtp_user'];
+        echo 'CONFIG '.$config['smtp_user'].' - Pass '.$config['smtp_pass'].PHP_EOL;
+        $this->load->library('email');
+        $this->email->initialize($config);
+        // $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
+        $mail_to=array('to_german@yahoo.com');
+        $this->email->to($mail_to);
+        if (isset($mail_cc)) {
+            $this->email->cc($mail_cc);
+        }
+        $this->email->from($email_from);
+        $title = 'Print Schedule Daily Report ('.date('m/d/Y').')';
+        $this->email->subject($title);
+        $mail_body = 'Report in attachment';
+        $this->email->message($mail_body);
+        $sbfile = '/home/bluetrack/lift/uploads/preload/SB_print_schedule_report.xlsx';
+        $srfile = '/home/bluetrack/lift/uploads/preload/SR_print_schedule_report.xlsx';
+        if (!empty($sbfile)) {
+            echo 'SB attach '.$sbfile.PHP_EOL;
+            $this->email->attach($sbfile);
+            echo 'Attach CID '. $this->email->attachment_cid($sbfile).PHP_EOL;
+        }
+        if (!empty($srfile)) {
+            echo 'SR attach '.$srfile.PHP_EOL;
+            $this->email->attach($srfile);
+            echo 'Attach CID '. $this->email->attachment_cid($srfile).PHP_EOL;
+        }
+        // $res=$this->email->send();
+        if ( ! $this->email->send())
+        {
+            // Generate error
+            echo 'ERROR '.error_get_last().PHP_EOL;
+            echo $this->email->print_debugger();
+        }
+        $this->email->clear(TRUE);
+    }
+
+    public function altinventcolors()
+    {
+        $colors = $this->db->select('*')->from('altinvent_colors')->get()->result_array();
+        foreach ($colors as $color) {
+            $invitem = $this->db->select('inventory_item_id')->from('ts_inventory_items')->where('item_num', $color['item_num'])->get()->row_array();
+            if (ifset($invitem, 'inventory_item_id', 0)==0) {
+                echo 'Item Not Found '.$color['item_num'].PHP_EOL;
+            } else {
+                // Search color
+                $invcolor = $this->db->select('inventory_color_id')->from('ts_inventory_colors')->where(['inventory_item_id' => $invitem['inventory_item_id'], 'color' => $color['color']])->get()->row_array();
+                if (ifset($invcolor, 'inventory_color_id', 0)==0) {
+                    echo 'Item '.$color['item_num'].' Color '.$color['color'].' Not Found'.PHP_EOL;
+                } else {
+                    $this->db->where('id', $color['id']);
+                    $this->db->set('inventory_color_id', $invcolor['inventory_color_id']);
+                    $this->db->update('altinvent_colors');
+                }
+            }
+        }
+        $colors = $this->db->select('*')->from('altinvent_colors')->where('inventory_color_id > ',0)->get()->result_array();
+        foreach ($colors as $color) {
+            $this->db->where('inventory_color_id', $color['inventory_color_id']);
+            $this->db->set('suggeststock', $color['new_max']);
+            $this->db->set('boxsize', $color['boxsize']);
+            $this->db->set('location', $color['location']);
+            $this->db->update('ts_inventory_colors');
+        }
+    }
+
+
+    public function trackreport()
+    {
+        $datebgn = strtotime('2025-12-09');
+        $dateend = strtotime('2025-12-10');
+        $this->load->model('shipping_model');
+        $this->shipping_model->trackpackage_report($datebgn, $dateend);
+    }
+
+    public function sbitems_sales_report()
+    {
+        $this->db->select('i.item_id, i.item_active, i.item_number, i.item_name, v.vendor_name')->from('sb_items i');
+        $this->db->join('sb_vendor_items vi','vi.vendor_item_id = i.vendor_item_id');
+        $this->db->join('vendors v','v.vendor_id = vi.vendor_item_vendor');
+        $this->db->where('i.brand','BT')->order_by('i.item_number');
+        $items = $this->db->get()->result_array();
+        $idx = 0;
+        foreach ($items as $item) {
+            $items[$idx]['revenue_2018'] = $items[$idx]['revenue_2019'] = $items[$idx]['revenue_2023'] = $items[$idx]['revenue_2024'] = $items[$idx]['revenue_2025'] = 0;
+            $items[$idx]['orders_2018'] = $items[$idx]['orders_2019'] = $items[$idx]['orders_2023'] = $items[$idx]['orders_2024'] = $items[$idx]['orders_2025'] = 0;
+            $items[$idx]['qty_2018'] = $items[$idx]['qty_2019'] = $items[$idx]['qty_2023'] = $items[$idx]['qty_2024'] = $items[$idx]['qty_2025'] = 0;
+            $idx++;
+        }
+        // Get data
+        $idx = 0;
+        foreach ($items as $item) {
+            $this->db->select('DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as oyear, count(distinct(o.order_id)) as ocnt, sum(oi.item_qty) as qty, sum(oi.item_price*oi.item_qty) as revenue');
+            $this->db->from('ts_orders o')->join('ts_order_items oi', 'oi.order_id = o.order_id');
+            $this->db->where(['o.is_canceled'=>0, 'oi.item_id' => $item['item_id']]);
+            $this->db->group_by('oyear');
+            $this->db->having('oyear in (2018,2019,2023,2024,2025)');
+            $orders = $this->db->get()->result_array();
+            foreach ($orders as $order) {
+                $items[$idx]['orders_'.$order['oyear']]+=$order['ocnt'];
+                $items[$idx]['qty_'.$order['oyear']]+=$order['qty'];
+                $items[$idx]['revenue_'.$order['oyear']]+=$order['revenue'];
+            }
+            $idx++;
+        }
+        $this->load->config('uploader');
+        $filenorm = $this->config->item('upload_path_preload').'SB_items_soldreport.xlsx';
+        @unlink($filenorm);
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('SB Items Sales Report');
+        $sheet->setCellValue('E1', 'Sales Revenue');
+        $sheet->setCellValue('J1', 'Sales Orders');
+        $sheet->setCellValue('O1', 'Item QTY SOLD');
+        $sheet->setCellValue('A2', 'Active');
+        $sheet->setCellValue('B2', 'Item #');
+        $sheet->setCellValue('C2', 'Item Name');
+        $sheet->setCellValue('D2', 'Vendor');
+        $sheet->setCellValue('E2', '2025');
+        $sheet->setCellValue('F2', '2024');
+        $sheet->setCellValue('G2', '2023');
+        $sheet->setCellValue('H2', '2019');
+        $sheet->setCellValue('I2', '2018');
+        $sheet->setCellValue('J2', '2025');
+        $sheet->setCellValue('K2', '2024');
+        $sheet->setCellValue('L2', '2023');
+        $sheet->setCellValue('M2', '2019');
+        $sheet->setCellValue('N2', '2018');
+        $sheet->setCellValue('O2', '2025');
+        $sheet->setCellValue('P2', '2024');
+        $sheet->setCellValue('R2', '2023');
+        $sheet->setCellValue('S2', '2019');
+        $sheet->setCellValue('T2', '2018');
+        $numrow = 3;
+        foreach ($items as $item) {
+            $sheet->setCellValue('A'.$numrow, ($item['item_active']==1) ? 'YES' : 'NO');
+            $sheet->setCellValue('B'.$numrow, $item['item_number']);
+            $sheet->setCellValue('C'.$numrow, $item['item_name']);
+            $sheet->setCellValue('D'.$numrow, $item['vendor_name']);
+            $sheet->setCellValue('E'.$numrow, $item['revenue_2025']);
+            $sheet->setCellValue('F'.$numrow, $item['revenue_2024']);
+            $sheet->setCellValue('G'.$numrow, $item['revenue_2023']);
+            $sheet->setCellValue('H'.$numrow, $item['revenue_2019']);
+            $sheet->setCellValue('I'.$numrow, $item['revenue_2018']);
+            $sheet->setCellValue('J'.$numrow, $item['orders_2025']);
+            $sheet->setCellValue('K'.$numrow, $item['orders_2024']);
+            $sheet->setCellValue('L'.$numrow, $item['orders_2023']);
+            $sheet->setCellValue('M'.$numrow, $item['orders_2019']);
+            $sheet->setCellValue('N'.$numrow, $item['orders_2018']);
+            $sheet->setCellValue('O'.$numrow, $item['qty_2025']);
+            $sheet->setCellValue('P'.$numrow, $item['qty_2024']);
+            $sheet->setCellValue('R'.$numrow, $item['qty_2023']);
+            $sheet->setCellValue('S'.$numrow, $item['qty_2019']);
+            $sheet->setCellValue('T'.$numrow, $item['qty_2018']);
+            $numrow++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filenorm);    // download file
+        echo 'File '.$filenorm.' ready'.PHP_EOL;
+    }
+
+    public function add_leadcontacts()
+    {
+        $this->load->model('leads_model');
+        $this->leads_model->add_leadcontacts();
+    }
+
+    public function customitems_orders()
+    {
+        $this->load->model('test_model');
+        $orders = $this->test_model->custom_orders_table(2025);
+        // $this->load->config('uploader');
+        $filereport = $this->config->item('upload_path_preload').'custom_orders2025.xlsx';
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Custom orders 2025');
+        $sheet->setCellValue('A1', 'Order #');
+        $sheet->setCellValue('B1', 'Date');
+        $sheet->setCellValue('C1', 'Customer');
+        $sheet->setCellValue('D1', 'Item');
+        $sheet->setCellValue('E1', 'Quantity');
+        $sheet->setCellValue('F1', 'Revenue');
+        $sheet->setCellValue('G1', 'Ship cost');
+        $sheet->setCellValue('H1', 'PO 1 amnt');
+        $sheet->setCellValue('I1', 'PO 1 vendor');
+        $sheet->setCellValue('J1', 'PO 2 amnt');
+        $sheet->setCellValue('K1', 'PO 2 vendor');
+        $sheet->setCellValue('L1', 'PO 3 amnt');
+        $sheet->setCellValue('M1', 'PO 3 vendor');
+        $sheet->setCellValue('N1', 'Profit');
+        $nrow = 2;
+        foreach ($orders as $order) {
+            $sheet->setCellValue('A'.$nrow, $order['order_num']);
+            $sheet->setCellValue('B'.$nrow, date('m/d/Y', $order['order_date']));
+            $sheet->setCellValue('C'.$nrow, $order['customer']);
+            $sheet->setCellValue('D'.$nrow, $order['itemname']);
+            $sheet->setCellValue('E'.$nrow, $order['order_qty']);
+            $sheet->setCellValue('F'.$nrow, $order['revenue']);
+            $sheet->setCellValue('G'.$nrow, $order['shipping']);
+            $sheet->setCellValue('H'.$nrow, $order['po1_amnt']);
+            $sheet->setCellValue('I'.$nrow, $order['po1_vendor']);
+            $sheet->setCellValue('J'.$nrow, $order['po2_amnt']);
+            $sheet->setCellValue('K'.$nrow, $order['po2_vendor']);
+            $sheet->setCellValue('L'.$nrow, $order['po3_amnt']);
+            $sheet->setCellValue('M'.$nrow, $order['po3_vendor']);
+            $sheet->setCellValue('N'.$nrow, $order['profit']);
+            $nrow++;
+        }
+        // Save
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $writer->save($filereport);    // download file
+        echo 'File '.$filereport.' ready'.PHP_EOL;
+    }
+
+    public function restore_leadquote()
+    {
+        $quotes = $this->db->select('*')->from('ts_quotes')->get()->result_array();
+        foreach ($quotes as $quote) {
+            $this->db->select('count(qpr.quote_imprint_id) as cnt, sum(qpr.imprint_price) as imprtotal');
+            $this->db->from('ts_quote_imprints qpr');
+            $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qpr.quote_item_id');
+            $this->db->where('qi.quote_id', $quote['quote_id']);
+            $imprdat = $this->db->get()->row_array();
+            $imprtotal = 0;
+            if ($imprdat['cnt'] > 0) {
+                $imprtotal = $imprdat['imprtotal'];
+            }
+            $this->db->select('count(qc.quote_item_id) as cnt, sum(qc.item_qty*qc.item_price) as item_total');
+            $this->db->from('ts_quote_itemcolors qc');
+            $this->db->join('ts_quote_items qi','qi.quote_item_id = qc.quote_item_id');
+            $this->db->where('qi.quote_id', $quote['quote_id']);
+            $itemdat = $this->db->get()->row_array();
+            if ($itemdat['cnt'] > 0) {
+                $item_subtotal = floatval($itemdat['item_total']);
+                echo 'Items calc '.$item_subtotal.PHP_EOL;
+                echo 'Imprints '.$imprtotal.' Misch1 '.$quote['mischrg_value1'].' Misch2 '.$quote['mischrg_value2'].' Discount '.$quote['discount_value'].PHP_EOL;
+                $item_subtotal+=$imprtotal+$quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value'];
+                echo 'New Calc '.$item_subtotal.PHP_EOL;
+                if ($item_subtotal!=$quote['items_subtotal']) {
+                    $this->db->where('quote_id', $quote['quote_id']);
+                    $this->db->set('items_subtotal', $item_subtotal);
+                    $this->db->set('imprint_subtotal', $imprtotal);
+                    $this->db->update('ts_quotes');
+                    echo 'Sub Total Updated for '.$quote['quote_number'].PHP_EOL;
+                }
+            }
         }
     }
 }

@@ -124,6 +124,7 @@ class Accounting extends MY_Controller
             'styles' => $head['styles'],
             'scripts' => $head['scripts'],
             'brand' => $brand,
+            'showhidemenu' => 0,
         ];
         if ($gmaps==1) {
             $options['gmaps'] = $gmaps;
@@ -132,6 +133,8 @@ class Accounting extends MY_Controller
         $content_options['brand'] = $brand;
         $brandclass = ($brand=='SR' ? 'relievers' : ($brand=='SG' ? '' : 'stressballs'));
         $content_options['menu_view'] = $this->load->view('page_modern/submenu_view',['menu' => $menu, 'start' => $start, 'brandclass' => $brandclass ], TRUE);
+        $content_options['brandclass'] = $brandclass;
+        $content_options['showhidemenu'] = 0;
         $content_view = $this->load->view('accounting/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('accounting/modal_view',[], TRUE);
@@ -2707,17 +2710,22 @@ class Accounting extends MY_Controller
             $postdata = $this->input->post();
             $period = ifset($postdata,'period', -1);
             $brand = ifset($postdata,'brand', 'ALL');
-            $ownsort1 = ifset($postdata, 'ownsort1', 'batch_due');
-            $ownsort2 = ifset($postdata, 'ownsort2', 'ownapprove');
+            // $ownsort1 = ifset($postdata, 'ownsort1', 'batch_due');
+            // $ownsort2 = ifset($postdata, 'ownsort2', 'ownapprove');
             if ($brand=='SG') {
                 $brand = 'ALL';
             }
             $res = $this->orders_model->accountreceiv_totals($period, $brand);
             $res['brand'] = $brand;
-            $res['ownsort1'] = $ownsort1;
-            $res['ownsort2'] = $ownsort2;
-            $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
+            // $res['ownsort1'] = $ownsort1;
+            // $res['ownsort2'] = $ownsort2;
+            // $mdata['content'] = $this->load->view('accreceiv/totals_view', $res, TRUE);
+            $mdata['total_owed'] = $this->load->view('accreceiv/totals_owed_view', $res, TRUE);
+            $mdata['total_past'] = $this->load->view('accreceiv/totals_past_view', $res, TRUE);
+            $mdata['total_refund'] = $this->load->view('accreceiv/totals_refund_view', $res, TRUE);
             $mdata['totals'] = $this->load->view('accreceiv/balances_view', $res, TRUE);
+            $mdata['total_approved'] = $this->load->view('accreceiv/totals_approved_view', $res, TRUE);
+            $mdata['total_notapproved'] = $this->load->view('accreceiv/totals_notapproved_view', $res, TRUE);
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
@@ -2734,24 +2742,21 @@ class Accounting extends MY_Controller
                 $brand = 'ALL';
             }
             $ownsort = ifset($postdata,'ownsort', 'batch_due');
-            // $ownsort1 = ($ownsort1=='owntype' ? 'type' : ($ownsort1=='ownapprove' ? 'approved' : $ownsort1));
-            // $owndirec = ifset($postdata,'owndirec', 'desc');
-            // $ownsort2 = ifset($postdata,'ownsort2', 'batch_due');
-            // $ownsort2 = ($ownsort2=='owntype' ? 'type' : ($ownsort2=='ownapprove' ? 'approved' : $ownsort2));
-            // $refundsort = ifset($postdata,'refundsort','order_date');
             $refundsort = 'order_date';
-            // $refunddirec = ifset($postdata, 'refunddirec', 'desc');
             $refunddirec = 'desc';
 
             $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort, $refundsort, $refunddirec);
-            if ($brand=='ALL') {
-                $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
-            } elseif ($brand=='SR') {
-                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
-            } else {
-                $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
-            }
-
+            $mdata['approved_content'] = $this->load->view('accreceiv/approved_details_view', $res, TRUE);
+            $mdata['notapproved_content'] = $this->load->view('accreceiv/notapproved_details_view', $res, TRUE);
+//            if ($brand=='ALL') {
+//                $mdata['content'] = $this->load->view('accreceiv/details_sigma_view', $res, TRUE);
+//            } elseif ($brand=='SR') {
+//                $mdata['content'] = $this->load->view('accreceiv/details_sr_view', $res, TRUE);
+//            } else {
+//                $mdata['content'] = $this->load->view('accreceiv/details_view', $res, TRUE);
+//            }
+            $mdata['refund_content'] = $this->load->view('accreceiv/refund_details_view', $res, TRUE);
+            $mdata['content'] = '';
             $error = '';
             $this->ajaxResponse($mdata, $error);
         }
@@ -2815,13 +2820,14 @@ class Accounting extends MY_Controller
                 $brand = 'ALL';
             }
             $exporttype = ifset($postdata, 'exporttype', 'O');
-            $ownsort1 = ifset($postdata,'ownsort1', 'batch_due');
-            $ownsort1 = ($ownsort1=='owntype' ? 'type' : ($ownsort1=='ownapprove' ? 'approved' : $ownsort1));
-            $ownsort2 = ifset($postdata,'ownsort2', 'batch_due');
-            $ownsort2 = ($ownsort2=='owntype' ? 'type' : ($ownsort2=='ownapprove' ? 'approved' : $ownsort2));
-            $refundsort = ifset($postdata,'refundsort','order_date');
-            $refunddirec = ifset($postdata, 'refunddirec', 'desc');
-            $res = $this->orders_model->accountreceiv_details($period, $brand, $ownsort1, $ownsort2, $refundsort, $refunddirec);
+//            $ownsort1 = ifset($postdata,'ownsort1', 'batch_due');
+//            $ownsort1 = ($ownsort1=='owntype' ? 'type' : ($ownsort1=='ownapprove' ? 'approved' : $ownsort1));
+//            $ownsort2 = ifset($postdata,'ownsort2', 'batch_due');
+//            $ownsort2 = ($ownsort2=='owntype' ? 'type' : ($ownsort2=='ownapprove' ? 'approved' : $ownsort2));
+            $ownsort = 'batch_due';
+            $refundsort = 'order_date';
+            $refunddirec = 'asc';
+            $res = $this->orders_model->accountreceiv_export($period, $brand, $ownsort, $refundsort, $refunddirec);
             $this->load->model('exportexcell_model');
             if ($exporttype=='O') {
                 $mdata['url'] = $this->exportexcell_model->export_owed($res['owns'], $brand);
@@ -3766,8 +3772,10 @@ class Accounting extends MY_Controller
     private function _prepare_accreceiv_view($brand) {
         $options=[
             'brand' => $brand,
+            'refundsort' => 'order_date',
+            'refunddirec' => 'desc',
         ];
-        return $this->load->view('accreceiv/page_view',$options, TRUE);
+        return $this->load->view('accreceiv/page_new_view',$options, TRUE);
     }
 
 }

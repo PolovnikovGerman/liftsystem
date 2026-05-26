@@ -96,7 +96,7 @@ function init_leadquotes_list() {
                 $("#leadformModal").find('div.modal-body').empty().html(response.data.content);
                 $("#leadformModal").find('div.modal-footer').empty().html(response.data.footer);
                 $("#leadformModal").modal({backdrop: 'static', keyboard: false, show: true});
-                init_lead_cloneemail();
+                // init_lead_cloneemail();
                 init_leadpopupedit();
                 leadquote_edit(quote);
             } else {

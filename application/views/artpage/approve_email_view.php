@@ -3,7 +3,7 @@
         <div class="approvemail_row">
             <div class="approvemail_label">From:</div>
             <div class="approvemail_data">
-                <input type="text" class="aprovemail_input" id="approvemail_from" value="<?=$from?>"/>
+                <input type="text" readonly="readonly" class="aprovemail_input" id="approvemail_from" value="<?=$from?>"/>
             </div>
         </div>
         <div class="approvemail_row">

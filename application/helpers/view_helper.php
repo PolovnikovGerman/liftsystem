@@ -907,7 +907,8 @@ if (!function_exists('trackcodeurl')) {
             } elseif ($service=='FedEx') {
                 $url='https://www.fedex.com/fedextrack?trknbr='.$trackcode;
             } elseif ($service=='DHL') {
-                $url='https://mydhl.express.dhl/tracking?id='.$trackcode;
+                $url='https://mydhl.express.dhl/us/en/tracking.html#/results?id='.$trackcode;
+//                $url='https://mydhl.express.dhl/tracking?id='.$trackcode;
             } elseif ($service=='USPS') {
                 $url='https://tools.usps.com/go/TrackConfirmAction_input?strOrigTrackNum='.$trackcode;
             }
@@ -925,6 +926,32 @@ if (!function_exists('show_negative_value')) {
             $outval = '(<span style="color:#ff0000">'.abs($value).'</span>)';
             return $outval;
         }
+    }
+}
+
+if (!function_exists('shapetype_view')) {
+    function shapetype_view($shape_type) {
+        $retval = '';
+        if ($shape_type =='mascot') {
+            $retval = 'Mascot / Character';
+        } elseif ($shape_type =='product_replica') {
+            $retval = 'Product Replica / Industrial';
+        } elseif ($shape_type =='vehicle') {
+            $retval = 'Vehicle';
+        } elseif ($shape_type =='logo') {
+            $retval = 'Logo / Words';
+        } elseif ($shape_type=='food') {
+            $retval = 'Food & Drink';
+        } elseif ($shape_type=='buildings') {
+            $retval = 'Buildings / Structures';
+        } elseif ($shape_type=='people') {
+            $retval = 'People';
+        } elseif ($shape_type=='keychain') {
+            $retval = 'Keychain';
+        } elseif ($shape_type=='other') {
+            $retval = 'Other';
+        }
+        return $retval;
     }
 }
 ?>

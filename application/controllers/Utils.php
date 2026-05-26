@@ -588,4 +588,141 @@ Class Utils extends CI_Controller
         die('{error: "server-error query params not passed"}');
     }
 
+    public function save_sblift_file() {
+        $out = ['result' => 0, 'msg' => 'Unknown error'];
+        $postdata = $this->input->post();
+        foreach ($postdata as $key => $value) {
+            log_message('error', 'Post PARAM '.$key.' Value - '.$value);
+        }
+        $upltype = 'preload';
+        if (ifset($postdata, 'type','')=='customquote') {
+            $upltype = 'customquote';
+        } elseif (ifset($postdata, 'type','')=='proofrequest') {
+            $upltype = 'proofrequest';
+        }
+        if ($upltype == 'preload') {
+            $savepath = $this->config->item('upload_path_preload');
+            $respons_path = $this->config->item('pathpreload');
+        } elseif ($upltype=='customquote') {
+            $savepath = $this->config->item('upload_customquote');
+            $respons_path = $this->config->item('upload_customquote_relative');
+        } elseif ($upltype=='proofrequest') {
+            $savepath = $this->config->item('artwork_logo');
+            $respons_path = $this->config->item('artwork_logo_relative');
+        }
+        log_message('error','Upload type '.$upltype.' Short path '.$respons_path);
+        $destfile = $savepath.$postdata['filename'];
+        $content = @file_get_contents($postdata['fileurl']);
+        if ($content) {
+            log_message('error', 'File '.$postdata['fileurl'].' contents: GET');
+            $res = @file_put_contents($destfile, $content);
+            if ($res) {
+                log_message('error', 'File '.$destfile.' saved');
+                $out['result'] = 1;
+                $out['file'] = $respons_path.$postdata['filename'];
+            } else {
+                $out['msg'] = 'File '.$destfile.' not saved';
+            }
+        } else {
+            $out['msg'] = 'File '.$postdata['fileurl'].' not found';
+        }
+        echo json_encode($out);
+    }
+
+    public function save_shipdoc()
+    {
+        $this->load->helper('upload');
+        $file = null;
+        $path = $this->config->item('upload_path_preload');
+        $path_sh = $this->config->item('pathpreload');
+
+        $arrayext=['doc','docx', 'rtf','odt', 'pdf','xlsx','xls', 'csv'];
+        if (isset($_GET['qqfile'])) {
+            $file = new qqUploadedFileXhr();
+        } elseif (isset($_FILES['qqfile'])) {
+            $file = new qqUploadedFileForm();
+        } elseif (isset($_POST['qqfile'])) {
+            $file = new qqUploadedFileXhr();
+        } else {
+            die('{error: "server-error file not passed"}');
+        }
+
+        if ($file) {
+            $filenamesrc = $file->getName();
+            $filesize = $file->getSize();
+
+            if ($filesize == 0)
+                die('{error: "server-error file size is zero"}');
+
+            $pathinfo = pathinfo($file->getName());
+
+            $filename = uniq_link(12);
+            $ext = strtolower($pathinfo['extension']);
+            if (!in_array($ext, $arrayext )) {
+                $these = implode(', ', $arrayext);
+                echo (json_encode(array('success' => false, 'error' => 'File has an invalid extension, it should be one of '. $these . '.')));
+                exit();
+            } else {
+                $ressave = $file->save($path . $filename . '.' . $ext);
+                if ($ressave) {
+                    $filetype = 'pdf';
+                    if (in_array($ext,['doc','docx', 'rtf','odt'])) {
+                        $filetype = 'word';
+                    } elseif (in_array($ext,['xlsx','xls', 'csv'])) {
+                        $filetype = 'excel';
+                    }
+                    $out = [
+                        'success' => true,
+                        'filename' => $path_sh.$filename . '.' . $ext,
+                        'filesize' => $filesize,
+                        'srcname'=>$filenamesrc,
+                        'filetype' => $filetype,
+                    ];
+                    echo (json_encode($out));
+                } else {
+                    echo (json_encode(array('success' => false,'error'=> 'Error During save File')));
+                }
+                exit();
+            }
+        } else {
+            echo (json_encode(array('success' => false,'path'=>$path)));
+            exit();
+        }
+        die('{error: "server-error query params not passed"}');
+
+    }
+
+    public function getprojectaccess() {
+        $out = ['result' => 0, 'msg' => 'Unknown error'];
+        $postdata = $this->input->post();
+        if (ifset($postdata, 'user',0) > 0) {
+            $user_id = $postdata['user'];
+            $this->load->model('user_model');
+            $chkres = $this->user_model->get_user_data($user_id);
+            if (ifset($chkres,'user_id',0)==$user_id) {
+                $out['result'] = 1;
+                // Emulate user log in
+                $token = uniq_link(30);
+                /* Save token to DB */
+                $this->db->set('token_created',date('Y-m-d H:i:s'));
+                $this->db->set('access_token',$token);
+                $this->db->set('user_id',$user_id);
+                $this->db->insert('ts_acces_tokens');
+                // Add Access token into cookies
+//                $server= $_SERVER['SERVER_NAME'];
+//                $cookie = array(
+//                    'name'   => 'acctoken',
+//                    'value'  => $token,
+//                    'expire' => '86500',
+//                    'domain' => $server,
+//                );
+//                set_cookie($cookie);
+                $out['token'] = $token;
+                $this->load->model('useractivity_model');
+                $this->useractivity_model->userlog($user_id,'Sign in', 1);
+            }
+        }
+        echo json_encode($out);
+    }
+
 }

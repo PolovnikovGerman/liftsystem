@@ -48,8 +48,8 @@ $config['taisen_email']=getenv('TAISEN_EMAIL'); //'taisen@bluetrack.com';
 $config['email_notification_sender']=getenv('NOTIFICATION_EMAIL'); // 'sales@bluetrack.com';
 $config['quote_sender']=getenv('QUOTE_EMAIL'); // 'sales@bluetrack.com';
 $config['redraw_email']=getenv('REDRAW_EMAIL'); //'redraw@bluetrack.com';
-$config['art_dept_email']=getenv('ARTDEPT_EMAIL'); // "art@bluetrack.com";
-$config['art_srdept_email']=getenv('ARTDEPT_SR_EMAIL'); // "art@stressrelievers.com";
+$config['art_dept_email']=getenv('SB_ARTDEPT_EMAIL'); // "art@bluetrack.com";
+$config['art_srdept_email']=getenv('SR_ARTDEPT_EMAIL'); // "art@stressrelievers.com";
 $config['customer_notification_sender']=getenv('CUSTOMER_BT_EMAIL'); // 'sales@bluetrack.com';
 $config['customer_notification_relievers']=getenv('CUSTOMER_SR_EMAIL'); // 'sales@stressrelievers.com';
 $config['taisenkatakura_email']=getenv('TAISEN_PERSON_EMAIL'); //'taisenkatakura321@yahoo.com';
@@ -279,8 +279,24 @@ $config['debug_mode'] = (getenv('TEST_SERVER')==1 ? '1' : 0);
 $config['default_country'] = 223;
 $config['google_map_key'] = getenv('GOOGLEMAPAPI_KEY');
 $config['srrepeat_cost'] = 12;
-$config['custom_quote_note'] = '4-5 Week Lead Time'.PHP_EOL.'Add\'l Print Locations: $0.12 ea & $30 setup'.PHP_EOL.PHP_EOL;
+$config['custom_quote_note'] = '4-5 Week Lead Time'.PHP_EOL.'Add\'l Print Locations: $0.16 ea & $30 setup'.PHP_EOL.PHP_EOL;
 $config['custom_mischrg_label'] = 'Custom Design Charge';
+$config['custom_mischrgrepeat_label'] = 'Existing Design';
 $config['custom_mischrg_value'] = 200;
 $config['custom_mischrg_srvalue'] = 160;
 $config['custom_itemprice'] = 3.00;
+$config['quote_customitem_price'] = array(
+    array('promo_price_id' => -1, 'item_qty' => 500, 'sale_price' => 3.80),
+    array('promo_price_id' => -2, 'item_qty' => 750, 'sale_price' => 3.45),
+    array('promo_price_id' => -3, 'item_qty' => 1000, 'sale_price' => 3.05),
+    array('promo_price_id' => -4, 'item_qty' => 2000, 'sale_price' => 2.78),
+    array('promo_price_id' => -5, 'item_qty' => 5000, 'sale_price' => 2.51),
+    array('promo_price_id' => -6, 'item_qty' => 10000, 'sale_price' => 2.35),
+);
+// Default shipping prices
+$config['custom_ship_price'] = 0.15;
+$config['regular_ship_price'] = 0.12;
+// Project access
+$config['project_user'] = getenv('PROJECT_USER');
+$config['project_password'] = getenv('PROJECT_PASSWORD');
+$config['project_url'] = getenv('PROJECT_URL');

@@ -1,0 +1,69 @@
+<div class="datarow">
+    <div class="history-title"><?=date('M j, Y', $printdate)?>- History of What Printed & Shipped</div>
+</div>
+<div class="historyblock">
+    <div class="history-table">
+        <div class="histrtabl-tr histrtabl-header">
+            <div class="histrtabl-apprblock">
+                <div class="histrtabl-td histrtabl-edit">&nbsp;</div>
+                <div class="histrtabl-td histrtabl-approval">Approval</div>
+            </div>
+            <div class="histrtabl-td histrtabl-printer">Printer</div>
+            <div class="histrtabl-mainblock">
+                <div class="histrtabl-td histrtabl-brand">&nbsp;</div>
+                <div class="histrtabl-td histrtabl-rush">&nbsp;</div>
+                <div class="histrtabl-td histrtabl-order">Order#</div>
+                <div class="histrtabl-td histrtabl-items">#Items</div>
+                <div class="histrtabl-td histrtabl-imp">Imp</div>
+                <div class="histrtabl-td histrtabl-prints">#Prints</div>
+                <div class="histrtabl-td histrtabl-itmcolor shortresched">Item Color/s</div>
+                <div class="histrtabl-td histrtabl-description shortresched">Item / Description</div>
+                <div class="histrtabl-td histrtabl-inkcolor shortresched">Ink Color/s</div>
+            </div>
+        </div>
+        <?php $order_id = 0; ?>
+        <?php foreach ($lists as $list) :?>
+            <div class="histrtabl-tr histrtabl-body">
+                <div class="histrtabl-td histrtabl-edit">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                </div>
+                <div class="histrtabl-apprblock">
+                    <div class="histrtabl-td histrtabl-approval <?=$list['approv']==0 ? 'notapprv' : ''?>">
+                        <?=$list['approv']==0 ? 'Not Approved' : ($list['order_blank']==1 ? 'Blank' : 'Approved')?>
+                        <?php if ($list['approv'] > 0 && $list['order_blank']==0)  :?>
+                            <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="histrtabl-td histrtabl-printer"><?=empty($list['user_name']) ? 'Unknown' : $list['user_name']?></div>
+                <div class="histrtabl-mainblock">
+                    <div class="histrtabl-td histrtabl-brand">
+                        <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
+                    </div>
+                    <div class="histrtabl-td histrtabl-rush <?=$list['shipclass']?>">
+                        <?php if (empty($list['shipdate'])) : ?>
+                            <?=$list['shiplabel']?>
+                        <?php else : ?>
+                            <div class="shipclasslabel"><?=$list['shiplabel']?></div>
+                            <div class="shipclassvalue"><?=$list['shipdate']?></div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="histrtabl-td histrtabl-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>">
+                        <?php if ($list['order_id']==$order_id) : ?>
+                            --
+                        <?php else : ?>
+                            <?=$list['order_num']?>
+                            <?php $order_id=$list['order_id'];?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="histrtabl-td histrtabl-items"><?=empty($list['item_qty']) ? '-' : QTYOutput($list['item_qty'])?></div>
+                    <div class="histrtabl-td histrtabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
+                    <div class="histrtabl-td histrtabl-prints"><?=empty($list['prints']) ? '-' : QTYOutput($list['prints'])?></div>
+                    <div class="histrtabl-td histrtabl-itmcolor shortresched truncateoverflowtext"><?=$list['color']?></div>
+                    <div class="histrtabl-td histrtabl-description shortresched truncateoverflowtext"><?=$list['item']?></div>
+                    <div class="histrtabl-td histrtabl-inkcolor shortresched truncateoverflowtext">&nbsp;</div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>

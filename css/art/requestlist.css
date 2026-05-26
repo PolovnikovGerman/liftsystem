@@ -51,7 +51,7 @@ input.proofsearch {
     font-size: 13px;
     text-align: center;
     /* width: 1042px; */
-    width: 1102px;
+    width: 1132px;
     margin-top: 10px;
 }
 .proof_title div {
@@ -62,27 +62,32 @@ input.proofsearch {
 .proof_tabledat {
     clear: both;
     float: left;
-    /* max-height: 564px; */
     max-height: 502px;
     overflow-y: auto;
-    /* width: 971px; */
-    width: 1104px;
-}
-.proof_tabrow {
+    overflow-x: hidden;
+    scrollbar-width: none;
+    width: 1132px;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.proof_tabrow {
+    /*border-left: 1px solid #000000;*/
+    /*border-right: 1px solid #000000;*/
     clear: both;
     color: #000000;
     float: left;
     font-size: 12px;
-    /* width: 954px; */
-    /* width: 1030px; */
-    width: 1090px;
+    /*width: 1090px;*/
+    width: 1132px;
     text-align: center;
 }
 .proof_tabrow div {
     height: 24px;
     line-height: 24px!important;
+    border-right: 1px solid #D3D3D3;
 }
 .proof_tabrow.orderassign > div {
     color: #999999;
@@ -119,11 +124,18 @@ select.proofhideproof {
 }
 .proof_leadnum {
     float: left;
-    margin-right: 11px;
+    margin-right: 7px;
     width: 60px;
+}
+.websourcerequest {
+    width: 30px;
 }
 .lead_salesrep {
     width: 60px;
+}
+.websourcerequest_dat {
+    width: 30px;
+    font-size: 11px;
 }
 .lead_salesrep_dat {
     width: 60px;
@@ -191,7 +203,7 @@ select.proofhideproof {
 }
 .proof_customer {
     float: left;
-    width: 201px;
+    width: 205px;
 }
 .proof_customer_dat {
     width: 206px;
@@ -200,6 +212,7 @@ select.proofhideproof {
     float: left;
     width: 22px;
     text-align: center;
+    border-right: none!important;
 }
 .prfart_customer-maildat i {
     font-size: 15px;
@@ -212,6 +225,7 @@ select.proofhideproof {
     text-align: left;
     white-space: nowrap;
     width: 179px;
+    border-right: none!important;
 }
 .proof_item {
     float: left;
@@ -227,11 +241,12 @@ select.proofhideproof {
 }
 .proof_emptydiv {
     width: 4px;
+    border-right: none!important;
 }
 .artdataarea {
     width: 144px;
     border-left: 2px solid #000000;
-    border-right: 2px solid #000000;
+    border-right: 2px solid #000000!important;
 }
 .proof_del {
     float: left;
@@ -264,6 +279,7 @@ select.proofhideproof {
 .proof_note_dat {
     width: 25px;
     font-size: 17px;
+    border-right: none!important;
 }
 .proof_note_dat.questiondat {
     color: #9292FD!important;
@@ -279,6 +295,7 @@ select.proofhideproof {
 }
 .proof_ordernum_dat {
     width: 76px;
+    border-right: none!important;
 }
 .proof_ordernum_dat.edit {
     cursor: pointer;
@@ -292,6 +309,7 @@ input.proof_order_edit {
     text-align: center;
     width: 32px;
     float: right!important;
+    border-right: none!important;
 }
 .prooforder-deeds i {
     font-size: 13px;
@@ -310,8 +328,10 @@ input.proof_order_edit {
 .prooforder-editdata {
     width: 31px;
     text-align: center;
+    border-right: none!important;
 }
 .artdata {
+    border-right: none!important;
 }
 .artdata:hover {
     cursor:pointer;

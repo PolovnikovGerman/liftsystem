@@ -8,6 +8,7 @@
         <div class="proof_parsedata" <?=$row['emailparsed_title']?>><?=$row['emailparsed']?></div>
         <div class="proof_leadnum_dat <?=$row['assigned']?>" data-leadid="<?=$row['leadid']?>"  data-proofid="<?=$row['email_id']?>"><?=$row['lead_number']?></div>
         <div class="proof_includ_dat" data-proofid="<?=$row['email_id']?>"><?=$row['inclicon']?></div>
+        <div class="websourcerequest_dat"><?=empty($row['websource']) ? '&nbsp;' : $row['websource']?></div>
         <div class="lead_salesrep_dat"><?=empty($row['salesrep']) ? '&nbsp;' : $row['salesrep']?></div>
         <div class="proof_brand_dat" data-proofid="<?=$row['email_id']?>"><?=$row['proof_num']?></div>
         <div class="proof_date_dat"><?=$row['email_date']?></div>

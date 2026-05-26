@@ -2466,10 +2466,19 @@ class Balances_model extends My_Model
                 // Income by current year
                 foreach ($ordersres as $row) {
                     if ($row['orddat'] == $end_year) {
-                        $salespace = round($row['cnt'] / $paceperc, 0);
+                        $salespace = 0;
                         $revenuepace = 0;
-                        // if (date('m')=='01') {
+                        $grosprofitpace = 0;
+                        $pcssoldpace = 0;
+                        if (floatval($paceperc)!=0) {
+                            $salespace = round($row['cnt'] / $paceperc, 0);
                             $revenuepace = round($row['revenue'] / $paceperc, 2);
+                            $grosprofitpace = round($row['gross_profit'] / $paceperc, 2);
+                            $pcssoldpace=round($row['pcssold'] / $paceperc,0);
+                        }
+
+                        // if (date('m')=='01') {
+//                            $revenuepace = round($row['revenue'] / $paceperc, 2);
 //                        } else {
 //                            if ($salespace != 0) {
 //                                $revendate = strtotime(date('Y-m').'-01');
@@ -2491,8 +2500,8 @@ class Balances_model extends My_Model
 //                            }
 //                        }
                         // Get dat
-                        $grosprofitpace = round($row['gross_profit'] / $paceperc, 2);
-                        $pcssoldpace=round($row['pcssold'] / $paceperc,0);
+//                        $grosprofitpace = round($row['gross_profit'] / $paceperc, 2);
+//                        $pcssoldpace=round($row['pcssold'] / $paceperc,0);
                     }
                 }
             } else {
@@ -2714,7 +2723,10 @@ class Balances_model extends My_Model
                 $monthdat = $this->db->get()->row_array();
             }
             $totalrevenue += floatval($monthdat['revenue']);
-            $perc = round($totalrevenue/$revenuepace,5);
+            $perc = 0;
+            if (floatval($revenuepace)!=0) {
+                $perc = round($totalrevenue/$revenuepace,5);
+            }
             $monthdate = strtotime('2013-'.$i.'-01');
             $details[] = [
                 'month' => $i,
@@ -2974,8 +2986,12 @@ class Balances_model extends My_Model
     }
 
     public function _check_current_week($user_id) {
-        $curweek=date('W');
-        $curyear=date('Y');
+        $curweek=intval(date('W'));
+        $curyear=intval(date('Y'));
+        $curmonth = intval(date('m'));
+        if ($curweek==1  && $curmonth==12) {
+            $curyear=$curyear+1;
+        }
         $this->db->select('count(profit_id) as cnt');
         $this->db->from('netprofit');
         $this->db->where('profit_week', $curweek);
