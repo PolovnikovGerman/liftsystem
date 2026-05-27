@@ -360,4 +360,72 @@ class Customform_model extends MY_Model
         return true;
     }
 
+    public function get_customquote_prices($options=array())
+    {
+        $this->db->select('*')->from('ts_customquote_prices');
+        if (isset($options['order_by']) && !empty($options['order_by'])) {
+            if (isset($options['direction'])) {
+                $this->db->order_by($options['order_by'], $options['direction']);
+            } else {
+                $this->db->order_by($options['order_by']);
+            }
+        }
+        return $this->db->get()->result_array();
+    }
+
+    public function get_customquote_price($price_id)
+    {
+        $out = ['result'=>$this->error_result, 'msg'=>'Custom price not found'];
+        if ($price_id==0) {
+            $out['result']=$this->success_result;
+            $data = [
+                'price_id' => $price_id,
+                'qty' => 0,
+                'price' => 0,
+            ];
+            $out['data']=$data;
+        } else {
+            $res = $this->db->select('*')->from('ts_customquote_prices')->where('price_id', $price_id)->get()->row_array();
+            if (isset($res['price_id'])) {
+                $out['result'] = $this->success_result;
+                $out['data'] = $res;
+            }
+        }
+        return $out;
+    }
+
+    public function save_customquote_price($price_id, $qty, $price)
+    {
+        $out=['result'=>$this->error_result, 'msg'=>'Custom price duplicated'];
+        // Check - may be exist such qty
+        $this->db->select('count(price_id) as cnt')->from('ts_customquote_prices')->where('qty', $qty)->where('price_id != ', $price_id);
+        $chkres = $this->db->get()->row_array();
+        if ($chkres['cnt']==0) {
+            $out['result']=$this->success_result;
+            $this->db->set('qty', $qty);
+            $this->db->set('price', $price);
+            if ($price_id==0) {
+                $this->db->insert('ts_customquote_prices');
+            } else {
+                $this->db->where('price_id', $price_id);
+                $this->db->update('ts_customquote_prices');
+            }
+            $out['data'] = $this->db->select('*')->from('ts_customquote_prices')->order_by('qty')->get()->result_array();
+        }
+        return $out;
+    }
+
+    public function remove_customquote_price($price_id)
+    {
+        $out=['result'=>$this->error_result, 'msg'=>'Custom price not found'];
+        $this->db->select('count(price_id) as cnt')->from('ts_customquote_prices')->where('price_id', $price_id);
+        $chkres = $this->db->get()->row_array();
+        if ($chkres['cnt'] > 0) {
+            $out['result']=$this->success_result;
+            $this->db->where('price_id', $price_id);
+            $this->db->delete('ts_customquote_prices');
+            $out['data'] = $this->db->select('*')->from('ts_customquote_prices')->order_by('qty')->get()->result_array();
+        }
+        return $out;
+    }
 }

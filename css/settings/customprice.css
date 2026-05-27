@@ -1,0 +1,92 @@
+.custompricecontent {
+    clear: both;
+    margin-top: 3px;
+    margin: 20px;
+    min-height: 565px;
+}
+.custompricetablehead {
+    width: 538px;
+    background: #545454;
+    color: #ffffff;
+}
+.custompricetablehead > div {
+    text-align: center;
+    height: 32px;
+    line-height: 32px !important;
+    font-size: 17px;
+    font-weight: bold;
+}
+.custompriceaction {
+    width: 66px;
+}
+.custompriceaddbtn {
+    background: url(/img/vendors/addnewbtn.png) no-repeat;
+    width: 50px;
+    text-align: center;
+    height: 22px;
+    line-height: 19px !important;
+    color: #000000;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 6px;
+    margin-left: 6px;
+    cursor: pointer;
+}
+.custompricecetabletitle {
+    width: 220px;
+}
+/* Table body */
+.custompricetablebody {
+    width: 538px;
+    clear: both;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.pricedatarow {
+    width: 100%;
+    overflow: hidden;
+}
+.pricedatarow > div {
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+}
+.pricedatarow > .custompriceaction {
+    border-right: 1px solid #000000;
+}
+.pricedatarow .custompriceedit, .pricedatarow .custompricedelete {
+    width: 32px;
+    font-size: 14px;
+    text-align: center;
+}
+.pricedatarow .custompriceedit i, .pricedatarow .custompricedelete i {
+    cursor: pointer;
+}
+.pricedatarow .custompricesave, .pricedatarow .custompricecancel {
+    width: 32px;
+    font-size: 14px;
+    text-align: center;
+}
+.pricedatarow .custompricesave i, .pricedatarow .custompricecancel i {
+    cursor: pointer;
+}
+.pricedatarow .custompricesave {
+    color: #006118;
+}
+.pricedatarow .custompricecancel {
+    color: #ff0000;
+}
+.pricedatarow .custompriceqty, .pricedatarow .custompriceprice {
+    width : 220px;
+    text-align: right;
+    padding-right: 7px;
+}
+.pricedatarow .custompriceqty {
+    border-right: 1px solid #000000;
+}
+.pricedatarow input {
+    width: 70px;
+    height: 16px;
+    text-align: right;
+}
