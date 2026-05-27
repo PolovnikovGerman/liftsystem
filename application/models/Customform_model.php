@@ -428,4 +428,94 @@ class Customform_model extends MY_Model
         }
         return $out;
     }
+
+    public function customquote_transform()
+    {
+        $start = @getenv('CUSTOMQUOTE_START');
+        if (empty($start)) {
+            $start = 3411;
+        }
+        // Get nearest quote
+        $this->db->select('q.*,le.lead_id');
+        $this->db->from('ts_custom_quotes q');
+        $this->db->join('ts_lead_emails le','le.custom_quote_id=q.custom_quote_id','left');
+        $this->db->where('le.leademail_id is null');
+        $this->db->where('q.active', 1);
+        $this->db->where('custom_quote_id >= ', $start);
+        $this->db->order_by('q.custom_quote_id');
+        $data = $this->db->get()->row_array();
+        if (ifset($data, 'custom_quote_id',0) > 0) {
+            $customquote = $data['custom_quote_id'];
+            // Get Custom Quote details
+            $res = $this->customform_model->get_customform_details($customquote);
+            if ($res['result']==$this->success_result) {
+                $formdata = $res['data'];
+                if (isset($res['attach']) && count($res['attach']) > 0) {
+                    $formdata['attach'] = $res['attach'];
+                }
+                $this->load->model('leads_model');
+                $leadpost=[
+                    'lead_id'=>0,
+                    'lead_company'=> $formdata['customer_company'],
+                    'lead_phone'=> $formdata['customer_phone'],
+                    'lead_customer'=> $formdata['customer_name'],
+                    'lead_mail'=> $formdata['customer_email'],
+                    'lead_itemqty'=> $formdata['quota_qty'],
+                    'lead_item'=> 'Custom Item',
+                    'lead_item_id' => $this->config->item('custom_id'),
+                    'lead_needby'=> (empty($formdata['ship_date']) ? NULL : date('Y-m-d', $formdata['ship_date'])),
+                    'lead_status'=>'',
+                    'lead_value' => '',
+                    'lead_note' => $formdata['shape_desription'],
+                    'lead_type'=> $this->leads_model->init_lead_type,
+                    'country_id' => $formdata['ship_country'],
+                    'state' => strtoupper($formdata['ship_state']),
+                    'city' => $formdata['ship_city'],
+                    'zip' => $formdata['ship_zipcode'],
+                    'address_1' => $formdata['ship_address1'],
+                    'address_2' => $formdata['ship_address2'],
+                    'brand' => $formdata['brand'],
+                ];
+                if (!empty($formdata['shape_type'])) {
+                    $leadpost['lead_customtype'] = $formdata['shape_type'];
+                }
+                // Create Lead
+                $dat = $this->leads_model->onlinequote_addlead($leadpost);
+                if ($dat['result'] > 0) {
+                    $lead_id = $dat['result'];
+                    if (isset($formdata['attach'])) {
+                        $attachments = $formdata['attach'];
+                        foreach ($attachments as $attachment) {
+                            $this->db->set('lead_id', $lead_id);
+                            $this->db->set('source_name', $attachment['source_name']);
+                            $this->db->set('attachment', $attachment['attachment']);
+                            $this->db->set('quoteattach', 1);
+                            $this->db->insert('ts_lead_attachs');
+                        }
+                    }
+                    // Add relation
+                    $this->db->set('lead_id', $lead_id);
+                    $this->db->set('custom_quote_id', $formdata['custom_quote_id']);
+                    $this->db->insert('ts_lead_emails');
+                    // Add quotes
+                    $quotesqty = [
+                        $formdata['quota_qty']-500, $formdata['quota_qty'], $formdata['quota_qty']+500,
+                    ];
+                    foreach ($quotesqty as $sqty) {
+
+                    }
+
+                }
+                // $dat = $this->leads_model->create_leadcustomform($formdata, $leademail_id, $this->USR_ID);
+//                $error = $dat['msg'];
+//                if ($dat['result']==$this->success_result) {
+//                    $error = '';
+//                    $mdata['leadid'] = $dat['lead_id'];
+//                    $search=array('assign'=>1, 'hideincl' => 1, 'brand'=>$postdata['brand']);
+//                    $mdata['totalnew'] = $this->customform_model->get_count_forms($search);
+//                }
+
+            }
+        }
+    }
 }

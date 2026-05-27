@@ -5,7 +5,7 @@ Class Leads_model extends MY_Model
 
     private $INIT_ERRMSG = 'Unknown error. Try later';
     private $init_number = 10000;
-    private $init_lead_type = 2;
+    public $init_lead_type = 2;
     private $empty_content = '&nbsp;';
 
     function __construct()
