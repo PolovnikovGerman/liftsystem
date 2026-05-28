@@ -29,5 +29,9 @@ function init_page(objid) {
             $("#calendarsview").show();
             init_calendars_page();
             break;
+        case 'customprices':
+            $("#customprices").show();
+            init_customprice_page();
+            break;
     }
 }

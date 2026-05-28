@@ -53,6 +53,10 @@ class Admin extends MY_Controller
                 $head['styles'][] = array('style' => '/css/settings/calendars.css');
                 $head['scripts'][] = array('src' => '/js/settings/calendars.js');
                 $content_options['calendarsview'] = $this->_prepare_calendars_view();
+            } elseif ($row['item_link']=='#customprices') {
+                $head['styles'][] = array('style' => '/css/settings/customprice.css');
+                $head['scripts'][] = array('src' => '/js/settings/customprice.js');
+                $content_options['customprices'] = $this->_prepare_customprice_view();
             }
         }
 
@@ -706,6 +710,101 @@ class Admin extends MY_Controller
         }
     }
 
+    // Get Custom prices
+    public function customprices()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $this->load->model('customform_model');
+            $prices = $this->customform_model->get_customquote_prices(['order_by' => 'qty', 'direction' => 'asc']);
+            if (count($prices)==0) {
+                $mdata['content']=$this->load->view('settings/customprices_empty_view',[],TRUE);
+            } else {
+                $mdata['content']=$this->load->view('settings/customprices_data_view',['prices'=>$prices],TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customprice_edit()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $price_id = ifset($postdata,'price_id',0);
+            $this->load->model('customform_model');
+            $res = $this->customform_model->get_customquote_price($price_id);
+            $error = $res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $price = $res['data'];
+                $content = $this->load->view('settings/customprice_edit_view', $price,TRUE);
+                if ($price_id==0) {
+                    $content='<div class="pricedatarow greydatarow" data-price="'.$price_id.'">'.$content.'</div>';
+                }
+                $mdata['content']=$content;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customprice_save()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty QTY or Price';
+            $postdata = $this->input->post();
+            $price_id = ifset($postdata,'price_id',0);
+            $qty = ifset($postdata,'qty',0);
+            $price = ifset($postdata,'price',0);
+            if (!empty($qty) && !empty($price)) {
+                $this->load->model('customform_model');
+                $res = $this->customform_model->save_customquote_price($price_id, $qty, $price);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $prices = $res['data'];
+                    if (count($prices)==0) {
+                        $mdata['content']=$this->load->view('settings/customprices_empty_view',[],TRUE);
+                    } else {
+                        $mdata['content']=$this->load->view('settings/customprices_data_view',['prices'=>$prices],TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function customprice_delete()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = 'Empty QTY or Price';
+            $postdata = $this->input->post();
+            $price_id = ifset($postdata,'price_id',0);
+            if (!empty($price_id)) {
+                $this->load->model('customform_model');
+                $res = $this->customform_model->remove_customquote_price($price_id);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $prices = $res['data'];
+                    if (count($prices)==0) {
+                        $mdata['content']=$this->load->view('settings/customprices_empty_view',[],TRUE);
+                    } else {
+                        $mdata['content']=$this->load->view('settings/customprices_data_view',['prices'=>$prices],TRUE);
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     private function _prepare_artalert_view() {
         $this->load->model('artproof_model');
         $cfg=$this->artproof_model->get_taskalert_config();
@@ -730,6 +829,11 @@ class Admin extends MY_Controller
         $content=$this->load->view('settings/calendars_view',$options,TRUE);
         return $content;
 
+    }
+
+    private function _prepare_customprice_view()
+    {
+        return $this->load->view('settings/customprices_view',[],TRUE);
     }
 
 }

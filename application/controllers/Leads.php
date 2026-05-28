@@ -2211,6 +2211,28 @@ class Leads extends My_Controller {
         show_404();
     }
 
+    public function unassignlead_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
+            $this->load->model('leads_model');
+            $data = $this->leads_model->get_unassignleads_interest($brand, $showall);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_unsignleads_view',['leads' => $data],TRUE);
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     public function customform_interest()
     {
         if ($this->isAjax()) {

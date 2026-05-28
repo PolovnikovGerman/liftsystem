@@ -1735,9 +1735,11 @@ class Email_model extends My_Model
                             'fileattach'=>$res['docurl'],
                         );
                         if ($sendmail==1) {
-                            $this->send_quota($mail_options);
+                            // Temporary comment
+                            // $this->send_quota($mail_options);
                             // Add Lead
                             $this->load->model('leads_model');
+                            $this->load->model('shipping_model');
                             $leadpost=array(
                                 'lead_id'=>0,
                                 'lead_company' => ifset($mail, 'email_sendercompany', NULL),
@@ -1754,17 +1756,23 @@ class Email_model extends My_Model
                                 'lead_type' => $this->init_lead_type,
                                 'brand' => $mail['brand'],
                             );
-                            $lead_tasks=array(
-                                'send_quote'=>1,
-                                'send_artproof'=>0,
-                                'send_sample'=>0,
-                                'answer_question'=>0,
-                                'other'=>NULL,
-                                'leadtask_id'=>0,
-                            );
-                            $lead_usr = [];
-                            $user_id = NULL;
-                            $leadres = $this->leads_model->save_leads($lead_usr, $lead_tasks, $leadpost, $user_id);
+                            if (!empty($mail['quote_country'])) {
+                                $cntrdat = $this->shipping_model->get_country_bycode2($mail['quote_country']);
+                                if (ifset($cntrdat, 'country_id', 0) > 0) {
+                                    $leadpost['country_id'] = $cntrdat['country_id'];
+                                }
+                            }
+                            if (!empty($mail['quote_postcode'])) {
+                                $leadpost['zip'] = $mail['quote_postcode'];
+                                if (isset($leadpost['country_id'])) {
+                                    $zipdat = $this->shipping_model->get_zip_address($leadpost['country_id'], $leadpost['zip']);
+                                    if ($zipdat['result']==$this->success_result) {
+                                        $leadpost['city'] = $zipdat['city'];
+                                        $leadpost['state'] = $zipdat['state'];
+                                    }
+                                }
+                            }
+                            $leadres = $this->leads_model->onlinequote_addlead($leadpost);
                             if ($leadres['result']!=$this->error_result) {
                                 // Create relations between Mail and Leads
                                 $this->db->set('lead_id',$leadres['result']);
@@ -1772,12 +1780,16 @@ class Email_model extends My_Model
                                 $this->db->insert('ts_lead_emails');
                                 if ($this->db->insert_id()!=0) {
                                     // Add Quote
-                                    $lead = $this->leads_model->get_lead($leadres['result']);
-                                    $this->_convert_onlinequote($lead, $mail, $item_det);
+                                    $leaddat = $this->leads_model->get_lead($leadres['result']);
+                                    if ($leaddat['result']==$this->success_result) {
+                                        $lead = $leaddat['lead'];
+                                        $this->_convert_onlinequote($lead, $mail, $item_det);
 //                                    echo 'New Lead '.$leadres['result'].PHP_EOL;
 //                                    var_dump($lead);
 //                                    echo 'New Email '.$mail['email_id'].PHP_EOL;
 //                                    var_dump($mail);
+
+                                    }
                                 }
                             }
                         }
@@ -2057,24 +2069,21 @@ class Email_model extends My_Model
         if (!empty($lead['lead_company'])) {
             $quote['shipping_company'] = $quote['billing_company'] = $lead['lead_company'];
         }
-        if (!empty($mail['quote_country'])) {
-            $cntrdat = $this->shipping_model->get_country_bycode2($mail['quote_country']);
-            if (ifset($cntrdat, 'country_id', 0) > 0) {
-                $quote['shipping_country'] = $quote['billing_country'] = $cntrdat['country_id'];
+        if (!empty($lead['country_id'])) {
+            $quote['shipping_country'] = $quote['billing_country'] = $lead['country_id'];
+        }
+        if (!empty($lead['zip'])) {
+            $quote['shipping_zip'] = $quote['billing_zip'] = $lead['zip'];
+        }
+        $quote['taxview'] = 0;
+        if (!empty($lead['state'])) {
+            $quote['shipping_state'] = $quote['billing_state'] = $lead['state'];
+            if ($lead['state']==$this->tax_state) {
+                $quote['taxview'] = 1;
             }
         }
-        if (!empty($mail['quote_postcode'])) {
-            $quote['shipping_zip'] = $quote['billing_zip'] = $mail['quote_postcode'];
-            if (isset($quote['shipping_country'])) {
-                $zipdat = $this->shipping_model->get_zip_address($quote['shipping_country'], $quote['shipping_zip']);
-                if ($zipdat['result']==$this->success_result) {
-                    $quote['shipping_city'] = $quote['billing_city'] = $zipdat['city'];
-                    $quote['shipping_state'] = $quote['billing_state'] = $zipdat['state'];
-                    if ($zipdat['state']==$this->tax_state) {
-                        $quote['taxview'] = 1;
-                    }
-                }
-            }
+        if (!empty($lead['city'])) {
+            $quote['shipping_city'] = $quote['billing_city'] = $lead['city'];
         }
         $termdat = $this->calendars_model->get_delivery_date($lead['lead_item_id'], $lead['brand']);
         $otherinfo = json_decode($mail['email_other_info'], true);

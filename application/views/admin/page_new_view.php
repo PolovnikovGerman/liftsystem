@@ -17,4 +17,7 @@
     <?php if (isset($calendarsview)) { ?>
         <div class="admincontentarea" id="calendarsview" style="display: none;"><?=$calendarsview?></div>
     <?php } ?>
+    <?php if (isset($customprices)) : ?>
+        <div class="admincontentarea" id="customprices" style="display: none;"><?=$customprices?></div>
+    <?php endif;?>
 </div>

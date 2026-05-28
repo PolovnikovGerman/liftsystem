@@ -706,8 +706,7 @@ Class Calendars_model extends MY_Model
 
     public function update_calendars()
     {
-        // $curyear = intval(date('Y'));
-        $curyear = 2025;
+        $curyear = intval(date('Y'));
         $nxtyear = $curyear + 1;
         // lets go
         $memorialday = strtotime("last mon of May {$curyear}");
