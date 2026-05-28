@@ -390,6 +390,7 @@ function refresh_late_area() {
             $(".latesection-totals-value[data-content='needactions']").empty().html(response.data.needaction);
             $(".latesection-totals-value[data-content='notaproved']").empty().html(response.data.needaprove);
             $("#loader").hide();
+            init_reschedule_management();
         } else {
             $("#loader").hide();
             show_error(response);
