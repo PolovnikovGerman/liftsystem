@@ -1253,6 +1253,8 @@ class Printcalendar_model extends MY_Model
         $history = $this->db->get()->result_array();
         $idx = 0;
         foreach ($history as $uns) {
+            $history[$idx]['printviewclass'] = empty($uns['printed']) ? 'empty' : '';
+            $history[$idx]['shipviewclass'] = empty($uns['shipped']) ? 'empty' : '';
             $history[$idx]['fulfillprc'] = empty($uns['printed']) ? '0' : round($uns['printed'] / $uns['item_qty'] * 100, 0);
             $history[$idx]['misprintprc'] = empty($uns['printed']) ? 0 : $uns['misprint'] / $uns['printed'] * 100;
             if (empty($history[$idx]['approv']) && $history[$idx]['order_blank'] == 1) {

@@ -2296,12 +2296,25 @@
     border: 1px solid #000000;
     border-radius: 2px;
 }
+.histrtabl-fulfblock-empty {
+    width: 282px;
+    margin-right: 12px;
+    /*border: 1px solid #888888;*/
+    /*margin-left: 12px;*/
+}
+.histrtabl-body .histrtabl-fulfblock-empty {
+    /*border: 1px solid #000000;*/
+    /*border-radius: 2px;*/
+}
 .histrtabl-shipblock {
     border: 1px solid #888888;
 }
 .histrtabl-body .histrtabl-shipblock {
     border: 1px solid #000000;
     border-radius: 2px;
+}
+.histrtabl-shipblock-empty {
+    width: 272px;
 }
 .histrtabl-edit {
     width: 16px;
