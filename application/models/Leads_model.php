@@ -3088,6 +3088,23 @@ Class Leads_model extends MY_Model
             }
             $out['lead_id'] = $lead_id;
             $out['lead_number'] = $leadnum;
+            $customquote_flag = $onlinequote_flag = 0;
+            $this->db->select('l.email_id, l.custom_quote_id, e.email_type, e.email_subtype');
+            $this->db->from('ts_lead_emails l');
+            $this->db->join('ts_emails e','e.email_id=l.email_id','left');
+            $this->db->where('l.lead_id',$lead_id);
+            $rellists = $this->db->get()->result_array();
+            foreach ($rellists as $rellist) {
+                if (!empty($rellists['custom_quote_id'])) {
+                    $customquote_flag = 1;
+                } else {
+                    if (isset($rellist['email_type']) && $rellist['email_type']=='Leads' && isset($rellist['email_subtype']) && $rellist['email_subtype']=='Quote') {
+                        $onlinequote_flag = 1;
+                    }
+                }
+            }
+            $out['customquote_flag'] = $customquote_flag;
+            $out['onlinequote_flag'] = $onlinequote_flag;
             // Remove session
             if ($closesession==1) {
                 usersession($session_id, null);

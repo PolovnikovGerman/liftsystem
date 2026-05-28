@@ -331,10 +331,18 @@ class Customform_model extends MY_Model
 
     public function get_customform_interest($brand, $showall=1)
     {
-        $this->db->select('q.*,le.lead_id');
+        $this->db->select('lead_id, count(leaduser_id) as cnt');
+        $this->db->from('ts_lead_users');
+        $this->db->group_by('lead_id');
+        $leadusr = $this->db->get_compiled_select();
+
+        $this->db->select('q.*,le.lead_id, coalesce(lu.cnt,0) as cnt');
         $this->db->from('ts_custom_quotes q');
         $this->db->join('ts_lead_emails le','le.custom_quote_id=q.custom_quote_id','left');
-        $this->db->where('le.leademail_id is null');
+        $this->db->join('ts_leads l','l.lead_id=le.lead_id','left');
+        $this->db->join('('.$leadusr.') lu','lu.lead_id=l.lead_id','left');
+        $this->db->having('cnt',0);
+        // $this->db->where('le.leademail_id is null');
         if ($brand!=='ALL') {
             if ($brand=='SR') {
                 $this->db->where('q.brand', $brand);
