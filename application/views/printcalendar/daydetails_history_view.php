@@ -78,6 +78,9 @@
                     <div class="histrtabl-td histrtabl-description truncateoverflowtext"><?=$list['item']?></div>
                     <div class="histrtabl-td histrtabl-inkcolor truncateoverflowtext">&nbsp;</div>
                 </div>
+                <?php if ($list['printviewclass']=='empty') : ?>
+                    <div class="histrtabl-fulfblock-empty">&nbsp;</div>
+                <?php else : ?>
                 <div class="histrtabl-fulfblock">
                     <div class="histrtabl-td histrtabl-printed"><?=empty($list['printed']) ? '-' : QTYOutput($list['printed'])?></div>
                     <div class="histrtabl-td histrtabl-flfkept"><?=empty($list['kepted']) ? '-' : QTYOutput($list['kepted'])?></div>
@@ -86,21 +89,26 @@
                     <div class="histrtabl-td histrtabl-flftotal"><?=empty($list['amount_sum']) ? '-' : round($list['amount_sum'],0)?></div>
                     <div class="histrtabl-td histrtabl-flfplates"><?=empty($list['plates']) ? '-' : QTYOutput($list['plates'])?></div>
                 </div>
-                <div class="histrtabl-shipblock">
-                    <div class="histrtabl-td histrtabl-shipped"><?=empty($list['shipped']) ? '&nbsp;' : QTYOutput($list['shipped'])?></div>
-<!--                    <div class="histrtabl-td histrtabl-method">--><?php //=empty($list['trackservice']) ? '&nbsp;' : $list['trackservice']?><!--</div>-->
-                    <div class="histrtabl-td histrtabl-method"><?=empty($list['trackservice']) ? 'UPS' : $list['trackservice']?></div>
-                    <div class="histrtabl-td histrtabl-tracking">
-                        <?php if (!empty($list['tracking_id'])) : ?>
-                        <input name="trackcode" type="text" readonly="readonly" data-track="<?=$list['tracking_id']?>" value="<?=$list['trackcode']?>"/>
-                        <div class="trackbtn" data-track="<?=$list['tracking_id']?>"><i class="fa fa-files-o" aria-hidden="true"></i></div>
-                        <?php else : ?>
-<!--                        &nbsp;-->
-                            <input name="trackcode" type="text" readonly="readonly" data-track="-1" value=""/>
-                            <div class="trackbtn" data-track="-1"><i class="fa fa-files-o" aria-hidden="true"></i></div>
-                        <?php endif; ?>
+                <?php endif; ?>
+                <?php if ($list['shipviewclass']=='empty') : ?>
+                    <div class="histrtabl-shipblock-empty">&nbsp;</div>
+                <?php else : ?>
+                    <div class="histrtabl-shipblock">
+                        <div class="histrtabl-td histrtabl-shipped"><?=empty($list['shipped']) ? '&nbsp;' : QTYOutput($list['shipped'])?></div>
+    <!--                    <div class="histrtabl-td histrtabl-method">--><?php //=empty($list['trackservice']) ? '&nbsp;' : $list['trackservice']?><!--</div>-->
+                        <div class="histrtabl-td histrtabl-method"><?=empty($list['trackservice']) ? 'UPS' : $list['trackservice']?></div>
+                        <div class="histrtabl-td histrtabl-tracking">
+                            <?php if (!empty($list['tracking_id'])) : ?>
+                            <input name="trackcode" type="text" readonly="readonly" data-track="<?=$list['tracking_id']?>" value="<?=$list['trackcode']?>"/>
+                            <div class="trackbtn" data-track="<?=$list['tracking_id']?>"><i class="fa fa-files-o" aria-hidden="true"></i></div>
+                            <?php else : ?>
+    <!--                        &nbsp;-->
+                                <input name="trackcode" type="text" readonly="readonly" data-track="-1" value=""/>
+                                <div class="trackbtn" data-track="-1"><i class="fa fa-files-o" aria-hidden="true"></i></div>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </div>
+                <?php endif;?>
             </div>
         <?php endforeach; ?>
     </div>
