@@ -1257,6 +1257,9 @@ class Leadmanagement extends MY_Controller
                     $error='';
                     $mdata['lead_id'] = $res['lead_id'];
                     $mdata['lead_number'] = $res['lead_number'];
+                    $mdata['customquote_flag'] = $res['customquote_flag'];
+                    $mdata['onlinequote_flag'] = $res['onlinequote_flag'];
+
                     if ($closesession==0) {
                         $lead_history = $this->leads_model->get_lead_history($res['lead_id']);
                         $mdata['history_view'] = $this->load->view('leadpopupnew/history_view', ['lead_history'=>$lead_history], true);
