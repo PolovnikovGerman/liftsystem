@@ -599,6 +599,8 @@ Class Utils extends CI_Controller
             $upltype = 'customquote';
         } elseif (ifset($postdata, 'type','')=='proofrequest') {
             $upltype = 'proofrequest';
+        } elseif (ifset($postdata, 'type','')=='artlocation') {
+            $upltype = 'artlocation';
         }
         if ($upltype == 'preload') {
             $savepath = $this->config->item('upload_path_preload');
