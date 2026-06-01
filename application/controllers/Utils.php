@@ -609,6 +609,9 @@ Class Utils extends CI_Controller
         } elseif ($upltype=='proofrequest') {
             $savepath = $this->config->item('artwork_logo');
             $respons_path = $this->config->item('artwork_logo_relative');
+        } elseif ($upltype=='artlocation') {
+            $savepath = $this->config->item('artwork_logo');
+            $respons_path = $this->config->item('artwork_logo_relative');
         }
         log_message('error','Upload type '.$upltype.' Short path '.$respons_path);
         $destfile = $savepath.$postdata['filename'];
