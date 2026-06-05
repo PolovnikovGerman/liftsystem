@@ -1842,12 +1842,16 @@ class Printcalendar_model extends MY_Model
         $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
         // Get order
         $this->db->select('oic.order_itemcolor_id, oic.print_date colorprint, oic.print_completed, oic.item_qty, oic.inventory_color_id, o.order_id, o.order_num, o.order_date, o.customer_name, o.print_date');
+        $this->db->select('o.order_num, ic.color, ii.item_num , ii.item_name');
         $this->db->from('ts_order_itemcolors oic');
         $this->db->join('ts_order_items oi', 'oic.order_item_id = oi.order_item_id');
         $this->db->join('ts_orders o', 'oi.order_id = o.order_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
+        $this->db->join('ts_inventory_colors ic','ic.inventory_color_id = oic.inventory_color_id');
+        $this->db->join('ts_inventory_items ii','ii.inventory_item_id = ic.inventory_item_id');
         $orderdata = $this->db->get()->row_array();
         if (ifset($orderdata, 'order_id', 0) > 0) {
-            $msg = 'Empty Outcome values. Printed '.$shipped.' Kept '.$kepted.' Misprint '.$misprint.' Plates '.$plates;
+            $msg = 'Empty Outcome values. Printed '.$shipped.' Kept '.$kepted.' Misprint '.$misprint.' Plates '.$plates.PHP_EOL;
+            $msg.= 'Values entered for order # '.$orderdata['order_num'].' '.$orderdata['item_num'].'-'.$orderdata['item_name'].' color '.$orderdata['color'];
             $out['msg'] = $msg;
             if ($shipped + $kepted + $misprint + $plates > 0) {
                 $inventory_color_id = $orderdata['inventory_color_id'];
