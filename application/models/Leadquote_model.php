@@ -3688,6 +3688,8 @@ class Leadquote_model extends MY_Model
                 $shipping['arriveclass'] = '';
             }
         }
+        $shipping['shipdoc1_src'] = $shipping['shipdoc1_type'] = $shipping['shipdoc1_link'] = null;
+        $shipping['shipdoc2_src'] = $shipping['shipdoc2_type'] = $shipping['shipdoc2_link'] = null;
         // Get shipping costs
         $rates = $this->_shiptimesrecalc($quote, $quoteitems, $data['shipdate']);
 

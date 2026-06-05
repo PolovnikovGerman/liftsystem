@@ -5672,39 +5672,51 @@ Class Leadorder_model extends My_Model {
         $targpathsh = $this->config->item('orderattach_path');
         $targpathfull = $this->config->item('orderattach');
         createPath($targpathsh);
-        if (!empty($shipping['shipdoc1_link'])) {
-            if (strpos($shipping['shipdoc1_link'], $srcpathsh)!==false) {
-                $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc1_link']);
-                $srcfile = $srcpathfull.$filesrc;
-                $filedet = extract_filename($filesrc);
-                $newfile = 'shipdoc_'.$order_id.'_01.'.$filedet['ext'];
-                $targfile = $targpathfull.$newfile;
-                $cpres = @copy($srcfile, $targfile);
-                if ($cpres) {
-                    $shipping['shipdoc1_link'] = $targpathsh.$newfile;
-                } else {
-                    $shipping['shipdoc1_link'] = null;
-                    $shipping['shipdoc1_src'] = null;
-                    $shipping['shipdoc1_type'] = null;
+        if (isset($shipping['shipdoc1_link'])) {
+            if (!empty($shipping['shipdoc1_link'])) {
+                if (strpos($shipping['shipdoc1_link'], $srcpathsh)!==false) {
+                    $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc1_link']);
+                    $srcfile = $srcpathfull.$filesrc;
+                    $filedet = extract_filename($filesrc);
+                    $newfile = 'shipdoc_'.$order_id.'_01.'.$filedet['ext'];
+                    $targfile = $targpathfull.$newfile;
+                    $cpres = @copy($srcfile, $targfile);
+                    if ($cpres) {
+                        $shipping['shipdoc1_link'] = $targpathsh.$newfile;
+                    } else {
+                        $shipping['shipdoc1_link'] = null;
+                        $shipping['shipdoc1_src'] = null;
+                        $shipping['shipdoc1_type'] = null;
+                    }
                 }
             }
+        } else {
+            $shipping['shipdoc1_link'] = null;
+            $shipping['shipdoc1_src'] = null;
+            $shipping['shipdoc1_type'] = null;
         }
-        if (!empty($shipping['shipdoc2_link'])) {
-            if (strpos($shipping['shipdoc2_link'], $srcpathsh)!==false) {
-                $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc2_link']);
-                $srcfile = $srcpathfull.$filesrc;
-                $filedet = extract_filename($filesrc);
-                $newfile = 'shipdoc_'.$order_id.'_02.'.$filedet['ext'];
-                $targfile = $targpathfull.$newfile;
-                $cpres = @copy($srcfile, $targfile);
-                if ($cpres) {
-                    $shipping['shipdoc2_link'] = $targpathsh.$newfile;
-                } else {
-                    $shipping['shipdoc2_link'] = null;
-                    $shipping['shipdoc2_src'] = null;
-                    $shipping['shipdoc2_type'] = null;
+        if (isset($shipping['shipdoc2_link'])) {
+            if (!empty($shipping['shipdoc2_link'])) {
+                if (strpos($shipping['shipdoc2_link'], $srcpathsh)!==false) {
+                    $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc2_link']);
+                    $srcfile = $srcpathfull.$filesrc;
+                    $filedet = extract_filename($filesrc);
+                    $newfile = 'shipdoc_'.$order_id.'_02.'.$filedet['ext'];
+                    $targfile = $targpathfull.$newfile;
+                    $cpres = @copy($srcfile, $targfile);
+                    if ($cpres) {
+                        $shipping['shipdoc2_link'] = $targpathsh.$newfile;
+                    } else {
+                        $shipping['shipdoc2_link'] = null;
+                        $shipping['shipdoc2_src'] = null;
+                        $shipping['shipdoc2_type'] = null;
+                    }
                 }
             }
+        } else {
+            $shipping['shipdoc2_link'] = null;
+            $shipping['shipdoc2_src'] = null;
+            $shipping['shipdoc2_type'] = null;
         }
         $this->db->set('event_date', (empty($shipping['event_date']) ? NULL : $shipping['event_date']));
         $this->db->set('rush_idx', $shipping['rush_idx']);
