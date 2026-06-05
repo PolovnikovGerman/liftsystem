@@ -1847,7 +1847,8 @@ class Printcalendar_model extends MY_Model
         $this->db->join('ts_orders o', 'oi.order_id = o.order_id')->where('oic.order_itemcolor_id', $order_itemcolor_id);
         $orderdata = $this->db->get()->row_array();
         if (ifset($orderdata, 'order_id', 0) > 0) {
-            $out['msg'] = 'Empty Outcome values';
+            $msg = 'Empty Outcome values. Printed '.$shipped.' Kept '.$kepted.' Misprint '.$misprint.' Plates '.$plates;
+            $out['msg'] = $msg;
             if ($shipped + $kepted + $misprint + $plates > 0) {
                 $inventory_color_id = $orderdata['inventory_color_id'];
                 $out['printdate'] = $orderdata['print_date'];
