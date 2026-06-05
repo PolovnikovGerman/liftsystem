@@ -2,7 +2,7 @@
     <div class="regltabl-printername"><?=$user?></div>
     <div class="regltabl-printerinfo">
         <div class="regltabl-printerinfo-data">
-            <span><?=QTYOutput($total['printqty'])?></span> prints - <span><?=QTYOutput($total['itemscnt'])?></span> items - <span><?=$total['ordercnt']?></span> orders
+            <span><?=QTYOutput($prints)?></span> prints - <span><?=QTYOutput($items)?></span> items - <span><?=$orders?></span> orders
         </div>
     </div>
 </div>
