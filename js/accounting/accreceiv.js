@@ -67,12 +67,32 @@ function init_accreceive_details() {
             // $(".accreceiv-content-left").find("div.accreceiv-details").empty().html(response.data.owndetails);
             // $(".accreceiv-content-center").find("div.accreceiv-details").empty().html(response.data.refunddetails);
             // $(".accreceiv-details").empty().html(response.data.content);
+            var tabsection = $("#accreceivesection").val();
+            var taboffset = $("#accreceiveoffset").val();
+            if (parseInt(taboffset) > 0) {
+                taboffset = parseInt(taboffset) - 178;
+                if (taboffset < 0) {
+                    taboffset = 0;
+                }
+            }
             $(".approvedowntablebody").empty().html(response.data.approved_content);
-            new SimpleBar(document.getElementById('approvedowntablebody'), { autoHide: false });
+            const approvesect = new SimpleBar(document.getElementById('approvedowntablebody'), { autoHide: false });
+            if (tabsection=='approved') {
+                approvesect.getScrollElement().scrollTo(0, taboffset);
+            }
             $(".notapprovedowntablebody").empty().html(response.data.notapproved_content);
-            new SimpleBar(document.getElementById('notapprovedowntablebody'), { autoHide: false });
+            const notapprovesect = new SimpleBar(document.getElementById('notapprovedowntablebody'), { autoHide: false });
+            if (tabsection=='notapproved') {
+                notapprovesect.getScrollElement().scrollTo(0, taboffset);
+            }
             $(".accreceiv-refunddetails-body").empty().html(response.data.refund_content);
-            new SimpleBar(document.getElementById('accreceiv-refunddetails-body'), { autoHide: false });
+            const refundsect = new SimpleBar(document.getElementById('accreceiv-refunddetails-body'), { autoHide: false });
+            if (tabsection=='refund') {
+                refundsect.getScrollElement().scrollTo(0, taboffset);
+            }
+            // Re init offset
+            $("#accreceivesection").val('');
+            $("#accreceiveoffset").val('');
             leftmenu_alignment();
             init_accreceive_content();
         } else {
@@ -103,6 +123,13 @@ function init_accreceive_content() {
         var order = $(this).data('order');
         var callpage = 'accrecive';
         var brand = $("#accreceivebrand").val();
+        var ordertype = $(this).data('ordertype');
+        $("#accreceivesection").val(ordertype);
+        const element = document.querySelector('.accreceiv-owndetails-bodyorder[data-order="'+order+'"]');
+        // Position relative to its offset parent
+        const yOffset = element.offsetTop;
+        // console.log('Order '+order+' Y Offset '+yOffset);
+        $("#accreceiveoffset").val(yOffset);
         var url="/leadorder/leadorder_change";
         var params = new Array();
         params.push({name: 'order', value: order});
@@ -142,6 +169,13 @@ function init_accreceive_content() {
         var order = $(this).data('order');
         var callpage = 'accrecive';
         var brand = $(this).data('brand');
+        var ordertype = $(this).data('ordertype');
+        $("#accreceivesection").val(ordertype);
+        const element = document.querySelector('.accreceiv-owndetails-bodyordersigma[data-order="'+order+'"]');
+        // Position relative to its offset parent
+        const yOffset = element.offsetTop;
+        // console.log('Order '+order+' Y Offset '+yOffset);
+        $("#accreceiveoffset").val(yOffset);
         var url="/leadorder/leadorder_change";
         var params = new Array();
         params.push({name: 'order', value: order});
@@ -182,6 +216,12 @@ function init_accreceive_content() {
         var order = $(this).data('order');
         var callpage = 'accrecive';
         var brand = $("#accreceivebrand").val();
+        $("#accreceivesection").val('refund');
+        const element = document.querySelector('.accreceiv-refunddetails-bodyorder[data-order="'+order+'"]');
+        // Position relative to its offset parent
+        const yOffset = element.offsetTop;
+        // console.log('Order '+order+' Y Offset '+yOffset);
+        $("#accreceiveoffset").val(yOffset);
         var url="/leadorder/leadorder_change";
         var params = new Array();
         params.push({name: 'order', value: order});
@@ -221,6 +261,12 @@ function init_accreceive_content() {
         var order = $(this).data('order');
         var callpage = 'accrecive';
         var brand = $(this).data('brand');
+        $("#accreceivesection").val('refund');
+        const element = document.querySelector('.accreceiv-refunddetails-bodyordersigma[data-order="'+order+'"]');
+        // Position relative to its offset parent
+        const yOffset = element.offsetTop;
+        // console.log('Order '+order+' Y Offset '+yOffset);
+        $("#accreceiveoffset").val(yOffset);
         var url="/leadorder/leadorder_change";
         var params = new Array();
         params.push({name: 'order', value: order});
