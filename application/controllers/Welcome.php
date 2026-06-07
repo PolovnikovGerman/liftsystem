@@ -238,4 +238,9 @@ class Welcome extends MY_Controller {
         $msg = $this->load->view('page/dashboard_leadvisitors_view', $totals, TRUE);
         echo $msg;
     }
+
+//    public function checknote()
+//    {
+//        $this->load->view('messages/checkout_notification_view',[]);
+//    }
 }

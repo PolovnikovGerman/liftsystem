@@ -4161,6 +4161,11 @@ function init_orderbottom_content(edit_mode) {
             }
         },'json');
     });
+    $(".icon_link_checkout").unbind('click').click(function (){
+        var element = document.querySelector("#checkoutlink");
+        copyOrderToClipboard(element);
+        $(element).hide();
+    });
 }
 
 function init_profitedit_call(edit_mode) {
