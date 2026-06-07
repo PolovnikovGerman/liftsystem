@@ -5193,4 +5193,17 @@ class Test extends CI_Controller
             }
         }
     }
+
+    public function ordercheckout_link()
+    {
+        // $balances = $this->db->select('order_id, balance')->from('v_order_balances')->where('balance > ',0)->get()->result_array();
+        $balances = $this->db->select('order_id')->from('ts_orders')->where('order_system','new')->where('checkout_link',NULL)->order_by('order_id','desc')->get()->result_array();
+        foreach ($balances as $balance) {
+            $newlink = uniq_link(12,'any');
+            $this->db->where('order_id', $balance['order_id']);
+            $this->db->set('checkout_link', $newlink);
+            $this->db->update('ts_orders');
+        }
+    }
+
 }
