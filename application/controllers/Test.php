@@ -4951,33 +4951,47 @@ class Test extends CI_Controller
         $this->email->initialize($config);
         // $mail_to=array($this->config->item('sage_email'), $this->config->item('sean_email'));
         $mail_to=array('to_german@yahoo.com');
+        // ,'polovnikov.german@gmail.com','ticktoriya@gmail.com'
         $this->email->to($mail_to);
+        // $imagePath = BASEPATH.'../img/messages/logo-stressballs.svg';
+        $imagePath = FCPATH.'img/page_view/stessball_logo_activ.png';
+        // 2. Attach the image using 'inline' disposition
+        $this->email->attach($imagePath, 'inline');
+//        $imagePath = BASEPATH.'../img/messages';
+//        $filename = 'logo-stressballs.svg';
+//        $this->email->attach($imagePath, 'inline', $filename);
+//        $cid = $this->email->setAttachmentCID($filename);
+
         if (isset($mail_cc)) {
             $this->email->cc($mail_cc);
         }
         $this->email->from($email_from);
-        $title = 'Print Schedule Daily Report ('.date('m/d/Y').')';
+        // $title = 'Print Schedule Daily Report ('.date('m/d/Y').')';
+        $title = 'Test Checkout Confirm';
         $this->email->subject($title);
-        $mail_body = 'Report in attachment';
+        // $mail_body = 'Report in attachment';
+        $mail_body = $this->load->view('messages/checkout_notification_view',[], true);
         $this->email->message($mail_body);
-        $sbfile = '/home/bluetrack/lift/uploads/preload/SB_print_schedule_report.xlsx';
-        $srfile = '/home/bluetrack/lift/uploads/preload/SR_print_schedule_report.xlsx';
-        if (!empty($sbfile)) {
-            echo 'SB attach '.$sbfile.PHP_EOL;
-            $this->email->attach($sbfile);
-            echo 'Attach CID '. $this->email->attachment_cid($sbfile).PHP_EOL;
-        }
-        if (!empty($srfile)) {
-            echo 'SR attach '.$srfile.PHP_EOL;
-            $this->email->attach($srfile);
-            echo 'Attach CID '. $this->email->attachment_cid($srfile).PHP_EOL;
-        }
+//        $sbfile = '/home/bluetrack/lift/uploads/preload/SB_print_schedule_report.xlsx';
+//        $srfile = '/home/bluetrack/lift/uploads/preload/SR_print_schedule_report.xlsx';
+//        if (!empty($sbfile)) {
+//            echo 'SB attach '.$sbfile.PHP_EOL;
+//            $this->email->attach($sbfile);
+//            echo 'Attach CID '. $this->email->attachment_cid($sbfile).PHP_EOL;
+//        }
+//        if (!empty($srfile)) {
+//            echo 'SR attach '.$srfile.PHP_EOL;
+//            $this->email->attach($srfile);
+//            echo 'Attach CID '. $this->email->attachment_cid($srfile).PHP_EOL;
+//        }
         // $res=$this->email->send();
         if ( ! $this->email->send())
         {
             // Generate error
             echo 'ERROR '.error_get_last().PHP_EOL;
             echo $this->email->print_debugger();
+        } else {
+            echo 'All OK '.PHP_EOL;
         }
         $this->email->clear(TRUE);
     }
