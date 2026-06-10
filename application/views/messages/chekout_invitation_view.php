@@ -315,7 +315,7 @@
         </div>
         <div class="secureblock-title">SECURE ONLINE PAYMENT</div>
         <div class="secureblock-text">Click the button to make your payment:</div>
-        <a href="http://sb.local/payment/Psgerzs13Gs"><div class="secureblock-button">PAY <?=$balance?> SECURELY</div></a>
+        <a href="<?=$link?>"><div class="secureblock-button">PAY <?=$balance?> SECURELY</div></a>
         <div class="secureblock-greytext">This link is unique to you and your order.</div>
     </div>
     <div class="paymentcards">
