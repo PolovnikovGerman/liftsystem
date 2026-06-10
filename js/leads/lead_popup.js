@@ -828,6 +828,10 @@ function open_quote_details(quote_id) {
                     new SimpleBar(document.getElementById('quoteitemtabledataarea'), { autoHide: false });
                     new SimpleBar(document.getElementById('quoteshippingcostarea'), { autoHide: false });
                     init_leadquotes_content();
+                    if (parseInt($("#quotemapuse").val())==1) {
+                        initShipQuoteAutocomplete();
+                        initBillQuoteAutocomplete();
+                    }
                 } else {
                     $("#loader").hide();
                     show_error(qresponse);
