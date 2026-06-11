@@ -241,16 +241,16 @@ class Welcome extends MY_Controller {
 
     public function checknote()
     {
-        $order_id = 51854;
-        $this->load->model('orders_model');
-        $res = $this->orders_model->get_checkout_invite($order_id);
-        if ($res['result']==$this->success_result) {
-            $data = $res['data'];
-            $this->load->view('messages/chekout_invitation_view', $data);
-        } else {
-            show_404();
-        }
-        // $this->load->view('messages/checkout_notification_view',[]);
+//        $order_id = 51854;
+//        $this->load->model('orders_model');
+//        $res = $this->orders_model->get_checkout_invite($order_id);
+//        if ($res['result']==$this->success_result) {
+//            $data = $res['data'];
+//            $this->load->view('messages/chekout_invitation_view', $data);
+//        } else {
+//            show_404();
+//        }
+         $this->load->view('messages/checkout_notification_view',[]);
 
     }
 }
