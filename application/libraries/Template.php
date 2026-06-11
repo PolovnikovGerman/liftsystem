@@ -554,7 +554,13 @@ class Template
             'ticketview'=>$ticketview,
             'shippview'=> $trackcontent,
             'totaldueview'=>$dueview,
+            'balance' => $total_due,
         );
+        if ($orddata['brand']=='SR') {
+            $bottom_options['checkoutlink']=$this->CI->config->item('srcheckoutlink').$orddata['checkout_link'];
+        } else {
+            $bottom_options['checkoutlink']=$this->CI->config->item('btcheckoutlink').$orddata['checkout_link'];;
+        }
         $orddata['taxalign']='';
         if ($edit==0)  {
             if ($ord_data['tax']==0) {

@@ -302,3 +302,6 @@ $config['regular_ship_price'] = 0.12;
 $config['project_user'] = getenv('PROJECT_USER');
 $config['project_password'] = getenv('PROJECT_PASSWORD');
 $config['project_url'] = getenv('PROJECT_URL');
+// Checkout links
+$config['srcheckoutlink'] = getenv('SRCHECKOUTLINK');
+$config['btcheckoutlink'] = getenv('BTCHECKOUTLINK');

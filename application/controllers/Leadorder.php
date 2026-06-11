@@ -6899,4 +6899,68 @@ class Leadorder extends MY_Controller
         }
         return $profit_view;
     }
+
+    public function prepare_checkout_invite()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $res=$this->leadorder_model->prepare_checkout_invite($leadorder, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $order = $res['order'];
+                    if ($order['brand']=='SR') {
+                        $finemail = $this->config->item('fin_srdept_email');
+                    } else {
+                        $finemail = $this->config->item('fin_sbdept_email');
+                    }
+                    $options = [
+                        'order' => $order['order_num'],
+                        'order_id' => $order['order_id'],
+                        'invite_name' => $res['invite_name'],
+                        'invite_email' => $res['invite_email'],
+                        'from' => $finemail,
+                    ];
+                    $mdata['content'] = $this->load->view('leadorderdetails/invite_checkout_view', $options, true);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function send_checkout_invite()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $invite_name = ifset($postdata, 'invite_name','');
+                $invite_email = ifset($postdata, 'invite_email','');
+                $res=$this->leadorder_model->send_checkout_invite($leadorder, $invite_name, $invite_email, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $history = $res['history'];
+                    $mdata['histoyview'] = $this->load->view('leadorderdetails/arthistory_view', ['histories' => $history], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

@@ -1072,7 +1072,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-        $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0,  'o.print_user'=> $user]); // 'o.shipped_date' => 0,
+        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0,  'o.print_user'=> $user]); // 'o.shipped_date' => 0,
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         // $this->db->order_by('o.order_rush desc', 'order_id asc');

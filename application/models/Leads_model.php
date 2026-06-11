@@ -71,8 +71,18 @@ Class Leads_model extends MY_Model
 
     /* Get data about Leads */
     public function get_leads($options,$sort,$limit,$offset) {
-        $this->db->select('l.*');
+        // Quotes QTY
+        $this->db->select('tq.lead_id, max(tqi.item_qty) as qty'); // GROUP_CONCAT(DISTINCT(tqi.item_qty)) as qty
+        $this->db->from('ts_quotes tq');
+        $this->db->join('ts_quote_items tqi', 'tqi.quote_id = tq.quote_id');
+        $this->db->group_by('tq.lead_id');
+        $quotsql = $this->db->get_compiled_select();
+
+        $this->db->select('l.*, v.item_name as viewitemname, q.qty as quoteqty');
         $this->db->from('ts_leads l');
+        $this->db->join('v_itemsearch v','v.item_id=l.lead_item_id','left');
+        $this->db->join("({$quotsql}) q",'q.lead_id=l.lead_id','left');
+
         if (isset($options['usrrepl'])) {
             $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
             $this->db->where('lu.user_id',$options['usrrepl']);
@@ -2506,10 +2516,15 @@ Class Leads_model extends MY_Model
             if (empty($row['contact'])) {
                 $row['contact']=$this->empty_content;
             }
-            $row['lead_itemqty']=($lead['lead_itemqty']=='' ? '&nbsp;' : $lead['lead_itemqty']);
+//            $row['lead_itemqty']=($lead['lead_itemqty']=='' ? '&nbsp;' : $lead['lead_itemqty']);
+            $row['lead_itemqty'] = empty($lead['quoteqty']) ? '&nbsp;' : $lead['quoteqty'];
             switch ($lead['lead_item']) {
                 case '':
-                    $row['out_lead_item']=$this->empty_content;
+                    if (!empty($lead['viewitemname'])) {
+                        $row['out_lead_item']=$lead['viewitemname'];
+                    } else {
+                        $row['out_lead_item']=$this->empty_content;
+                    }
                     break;
                 case 'Other':
                 case 'Multiple':
@@ -2560,8 +2575,17 @@ Class Leads_model extends MY_Model
 
     public function get_priority_leads($options,$sort)
     {
-        $this->db->select('l.*');
+        // Quotes QTY
+        $this->db->select('tq.lead_id, max(tqi.item_qty) as qty'); // GROUP_CONCAT(DISTINCT(tqi.item_qty)) as qty
+        $this->db->from('ts_quotes tq');
+        $this->db->join('ts_quote_items tqi', 'tqi.quote_id = tq.quote_id');
+        $this->db->group_by('tq.lead_id');
+        $quotsql = $this->db->get_compiled_select();
+
+        $this->db->select('l.*, v.item_name as viewitemname, q.qty as quoteqty');
         $this->db->from('ts_leads l');
+        $this->db->join('v_itemsearch v','v.item_id=l.lead_item_id','left');
+        $this->db->join("({$quotsql}) q",'q.lead_id=l.lead_id','left');
         if (isset($options['usrrepl'])) {
             $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
             $this->db->where('lu.user_id',$options['usrrepl']);
@@ -2612,10 +2636,15 @@ Class Leads_model extends MY_Model
             if (empty($row['contact'])) {
                 $row['contact'] = $this->empty_content;
             }
-            $row['lead_itemqty'] = ($lead['lead_itemqty'] == '' ? '&nbsp;' : $lead['lead_itemqty']);
+//            $row['lead_itemqty']=($lead['lead_itemqty']=='' ? '&nbsp;' : $lead['lead_itemqty']);
+            $row['lead_itemqty'] = empty($lead['quoteqty']) ? '&nbsp;' : $lead['quoteqty'];
             switch ($lead['lead_item']) {
                 case '':
-                    $row['out_lead_item'] = $this->empty_content;
+                    if (!empty($lead['viewitemname'])) {
+                        $row['out_lead_item'] = $lead['viewitemname'];
+                    } else {
+                        $row['out_lead_item'] = $this->empty_content;
+                    }
                     break;
                 case 'Other':
                 case 'Multiple':

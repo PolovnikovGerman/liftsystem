@@ -12591,6 +12591,141 @@ Class Leadorder_model extends My_Model {
         usersession($session_id, $leadorder);
         return $out;
     }
+
+    public function prepare_checkout_invite($leadorder, $user_id, $session_id)
+    {
+        $out = ['result' => $this->success_result, 'msg' => $this->error_message];
+        $invite_name = $invite_email = '';
+        $contacts = $leadorder['contacts'];
+        foreach ($contacts as $contact) {
+            if (!empty($contact['contact_emal']) && intval($contact['contact_inv'])==1) {
+                $invite_email = $contact['contact_emal'];
+                $invite_name = $contact['contact_name'];
+                break;
+            }
+        }
+        $out['invite_name'] = $invite_name;
+        $out['invite_email'] = $invite_email;
+        $out['order'] = $leadorder['order'];
+        usersession($session_id, $leadorder);
+        return $out;
+    }
+
+    public function send_checkout_invite($leadorder, $invite_name, $invite_email, $user_id, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
+        if (empty($invite_name) || empty($invite_email)) {
+            // Get from contacts
+            $contacts = $leadorder['contacts'];
+            foreach ($contacts as $contact) {
+                if (!empty($contact['contact_emal']) && intval($contact['contact_inv'])==1) {
+                    $invite_email = $contact['contact_emal'];
+                    $invite_name = $contact['contact_name'];
+                    break;
+                }
+            }
+        }
+        $order = $leadorder['order'];
+        $message_options = [
+            'name' => $invite_name,
+            'email' => $invite_email,
+            'itemname' => '',
+            'revenue' => $order['revenue'],
+            'brand' => $order['brand']=='SR' ? 'SR' : 'SB',
+        ];
+        $paid = 0;
+        $payments = $leadorder['payments'];
+        foreach ($payments as $payment) {
+            $paid+=$payment['batch_amount'];
+        }
+        $message_options['paid'] = $paid;
+        $message_options['balance'] = $message_options['revenue'] - $message_options['paid'];
+        if ($order['item_id'] > 0) {
+            $message_options['itemname'] = $order['order_qty'].' '.$order['order_items'];
+        } else {
+            $items = $leadorder['order_items'];
+            $itemname = '';
+            foreach ($items as $item) {
+                $colors = $item['items'];
+                $itemname = '';
+                $itmqty = 0;
+                foreach ($colors as $itemcolor) {
+                    if ($itemcolor['item_description']!==$itemname) {
+                        if (!empty($itemname)) {
+                            $itemdata.=$itmqty.' '.$itemname.', ';
+                        }
+                        $itemname = $itemcolor['item_description'];
+                        $itmqty = $itemcolor['item_qty'];
+                    } else {
+                        $itmqty+=$itemcolor['item_qty'];
+                    }
+                }
+                if (!empty($itmqty)) {
+                    $itemdata.=$itmqty.' '.$itemname.', ';
+                }
+            }
+            $message_options['itemname'] = substr($itemdata,0, -2);
+        }
+        if ($message_options['brand']=='SR') {
+            $message_options['link'] = $this->config->item('srcheckoutlink').$order['checkout_link'];
+        } else {
+            $message_options['link'] = $this->config->item('btcheckoutlink').$order['checkout_link'];
+        }
+        // Send email
+        $this->load->config('notifications');
+        $config = [
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        ];
+        if ($message_options['brand']=='SR') {
+            $config['smtp_user'] = $this->config->item('fin_srdept_email');
+            $config['smtp_pass'] = $this->config->item('fin_srdept_pass');
+        } else {
+            $config['smtp_user'] = $this->config->item('fin_sbdept_email');
+            $config['smtp_pass'] = $this->config->item('fin_sbdept_pass');
+        }
+        $email_from = $config['smtp_user'];
+        $this->load->library('email');
+        $this->email->initialize($config);
+        if (intval($this->config->item('test_server'))==1) {
+            $mail_to = array('to_german@yahoo.com');
+        } else {
+            $mail_to = $message_options['email'];
+        }
+        $this->email->to($mail_to);
+        $this->email->from($email_from);
+        $title = 'Payment Due - '.MoneyOutput($message_options['balance']).' - '.$message_options['itemname'];
+        $this->email->subject($title);
+        $mail_body = $this->load->view('messages/chekout_invitation_view', $message_options, TRUE);
+        $this->email->message($mail_body);
+        if ( ! $this->email->send()) {
+            $out['msg'] = $this->email->print_debugger();
+        } else {
+            $out['result'] = $this->success_result;
+            $artwork = $leadorder['artwork'];
+            $artid = $artwork['artwork_id'];
+            // Add History
+            $this->db->set('artwork_id', $artid);
+            $this->db->set('user_id', $user_id);
+            $this->db->set('created_time', time());
+            $this->db->set('message', 'Payment link sent');
+            $this->db->insert('ts_artwork_history');
+            // New Artw history
+            $this->load->model('artwork_model');
+            $newhist = $this->artwork_model->get_artmsg_history($artid);
+            $artwork['art_history'] = $newhist;
+            $leadorder['artwork'] = $artwork;
+            usersession($session_id, $leadorder);
+            $out['history'] = $newhist;
+        }
+        return $out;
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */
