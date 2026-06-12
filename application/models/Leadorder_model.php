@@ -12021,7 +12021,7 @@ Class Leadorder_model extends My_Model {
         $invite_name = $invite_email = '';
         $contacts = $leadorder['contacts'];
         foreach ($contacts as $contact) {
-            if (!empty($contact['contact_emal']) && intval($contact['contact_inv'])==1) {
+            if (!empty($contact['contact_emal']) && !empty($contact['contact_name']) && intval($contact['contact_inv'])==1) {
                 $invite_email = $contact['contact_emal'];
                 $invite_name = $contact['contact_name'];
                 break;
@@ -12041,7 +12041,7 @@ Class Leadorder_model extends My_Model {
             // Get from contacts
             $contacts = $leadorder['contacts'];
             foreach ($contacts as $contact) {
-                if (!empty($contact['contact_emal']) && intval($contact['contact_inv'])==1) {
+                if (!empty($contact['contact_emal']) && !empty($contact['contact_name']) && intval($contact['contact_inv'])==1) {
                     $invite_email = $contact['contact_emal'];
                     $invite_name = $contact['contact_name'];
                     break;
