@@ -377,7 +377,7 @@ class Template
         }
         // Shipping Date
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
-        $trackcontent = '';
+        $trackcontent = '<div class="trackingdataarea empty">&nbsp</div>';
         $order_items=$res['order_items'];
         $numcolors = 0;
         foreach ($order_items as $order_item) {

@@ -5262,7 +5262,9 @@ Class Leadorder_model extends My_Model {
             } else {
                 $confirm=strtoupper(uniq_link(2,'chars')).'-'.uniq_link(5,'digits');
             }
+            $newlink = uniq_link(12,'any');
             $this->db->set('order_confirmation', $confirm);
+            $this->db->set('checkout_link', $newlink);
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
             $this->db->set('brand', $data['brand']);
