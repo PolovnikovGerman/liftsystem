@@ -274,9 +274,9 @@
 <div class="paybodyemail">
     <div class="logocompany">
         <?php if ($brand=='SR') : ?>
-            <img src="<?=base_url()?>img/messages/logo-stressrelievers.svg" alt="Logo"/>
+            <img src="<?=$imgbase?>img/messages/logo-stressrelievers.svg" alt="Logo"/>
         <?php else: ?>
-            <img src="<?=base_url()?>img/messages/logo-stressballs.svg" alt="Logo"/>
+            <img src="<?=$imgbase?>img/messages/logo-stressballs.svg" alt="Logo"/>
         <?php endif; ?>
     </div>
     <div class="titleemail">Secure Online Payment</div>
@@ -310,16 +310,16 @@
     <div class="secureblock">
         <div class="secureblock-icon">
             <div class="secureblock-iconbox">
-                <img src="<?=base_url()?>img/messages/lock-icon.svg" alt="Lock"/>
+                <img src="<?=$imgbase?>img/messages/lock-icon.svg" alt="Lock"/>
             </div>
         </div>
         <div class="secureblock-title">SECURE ONLINE PAYMENT</div>
         <div class="secureblock-text">Click the button to make your payment:</div>
-        <a href="<?=$link?>"><div class="secureblock-button">PAY <?=$balance?> SECURELY</div></a>
+        <a href="<?=$link?>"><div class="secureblock-button">PAY <?=MoneyOutput($balance)?> SECURELY</div></a>
         <div class="secureblock-greytext">This link is unique to you and your order.</div>
     </div>
     <div class="paymentcards">
-        <img src="<?=base_url()?>img/messages/payment-cards.svg" alt="Payment Cards"/>
+        <img src="<?=$imgbase?>img/messages/payment-cards.svg" alt="Payment Cards"/>
     </div>
     <div class="emailfooter">
         <div class="emailfooter-icon">

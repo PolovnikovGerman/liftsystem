@@ -12695,8 +12695,11 @@ Class Leadorder_model extends My_Model {
         $this->email->initialize($config);
         if (intval($this->config->item('test_server'))==1) {
             $mail_to = array('to_german@yahoo.com');
+            // ,'ticktoriya@gmail.com'
+            $message_options['imgbase'] = 'http://lift.bluetrack.com/';
         } else {
             $mail_to = $message_options['email'];
+            $message_options['imgbase'] = base_url();
         }
         $this->email->to($mail_to);
         $this->email->from($email_from);
