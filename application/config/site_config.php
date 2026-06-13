@@ -303,3 +303,4 @@ $config['project_url'] = getenv('PROJECT_URL');
 // Checkout links
 $config['srcheckoutlink'] = getenv('SRCHECKOUTLINK');
 $config['btcheckoutlink'] = getenv('BTCHECKOUTLINK');
+$config['fin_test_email'] = getenv('FINTESTEMAIL');
