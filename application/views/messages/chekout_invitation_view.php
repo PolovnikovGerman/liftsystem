@@ -310,7 +310,13 @@
     <div class="secureblock">
         <div class="secureblock-icon">
             <div class="secureblock-iconbox">
-                <img src="<?=$imgbase?>img/messages/lock-icon.svg" alt="Lock"/>
+                <table border="0">
+                    <tr>
+                        <td align="center" valign="middle">
+                            <img src="<?=$imgbase?>img/messages/lock-icon.svg" alt="Lock"/>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div class="secureblock-title">SECURE ONLINE PAYMENT</div>
