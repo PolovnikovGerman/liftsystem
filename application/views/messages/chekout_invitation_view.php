@@ -310,7 +310,7 @@
     <div class="secureblock">
         <div class="secureblock-icon">
             <div class="secureblock-iconbox">
-                <table border="0">
+                <table border="0" width="100%">
                     <tr>
                         <td align="center" valign="middle">
                             <img src="<?=$imgbase?>img/messages/lock-icon.svg" alt="Lock"/>
