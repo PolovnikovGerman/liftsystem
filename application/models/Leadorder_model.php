@@ -12692,7 +12692,6 @@ Class Leadorder_model extends My_Model {
             $config['smtp_user'] = $this->config->item('fin_sbdept_email');
             $config['smtp_pass'] = $this->config->item('fin_sbdept_pass');
         }
-        log_message('error', 'Email Config '.json_encode($config));
         $email_from = $config['smtp_user'];
         $this->load->library('email');
         $this->email->initialize($config);
@@ -12710,8 +12709,11 @@ Class Leadorder_model extends My_Model {
         $this->email->subject($title);
         $mail_body = $this->load->view('messages/chekout_invitation_view', $message_options, TRUE);
         $this->email->message($mail_body);
-        if ( ! $this->email->send()) {
+        if (!$this->email->send()) {
             $out['msg'] = $this->email->print_debugger();
+            log_message('error','Email fail, reason '.$this->email->print_debugger());
+            log_message('error', 'Email send fail. Email Config '.json_encode($config));
+
         } else {
             $out['result'] = $this->success_result;
             $artwork = $leadorder['artwork'];
