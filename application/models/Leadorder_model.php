@@ -12692,6 +12692,7 @@ Class Leadorder_model extends My_Model {
             $config['smtp_user'] = $this->config->item('fin_sbdept_email');
             $config['smtp_pass'] = $this->config->item('fin_sbdept_pass');
         }
+        log_message('error', 'Email Config '.json_encode($config));
         $email_from = $config['smtp_user'];
         $this->load->library('email');
         $this->email->initialize($config);
