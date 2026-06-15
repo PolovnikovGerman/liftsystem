@@ -4470,6 +4470,14 @@ class Leadquote_model extends MY_Model
                 ];
                 if (!empty($quote_items[$idx]['inventory_item_id'])) {
                     $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quotesritem_color_choice', $coloropt, true);
+                    // Get inventory color id
+                    $invcolor = $this->_inventory_color($quote_items[$idx]['inventory_item_id'], $newval);
+                    if (!empty($invcolor)) {
+                        $quote_items[$idx]['items'][0]['inventory_color_id'] = $invcolor;
+                    } else {
+                        $out['msg'] = 'Quote Inventory Item Color Not Found';
+                        return $out;
+                    }
                 } else {
                     $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quoteitem_color_choice', $coloropt, true);
                 }
