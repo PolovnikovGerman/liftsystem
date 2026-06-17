@@ -69,7 +69,7 @@ Class Leads_model extends MY_Model
             //
             $search='%'.strtoupper($options['search']).'%';
             $this->db->join('ts_lead_contacts lc','lc.lead_id=l.lead_id');
-            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
+            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone, lc.contact_email, lc.contact_name, lc.contact_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
             $this->db->where("{$searchdata}");
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
