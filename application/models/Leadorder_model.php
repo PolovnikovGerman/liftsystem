@@ -9627,7 +9627,7 @@ Class Leadorder_model extends My_Model {
                     'card_system'=>$row['card_system'],
                     'cvv'=>$row['cvv'],
                     'payclass'=>$payclass,
-                    'api_response'=>$row['api_response'],
+                    'api_response'=> ($row['paysucces']==1 ? 'Success - ' : 'Declined - ').$row['api_response'],
                 );
             }
             $out['data']=$data;
