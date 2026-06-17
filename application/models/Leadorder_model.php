@@ -3391,6 +3391,7 @@ Class Leadorder_model extends My_Model {
                 'cardnum'=>hide_cardnumber($cardnum),
                 'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
                 'cardcode'=>$charge['cardcode'],
+                'cardnum_orig' => $pay_options['cardnum'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['error_msg'], $cc_options);
             // $charge['cardnum'] = '';
@@ -7084,13 +7085,18 @@ Class Leadorder_model extends My_Model {
 
                 $pay_options['amount']=$row['amount'];
                 $pay_options['cardnum']=  str_replace('-', '',$row['cardnum']);
-                $pay_options['cardcode']=$row['cardcode'];
+                if ($row['payment_save']==1) {
+                    $pay_options['cardcode']=show_card_code($row['cardcode']);
+                } else {
+                    $pay_options['cardcode']=$row['cardcode'];
+                }
                 $pay_options['exp_month']=$row['exp_month'];
                 $pay_options['exp_year']=$row['exp_year'];
                 $transres=$this->order_payment($pay_options);
                 if ($transres['result']==$this->error_result) {
                     $out['msg']=$transres['error_msg'];
                     if (!empty($pay_options['cardnum'])) {
+                        $pay_options['cardnum_orig'] = $pay_options['cardnum'];
                         $pay_options['cardnum'] = hide_cardnumber($pay_options['cardnum']);
                     }
                     $this->_save_order_paymentlog($order_id, $user_id, $out['msg'], $pay_options);
@@ -9498,6 +9504,9 @@ Class Leadorder_model extends My_Model {
             $this->db->set('card_num', $ccdetails['cardnum']);
             $this->db->set('card_system', $ccdetails['cardtype']);
             $this->db->set('cvv', (empty($ccdetails['cardcode']) ? 0 : 1));
+            if ($succes==0) {
+                $this->_extend_paylog($order_id, $user_id, $msg, $ccdetails);
+            }
         }
         $this->db->set('order_id', $order_id);
         $this->db->set('user_id', $user_id);
@@ -12013,6 +12022,25 @@ Class Leadorder_model extends My_Model {
         $leadorder['shipping'] = $shipping;
         usersession($session_id, $leadorder);
         return $out;
+    }
+
+    private function _extend_paylog($order_id, $user_id, $msg, $ccdetails)
+    {
+        $filepath = APPPATH.'logs/payment_log.txt';
+        $fw = fopen($filepath, FOPEN_READ_WRITE_CREATE);
+        if ($fw) {
+            $msg = 'Date '.date('Y-m-d H:i:s').' Order '.$order_id.' Atempt payment '.MoneyOutput($ccdetails['amount']).' User '.$user_id.PHP_EOL;
+            fwrite($fw, $msg);
+            $msg = 'Card '.$ccdetails['cardtype'].' # ';
+            if (isset($ccdetails['cardnum_orig'])) {
+                $msg.=$ccdetails['cardnum_orig'];
+            } else {
+                $msg.=$ccdetails['cardnum'];
+            }
+            $msg.=' CVV '.$ccdetails['cardcode'].PHP_EOL;
+            fwrite($fw, $msg);
+            fclose($fw);
+        }
     }
 }
 /* End of file leadorder_model.php */
