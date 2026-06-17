@@ -12816,6 +12816,7 @@ Class Leadorder_model extends My_Model {
         } else {
             $items = $leadorder['order_items'];
             $itemname = '';
+            $itemdata = '';
             foreach ($items as $item) {
                 $colors = $item['items'];
                 $itemname = '';
