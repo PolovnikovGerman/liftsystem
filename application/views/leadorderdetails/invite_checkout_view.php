@@ -1,46 +1,31 @@
-<div class="aprovemail_content">
-    <div class="approvemaildata_content">
-        <div class="approvemail_row">
-            <div class="approvemail_label">From:</div>
-            <div class="approvemail_data">
-                <input type="text" readonly="readonly" class="aprovemail_input" id="approvemail_from" value="<?=$from?>"/>
+<div class="invitecheckout_content">
+    <div class="invitecheckout_content">
+        <div class="invitecheckout_row">
+            <div class="invitecheckout_label">From:</div>
+            <div class="invitecheckout_data">
+                <input type="text" readonly="readonly" class="invitecheckout_input" id="invitecheckoutemail_from" value="<?=$from?>"/>
             </div>
         </div>
-        <div class="approvemail_row">
-            <div class="approvemail_label">To:</div>
-            <div class="approvemail_data">
-                <input type="text" class="aprovemail_input" id="approvname_to" value="<?=$invite_name?>"/>
+        <div class="invitecheckout_row">
+            <div class="invitecheckout_label">To:</div>
+            <div class="invitecheckout_data">
+                <input type="text" class="invitecheckout_input" id="invitecheckoutname_to" value="<?=$invite_name?>"/>
             </div>
         </div>
-        <div class="approvemail_row">
-            <div class="approvemail_label">&nbsp;</div>
-            <div class="approvemail_data">
-                <input type="text" class="aprovemail_input" id="approvemail_to" value="<?=$invite_email?>"/>
+        <div class="invitecheckout_row">
+            <div class="invitecheckout_label">&nbsp;</div>
+            <div class="invitecheckout_data">
+                <input type="text" class="invitecheckout_input" id="invitecheckoutemail_to" value="<?=$invite_email?>"/>
             </div>
         </div>
-<!--        <div class="approvemail_row">-->
-<!--            <div class="addbccapprove" data-applybcc="hidden">add bcc</div>-->
-<!--        </div>-->
-<!--        <div class="approvemail_row" id="emailbccdata" style="display: none">-->
-<!--            <div class="approvemail_label">CC:</div>-->
-<!--            <div class="approvemail_data">-->
-<!--                <input type="text" class="aprovemail_input" id="approvemail_copy" value=""/>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="approvemail_row">-->
-<!--            <div class="approvemail_label">Subject:</div>-->
-<!--            <div class="approvemail_data">-->
-<!--                <input type="text" class="aprovemail_input" id="approvemail_subj" value="--><?php //=$subject?><!--" />-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="approvemail_row">-->
-<!--            <div class="approvemail_label">Message:</div>-->
-<!--        </div>-->
-<!--        <div class="approvemail_row">-->
-<!--            <textarea class="aprovemail_message">--><?php //=$message?><!--</textarea>-->
-<!--        </div>-->
-        <div class="approvemail_row">
-            <div class="approvemail_send" data-order="<?=$order_id?>">
+        <div class="invitecheckout_row">
+            <div class="invitecheckout_label">Subject:</div>
+            <div class="invitecheckout_data">
+                <input type="text" class="invitecheckout_input" id="invitecheckoutsubject" value="<?=$subject?>"/>
+            </div>
+        </div>
+        <div class="invitecheckout_row">
+            <div class="invitecheckout_send" data-order="<?=$order_id?>">
                 <img src="/img/art/artpopup_approvesebd_btn.png" alt="send"/>
             </div>
         </div>

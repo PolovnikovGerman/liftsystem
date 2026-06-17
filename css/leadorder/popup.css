@@ -6535,3 +6535,46 @@ div.trackservicelnk > input {
 .profitdetails_tooltip .qtip-content {
     padding: 0!important;
 }
+/* Invite Checkout Email */
+.invitecheckout_content {
+    clear: both;
+    float: left;
+    /*height: 442px;*/
+    margin-top: 9px;
+    width: 356px;
+    border: 2px solid #000000;
+    border-radius: 5px;
+}
+.invitecheckout_content {
+    clear: both;
+    float: left;
+    margin: 10px 8px 10px 11px;
+    width: 345px;
+}
+.invitecheckout_row {
+    clear: both;
+    float: left;
+    text-align: left;
+    margin-bottom: 11px;
+    width: 331px;
+}
+.invitecheckout_label {
+    color: #000000;
+    float: left;
+    font-size: 15px;
+    padding-top: 4px;
+    text-align: left;
+    /* width: 46px; */
+}
+.invitecheckout_data {
+    float: left;
+    width: 285px;
+}
+input.invitecheckout_input {
+    float: left;
+    border: 1px solid #000000;
+    color: #000;
+    font-size: 16px;
+    padding-left: 10px;
+    width: 283px;
+}

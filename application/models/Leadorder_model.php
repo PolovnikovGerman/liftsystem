@@ -12057,6 +12057,41 @@ Class Leadorder_model extends My_Model {
                 break;
             }
         }
+        $order = $leadorder['order'];
+        $paid = 0;
+        $payments = $leadorder['payments'];
+        foreach ($payments as $payment) {
+            $paid+=$payment['batch_amount'];
+        }
+        $balance = $order['revenue'] - $paid;
+        if ($order['item_id'] > 0) {
+            $itemname = $order['order_qty'] . ' ' . $order['order_items'];
+        } else {
+            $items = $leadorder['order_items'];
+            $itemname = '';
+            $itemdata = '';
+            foreach ($items as $item) {
+                $colors = $item['items'];
+                $itemname = '';
+                $itmqty = 0;
+                foreach ($colors as $itemcolor) {
+                    if ($itemcolor['item_description']!==$itemname) {
+                        if (!empty($itemname)) {
+                            $itemdata.=$itmqty.' '.$itemname.', ';
+                        }
+                        $itemname = $itemcolor['item_description'];
+                        $itmqty = $itemcolor['item_qty'];
+                    } else {
+                        $itmqty+=$itemcolor['item_qty'];
+                    }
+                }
+                if (!empty($itmqty)) {
+                    $itemdata.=$itmqty.' '.$itemname.', ';
+                }
+            }
+            $itemname = substr($itemdata,0, -2);
+        }
+        $out['subject'] = 'Payment Due - '.MoneyOutput($balance).' - '.$itemname;
         $out['invite_name'] = $invite_name;
         $out['invite_email'] = $invite_email;
         $out['order'] = $leadorder['order'];

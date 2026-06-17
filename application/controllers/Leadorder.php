@@ -6926,6 +6926,7 @@ class Leadorder extends MY_Controller
                         'invite_name' => $res['invite_name'],
                         'invite_email' => $res['invite_email'],
                         'from' => $finemail,
+                        'subject' => $res['subject'],
                     ];
                     $mdata['content'] = $this->load->view('leadorderdetails/invite_checkout_view', $options, true);
                 }
