@@ -2534,6 +2534,24 @@ input.artrepeat {
 .empty_icon_file.active {
     cursor: pointer;
 }
+.icon_link_checkout {
+    height: 15px;
+    float: left;
+    width: 13px;
+    margin-top: 5px;
+    margin-right: 11px;
+    cursor: pointer;
+}
+.sendcheckoutnotification {
+    height: 15px;
+    float: left;
+    width: 13px;
+    margin-top: 4px;
+    margin-right: 11px;
+    cursor: pointer;
+    color: #000000;
+    font-size: 14px;
+}
 .discountdescript.empty_icon_file,
 .discountdescript.icon_file {
     background: none!important;
@@ -2597,7 +2615,7 @@ input.artrepeat {
 .totalduedataviewarea {
     float: left;
     width: 160px;
-    margin-top: 6px;
+    margin-top: 3px;
 }
 /* System Switcher */
 .orderssystemswitch {
@@ -5812,6 +5830,9 @@ input.ticket_date {
     height: 150px;
     margin-top: -120px;
     border-radius: 7px;
+}
+.trackingdataarea.empty {
+    background: none;
 }
 .trackingdataarea div {
     float: left;

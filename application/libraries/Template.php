@@ -377,7 +377,7 @@ class Template
         }
         // Shipping Date
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
-        $trackcontent = '';
+        $trackcontent = '<div class="trackingdataarea empty">&nbsp</div>';
         $order_items=$res['order_items'];
         $numcolors = 0;
         foreach ($order_items as $order_item) {
@@ -531,7 +531,13 @@ class Template
             'ticketview'=>$ticketview,
             'shippview'=> $trackcontent,
             'totaldueview'=>$dueview,
+            'balance' => $total_due,
         );
+        if ($orddata['brand']=='SR') {
+            $bottom_options['checkoutlink']=$this->CI->config->item('srcheckoutlink').$orddata['checkout_link'];
+        } else {
+            $bottom_options['checkoutlink']=$this->CI->config->item('btcheckoutlink').$orddata['checkout_link'];;
+        }
         $orddata['taxalign']='';
         if ($edit==0)  {
             if ($ord_data['tax']==0) {

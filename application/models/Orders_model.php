@@ -10605,4 +10605,78 @@ Class Orders_model extends MY_Model
             'refunds' => $refunds,
         );
     }
+
+    public function get_checkout_invite($order_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
+        $this->db->select('*')->from('ts_orders')->where(['order_id'=>$order_id,'order_system'=>'new']);
+        $orddat = $this->db->get()->row_array();
+        if (ifset($orddat,'order_id',0)==$order_id) {
+            $out['result'] = $this->success_result;
+            $data = [
+                'name' => '',
+                'email' => '',
+                'itemname' => '',
+                'revenue' => $orddat['revenue'],
+                'paid' => 0,
+                'balance' => $orddat['revenue'],
+                'link' => '',
+                'brand' => $orddat['brand']=='SR' ? 'SR' : 'SB',
+            ];
+            $this->db->select('*')->from('ts_order_contacts')->where(['order_id'=>$order_id,'contact_inv'=>1]);
+            $contacts = $this->db->get()->result_array();
+            foreach ($contacts as $contact) {
+                if (!empty($contact['contact_emal'])) {
+                    $data['name'] = $contact['contact_name'];
+                    $data['email'] = $contact['contact_emal'];
+                    break;
+                }
+            }
+            $this->db->select('*')->from('v_order_balances')->where('order_id', $order_id);
+            $balance = $this->db->get()->row_array();
+            if (isset($balance['order_id'])) {
+                $data['paid'] = $balance['payment'];
+                $data['balance'] = $data['revenue'] - $data['paid'];
+            }
+            if ($orddat['item_id']>0) {
+                $data['itemname'] = $orddat['order_qty'].' '.$orddat['order_items'];
+            } else {
+                $itemdata = '';
+                $this->db->select('oic.item_description, oic.item_qty');
+                $this->db->from('ts_order_itemcolors oic');
+                $this->db->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
+                $this->db->where('oi.order_id', $order_id);
+                $this->db->order_by('oic.item_description');
+                $itemcolors = $this->db->get()->result_array();
+                $itemname = '';
+                $itmqty = 0;
+                foreach ($itemcolors as $itemcolor) {
+                    if ($itemcolor['item_description']!==$itemname) {
+                        if (!empty($itemname)) {
+                            $itemdata.=$itmqty.' '.$itemname.', ';
+                        }
+                        $itemname = $itemcolor['item_description'];
+                        $itmqty = $itemcolor['item_qty'];
+                    } else {
+                        $itmqty+=$itemcolor['item_qty'];
+                    }
+                }
+                if (!empty($itmqty)) {
+                    $itemdata.=$itmqty.' '.$itemname.', ';
+                }
+                $data['itemname'] = substr($itemdata,0, -2);
+            }
+            if ($orddat['brand']=='SR') {
+                $link = $this->config->item('srcheckoutlink').$orddat['checkout_link'];
+            } else {
+                $link = $this->config->item('btcheckoutlink').$orddat['checkout_link'];
+            }
+            if (!empty($link)) {
+                $data['link'] = $link;
+            }
+            $out['data'] = $data;
+        }
+        return $out;
+    }
+
 }
