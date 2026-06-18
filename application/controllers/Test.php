@@ -5414,4 +5414,58 @@ class Test extends CI_Controller
         }
     }
 
+    public function checkoutcome()
+    {
+        $this->db->select('amount_id, sum(qty) as outqty')->from('ts_order_inventory')->group_by('amount_id');
+        $outsql = $this->db->get_compiled_select();
+        $this->db->select('oa.amount_id, (oa.shipped+oa.misprint+oa.kepted) as totalqty, oa.inventory_color_id, coalesce(iout.outqty,0) as outqty')->from('ts_order_amounts oa');
+        $this->db->where('oa.printshop',1)->where('oa.create_date >=', strtotime('2026-05-01'));
+        $this->db->join("({$outsql}) iout",'iout.amount_id=oa.amount_id','left');
+        $amounts = $this->db->get()->result_array();
+        $num = 0;
+        foreach ($amounts as $amount) {
+            if ($amount['totalqty']!==$amount['outqty']) {
+                echo 'Amnt '.$amount['amount_id'].' Diff '.$amount['totalqty']-$amount['outqty'].' Out '.$amount['outqty'].' Amnt '.$amount['totalqty'].PHP_EOL;
+                $num++;
+            }
+        }
+        echo 'Need change '.$num.PHP_EOL;
+    }
+
+    public function fixinvent()
+    {
+        $this->load->model('inventory_model');
+        $this->db->select('amount_id, sum(qty) as outqty')->from('ts_order_inventory')->group_by('amount_id');
+        $outsql = $this->db->get_compiled_select();
+        $this->db->select('oa.amount_id, (shipped+misprint+kepted) as totalqty, oa.order_id, oa.inventory_color_id, coalesce(iout.outqty,0) as outqty')->from('ts_order_amounts oa');
+        $this->db->where('oa.printshop',1)->where('oa.create_date >=', strtotime('2026-05-01'));
+        $this->db->join("({$outsql}) iout",'iout.amount_id=oa.amount_id','left');
+        $amounts = $this->db->get()->result_array();
+        $num = 0;
+        foreach ($amounts as $amount) {
+            if ($amount['totalqty']!==$amount['outqty']) {
+                $diff = $amount['totalqty'];
+                $inventory_color_id = $amount['inventory_color_id'];
+                $balance = $this->inventory_model->inventory_color_income($inventory_color_id) - $this->inventory_model->inventory_color_outcome($inventory_color_id);
+                $newbalance = $balance - $diff;
+                $this->db->select('oa.amount_id as printshop_income_id, oa.update_user, oa.order_id, oa.inventory_color_id,
+                oa.printshop_date, (oa.shipped+oa.misprint+oa.kepted) as total_qty, o.brand, o.order_num')->from('ts_order_amounts oa')
+                    ->join('ts_orders o','oa.order_id=o.order_id')->where('oa.amount_id', $amount['amount_id']);
+                $orderdata = $this->db->get()->row_array();
+                if ($newbalance < 0) {
+                    echo 'Order # '.$orderdata['order_num'].' not updated - Balance negative '.PHP_EOL;
+                } else {
+                    if ($amount['outqty'] > 0) {
+                        $orderdata['total_qty'] = $orderdata['total_qty'] - $amount['outqty'];
+                    }
+                    $user_id = $orderdata['update_user'];
+                    $invres = $this->inventory_model->_add_inventory_outcome($orderdata, $user_id);
+                    if ($invres['result']==0) {
+                        echo 'Amnt '.$amount['amount_id'].' Update outcome error '.$invres['msg'].PHP_EOL;
+                    }
+                }
+            }
+        }
+    }
+
 }
