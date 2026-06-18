@@ -4174,14 +4174,12 @@ function init_orderbottom_content(edit_mode) {
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         $.post(url, params, function(response){
             if (response.errors=='') {
-                $("#artNextModal").find('div.modal-dialog').css('width','390px');
-                $("#artNextModal").find('.modal-title').empty().html('Secure Payment Invite');
-                $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
-                $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
-                $("#artNextModal").on('hidden.bs.modal', function (e) {
-                    $(document.body).addClass('modal-open');
-                })
-                $(".approvemail_send").unbind('click').click(function (){
+                $(".sendcheckoutnotificationcontent").empty().html(response.data.content);
+                $(".sendcheckoutnotificationarea").show();
+                $(".sendcheckoutnotificationclosewin").unbind('click').click(function(){
+                    $(".sendcheckoutnotificationarea").hide();
+                });
+                $(".invitecheckout_send").unbind('click').click(function (){
                     send_checkout_invite();
                 })
             } else {
@@ -6231,11 +6229,12 @@ function send_checkout_invite() {
     var url="/leadorder/send_checkout_invite";
     var params=new Array();
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
-    params.push({name: 'invite_name', value: $("#approvname_to").val()});
-    params.push({name: 'invite_email', value: $("#approvemail_to").val()});
+    params.push({name: 'invite_name', value: $("#invitecheckoutname_to").val()});
+    params.push({name: 'invite_email', value: $("#invitecheckoutemail_to").val()});
+    params.push({name: 'subject', value: $("#invitecheckoutsubject").val()})
     $.post(url, params, function (response){
         if (response.errors=='') {
-            $("#artNextModal").modal('hide');
+            $(".sendcheckoutnotificationarea").hide();
             $(".block_6_historytext").empty().html(response.data.histoyview);
         } else {
             show_error(response);

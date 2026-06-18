@@ -12099,7 +12099,7 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-    public function send_checkout_invite($leadorder, $invite_name, $invite_email, $user_id, $session_id)
+    public function send_checkout_invite($leadorder, $invite_name, $invite_email, $subject, $user_id, $session_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
         if (empty($invite_name) || empty($invite_email)) {
@@ -12192,7 +12192,11 @@ Class Leadorder_model extends My_Model {
         }
         $this->email->to($mail_to);
         $this->email->from($email_from);
-        $title = 'Payment Due - '.MoneyOutput($message_options['balance']).' - '.$message_options['itemname'];
+        if (!empty($subject)) {
+            $title = $subject;
+        } else {
+            $title = 'Payment Due - '.MoneyOutput($message_options['balance']).' - '.$message_options['itemname'];
+        }
         $this->email->subject($title);
         $mail_body = $this->load->view('messages/chekout_invitation_view', $message_options, TRUE);
         $this->email->message($mail_body);
