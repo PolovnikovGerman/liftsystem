@@ -2247,7 +2247,7 @@ input.artrepeat {
 }
 .block_8bottom_text1 {
     float: left;
-    padding-left: 5px;    
+    padding-left: 7px;
 }
 .block_8_text2 {
     float: right!important;
@@ -2535,22 +2535,42 @@ input.artrepeat {
     cursor: pointer;
 }
 .icon_link_checkout {
-    height: 15px;
+    height: 22px;
     float: left;
-    width: 13px;
-    margin-top: 5px;
-    margin-right: 11px;
+    width: 22px;
     cursor: pointer;
+    text-align: center;
+    border-right: 1px solid #5e5e5e;
+}
+.icon_link_checkout img {
+    width: 12px;
+    height: auto;
+    opacity: 0.5;
+}
+.icon_link_checkout:hover {
+    background: #73510d;
+}
+.icon_link_checkout:hover img {
+    opacity: 1;
 }
 .sendcheckoutnotification {
-    height: 15px;
+    height: 22px;
     float: left;
-    width: 13px;
-    margin-top: 4px;
-    margin-right: 11px;
+    width: 28px;
     cursor: pointer;
-    color: #000000;
+    color: #ffffff;
     font-size: 14px;
+    text-align: center;
+    border-right: 1px solid #5e5e5e;
+}
+.sendcheckoutnotification i {
+    opacity: 0.5;
+}
+.sendcheckoutnotification:hover {
+    background: #73510d;
+}
+.sendcheckoutnotification:hover i {
+    opacity: 1;
 }
 .discountdescript.empty_icon_file,
 .discountdescript.icon_file {
@@ -2614,7 +2634,7 @@ input.artrepeat {
 }
 .totalduedataviewarea {
     float: left;
-    width: 160px;
+    width: 180px;
     margin-top: 3px;
 }
 /* System Switcher */
@@ -6649,4 +6669,29 @@ input.invitecheckout_input {
     line-height: 33px;
     cursor: pointer;
     font-weight: 600;
+}
+/* Paid area */
+.blockduedataarea {
+    width: 215px;
+    height: 25px;
+    line-height: 22px;
+    background: #192119;
+    background: linear-gradient(to top, #020602, #3e3f3e);
+    border: 1px solid #342e23;
+    border-radius: 5px;
+    padding: 0 7px 0 0;
+    color: #fff;
+    margin-left: -23px;
+}
+.blockduenegative {
+    width: 177px;
+    height: 25px;
+    line-height: 22px;
+    background: #192119;
+    background: linear-gradient(to top, #020602, #3e3f3e);
+    border: 1px solid #342e23;
+    border-radius: 5px;
+    padding: 0 7px;
+    color: #fff;
+
 }
