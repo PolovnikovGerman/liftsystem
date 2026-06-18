@@ -6573,7 +6573,7 @@ div.trackservicelnk > input {
 .invitecheckout_content {
     clear: both;
     float: left;
-    margin: 10px 8px 10px 11px;
+    margin: 10px 20px 10px 20px;
     width: 488px;
 }
 .invitecheckout_content div {
@@ -6620,7 +6620,7 @@ div.trackservicelnk > input {
     padding-top: 4px;
     text-align: left;
     width: 100%;
-    /* width: 46px; */
+    margin-bottom: 5px;
 }
 .invitecheckout_data {
     float: left;
@@ -6631,9 +6631,9 @@ input.invitecheckout_input {
     border: 1px solid #dadce5;
     border-radius: 4px;
     color: #000;
-    font-size: 16px!important;
+    font-size: 16px !important;
     padding: 10px 5px 10px 10px;
-    width: 477px;
+    width: 100%;
 }
 .invitecheckout_send {
     border-radius: 4px;
@@ -6648,4 +6648,5 @@ input.invitecheckout_input {
     height: 35px;
     line-height: 33px;
     cursor: pointer;
+    font-weight: 600;
 }
