@@ -2247,7 +2247,7 @@ input.artrepeat {
 }
 .block_8bottom_text1 {
     float: left;
-    padding-left: 5px;    
+    padding-left: 7px;
 }
 .block_8_text2 {
     float: right!important;
@@ -2556,7 +2556,7 @@ input.artrepeat {
 .sendcheckoutnotification {
     height: 22px;
     float: left;
-    width: 22px;
+    width: 28px;
     cursor: pointer;
     color: #ffffff;
     font-size: 14px;
@@ -2634,7 +2634,7 @@ input.artrepeat {
 }
 .totalduedataviewarea {
     float: left;
-    width: 160px;
+    width: 180px;
     margin-top: 3px;
 }
 /* System Switcher */
@@ -6672,14 +6672,14 @@ input.invitecheckout_input {
 }
 /* Paid area */
 .blockduedataarea {
-    width: 201px;
+    width: 215px;
     height: 25px;
     line-height: 22px;
     background: #192119;
     background: linear-gradient(to top, #020602, #3e3f3e);
     border: 1px solid #342e23;
     border-radius: 5px;
-    padding: 0 7px;
+    padding: 0 7px 0 0;
     color: #fff;
     margin-left: -23px;
 }
