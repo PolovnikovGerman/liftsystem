@@ -6926,6 +6926,7 @@ class Leadorder extends MY_Controller
                         'invite_name' => $res['invite_name'],
                         'invite_email' => $res['invite_email'],
                         'from' => $finemail,
+                        'subject' => $res['subject'],
                     ];
                     $mdata['content'] = $this->load->view('leadorderdetails/invite_checkout_view', $options, true);
                 }
@@ -6946,7 +6947,8 @@ class Leadorder extends MY_Controller
             if (!empty($leadorder)) {
                 $invite_name = ifset($postdata, 'invite_name','');
                 $invite_email = ifset($postdata, 'invite_email','');
-                $res=$this->leadorder_model->send_checkout_invite($leadorder, $invite_name, $invite_email, $this->USR_ID, $ordersession);
+                $subject = ifset($postdata, 'subject', '');
+                $res=$this->leadorder_model->send_checkout_invite($leadorder, $invite_name, $invite_email, $subject, $this->USR_ID, $ordersession);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';

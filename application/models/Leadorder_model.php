@@ -12057,6 +12057,41 @@ Class Leadorder_model extends My_Model {
                 break;
             }
         }
+        $order = $leadorder['order'];
+        $paid = 0;
+        $payments = $leadorder['payments'];
+        foreach ($payments as $payment) {
+            $paid+=$payment['batch_amount'];
+        }
+        $balance = $order['revenue'] - $paid;
+        if ($order['item_id'] > 0) {
+            $itemname = $order['order_qty'] . ' ' . $order['order_items'];
+        } else {
+            $items = $leadorder['order_items'];
+            $itemname = '';
+            $itemdata = '';
+            foreach ($items as $item) {
+                $colors = $item['items'];
+                $itemname = '';
+                $itmqty = 0;
+                foreach ($colors as $itemcolor) {
+                    if ($itemcolor['item_description']!==$itemname) {
+                        if (!empty($itemname)) {
+                            $itemdata.=$itmqty.' '.$itemname.', ';
+                        }
+                        $itemname = $itemcolor['item_description'];
+                        $itmqty = $itemcolor['item_qty'];
+                    } else {
+                        $itmqty+=$itemcolor['item_qty'];
+                    }
+                }
+                if (!empty($itmqty)) {
+                    $itemdata.=$itmqty.' '.$itemname.', ';
+                }
+            }
+            $itemname = substr($itemdata,0, -2);
+        }
+        $out['subject'] = 'Payment Due - '.MoneyOutput($balance).' - '.$itemname;
         $out['invite_name'] = $invite_name;
         $out['invite_email'] = $invite_email;
         $out['order'] = $leadorder['order'];
@@ -12064,7 +12099,7 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
-    public function send_checkout_invite($leadorder, $invite_name, $invite_email, $user_id, $session_id)
+    public function send_checkout_invite($leadorder, $invite_name, $invite_email, $subject, $user_id, $session_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
         if (empty($invite_name) || empty($invite_email)) {
@@ -12157,7 +12192,11 @@ Class Leadorder_model extends My_Model {
         }
         $this->email->to($mail_to);
         $this->email->from($email_from);
-        $title = 'Payment Due - '.MoneyOutput($message_options['balance']).' - '.$message_options['itemname'];
+        if (!empty($subject)) {
+            $title = $subject;
+        } else {
+            $title = 'Payment Due - '.MoneyOutput($message_options['balance']).' - '.$message_options['itemname'];
+        }
         $this->email->subject($title);
         $mail_body = $this->load->view('messages/chekout_invitation_view', $message_options, TRUE);
         $this->email->message($mail_body);

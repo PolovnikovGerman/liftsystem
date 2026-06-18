@@ -6535,3 +6535,118 @@ div.trackservicelnk > input {
 .profitdetails_tooltip .qtip-content {
     padding: 0!important;
 }
+/* Invite Checkout Email */
+.sendcheckoutnotificationarea {
+    position: absolute;
+    left: 15px;
+    bottom: 20px;
+    display: none;
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    z-index: 3;
+}
+.sendcheckoutnotificationclosewin {
+    position: absolute;
+    right: -10px;
+    top: -12px;
+    border: 1px solid #2a2a2a;
+    background: #e20000;
+    background: linear-gradient(to top, #c60000, #ff0000);
+    color: #fff;
+    font-weight: 900;
+    width: 29px;
+    height: 29px;
+    line-height: 25px;
+    font-size: 17px;
+    text-align: center;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.sendcheckoutnotificationclosewin svg {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    top: 2.5px;
+    fill: #fff;
+}
+.invitecheckout_content {
+    clear: both;
+    float: left;
+    margin: 10px 20px 10px 20px;
+    width: 488px;
+}
+.invitecheckout_content div {
+    float: left;
+}
+.invitecheckout_header {
+    width: 100%;
+}
+.lined-heading {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #000;
+}
+.lined-heading::before,
+.lined-heading::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background-color: #000000;
+}
+.lined-heading::before {
+    margin-right: 15px;
+}
+.lined-heading::after {
+    margin-left: 15px;
+}
+.securepaymenttitle {
+    position: relative;
+    top: -1px;
+}
+.invitecheckout_row {
+    text-align: left;
+    margin-bottom: 11px;
+    width: 100%;
+}
+.invitecheckout_label {
+    color: #000000;
+    float: left;
+    font-size: 15px;
+    padding-top: 4px;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 5px;
+}
+.invitecheckout_data {
+    float: left;
+    width: 100%;
+}
+input.invitecheckout_input {
+    float: left;
+    border: 1px solid #dadce5;
+    border-radius: 4px;
+    color: #000;
+    font-size: 16px !important;
+    padding: 10px 5px 10px 10px;
+    width: 100%;
+}
+.invitecheckout_send {
+    border-radius: 4px;
+    border: 1px solid #15801c;
+    background: #1dac21;
+    background: linear-gradient(to top, #1b9424, #1fc11e);
+    width: 95px;
+    text-align: center;
+    float: right!important;
+    color: #ffffff;
+    font-size: 22px;
+    height: 35px;
+    line-height: 33px;
+    cursor: pointer;
+    font-weight: 600;
+}
