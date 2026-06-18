@@ -537,9 +537,15 @@ class Template
         }
         // Total Due
         $total_due=$res['total_due'];
-        $dueoptions=array(
+        $dueoptions = [
             'totaldue'=>$total_due,
-        );
+        ];
+        if ($orddata['brand']=='SR') {
+            $dueoptions['checkoutlink']=$this->CI->config->item('srcheckoutlink').$orddata['checkout_link'];
+        } else {
+            $dueoptions['checkoutlink']=$this->CI->config->item('btcheckoutlink').$orddata['checkout_link'];;
+        }
+
         if ($total_due==0 && $ord_data['payment_total']>0) {
             $dueoptions['class']='closed';
         } else {
