@@ -1965,10 +1965,14 @@ class Leadorder extends MY_Controller
                     } else {
                         $mdata['arttype']='logo';
                         if ($doctype=='source') {
-                            $mdata['artlocurl']=str_replace('//','/',$location['logo_src']);
+                            $artlocurl=str_replace('//','/',$location['logo_src']);
                         } else {
-                            $mdata['artlocurl']=str_replace('//','/',$location['logo_vectorized']);
+                            $artlocurl=str_replace('//','/',$location['logo_vectorized']);
                         }
+                        if (substr($artlocurl,1,1)!=='/') {
+                            $artlocurl='/'.$artlocurl;
+                        }
+                        $mdata['artlocurl'] = $artlocurl;
                     }
                 }
             }
