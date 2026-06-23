@@ -1969,7 +1969,7 @@ class Leadorder extends MY_Controller
                         } else {
                             $artlocurl=str_replace('//','/',$location['logo_vectorized']);
                         }
-                        if (substr($artlocurl,1,1)!=='/') {
+                        if (substr($artlocurl,0,1)!=='/') {
                             $artlocurl='/'.$artlocurl;
                         }
                         $mdata['artlocurl'] = $artlocurl;
