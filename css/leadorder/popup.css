@@ -3,6 +3,9 @@
     Author     : polovnikov-go
     Popup Window for Order Details
 */
+#artModal .modal-header {
+    padding: 6px 15px!important;
+}
 #artModal .modal-header.cancelorder {
     background-color: #000000;
 }
@@ -20,6 +23,9 @@
     z-index: 7;
     right: -11px;
     top: -14px;
+}
+#artModal .modal-content {
+    top: -12px;
 }
 .leadorderdetailspopup {
     /* background: url(/img/leadorder/backgr_content.png) no-repeat transparent; */
@@ -139,7 +145,8 @@ input.input_checkbox {
 }
 .line_2 {
     float: left;
-    margin: 13px 0px 0px 8px;
+    /*margin: 13px 0px 0px 8px;*/
+    margin: 6px 0 0 8px;
 }
 .line_3_4 {
     float: left;
@@ -322,7 +329,13 @@ input.calendarinpt[readonly="readonly"] {
     margin-left: 5px;
 }
 .bl_contact_tx {
-    margin-top: 14px;
+    margin-top: 8px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_contact_content{
     float: left;
@@ -1602,27 +1615,39 @@ span.taxemptyview {
     margin-top: 5px;
 }
 .bl_pay_method_tx {
-    margin-top: 10px;
+    margin-top: 2px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_pay_method_content{
     float: left;
-    height: 113px;
+    /*height: 113px;*/
+    height: 95px;
     width: 341px;
 }
 .pay_method_content1{
     line-height: 18px;
 }
 .pay_method_content3{
-    margin-left: -13px;
+    /*margin-left: -13px;*/
     line-height: 18px;
     margin-top: 3px;
+    float: left;
+    width: 410px;
 }
-.pay_method_content2{
+.pay_method_content2 {
     float: left;
     width: 322px;
     height: 63px;
     border: 2px solid #000;    
     margin: 2px 0;
+}
+.pay_method_content2.preview {
+    height: 48px;
 }
 .pay_methods_area {
     clear: both;
@@ -1727,7 +1752,8 @@ span.taxemptyview {
     font-size: 11px;
     height: 19px;
     margin: 0 0 0 3px;
-    width: 53px;
+    /*width: 53px;*/
+    width: 77px;
 }
 .pm_content3_tx1 {
     float: left;
@@ -1750,7 +1776,8 @@ span.taxemptyview {
     margin-left: -4px;
 }
 .bl_payments_tx {
-    margin-top: 18px;
+    /*margin-top: 18px;*/
+    margin-top: -10px;
 }
 .bl_payments_content{
     border: 2px solid #000;
@@ -1779,10 +1806,12 @@ span.taxemptyview {
 }
 .payments_table{
     float: left;
-    max-height: 65px;
+    /*max-height: 65px;*/
+    max-height: 50px;
     min-height: 16px;
     overflow-y: auto;
     width: 195px;
+    scrollbar-width: none;
 }
 .payments_date {
     float: left;
@@ -1820,16 +1849,13 @@ span.taxemptyview {
 }
 .block_6 {
     float: left;
-    /* background-image: url(/img/leadorder/bacgr_5.png);
-    background-repeat: no-repeat; */
     border: 1px solid #000000;
     border-radius: 5px;
     background-color: #ffffff;
     width: 154px;
-    /* height: 726px; */
-    height: 654px;
-    /* margin-left: -2px; */
+    /*height: 654px;*/
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
+    height: 640px;
 }
 .block_6_generalnotes, .block_6_update, .block_6_history {
     float: left;
@@ -1855,14 +1881,15 @@ span.taxemptyview {
 }
 .block_6_historytext {
     /* height: 357px; */
-    height: 278px;
+    /*height: 278px;*/
+    height: 261px;
     margin-left: 5px;
     overflow-y: auto;
     width: 143px;
 }
 .block_6_historytext.previewmode {
-    /* height: 527px; */
-    height: 453px;
+    /*height: 453px;*/
+    height: 439px;
 }
 .history_day {
     height: 18px;
@@ -1890,16 +1917,13 @@ span.taxemptyview {
 }
 .block_7 {
     float: left;
-    /* background-image: url(/img/leadorder/bacgr_7.png);
-    background-repeat: no-repeat;
-     */
     background-color: #ffffff;
     border: 1px solid #0e7600;
     border-radius: 5px;
     width: 253px;
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
-    /* height: 761px; */
-    height: 654px;
+    /*height: 654px;*/
+    height: 639px;
     margin-left: -2px;
 }
 .block_7_artwork {
@@ -1966,13 +1990,14 @@ span.taxemptyview {
     float: left;
     width: 254px;
     padding: 5px 0px 0px 5px;
+    margin-top: -10px;
 }
 .block_7_art1 {
     float: left;
     overflow-y: auto;
     width: 239px;
-    /* height: 120px; */
-    height: 102px;
+    /*height: 102px;*/
+    height: 92px;
     margin-left: 2px;
 }
 .blankorderlogos {
@@ -2132,7 +2157,7 @@ input.artrepeat {
 .block_7_proofs1_scrool {
     /* border-bottom: 1px solid rgb(62, 62, 62); */
     /* height: 154px; */
-    height: 139px;
+    height: 136px;
     overflow-x: auto;
 }
 .proofs_line1 {

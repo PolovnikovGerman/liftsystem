@@ -1,7 +1,9 @@
 <div class="block_5">
     <div class="bl_contact">
         <div class="bl_tx">
-            <div class="bl_contact_tx"><img src="/img/leadorder/tx_contact.png" alt="contact"/></div>
+            <div class="bl_contact_tx">
+                contacts
+            </div>
         </div>
         <div class="bl_contact_content">
             <div class="contact_content_line contact_content_title">
@@ -79,7 +81,7 @@
     <div class="bl_pay_method">
         <div class="bl_tx">
             <div class="bl_pay_method_tx">
-                <img src="/img/leadorder/tx_pay_method.png" alt="pay_method"/>
+                payment
             </div>
         </div>
         <div class="bl_pay_method_content"><?=$chargeview?></div>

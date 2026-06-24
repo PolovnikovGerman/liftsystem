@@ -208,7 +208,9 @@ function navigation_init() {
     $("a.historydetailsview").unbind('click').click(function(){
         var history=$(this).data('history');
         show_updatedetails(history);
-    });    
+    });
+    // Scroll for Payments
+    new SimpleBar(document.getElementById('payments_tableview'), { autoHide: false });
     // Show Attempts
     $("div.chargeattemptlogcall").unbind('click').click(function(){        
         var order=$(this).data('order');
@@ -494,6 +496,8 @@ function init_onlineleadorder_edit() {
             init_pooverview();
         }
     });
+    // Scroll for Payments
+    new SimpleBar(document.getElementById('payments_tableview'), { autoHide: false });
     // Calendar call
     $("input#shipdatecalendinput").datepicker({
         autoclose: true,
