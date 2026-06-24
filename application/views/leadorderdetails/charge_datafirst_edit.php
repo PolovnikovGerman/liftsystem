@@ -1,7 +1,7 @@
-<div class="pay_method_content1">
-    <div class="pm_content1_tx text_blue">Finance Notes:</div>
-    <input type="text" class="pay_method_input4 input_border_gray inputleadorddata" data-entity="order" data-field="finance_notes" value="<?=$order['finance_notes']?>"/>
-</div>
+<!--<div class="pay_method_content1">-->
+<!--    <div class="pm_content1_tx text_blue">Finance Notes:</div>-->
+<!--    <input type="text" class="pay_method_input4 input_border_gray inputleadorddata" data-entity="order" data-field="finance_notes" value="--><?php //=$order['finance_notes']?><!--"/>-->
+<!--</div>-->
 <div class="pay_method_content2">    
     <div class="pay_methods_area">
     <?php foreach ($charges as $row) { ?>
