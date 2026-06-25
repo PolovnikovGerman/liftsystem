@@ -4,7 +4,7 @@
     Popup Window for Order Details
 */
 #artModal .modal-header {
-    padding: 6px 15px!important;
+    padding: 3px 15px 6px 15px!important;
 }
 #artModal .modal-header.cancelorder {
     background-color: #000000;
@@ -41,7 +41,7 @@
     margin-left: -15px;
     font-size: 13px;
     margin-bottom: -30px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
 }
 .leadorderdetailspopupheader {
     float: left;
@@ -340,7 +340,7 @@ input.calendarinpt[readonly="readonly"] {
 .bl_contact_content{
     float: left;
     width: 508px;
-    height: 78px;
+    height: 72px;
     background: #dadada;
     border: 2px solid #000;
 }
@@ -360,7 +360,7 @@ input.calendarinpt[readonly="readonly"] {
 .contact_content_email {
     float: left;
     width: 205px;
-    max-height: 20px;
+    max-height: 16px;
 }
 .contact_content_art,
 .contact_content_inv,
@@ -374,9 +374,9 @@ input.calendarinpt[readonly="readonly"] {
 }
 .contact_input {
     float:left;
-    height: 16px;
-    font-size: 12px !important;
-    margin: 2px 2px;
+    height: 14px;
+    /*font-size: 12px !important;*/
+    margin: 1px 1px;
 }
 .contact_name_input {
     width: 102px;
@@ -391,31 +391,37 @@ input.calendarinpt[readonly="readonly"] {
     float: right;
     position: relative;
     left: -8px;
-    top: -17px;
+    top: -15px;
     background: #000;
     color: #fff;
     font-size: 9px;
-    height: 14.9px;
-    width: 16px;
+    height: 13.9px;
+    width: 14px;
     text-align: center;
     cursor: pointer;
 }
 .contact_art_input,
 .contact_inv_input,
 .contact_trk_input {
-    margin-top: 2px;
+    margin-top: 1px;
 }
 .bl_items {
     float: left;
     margin-top: 5px;
 }
 .bl_items_tx {
-    margin-top: 82px;
+    margin-top: 63px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_items_content{
     float: left;
     width: 536px;
-    height: 183px;
+    /*height: 183px;*/
     border: 2px solid #000;
 }
 .items_content_line{
@@ -584,8 +590,8 @@ input.order_itemqty_input {
 .bl_items_content_table{
     float: left;
     width: 531px;
-    height: 159px;
-    /* overflow-y: scroll; */
+    height: 139px;
+    /*height: 159px;*/
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -908,7 +914,13 @@ input.items_discount {
     margin-top: -4px;
 }
 .bl_ship_tax_tx {
-    margin-top: 10px;
+    margin-top: 25px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_ship_tax_content{
     float: left;
@@ -1082,7 +1094,7 @@ span.text_bold {
 }
 .shipotherparamsarea {
     float: right;
-    margin-right: 12px;
+    margin-right: 8px;
     margin-left: 6px; /* 16px; */
     height: 18px;
     /*width: 391px;*/
@@ -1144,8 +1156,9 @@ input.rushpastvalue.arrivelate {
 }
 .rushselectarea > .rushdataselect {
     float: left;
-    width: 148px;
-    margin-right: 9px;
+    /*width: 148px;*/
+    width: 170px;
+    margin-right: 14px;
 }
 .rushselectarea.multyship > .rushdataselect {
     margin-right: 27px;
@@ -1155,11 +1168,15 @@ select.shiprashselect {
     font-size: 11px;
     height: 19px;
     margin: 0 2px;
-    width: 145px;
+    /*width: 145px;*/
+    width: 173px;
 }
 input.shiprushcost, input.shippingcost, input.salestaxcost {
     height: 18px;
     width: 45px;    
+}
+input.shiprushcost {
+    margin-left: 7px;
 }
 .ship_tax_container {
     float: left;
@@ -1178,7 +1195,8 @@ input.shiprushcost, input.shippingcost, input.salestaxcost {
     overflow-y: scroll;
     overflow-x: hidden;
     position: absolute;
-    width: 234px;    
+    /*width: 234px;*/
+    width: 239px;
 }
 .shipdetailsarea {    
     float: left;
@@ -1438,8 +1456,13 @@ span.taxemptyview {
     /* margin-top: 5px; */
 }
 .bl_billing_tx {
-    /* margin-top: 20px; */
-    margin-top: 27px;
+    margin-top: 40px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_billing_content{
     float: left;
@@ -1626,7 +1649,7 @@ span.taxemptyview {
 .bl_pay_method_content{
     float: left;
     /*height: 113px;*/
-    height: 95px;
+    height: 88px;
     width: 341px;
 }
 .pay_method_content1{
@@ -1642,7 +1665,7 @@ span.taxemptyview {
 .pay_method_content2 {
     float: left;
     width: 322px;
-    height: 63px;
+    height: 58px;
     border: 2px solid #000;    
     margin: 2px 0;
 }
@@ -1652,9 +1675,11 @@ span.taxemptyview {
 .pay_methods_area {
     clear: both;
     float: left;
-    height: 44px;
+    height: 38px;
     overflow-y: auto;
     width: 100%;
+    overflow-x: hidden;
+    scrollbar-width: none;
 }
 .pay_method_content1_line{
     float: left;
@@ -1759,7 +1784,7 @@ span.taxemptyview {
     float: left;
     font-size: 9px;
     padding-left: 3px;
-    margin-top: -3px;
+    margin-top: -4px;
     line-height: 13px;
 }
 .pay_method_input5 {
@@ -1769,15 +1794,21 @@ span.taxemptyview {
 }
 .bl_payments {
     float: left;
-    margin-top: 5px;
+    margin-top: -12px;
     margin-left: -9px;
+    width: 202px;
 }
 .bl_payments > .bl_tx {
-    margin-left: -4px;
+    margin-left: 0;
+    width: 100%;
 }
 .bl_payments_tx {
-    /*margin-top: 18px;*/
-    margin-top: -10px;
+    /*margin-top: -10px;*/
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    text-align: center;
 }
 .bl_payments_content{
     border: 2px solid #000;
@@ -2306,7 +2337,7 @@ input.artrepeat {
     line-height: 22px;
     /* width: 126px; */
     border-radius: 7px;
-    margin-top: 7px;
+    /*margin-top: 7px;*/
     border: 1px solid #000000;
     cursor: pointer;
 }
@@ -2317,8 +2348,8 @@ input.artrepeat {
     /* background: url('/img/leadorder/bacgr_6_project.png') no-repeat transparent; */
     background-color: #001072;
     color: #FFFFEE;
-    height: 36px;
-    line-height: 36px;
+    /*height: 36px;*/
+    /*line-height: 36px;*/
     margin-top: 0;
 }
 .block_10.black {
@@ -2347,6 +2378,8 @@ input.artrepeat {
     text-align: right;
     padding-right: 5px;
     width: 83px;
+    height: 23px;
+    line-height: 22px;
 }
 /*.block_10_text_project {*/
 /*    float: left;    */
@@ -2360,22 +2393,24 @@ input.artrepeat {
     width: 60px;
 }
 .block_10.project .block_10_text2 {
-    border-left: none;
-    width: 106px;
+    width: 176px;
 }
 .block_10.project .block_10_text2 > .detailsproject {
-    width: 100%;
+    float: left;
+    width: 80px;
     text-align: left;
-    height: 18px;
-    line-height: 18px;
+    height: 23px;
+    line-height: 22px;
     font-size: 14px;
     padding-left: 5px;
 }
 .block_10.project .block_10_text2 > .detailscomplet {
-    width: 100%;
+    border-left: 1px solid;
+    float: left;
+    width: 87px;
     text-align: left;
-    height: 14px;
-    line-height: 14px;
+    height: 23px;
+    line-height: 22px;
     font-size: 11px;
     padding-left: 5px;
 }
@@ -2530,11 +2565,11 @@ input.artrepeat {
     margin-top: 2px;
 }
 .button_no_text {
-    line-height: 16px;
+    line-height: 18px;
     text-align: center;
     font-size: 12px;
     color: #fff;
-    width: 32px;
+    width: 31px;
 }
 .icon_file {
     background: url(/img/leadorder/icon_file.png) no-repeat transparent;
@@ -2653,6 +2688,7 @@ input.artrepeat {
 .marglef .bottomfinancearea {
     float: right!important;
     margin-right: 26px;
+    margin-top: -4px;
 }
 .shippingdataviewarea {
     float: right !important;
@@ -5872,8 +5908,8 @@ input.ticket_date {
 .trackingdataarea {
     background: #FFFFFF;
     width: 412px;
-    height: 150px;
-    margin-top: -120px;
+    /*height: 150px;*/
+    margin-top: -93px;
     border-radius: 7px;
 }
 .trackingdataarea.empty {
@@ -5936,6 +5972,7 @@ input.ticket_date {
     font-style: italic;
     width: 100%;
     margin-bottom: -24px;
+    display: none;
 }
 .trackingdatafooter .trackshippeddata.completed {
     color: #000000;
@@ -5958,7 +5995,8 @@ input.ticket_date {
     width: 100%;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
-    height: 102px;
+    /*height: 102px;*/
+    height: 86px;
 }
 .trackingdatabodyarea {
     width: 100%;
@@ -6061,11 +6099,13 @@ input.ticket_date {
 }
 /* Multi item tracks */
 .multitrackbodyarea {
-    max-height: 126px;
+    /*max-height: 126px;*/
+    max-height: 94px;
     overflow-y: auto;
 }
 .multitrackdatabody {
-    min-height: 39px;
+    /*min-height: 39px;*/
+    min-height: 22px;
     background: #FFFFFF;
     padding: 5px;
     width: 100%;
@@ -6082,6 +6122,7 @@ input.ticket_date {
     font-style: italic;
     width: 100%;
     margin-bottom: 3px;
+    display: none;
 }
 .multitrackdatabody .multitrackshipped.completed {
     color: #000000;
