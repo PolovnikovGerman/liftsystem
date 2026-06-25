@@ -959,6 +959,8 @@ Class Leadorder_model extends My_Model {
             $row['out_date'] = date('m/d/y', $row['batch_date']);
             if ($row['batch_type']=='American Express') {
                 $row['batch_type']='AmEx';
+            } elseif ($row['batch_type']=='Mastercard') {
+                $row['batch_type']='MC';
             }
             if (abs($row['batch_vmd']) > 0) {
                 if (!empty($row['batch_type'])) {

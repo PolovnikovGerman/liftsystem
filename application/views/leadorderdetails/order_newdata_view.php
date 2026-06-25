@@ -1,7 +1,9 @@
 <div class="block_5">
     <div class="bl_contact">
         <div class="bl_tx">
-            <div class="bl_contact_tx"><img src="/img/leadorder/tx_contact.png" alt="contact"/></div>
+            <div class="bl_contact_tx">
+                contacts
+            </div>
         </div>
         <div class="bl_contact_content">
             <div class="contact_content_line contact_content_title">
@@ -18,7 +20,7 @@
     <div class="bl_items">
         <div class="bl_tx">
             <div class="bl_items_tx">
-                <img src="/img/leadorder/tx_items.png" alt="items"/>
+                items
             </div>
         </div>
         <div class="bl_items_content">
@@ -58,7 +60,7 @@
     <div class="bl_ship_tax">
         <div class="bl_tx">
             <div class="bl_ship_tax_tx">
-                <img src="/img/leadorder/tx_ship_tax.png"  alt="ship_tax"/>
+                ship &amp; tax
             </div>
         </div>
         <!-- Ship View -->
@@ -68,7 +70,7 @@
     <div class="bl_billing">
         <div class="bl_tx">
             <div class="bl_billing_tx">
-                <img src="/img/leadorder/tx_billing.png" alt="billing"/>
+                billing
             </div>
         </div>
         <div class="bl_billing_content">
@@ -79,7 +81,7 @@
     <div class="bl_pay_method">
         <div class="bl_tx">
             <div class="bl_pay_method_tx">
-                <img src="/img/leadorder/tx_pay_method.png" alt="pay_method"/>
+                payment
             </div>
         </div>
         <div class="bl_pay_method_content"><?=$chargeview?></div>
@@ -87,7 +89,7 @@
     <div class="bl_payments">
         <div class="bl_tx">
             <div class="bl_payments_tx">
-                <img src="/img/leadorder/tx_payments.png" width="10" height="64" alt="payments">
+                payment history
             </div>
         </div>
         <div class="bl_payments_content">
