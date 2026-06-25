@@ -211,6 +211,7 @@ function navigation_init() {
     });
     // Scroll for Payments
     new SimpleBar(document.getElementById('payments_tableview'), { autoHide: false });
+    new SimpleBar(document.getElementById('pay_methods_area'), { autoHide: false });
     // Show Attempts
     $("div.chargeattemptlogcall").unbind('click').click(function(){        
         var order=$(this).data('order');
@@ -498,6 +499,7 @@ function init_onlineleadorder_edit() {
     });
     // Scroll for Payments
     new SimpleBar(document.getElementById('payments_tableview'), { autoHide: false });
+    new SimpleBar(document.getElementById('pay_methods_area'), { autoHide: false });
     // Calendar call
     $("input#shipdatecalendinput").datepicker({
         autoclose: true,
