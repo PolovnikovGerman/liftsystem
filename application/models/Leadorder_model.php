@@ -12608,13 +12608,12 @@ Class Leadorder_model extends My_Model {
     public function prepare_checkout_invite($leadorder, $user_id, $session_id)
     {
         $out = ['result' => $this->success_result, 'msg' => $this->error_message];
-        $invite_name = $invite_email = '';
+        $invite_name = $invite_email = [];
         $contacts = $leadorder['contacts'];
         foreach ($contacts as $contact) {
             if (!empty($contact['contact_emal']) && !empty($contact['contact_name']) && intval($contact['contact_inv'])==1) {
-                $invite_email = $contact['contact_emal'];
-                $invite_name = $contact['contact_name'];
-                break;
+                $invite_email[] = $contact['contact_emal'];
+                $invite_name[] = $contact['contact_name'];
             }
         }
         $order = $leadorder['order'];
@@ -12652,16 +12651,28 @@ Class Leadorder_model extends My_Model {
             $itemname = substr($itemdata,0, -2);
         }
         $out['subject'] = 'Payment Due - '.MoneyOutput($balance).' - '.$itemname;
-        $out['invite_name'] = $invite_name;
-        $out['invite_email'] = $invite_email;
+        $out['invite_name'] = $invite_name[0];
+        $out['invite_email'] = $invite_email[0];
+        if (count($invite_email) > 1) {
+            $out['cc_name'] = $invite_name[1];
+            $out['cc_email'] = $invite_email[1];
+        }
+        if (count($invite_email) > 2) {
+            $out['bcc_name'] = $invite_name[1];
+            $out['bcc_email'] = $invite_email[1];
+        }
+        $out['count_contacts'] = count($invite_email);
         $out['order'] = $leadorder['order'];
         usersession($session_id, $leadorder);
         return $out;
     }
 
-    public function send_checkout_invite($leadorder, $invite_name, $invite_email, $subject, $user_id, $session_id)
+    public function send_checkout_invite($leadorder, $msgoptions, $user_id, $session_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
+        $invite_name = $msgoptions['invite_name'];
+        $invite_email = $msgoptions['invite_email'];
+        $subject = $msgoptions['subject'];
         if (empty($invite_name) || empty($invite_email)) {
             // Get from contacts
             $contacts = $leadorder['contacts'];
@@ -12757,6 +12768,12 @@ Class Leadorder_model extends My_Model {
             $title = 'Payment Due - '.MoneyOutput($message_options['balance']).' - '.$message_options['itemname'];
         }
         $this->email->subject($title);
+        if (isset($msgoptions['cc_email']) && valid_email_address($msgoptions['cc_email'])) {
+            $this->email->cc($msgoptions['cc_email']);
+        }
+        if (isset($msgoptions['bcc_email']) && valid_email_address($msgoptions['bcc_email'])) {
+            $this->email->bcc($msgoptions['bcc_email']);
+        }
         $mail_body = $this->load->view('messages/chekout_invitation_view', $message_options, TRUE);
         $this->email->message($mail_body);
         if (!$this->email->send()) {

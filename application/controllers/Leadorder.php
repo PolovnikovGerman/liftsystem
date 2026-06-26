@@ -7003,6 +7003,14 @@ class Leadorder extends MY_Controller
                         'from' => $finemail,
                         'subject' => $res['subject'],
                     ];
+                    if ($res['count_contacts'] > 1) {
+                        $options['cc_name'] = $res['cc_name'];
+                        $options['cc_email'] = $res['cc_email'];
+                    }
+                    if ($res['count_contacts'] > 2) {
+                        $options['bcc_name'] = $res['bcc_name'];
+                        $options['bcc_email'] = $res['bcc_email'];
+                    }
                     $mdata['content'] = $this->load->view('leadorderdetails/invite_checkout_view', $options, true);
                 }
             }
@@ -7023,8 +7031,22 @@ class Leadorder extends MY_Controller
                 $invite_name = ifset($postdata, 'invite_name','');
                 $invite_email = ifset($postdata, 'invite_email','');
                 $subject = ifset($postdata, 'subject', '');
-                $res=$this->leadorder_model->send_checkout_invite($leadorder, $invite_name, $invite_email, $subject, $this->USR_ID, $ordersession);
+                $msgoptions = [
+                    'invite_name' => $invite_name,
+                    'invite_email' => $invite_email,
+                    'subject' => $subject,
+                ];
+                if (isset($postdata['cc_email']) && !empty($postdata['cc_email'])) {
+                    $msgoptions['cc_email'] = $postdata['cc_email'];
+                    $msgoptions['cc_name'] = ifset($postdata, 'cc_name', '');
+                }
+                if (isset($postdata['bcc_email']) && !empty($postdata['bcc_email'])) {
+                    $msgoptions['bcc_email'] = $postdata['bcc_email'];
+                    $msgoptions['bcc_name'] = ifset($postdata, 'bcc_name','');
+                }
+                $res=$this->leadorder_model->send_checkout_invite($leadorder, $msgoptions, $this->USR_ID, $ordersession);
                 $error = $res['msg'];
+                $res['result'] = $this->error_result;
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $history = $res['history'];
