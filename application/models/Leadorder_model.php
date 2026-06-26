@@ -12100,8 +12100,8 @@ Class Leadorder_model extends My_Model {
             $out['cc_email'] = $invite_email[1];
         }
         if (count($invite_email) > 2) {
-            $out['bcc_name'] = $invite_name[1];
-            $out['bcc_email'] = $invite_email[1];
+            $out['bcc_name'] = $invite_name[2];
+            $out['bcc_email'] = $invite_email[2];
         }
         $out['count_contacts'] = count($invite_email);
         $out['order'] = $leadorder['order'];
