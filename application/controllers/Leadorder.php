@@ -7033,15 +7033,14 @@ class Leadorder extends MY_Controller
                 ];
                 if (isset($postdata['cc_email']) && !empty($postdata['cc_email'])) {
                     $msgoptions['cc_email'] = $postdata['cc_email'];
-                    $msgoptions['cc_name'] = ifset($postdata, 'cc_name', '');
+//                    $msgoptions['cc_name'] = ifset($postdata, 'cc_name', '');
                 }
                 if (isset($postdata['bcc_email']) && !empty($postdata['bcc_email'])) {
                     $msgoptions['bcc_email'] = $postdata['bcc_email'];
-                    $msgoptions['bcc_name'] = ifset($postdata, 'bcc_name','');
+//                    $msgoptions['bcc_name'] = ifset($postdata, 'bcc_name','');
                 }
                 $res=$this->leadorder_model->send_checkout_invite($leadorder, $msgoptions, $this->USR_ID, $ordersession);
                 $error = $res['msg'];
-                $res['result'] = $this->error_result;
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $history = $res['history'];
