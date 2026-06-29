@@ -1072,7 +1072,7 @@ class Printcalendar_model extends MY_Model
         $this->db->join('('.$this->amntsql.') amnt','amnt.order_itemcolor_id = oic.order_itemcolor_id','left');
         $this->db->join('('.$this->printsql.') impr','impr.order_item_id = oi.order_item_id','left');
         $this->db->join('('.$this->proofsql.') approv','approv.order_id=o.order_id','left');
-        $this->db->where('o.print_date >= ', $daybgn)->where('o.print_date < ', $dayend)->where(['o.is_canceled' => 0,  'o.print_user'=> $user]); // 'o.shipped_date' => 0,
+        $this->db->where('oi.print_date >= ', $daybgn)->where('oi.print_date < ', $dayend)->where(['o.is_canceled' => 0,  'o.print_user'=> $user]); // 'o.shipped_date' => 0,
         $this->db->where('ship.shipped <= COALESCE(amnt.fullfill,0)');
         $this->db->where('(ship.shipped < oic.item_qty or coalesce(amnt.fullfill,0) < oic.item_qty)');
         // $this->db->order_by('o.order_rush desc', 'order_id asc');
@@ -2620,5 +2620,19 @@ class Printcalendar_model extends MY_Model
         }
         $results = $this->db->get()->row_array();
         return $results;
+    }
+
+    public function save_inventory_outcome($amount_id, $user_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Amount not found'];
+        $this->db->select('oa.amount_id as printshop_income_id, oa.order_id, oa.inventory_color_id, oa.printshop_date, (oa.shipped+oa.misprint+oa.kepted) as total_qty, o.brand')->from('ts_order_amounts oa')->join('ts_orders o','oa.order_id=o.order_id')->where('oa.amount_id', $amount_id);
+        $orderdata = $this->db->get()->row_array();
+        $this->load->model('inventory_model');
+        $invres = $this->inventory_model->_add_inventory_outcome($orderdata, $user_id);
+        $out['msg'] = $invres['msg'];
+        if ($invres['result']==$this->success_result) {
+            $out['result'] = $this->success_result;
+        }
+        return $out;
     }
 }

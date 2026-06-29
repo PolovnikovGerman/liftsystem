@@ -185,7 +185,11 @@ Class Artproof_model extends MY_Model
             }
             $row['order_rush']=($row['order_rush_val']==1 ? $rushimg : '&nbsp;');
             $row['order_overclass']=$taskclass;
-            $row['order_num']=str_replace('pr','', $row['order_num']);
+            $ordnum = $row['order_num'];
+            if (!empty($row['order_num'])) {
+                $ordnum = str_replace('pr','', $row['order_num']);
+            }
+            $row['order_num'] = $ordnum;
             $row['customitem'] = 0;
             if ($row['item_id']==$this->config->item('custom_id')) {
                 $row['customitem'] = 1;

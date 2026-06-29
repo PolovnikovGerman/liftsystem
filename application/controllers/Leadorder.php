@@ -654,6 +654,12 @@ class Leadorder extends MY_Controller
                             'totaldue'=>$total_due,
                         );
                         $mdata['ordersystem']=$leadorder['order_system'];
+                        if ($leadorder['order']['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$leadorder['order']['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$leadorder['order']['checkout_link'];;
+                        }
+
                         $mdata['balanceopen']=1;
                         if ($total_due==0 && $order['payment_total']>0) {
                             $dueoptions['class']='closed';
@@ -864,6 +870,11 @@ class Leadorder extends MY_Controller
                         $dueoptions=array(
                             'totaldue'=>$total_due,
                         );
+                        if ($leadorder['order']['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$leadorder['order']['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$leadorder['order']['checkout_link'];;
+                        }
                         $mdata['ordersystem']=$leadorder['order_system'];
                         $mdata['balanceopen']=1;
                         if ($total_due==0 && $ord_data['payment_total']>0) {
@@ -1440,6 +1451,11 @@ class Leadorder extends MY_Controller
                                 'totaldue'=>$total_due,
                             );
                             $mdata['ordersystem']=$leadorder['order_system'];
+                            if ($leadorder['order']['brand']=='SR') {
+                                $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$leadorder['order']['checkout_link'];
+                            } else {
+                                $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$leadorder['order']['checkout_link'];;
+                            }
                             $mdata['balanceopen']=1;
                             if ($total_due==0 && $order['payment_total']>0) {
                                 $dueoptions['class']='closed';
@@ -1577,6 +1593,11 @@ class Leadorder extends MY_Controller
                     $dueoptions=array(
                         'totaldue'=>$total_due,
                     );
+                    if ($order['brand']=='SR') {
+                        $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                    } else {
+                        $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                    }
                     $mdata['ordersystem']=$leadorder['order_system'];
                     $mdata['balanceopen']=1;
                     if ($total_due==0 && $order['payment_total']>0) {
@@ -1756,6 +1777,11 @@ class Leadorder extends MY_Controller
                         $dueoptions=array(
                             'totaldue'=>$total_due,
                         );
+                        if ($order['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
                         $mdata['ordersystem']=$leadorder['order_system'];
                         $mdata['balanceopen']=1;
                         if ($total_due==0 && $order['payment_total']>0) {
@@ -1965,10 +1991,14 @@ class Leadorder extends MY_Controller
                     } else {
                         $mdata['arttype']='logo';
                         if ($doctype=='source') {
-                            $mdata['artlocurl']=str_replace('//','/',$location['logo_src']);
+                            $artlocurl=str_replace('//','/',$location['logo_src']);
                         } else {
-                            $mdata['artlocurl']=str_replace('//','/',$location['logo_vectorized']);
+                            $artlocurl=str_replace('//','/',$location['logo_vectorized']);
                         }
+                        if (substr($artlocurl,0,1)!=='/') {
+                            $artlocurl='/'.$artlocurl;
+                        }
+                        $mdata['artlocurl'] = $artlocurl;
                     }
                 }
             }
@@ -2463,6 +2493,11 @@ class Leadorder extends MY_Controller
                         $dueoptions=array(
                             'totaldue'=>$total_due,
                         );
+                        if ($order['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
                         $mdata['ordersystem']=$leadorder['order_system'];
                         $mdata['balanceopen']=1;
                         if ($total_due==0 && $order['payment_total']>0) {
@@ -2848,6 +2883,11 @@ class Leadorder extends MY_Controller
                     $dueoptions=array(
                         'totaldue'=>$total_due,
                     );
+                    if ($order['brand']=='SR') {
+                        $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                    } else {
+                        $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                    }
                     if ($total_due==0 && $order['payment_total']>0) {
                         $dueoptions['class']='closed';
                     } else {
@@ -3034,6 +3074,11 @@ class Leadorder extends MY_Controller
                         $dueoptions=array(
                             'totaldue'=>$total_due,
                         );
+                        if ($order['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
                         if ($total_due==0 && $order['payment_total']>0) {
                             $dueoptions['class']='closed';
                             $mdata['balanceopen']=0;
@@ -3225,6 +3270,11 @@ class Leadorder extends MY_Controller
                         $dueoptions=array(
                             'totaldue'=>$total_due,
                         );
+                        if ($order['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
                         $mdata['ordersystem']=$leadorder['order_system'];
                         $mdata['balanceopen']=1;
                         if ($total_due==0 && $order['payment_total']>0) {
@@ -3314,6 +3364,11 @@ class Leadorder extends MY_Controller
                         $dueoptions=array(
                             'totaldue'=>$total_due,
                         );
+                        if ($order['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
                         if ($total_due==0 && $order['payment_total']>0) {
                             $dueoptions['class']='closed';
                         } else {
@@ -4906,6 +4961,11 @@ class Leadorder extends MY_Controller
                         $dueoptions=array(
                             'totaldue'=>$total_due,
                         );
+                        if ($order['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
                         if ($total_due==0 && $order['payment_total']>0) {
                             $dueoptions['class']='closed';
                             $mdata['balanceopen']=0;
@@ -5218,6 +5278,11 @@ class Leadorder extends MY_Controller
                         $dueoptions = array(
                             'totaldue' => $total_due,
                         );
+                        if ($order['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
                         if ($total_due == 0 && $order['payment_total'] > 0) {
                             $dueoptions['class'] = 'closed';
                             $mdata['balanceopen']=0;
@@ -6280,6 +6345,11 @@ class Leadorder extends MY_Controller
                         $dueoptions=array(
                             'totaldue'=>$total_due,
                         );
+                        if ($order['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
                         if ($total_due==0 && $order['payment_total']>0) {
                             $dueoptions['class']='closed';
                             $mdata['balanceopen']=0;
@@ -6893,5 +6963,92 @@ class Leadorder extends MY_Controller
             $profit_view = $this->load->view('leadorderdetails/profit_view', $profitoptions, TRUE);
         }
         return $profit_view;
+    }
+
+    public function prepare_checkout_invite()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $res=$this->leadorder_model->prepare_checkout_invite($leadorder, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $order = $res['order'];
+                    if ($order['brand']=='SR') {
+                        $finemail = $this->config->item('fin_srdept_email');
+                    } else {
+                        $finemail = $this->config->item('fin_sbdept_email');
+                    }
+                    $options = [
+                        'order' => $order['order_num'],
+                        'order_id' => $order['order_id'],
+                        'invite_name' => $res['invite_name'],
+                        'invite_email' => $res['invite_email'],
+                        'from' => $finemail,
+                        'subject' => $res['subject'],
+                    ];
+                    if ($res['count_contacts'] > 1) {
+                        $options['cc_name'] = $res['cc_name'];
+                        $options['cc_email'] = $res['cc_email'];
+                    }
+                    if ($res['count_contacts'] > 2) {
+                        $options['bcc_name'] = $res['bcc_name'];
+                        $options['bcc_email'] = $res['bcc_email'];
+                    }
+                    $mdata['content'] = $this->load->view('leadorderdetails/invite_checkout_view', $options, true);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function send_checkout_invite()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $invite_name = ifset($postdata, 'invite_name','');
+                $invite_email = ifset($postdata, 'invite_email','');
+                $subject = ifset($postdata, 'subject', '');
+                $msgoptions = [
+                    'invite_name' => $invite_name,
+                    'invite_email' => $invite_email,
+                    'subject' => $subject,
+                ];
+                if (isset($postdata['cc_email']) && !empty($postdata['cc_email'])) {
+                    $msgoptions['cc_email'] = $postdata['cc_email'];
+//                    $msgoptions['cc_name'] = ifset($postdata, 'cc_name', '');
+                }
+                if (isset($postdata['bcc_email']) && !empty($postdata['bcc_email'])) {
+                    $msgoptions['bcc_email'] = $postdata['bcc_email'];
+//                    $msgoptions['bcc_name'] = ifset($postdata, 'bcc_name','');
+                }
+                $res=$this->leadorder_model->send_checkout_invite($leadorder, $msgoptions, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $history = $res['history'];
+                    $mdata['histoyview'] = $this->load->view('leadorderdetails/arthistory_view', ['histories' => $history], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
     }
 }

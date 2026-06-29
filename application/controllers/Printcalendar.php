@@ -735,29 +735,20 @@ class Printcalendar extends MY_Controller
                 $res = $this->printcalendar_model->outcomesave($order_itemcolor_id,$shipped,$kepted,$misprint,$plates, $podate);
                 $error = $res['msg'];
                 if ($res['result'] == $this->success_result) {
-                    $error = '';
-                    $mdata['refreshinfo'] = 1;
-                    $printdate = $res['printdate'];
-                    $views = $this->_prepare_daydetails_parts($printdate);
-                    $mdata['warningview'] = $views['warningview'];
-                    $mdata['regularview'] = $views['regularview'];
-                    $mdata['historyview'] = $views['historyview'];
-                    $mdata['warningcnt'] = $views['warningcnt'];
-//                    $this->load->model('user_model');
-//                    $userlist = $this->user_model->get_printschedul_users();
-//                    $itemcolor = $this->printcalendar_model->get_itemcolor_details($order_itemcolor_id);
-//                    $mdata['refreshinfo'] = 0;
-//                    if (($itemcolor['fulfillprc']>=100 && $itemcolor['shippedprc']>=100) || ($itemcolor['fulfill']<$itemcolor['shipped']))  {
-//                        $mdata['refreshinfo'] = 1;
-//                        // Build new day
-//                        $printdate = $res['printdate'];
-//                        $views = $this->_prepare_daydetails_parts($printdate);
-//                        $mdata['warningview'] = $views['warningview'];
-//                        $mdata['regularview'] = $views['regularview'];
-//                        $mdata['historyview'] = $views['historyview'];
-//                    } else {
-//                        $mdata['content'] = $this->load->view('printcalendar/printcolor_data_view', ['list' => $itemcolor, 'users' => $userlist], true);
-//                    }
+                    $amount_id = $res['printshop_income_id'];
+                    // Add MInventory movement
+                    $invres = $this->printcalendar_model->save_inventory_outcome($amount_id, $this->USR_ID);
+                    $error = $invres['msg'];
+                    if ($invres['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['refreshinfo'] = 1;
+                        $printdate = $res['printdate'];
+                        $views = $this->_prepare_daydetails_parts($printdate);
+                        $mdata['warningview'] = $views['warningview'];
+                        $mdata['regularview'] = $views['regularview'];
+                        $mdata['historyview'] = $views['historyview'];
+                        $mdata['warningcnt'] = $views['warningcnt'];
+                    }
                 }
             }
             $this->ajaxResponse($mdata, $error);

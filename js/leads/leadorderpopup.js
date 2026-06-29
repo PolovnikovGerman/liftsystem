@@ -208,7 +208,10 @@ function navigation_init() {
     $("a.historydetailsview").unbind('click').click(function(){
         var history=$(this).data('history');
         show_updatedetails(history);
-    });    
+    });
+    // Scroll for Payments
+    new SimpleBar(document.getElementById('payments_tableview'), { autoHide: false });
+    new SimpleBar(document.getElementById('pay_methods_area'), { autoHide: false });
     // Show Attempts
     $("div.chargeattemptlogcall").unbind('click').click(function(){        
         var order=$(this).data('order');
@@ -494,6 +497,9 @@ function init_onlineleadorder_edit() {
             init_pooverview();
         }
     });
+    // Scroll for Payments
+    new SimpleBar(document.getElementById('payments_tableview'), { autoHide: false });
+    new SimpleBar(document.getElementById('pay_methods_area'), { autoHide: false });
     // Calendar call
     $("input#shipdatecalendinput").datepicker({
         autoclose: true,
@@ -4161,6 +4167,32 @@ function init_orderbottom_content(edit_mode) {
             }
         },'json');
     });
+    $(".icon_link_checkout").unbind('click').click(function (){
+        var element = document.querySelector("#checkoutlink");
+        copyOrderToClipboard(element);
+        $(element).hide();
+        var url = $("#checkoutlink").val();
+        var newWindow = window.open(url, 'paymentview');
+    });
+    $(".sendcheckoutnotification").unbind('click').click(function (){
+        var url="/leadorder/prepare_checkout_invite";
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".sendcheckoutnotificationcontent").empty().html(response.data.content);
+                $(".sendcheckoutnotificationarea").show();
+                $(".sendcheckoutnotificationclosewin").unbind('click').click(function(){
+                    $(".sendcheckoutnotificationarea").hide();
+                });
+                $(".invitecheckout_send").unbind('click').click(function (){
+                    send_checkout_invite();
+                })
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function init_profitedit_call(edit_mode) {
@@ -6197,4 +6229,29 @@ function init_tracking_manage() {
         $(element).show();
 
     });
+}
+
+function send_checkout_invite() {
+    var url="/leadorder/send_checkout_invite";
+    var params=new Array();
+    params.push({name: 'ordersession', value: $("input#ordersession").val()});
+    params.push({name: 'invite_name', value: $("#invitecheckoutname_to").val()});
+    params.push({name: 'invite_email', value: $("#invitecheckoutemail_to").val()});
+    if ($("#invitecheckoutemail_cc").length > 0) {
+        // params.push({name: 'cc_name', value: $("#invitecheckoutname_cc").val()});
+        params.push({name: 'cc_email', value: $("#invitecheckoutemail_cc").val()});
+    }
+    if ($("#invitecheckoutemail_bcc").length > 0) {
+        // params.push({name: 'bcc_name', value: $("#invitecheckoutname_bcc").val()});
+        params.push({name: 'bcc_email', value: $("#invitecheckoutemail_bcc").val()});
+    }
+    params.push({name: 'subject', value: $("#invitecheckoutsubject").val()})
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".sendcheckoutnotificationarea").hide();
+            $(".block_6_historytext").empty().html(response.data.histoyview);
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
