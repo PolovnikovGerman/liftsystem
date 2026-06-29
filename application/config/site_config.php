@@ -287,11 +287,13 @@ $config['custom_mischrg_srvalue'] = 160;
 $config['custom_itemprice'] = 3.00;
 $config['quote_customitem_price'] = array(
     array('promo_price_id' => -1, 'item_qty' => 500, 'sale_price' => 3.80),
-    array('promo_price_id' => -2, 'item_qty' => 750, 'sale_price' => 3.45),
-    array('promo_price_id' => -3, 'item_qty' => 1000, 'sale_price' => 3.05),
+//    array('promo_price_id' => -2, 'item_qty' => 750, 'sale_price' => 3.45),
+    array('promo_price_id' => -2, 'item_qty' => 1000, 'sale_price' => 3.05),
+    array('promo_price_id' => -3, 'item_qty' => 1500, 'sale_price' => 2.84),
     array('promo_price_id' => -4, 'item_qty' => 2000, 'sale_price' => 2.78),
-    array('promo_price_id' => -5, 'item_qty' => 5000, 'sale_price' => 2.51),
-    array('promo_price_id' => -6, 'item_qty' => 10000, 'sale_price' => 2.35),
+    array('promo_price_id' => -5, 'item_qty' => 3000, 'sale_price' => 2.64),
+    array('promo_price_id' => -6, 'item_qty' => 5000, 'sale_price' => 2.51),
+    array('promo_price_id' => -7, 'item_qty' => 10000, 'sale_price' => 2.35),
 );
 // Default shipping prices
 $config['custom_ship_price'] = 0.15;
