@@ -1737,7 +1737,6 @@ Class Items_model extends My_Model
                 $itmdat[] = $item;
             }
             foreach ($itmdat as $item) {
-                var_dump($item); die();
                 $dat = array();
                 foreach ($item as $k => $v) {
                     if ($k!='item_id') {
