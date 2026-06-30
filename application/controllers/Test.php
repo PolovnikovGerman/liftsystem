@@ -5274,4 +5274,10 @@ class Test extends CI_Controller
         }
     }
 
+    public function itemsdb_export()
+    {
+        $this->load->model('items_model');
+        $res = $this->items_model->export_dbtable();
+    }
+
 }

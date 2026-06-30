@@ -1691,4 +1691,62 @@ Class Items_model extends My_Model
             echo 'Error '.PHP_EOL;
         }
     }
+
+    public function export_dbtable($options=array())
+    {
+        if (isset($options['brand'])) {
+            $brands = [$options['brand']];
+        } else {
+            $brands = ['BT','SR'];
+        }
+        foreach ($brands as $brand) {
+            echo 'Brand '.$brand.PHP_EOL;
+            $this->db->select('i.item_id, i.item_active, i.item_number, i.item_name, v.vendor_name, i.item_size');
+            $this->db->from('sb_items i');
+            $this->db->join('sb_vendor_items vi', 'vi.vendor_item_id = i.vendor_item_id');
+            $this->db->join('vendors v', 'v.vendor_id = vi.vendor_item_vendor');
+            $this->db->where('i.brand', $brand);
+            $this->db->order_by('i.item_number');
+            $items = $this->db->get()->result_array();
+            $itmdat = [];
+            $filename = $brand.'_expdb.csv';
+            $tmpName = $this->config->item('upload_path_preload').$filename;
+            $fp = fopen($tmpName, 'w');
+            $headers = array('Active', 'Item #', 'Item Name', 'Supplier');
+            for ($j=0; $j<12; $j++) {
+                array_push($headers, 'Loc '.$j);
+                array_push($headers, 'Size '.$j);
+            }
+            fputcsv($fp, $headers);
+
+            foreach ($items as $item) {
+                $item['item_active'] = $item['item_active']==0 ? 'NO' : 'YES';
+                $this->db->select('item_inprint_location, item_inprint_size')->from('sb_item_inprints')->where('item_inprint_item', $item['item_id']);
+                $inprints = $this->db->get()->result_array();
+                $num = 1;
+                foreach ($inprints as $inprint) {
+                    $item['loc'.str_pad($num, 2, '0', STR_PAD_LEFT)] = $inprint['item_inprint_location'];
+                    $item['size'.str_pad($num, 2, '0', STR_PAD_LEFT)] = $inprint['item_inprint_size'];
+                    $num++;
+                }
+                if ($num < 12) {
+                    for ($j=$num; $j<13; $j++) {
+                        $item['loc'.str_pad($j,2,'0', STR_PAD_LEFT)] = $item['size'.str_pad($j,2,'0', STR_PAD_LEFT)] = '';
+                    }
+                }
+                $itmdat[] = $item;
+            }
+            foreach ($itmdat as $item) {
+                $dat = array();
+                foreach ($item as $k => $v) {
+                    if ($k!='item_id') {
+                        array_push($dat, $v);
+                    }
+                }
+                fputcsv($fp, $dat);
+            }
+            fclose($fp);
+            echo 'File '.$this->config->item('pathpreload').$filename.' ready'.PHP_EOL;
+        }
+    }
 }
