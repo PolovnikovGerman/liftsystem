@@ -6770,3 +6770,83 @@ input.invitecheckout_input {
     color: #fff;
 
 }
+/* Art POP up part */
+#artNextModal .modal-body {
+    float: left;
+}
+#artNextModal .prpopup-contant {
+    width: 100%;
+    background: #ebeaea;
+    background: linear-gradient(to top, #e2e1e1, #eeeded);
+    border-radius: 0 0 5px 5px;
+    padding: 0 14px;
+}
+#artNextModal .modal-prpopups .modal-body {
+    padding: 0;
+}
+#artNextModal button.closemodal {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid #000;
+    background: #ff0000;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    opacity: 1;
+    z-index: 1;
+    font-size: 20px;
+    line-height: 18px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+    padding: 0;
+}
+#artNextModal .modal-prpopups h5.modal-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+}
+#artNextModal .prpopup-footer {
+    width: 100%;
+    padding: 10px 0;
+    float: left;
+}
+#artNextModal .prpopup-bluebtn {
+    width: auto;
+    height: 30px;
+    line-height: 28px;
+    background: #5b5afe;
+    background: linear-gradient(to top, #4c4bfe, #6664fe);
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #1a1b70;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+    padding: 0 15px;
+}
+#artNextModal .prpopuptext-save {
+    float: right !important;
+    margin-right: 14px;
+}
+
+#artNextModal .prpopup-textbox {
+    width: 100%;
+}
+#artNextModal .prpopup-textbox textarea {
+    height: 165px;
+    width: 100%;
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 14px;
+    resize: none;
+    width: 413px;
+}
+#artNextModal .modal-footer {
+    padding: 0!important;
+}

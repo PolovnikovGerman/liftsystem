@@ -1381,9 +1381,10 @@ function init_leadorder_artmanage() {
                 $("#artNextModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
                 })
-                $("div.vectorsave_data").show();
+                // $("div.vectorsave_data").show();
                 $("textarea.artworkusertext").focus();
-                $("div.vectorsave_data").unbind('click').click(function(){
+                // $("div.vectorsave_data").unbind('click').click(function(){
+                $("div.prpopuptext-save").unbind('click').click(function(){
                     save_leadorderrdnote(artloc);
                 });
                 $("input#loctimeout").val(response.data.loctime);
