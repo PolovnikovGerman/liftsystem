@@ -348,6 +348,11 @@ function init_leadpopupedit() {
             $.post(url, params, function (response){
                 if (response.errors=='') {
                     $("#leadtopreplicacontent").empty().html(response.data.content);
+                    if (parseInt(response.data.users) > 0) {
+                        $(".leadblock").removeClass('unassign');
+                    } else {
+                        $(".leadblock").addClass('unassign');
+                    }
                     init_leadpopupedit();
                 } else {
                     show_error(response);
@@ -565,6 +570,13 @@ function init_leadpopupedit() {
                 $("textarea[data-fld='newhistorymsg']").val('');
                 // $("#leadformModal").modal('hide');
                 artproof_lead(proof, 'leadspopup');
+                init_unassign_leads();
+                if (parseInt(response.data.customquote_flag)==1) {
+                    init_customform_interest();
+                }
+                if (parseInt(response.data.onlinequote_flag)==1) {
+                    init_webquotes_interest();
+                }
             } else {
                 $("#loader").hide();
                 show_error(response);
@@ -581,6 +593,13 @@ function init_leadpopupedit() {
             $("#loader").show();
             $.post(url, params, function (response){
                 if (response.errors=='') {
+                    init_unassign_leads();
+                    if (parseInt(response.data.customquote_flag)==1) {
+                        init_customform_interest();
+                    }
+                    if (parseInt(response.data.onlinequote_flag)==1) {
+                        init_webquotes_interest();
+                    }
                     var lparams = new Array();
                     lparams.push({name: 'lead_id', value: response.data.lead_id});
                     var lurl = mainurl+'/dublicatelead';
@@ -619,8 +638,14 @@ function init_leadpopupedit() {
             if (response.errors=='') {
                 $("#leadformModal").modal('hide');
                 initLeaddataPagination();
-                init_customform_interest();
+                if (parseInt(response.data.customquote_flag)==1) {
+                    init_customform_interest();
+                }
+                if (parseInt(response.data.onlinequote_flag)==1) {
+                    init_webquotes_interest();
+                }
                 show_leadpriority();
+                init_unassign_leads();
                 $("#loader").hide();
             } else {
                 $("#loader").hide();
@@ -666,6 +691,13 @@ function add_leadquote() {
             $("#loader").show();
             $.post(url, sparams, function (sresponse){
                 if (sresponse.errors=='') {
+                    init_unassign_leads();
+                    if (parseInt(sresponse.data.customquote_flag)==1) {
+                        init_customform_interest();
+                    }
+                    if (parseInt(sresponse.data.onlinequote_flag)==1) {
+                        init_webquotes_interest();
+                    }
                     // Send quotes
                     var numquotes = $("input[name='pricecheck']:checked").length;
                     console.log(numquotes+' quotes in queue');
@@ -790,6 +822,11 @@ function init_leadpopup_assign() {
                 if (response.errors=='') {
                     $("#leadtopreplicacontent").empty().html(response.data.content);
                     $(".leadtopassign-popup").hide();
+                    if (parseInt(response.data.users) > 0) {
+                        $(".leadblock").removeClass('unassign');
+                    } else {
+                        $(".leadblock").addClass('unassign');
+                    }
                     init_leadpopupedit();
                 } else {
                     show_error(response);
@@ -806,6 +843,13 @@ function open_quote_details(quote_id) {
     $("#loader").show();
     $.post(url, params, function (response){
         if (response.errors=='') {
+            init_unassign_leads();
+            if (parseInt(response.data.customquote_flag)==1) {
+                init_customform_interest();
+            }
+            if (parseInt(response.data.onlinequote_flag)==1) {
+                init_webquotes_interest();
+            }
             // $("#loader").hide();
             var qparams = new Array();
             qparams.push({name: 'quote_id', value: quote_id});

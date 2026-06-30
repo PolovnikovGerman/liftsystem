@@ -336,8 +336,26 @@ class Leads extends My_Controller {
             $brand = ifset($postdata,'brand');
             if (!empty($brand)) {
                 $error = '';
-                // $sort = ifset($postdata,'sorttime',1);
-                $newleads = [];
+                $pagenum = ifset($postdata, 'offset',0);
+                $limit = ifset($postdata, 'limit', 250);
+                $offset = $pagenum*$limit;
+                $options=[
+                    'brand' => $brand,
+                ];
+                $search = ifset($postdata,'search');
+                if (!empty($search)) {
+                    $options['search']=$search;
+                }
+//                $usrrepl = ifset($postdata, 'userrepl');
+//                if (!empty($usrrepl)) {
+//                    $options['usrrepl']=$usrrepl;
+//                }
+                $options['showcloded'] = ifset($postdata, 'showcloded',0);
+                $sort = ifset($postdata,'sorttime',1);
+                $this->load->model('leads_model');
+                $newleads = $this->leads_model->get_unsignleads($options,$sort,$limit,$offset);
+
+                // $newleads = [];
                 if (count($newleads)==0) {
                     $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
                 } else {
@@ -2187,6 +2205,28 @@ class Leads extends My_Controller {
                 $res = $this->customform_model->get_customform_monthchart($brand);
                 $mdata['data'] = $res['data'];
                 $mdata['labels'] = $res['labels'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function unassignlead_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
+            $this->load->model('leads_model');
+            $data = $this->leads_model->get_unassignleads_interest($brand, $showall);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_unsignleads_view',['leads' => $data],TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }
