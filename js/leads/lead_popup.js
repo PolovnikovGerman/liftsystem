@@ -692,10 +692,10 @@ function add_leadquote() {
             $.post(url, sparams, function (sresponse){
                 if (sresponse.errors=='') {
                     init_unassign_leads();
-                    if (parseInt(response.data.customquote_flag)==1) {
+                    if (parseInt(sresponse.data.customquote_flag)==1) {
                         init_customform_interest();
                     }
-                    if (parseInt(response.data.onlinequote_flag)==1) {
+                    if (parseInt(sresponse.data.onlinequote_flag)==1) {
                         init_webquotes_interest();
                     }
                     // Send quotes

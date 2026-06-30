@@ -2973,6 +2973,7 @@ Class Leads_model extends MY_Model
     public function save_leadpopup($leaddata, $user_id, $session_id, $closesession=0)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Contact doesn\'t found'];
+        $customquote_flag = $onlinequote_flag = 0;
         $lead = $leaddata['lead'];
         $contacts = $leaddata['lead_contacts'];
         $leadusers = $leaddata['lead_users'];
@@ -2986,6 +2987,22 @@ Class Leads_model extends MY_Model
             if ($closesession==1) {
                 usersession($session_id, null);
             }
+            $this->db->select('l.email_id, l.custom_quote_id, e.email_type, e.email_subtype');
+            $this->db->from('ts_lead_emails l');
+            $this->db->join('ts_emails e','e.email_id=l.email_id','left');
+            $this->db->where('l.lead_id',$lead['lead_id']);
+            $rellists = $this->db->get()->result_array();
+            foreach ($rellists as $rellist) {
+                if (!empty($rellists['custom_quote_id'])) {
+                    $customquote_flag = 1;
+                } else {
+                    if (isset($rellist['email_type']) && $rellist['email_type']=='Leads' && isset($rellist['email_subtype']) && $rellist['email_subtype']=='Quote') {
+                        $onlinequote_flag = 1;
+                    }
+                }
+            }
+            $out['customquote_flag'] = $customquote_flag;
+            $out['onlinequote_flag'] = $onlinequote_flag;
             return $out;
         }
         // Save main data
