@@ -9,7 +9,7 @@
     <div class="shippingdataviewarea">
         <?=$shippview?>
     </div>
-    <div class="bottomfinancearea">
+    <div class="bottomfinancearea <?=$balance > 0 ? '' : 'paiddataview' ?>">
         <div class="totalduedataviewarea">
             <?=$totaldueview?>
         </div>
