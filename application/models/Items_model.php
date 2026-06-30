@@ -1713,7 +1713,7 @@ Class Items_model extends My_Model
             $tmpName = $this->config->item('upload_path_preload').$filename;
             $fp = fopen($tmpName, 'w');
             $headers = array('Active', 'Item #', 'Item Name', 'Supplier');
-            for ($j=0; $j<12; $j++) {
+            for ($j=1; $j<13; $j++) {
                 array_push($headers, 'Loc '.$j);
                 array_push($headers, 'Size '.$j);
             }
