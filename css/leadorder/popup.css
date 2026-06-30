@@ -2309,6 +2309,7 @@ input.artrepeat {
     float: right!important;
     text-align: right;
     /* width: 70px; */
+    padding-right: 8px;
 }
 .block_8_text3 {
     float: right;
@@ -2317,19 +2318,23 @@ input.artrepeat {
     width: 97px;
 }
 .block_9 {
-    background-image: url("/img/leadorder/bacgr_10.png");
-    background-repeat: no-repeat;
+    /*background-image: url("/img/leadorder/bacgr_10.png");*/
+    /*background-repeat: no-repeat;*/
+    background: #c59d51;
+    border: 1px solid #0b0b0b;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 4px;
     float: left;
-    height: 34px;
+    height: 24px; /* 34px; */
     margin-top: -5px;
     padding-left: 7px;
-    width: 159px;
+    width: 197px; /* 159px; */
 }
 .block_9_text {
     float: left;
-    line-height: 33px;
+    line-height: 24px; /* 33px; */
     text-align: center;
-    width: 145px;
+    width: 100%; /* 145px; */
 }
 .block_10 {
     float: left;
@@ -2689,6 +2694,10 @@ input.artrepeat {
     float: right!important;
     margin-right: 26px;
     margin-top: -4px;
+}
+.marglef .bottomfinancearea.paiddataview {
+    margin-right: 39px; /* 26px; */
+    margin-top: 0; /* -4px; */
 }
 .shippingdataviewarea {
     float: right !important;

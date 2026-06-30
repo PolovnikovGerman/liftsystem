@@ -22,26 +22,26 @@
         </div>
     </div>
     <?php if (isset($cc_email) && $cc_email != '') : ?>
+<!--        <div class="invitecheckout_row">-->
+<!--            <div class="invitecheckout_data">-->
+<!--                <input type="text" class="invitecheckout_input" id="invitecheckoutname_cc" value="--><?php //=$cc_name?><!--"/>-->
+<!--            </div>-->
+<!--        </div>-->
         <div class="invitecheckout_row">
             <div class="invitecheckout_label">CC:</div>
-            <div class="invitecheckout_data">
-                <input type="text" class="invitecheckout_input" id="invitecheckoutname_cc" value="<?=$cc_name?>"/>
-            </div>
-        </div>
-        <div class="invitecheckout_row">
             <div class="invitecheckout_data">
                 <input type="text" class="invitecheckout_input" id="invitecheckoutemail_cc" value="<?=$cc_email?>"/>
             </div>
         </div>
     <?php endif; ?>
     <?php if (isset($bcc_email) && $bcc_email != '') : ?>
+<!--        <div class="invitecheckout_row">-->
+<!--            <div class="invitecheckout_data">-->
+<!--                <input type="text" class="invitecheckout_input" id="invitecheckoutname_bcc" value="--><?php //=$bcc_name?><!--"/>-->
+<!--            </div>-->
+<!--        </div>-->
         <div class="invitecheckout_row">
             <div class="invitecheckout_label">BCC:</div>
-            <div class="invitecheckout_data">
-                <input type="text" class="invitecheckout_input" id="invitecheckoutname_bcc" value="<?=$bcc_name?>"/>
-            </div>
-        </div>
-        <div class="invitecheckout_row">
             <div class="invitecheckout_data">
                 <input type="text" class="invitecheckout_input" id="invitecheckoutemail_bcc" value="<?=$bcc_email?>"/>
             </div>

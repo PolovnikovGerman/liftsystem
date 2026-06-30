@@ -6247,12 +6247,12 @@ function send_checkout_invite() {
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     params.push({name: 'invite_name', value: $("#invitecheckoutname_to").val()});
     params.push({name: 'invite_email', value: $("#invitecheckoutemail_to").val()});
-    if ($("#invitecheckoutname_cc").length > 0) {
-        params.push({name: 'cc_name', value: $("#invitecheckoutname_cc").val()});
+    if ($("#invitecheckoutemail_cc").length > 0) {
+        // params.push({name: 'cc_name', value: $("#invitecheckoutname_cc").val()});
         params.push({name: 'cc_email', value: $("#invitecheckoutemail_cc").val()});
     }
-    if ($("#invitecheckoutname_bcc").length > 0) {
-        params.push({name: 'bcc_name', value: $("#invitecheckoutname_bcc").val()});
+    if ($("#invitecheckoutemail_bcc").length > 0) {
+        // params.push({name: 'bcc_name', value: $("#invitecheckoutname_bcc").val()});
         params.push({name: 'bcc_email', value: $("#invitecheckoutemail_bcc").val()});
     }
     params.push({name: 'subject', value: $("#invitecheckoutsubject").val()})
