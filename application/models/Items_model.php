@@ -1712,7 +1712,7 @@ Class Items_model extends My_Model
             $filename = $brand.'_expdb.csv';
             $tmpName = $this->config->item('upload_path_preload').$filename;
             $fp = fopen($tmpName, 'w');
-            $headers = array('Active', 'Item #', 'Item Name', 'Supplier');
+            $headers = array('Active', 'Item #', 'Item Name', 'Supplier', 'Item Size');
             for ($j=1; $j<13; $j++) {
                 array_push($headers, 'Loc '.$j);
                 array_push($headers, 'Size '.$j);
@@ -1737,6 +1737,7 @@ Class Items_model extends My_Model
                 $itmdat[] = $item;
             }
             foreach ($itmdat as $item) {
+                var_dump($item); die();
                 $dat = array();
                 foreach ($item as $k => $v) {
                     if ($k!='item_id') {
