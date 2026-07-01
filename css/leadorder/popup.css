@@ -1271,6 +1271,7 @@ input.shiprushcost {
     clear: both;
     line-height: 20px;
     width: 100%;
+    padding-left: 4px;
 }
 .ship_tax_textarea {
     resize: none;
