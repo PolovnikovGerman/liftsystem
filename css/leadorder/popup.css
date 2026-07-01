@@ -1025,14 +1025,14 @@ span.text_bold {
     float: left;
 }
 .shipdocsarea.first {
-    margin-left: -8px;
+    margin-left: -2px; /* -8px; */
     margin-right: 3px;
 }
 .shipdocs_label {
     float: left;
     font-weight: 600;
     font-size: 11px;
-    margin-left: -5px;
+    /*margin-left: -5px;*/
 }
 .shipdocs_label.multyship {
     margin-left: 0;
@@ -1162,6 +1162,7 @@ input.rushpastvalue.arrivelate {
 }
 .rushselectarea.multyship > .rushdataselect {
     margin-right: 27px;
+    width: 158px;
 }
 select.shiprashselect {
     float: left;
@@ -1170,6 +1171,9 @@ select.shiprashselect {
     margin: 0 2px;
     /*width: 145px;*/
     width: 173px;
+}
+.rushselectarea.multyship > .rushdataselect > select.shiprashselect {
+    width: 157px;
 }
 input.shiprushcost, input.shippingcost, input.salestaxcost {
     height: 18px;
@@ -1195,8 +1199,8 @@ input.shiprushcost {
     overflow-y: scroll;
     overflow-x: hidden;
     position: absolute;
-    /*width: 234px;*/
-    width: 239px;
+    width: 234px;
+    /*width: 239px;*/
 }
 .shipdetailsarea {    
     float: left;
@@ -1313,7 +1317,8 @@ input.ship_tax_textareainpt {
 .ship_tax_cont_bl2 {
     float: left;
     margin-top: 5px;
-    width: 55px;
+    width: 62px; /* 55px; */
+    margin-left: -7px;
 }
 .ship_tax_cont_bl2.viewdata {
     /*margin-left: 10px;*/
@@ -1325,12 +1330,14 @@ input.ship_tax_textareainpt {
 }
 .ship_tax_cont_bl2 > .line > .label {
     float: left;
-    font-size: 11px;
+    font-size: 10px;
     text-align: left;
-    width: 34px;
+    width: 49px; /* 34px; */
     color: #2E2E2E;
     font-weight: normal;
     white-space: unset!important;
+    line-height: 12px!important;
+    padding: 4px 0 0 2px;
 }
 .ship_tax_cont_bl2 > .line > .label.shipblind {
     /* line-height: 13px; */
@@ -1340,10 +1347,10 @@ input.ship_tax_textareainpt {
 .taxdataarea {
     width: 301px;
     float: left;
-    margin-top: -2px;
+    margin-top: 10px; /* -2px; */
 }
 .taxdataarea.noshipdocs {
-    margin-top: 15px;
+    margin-top: 27px; /* 15px; */
 }
 .ship_tax_cont_bl3 {
     float: right;
@@ -3809,7 +3816,7 @@ textarea.proofrequestnotes {
     line-height: 27px;
 }
 .multishipsubtitle > .eventdate {
-    width: 107px;
+    width: 102px; /* 107px; */
     margin-right: 7px;
     text-align: right;    
 }
@@ -3822,7 +3829,7 @@ textarea.proofrequestnotes {
 }
 .multishipsubtitle > .rushdataselect {
     padding-top: 4px;
-    width: 152px;
+    width: 172px; /* 152px; */
 }
 .multishipsubtitle > .rushpricevalue {
      padding-top: 4px;
@@ -3900,7 +3907,8 @@ input.shipaddrqty {
 }
 .multishipadressdatarow .shipdetailsarea {
     margin-top: -124px;
-    margin-left: 255px;
+    /*margin-left: 255px;*/
+    float: right!important;
 }
 .multishipadressdatarow .shipdetailsarea > .labeltax {
     margin-top: 6px;
