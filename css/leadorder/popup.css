@@ -1317,8 +1317,8 @@ input.ship_tax_textareainpt {
 .ship_tax_cont_bl2 {
     float: left;
     margin-top: 5px;
-    width: 62px; /* 55px; */
-    margin-left: -7px;
+    width: 64px; /* 55px; */
+    margin-left: -9px;
 }
 .ship_tax_cont_bl2.viewdata {
     /*margin-left: 10px;*/
