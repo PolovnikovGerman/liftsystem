@@ -1,5 +1,5 @@
 var orderid = '';
-
+var reshedulTablElem;
 function init_printcalendar_content() {
     var year = $("#printcaledyear").val();
     init_printcalendar(year);
@@ -212,7 +212,7 @@ function init_reshedule_view() {
             init_reschedule_management();
             // init_dailydetails_manage();
             if ($("#reschdltabl-body").length > 0) {
-                new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+                reshedulTablElem = new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
             }
             if ($("#reschditms-body").length > 0) {
                 new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
@@ -321,7 +321,7 @@ function init_reschedule_management() {
                     $(".reschdl-body").empty().html(response.data.calendarview);
                     init_reschedule_management();
                     if ($("#reschdltabl-body").length > 0) {
-                        new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+                        reshedulTablElem = new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
                     }
                     if ($("#reschditms-body").length > 0) {
                         new SimpleBar(document.getElementById('reschditms-body'), { autoHide: false });
@@ -894,6 +894,8 @@ function dropHandler(ev) {
                 moveorder = orderid.replace('printord_','');
             }
             // Send changes to Scheduler
+            var yPosition = $('#reschdltabl-body .simplebar-content-wrapper').scrollTop();
+            console.log('Scroll POS '+yPosition);
             var params = new Array();
             params.push({name: 'print_date', value: newdate});
             params.push({name: 'order_id', value: moveorder});
@@ -967,6 +969,7 @@ function dropHandler(ev) {
                         init_reschedule_management();
                         init_dailydetails_manage();
                         new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+                        $('#reschdltabl-body .simplebar-content-wrapper').scrollTop(yPosition);
                     }
                     orderid='';
                     $.flash(response.data.message, {timeout: 5000});
