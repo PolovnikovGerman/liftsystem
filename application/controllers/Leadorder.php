@@ -3179,7 +3179,7 @@ class Leadorder extends MY_Controller
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';
-                        $mdata['content'] = $this->load->view('leadorderdetails/shipdoc_empty_view',['shipdoc' => $shipdoc], true);
+                        $mdata['content'] = $this->load->view('leadorderdetails/shipdoc_empty_view',['shipdoc' => $shipdoc, 'multyship' => $res['multyship']], true);
                     }
                 }
             }
