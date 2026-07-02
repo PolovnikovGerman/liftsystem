@@ -1035,6 +1035,7 @@ span.text_bold {
     /*margin-left: -5px;*/
     width: 100%;
     text-align: center;
+    position: relative;
 }
 .shipdocs_label.multyship {
     margin-left: 0;
@@ -1111,8 +1112,8 @@ span.text_bold {
 /* Shipdocs view*/
 .shipdocview {
     position: absolute;
-    left: 56px;
-    bottom: 266px;
+    left: -166px;
+    top: 36px;
     display: none;
     background-color: #fff;
     border: 2px solid #303030;
@@ -1121,7 +1122,8 @@ span.text_bold {
     width: 295px;
 }
 .shipdocview.multyship {
-    bottom: 324px;
+    top: 18px;
+    left: -100px;
 }
 .shipdocview div {
     float: left;
@@ -1163,6 +1165,7 @@ span.text_bold {
     margin-right: 5px;
 }
 .shipdocviewdoc {
+    text-align: left;
     cursor: pointer;
     font-size: 14px;
     font-style: italic;
