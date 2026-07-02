@@ -1,30 +1,37 @@
 <div class="bl_ship_tax_content">
     <div class="ship_tax_content_line1">
         <div class="viewmultishipdetails text_blue">view ship details</div>
-        <div class="shipdocs_label multyship">Ship Docs:</div>
-        <?php if (!empty($shipping['shipdoc1_link'])) : ?>
-            <div class="shipdocs_link multyship view" data-shipdoc="1" data-link="<?=$shipping['shipdoc1_link']?>" data-source="<?=$shipping['shipdoc1_src']?>">
-                <?php if ($shipping['shipdoc1_type']=='pdf') : ?>
-                    <i class="fa fa-file-pdf-o"></i>
-                <?php elseif ($shipping['shipdoc1_type']=='word') : ?>
-                    <i class="fa fa-file-word-o"></i>
-                <?php else : ?>
-                    <i class="fa fa-file-excel-o"></i>
-                <?php endif; ?>
+        <div class="shipdocs_label multyship">
+            Ship Docs:
+            <?php if (count($shipdocs) > 0) : ?>
+                <div class="shipdocview multyship">
+                    <div class="shipdocscloseview">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 847 847" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd"><g><path class="btn-closemodal-svg" d="M423 592l-196 196c-110,111 -279,-58 -169,-169l196 -196 -196 -196c-110,-110 59,-279 169,-169l196 196 196 -196c111,-110 280,59 169,169l-196 196 196 196c111,111 -58,280 -169,169l-196 -196z"></path></g></svg>
+                    </div>
+                    <div class="datarow">
+                        <div class="shipdocviewtitle"><?=count($shipdocs)?> ship docs</div>
+                    </div>
+                    <div class="shipdocviewarea">
+                        <?php $numpp = 1;?>
+                        <?php foreach ($shipdocs as $shipdoc) : ?>
+                            <div class="datarow">
+                                <div class="shipdocnumpp"><?=$numpp?></div>
+                                <div class="shipdocviewdoc truncateoverflowtext" data-link="<?=$shipdoc['shipdoc_link']?>"
+                                     data-source="<?=$shipdoc['shipdoc_src']?>"><?=$shipdoc['shipdoc_src']?></div>
+                            </div>
+                            <?php $numpp++;?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php if (count($shipdocs) > 0) : ?>
+            <div class="shipdocs_link multyship">
+                <i class="fa fa-file-text-o"></i>
+                <span><?=count($shipdocs)?> files</span>
             </div>
         <?php endif; ?>
-        <?php if (!empty($shipping['shipdoc2_link'])) : ?>
-            <div class="shipdocs_link multyship view" data-shipdoc="2" data-link="<?=$shipping['shipdoc2_link']?>" data-source="<?=$shipping['shipdoc2_src']?>">
-                <?php if ($shipping['shipdoc2_type']=='pdf') : ?>
-                    <i class="fa fa-file-pdf-o"></i>
-                <?php elseif ($shipping['shipdoc2_type']=='word') : ?>
-                    <i class="fa fa-file-word-o"></i>
-                <?php else : ?>
-                    <i class="fa fa-file-excel-o"></i>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
-        <div class="shipotherparamsarea">
+        <div class="shipotherparamsarea multyship">
             <div class="rushselectarea multyship">
                 <div class="label">Ships on:</div>
                 <div class="rushdataselect" id="rushdatalistarea"><?=$rushview?></div>
