@@ -1033,11 +1033,14 @@ span.text_bold {
     font-weight: 600;
     font-size: 11px;
     /*margin-left: -5px;*/
+    width: 100%;
+    text-align: center;
 }
 .shipdocs_label.multyship {
     margin-left: 0;
-    margin-top: 3px;
     margin-right: 5px;
+    margin-top: 5px;
+    width: 60px;
 }
 .shipdocs_link {
     float: left;
@@ -1045,12 +1048,18 @@ span.text_bold {
     /* width: 32px; */
     margin-right: 3px;
     cursor: pointer;
+    text-align: center;
+    width: 100%;
+}
+.shipdocs_link span {
+    font-size: 11px;
 }
 .shipdocs_link.view {
     margin-right: 5px;
 }
 .shipdocs_link.multyship {
-    margin-top: 3px;
+    margin-top: 5px;
+    width: 54px;
 }
 .shipdocs_link i {
     /*font-weight: 600;*/
@@ -1080,24 +1089,104 @@ span.text_bold {
 .shipdocs_addbtn.multyship {
     margin-top: 2px;
 }
+.shipdocviewadd {
+    float: right!important;
+}
 .shipdocupload.qq-upload-button {
-    background: none;
+    background: #0000FF;
     height: 18px;
     line-height: 16px;
-    width: 27px;
-    float: left;
+    width: 62px;
     font-size: 11px;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-top: 6px;
 }
 .shipdocupload qq-upload-button span {
     clear: both;
     float: left;
 }
+/* Shipdocs view*/
+.shipdocview {
+    position: absolute;
+    left: 56px;
+    bottom: 266px;
+    display: none;
+    background-color: #fff;
+    border: 2px solid #303030;
+    z-index: 3;
+    padding: 5px;
+    width: 281px;
+}
+.shipdocview div {
+    float: left;
+}
+.shipdocscloseview {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    border: 1px solid #2a2a2a;
+    background: #e20000;
+    background: linear-gradient(to top, #c60000, #ff0000);
+    color: #fff;
+    font-weight: 900;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    /* font-size: 17px; */
+    text-align: center;
+    border-radius: 18px;
+    cursor: pointer;
+}
+.shipdocscloseview svg {
+    width: 9px;
+    height: 9px;
+    position: relative;
+    top: 0.5px;
+    fill: #fff;
+}
+.shipdocviewtitle {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.shipdocviewarea {
+
+}
+.shipdocnumpp {
+    font-size: 14px;
+    margin-right: 5px;
+}
+.shipdocviewdoc {
+    cursor: pointer;
+    font-size: 14px;
+    font-style: italic;
+    color: #0000FF;
+    width: 240px;
+}
+.shipdocviewdoc.editmode {
+    width: 213px;
+}
+.removeshipdoc {
+    font-size: 14px;
+    font-style: italic;
+    color: #FF0000;
+    cursor: pointer;
+}
+
 .shipotherparamsarea {
     float: right;
     margin-right: 8px;
     margin-left: 6px; /* 16px; */
     height: 18px;
     /*width: 391px;*/
+}
+.shipotherparamsarea.multyship {
+    margin-left: 0;
+    margin-top: 4px;
 }
 .eventdate {
     float: left;
