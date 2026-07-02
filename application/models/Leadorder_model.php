@@ -12547,7 +12547,6 @@ Class Leadorder_model extends My_Model {
 //        return $out_array;
 //    }
 
-    public function shipdocremove($shipdoc, $leadorder, $session_id)
     public function shipdocremove($shipdocid, $leadorder, $session_id)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Doc Not Found'];
