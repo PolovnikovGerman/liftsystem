@@ -1120,6 +1120,9 @@ span.text_bold {
     padding: 10px;
     width: 295px;
 }
+.shipdocview.multyship {
+    bottom: 324px;
+}
 .shipdocview div {
     float: left;
 }
