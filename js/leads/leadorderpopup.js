@@ -277,9 +277,8 @@ function navigation_init() {
     });
     // Open shipping doc
     $(".shipdocs_link").unbind('click').click(function (){
-        var lnkurl = $(this).data('link');
-        var srcname = $(this).data('source');
-        openai(lnkurl, srcname);
+        $(".shipdocview").show();
+        init_shipdocview();
     })
 }
 
@@ -3240,45 +3239,21 @@ function init_leadorder_shipping() {
     });
     // Ships docs - view
     $(".shipdocs_link").unbind('click').click(function (){
-        var lnkurl = $(this).data('link');
-        var srcname = $(this).data('source');
-        openai(lnkurl, srcname);
+        $(".shipdocview").show();
+        init_shipdocview();
+        init_shipdocupload();
     });
-    // Ship docs - remove
-    $(".shipdocs_delete").unbind('click').click(function (){
-        if (confirm('Remove Shipping Document?')==true) {
-            var shipdoc = $(this).data('shipdoc');
-            var params = new Array();
-            params.push({name: 'ordersession', value: $("input#ordersession").val()});
-            params.push({name: 'shipdoc', value: shipdoc});
-            var url="/leadorder/shipdocremove";
-            $.post(url, params, function (response){
-                if (response.errors=='') {
-                    $(".shipdocsarea[data-shipdoc='"+shipdoc+"']").empty().html(response.data.content);
-                    init_leadorder_shipping();
-                } else {
-                    show_error(response);
-                }
-            },'json');
-        }
-    });
-    if ($(".shipdocs_addbtn[data-shipdoc=1]").length > 0) {
-        init_shipdocupload(1);
-    }
-    if ($(".shipdocs_addbtn[data-shipdoc=2]").length > 0) {
-        init_shipdocupload(2);
-    }
 }
 
-function init_shipdocupload(shipdoc) {
-    var btnlink = 'shipdocadd'+shipdoc;
-    var upload_templ= '<div class="qq-uploader"><div class="shipdocupload qq-upload-button"><span><em>Add</em></span></div>' +
+function init_shipdocupload() {
+
+    var upload_templ= '<div class="qq-uploader"><div class="shipdocupload qq-upload-button"><span><em>+ add file</em></span></div>' +
         '<ul class="qq-upload-list"></ul>' +
         '<ul class="qq-upload-drop-area"></ul>' +
         '<div class="clear"></div></div>';
 
     var uploader = new qq.FileUploader({
-        element: document.getElementById(btnlink),
+        element: document.getElementById('shipdocviewadd'),
         action: '/utils/save_shipdoc',
         uploadButtonText: '',
         multiple: true,
@@ -3293,12 +3268,14 @@ function init_shipdocupload(shipdoc) {
                 params.push({name: 'ordersession', value: $("input#ordersession").val()});
                 params.push({name: 'doclink', value: responseJSON.filename});
                 params.push({name: 'docsource', value: responseJSON.srcname});
-                params.push({name: 'filetype', value: responseJSON.filetype});
-                params.push({name: 'shipdoc', value: shipdoc})
+                // params.push({name: 'filetype', value: responseJSON.filetype});
+                // params.push({name: 'shipdoc', value: shipdoc})
                 $.post(url, params, function (response) {
                     if (response.errors=='') {
-                        $(".shipdocsarea[data-shipdoc='"+shipdoc+"']").empty().html(response.data.content);
-                        init_leadorder_shipping();
+                        $(".shipdocviewarea").empty().html(response.data.content);
+                        $(".shipdocviewtitle").empty().html(response.data.numdocs+' ship docs');
+                        $(".shipdocs_link").find('span').empty().html(response.data.numdocs+' files');
+                        init_shipdocview();
                     } else {
                         show_error(response);
                     }
@@ -3310,7 +3287,38 @@ function init_shipdocupload(shipdoc) {
             }
         }
     });
+}
 
+function init_shipdocview() {
+    $(".shipdocscloseview").unbind('click').click(function (){
+        $(".shipdocview").hide();
+    });
+    // View doc
+    $(".shipdocviewdoc").unbind('click').click(function (){
+        var lnkurl = $(this).data('link');
+        var srcname = $(this).data('source');
+        openai(lnkurl, srcname);
+    });
+    // Ship docs - remove
+    $(".removeshipdoc").unbind('click').click(function (){
+        if (confirm('Remove Shipping Document?')==true) {
+            var shipdoc = $(this).data('shipdoc');
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'shipdoc', value: shipdoc});
+            var url="/leadorder/shipdocremove";
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".shipdocviewarea").empty().html(response.data.content);
+                    $(".shipdocviewtitle").empty().html(response.data.numdocs+' ship docs');
+                    $(".shipdocs_link").find('span').empty().html(response.data.numdocs+' files');
+                    init_shipdocview();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
 }
 
 function edit_multishipaddress() {

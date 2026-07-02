@@ -663,6 +663,7 @@ Class Leadorder_model extends My_Model {
             $out['charges']=$this->get_order_charges($order_id);
             // Get Shipping packages
             // $out['trackings'] = $this->get_order_trackinfo($order_id);
+            $out['shipdocs'] = $this->get_order_shipdocs($order_id);
         } else {
             $out['contacts']=$out['order_items']=$out['shipping']=$out['order_billing']=$out['charges']=array();
             $out['shipping_address']=$this->get_orderold_shippaddress($res);
@@ -941,6 +942,7 @@ Class Leadorder_model extends My_Model {
         }
         // Empty items
         $out['order_items'] = $this->_create_empty_orderitems();
+        $out['shipdocs'] = [];
         return $out;
     }
 
@@ -4766,6 +4768,11 @@ Class Leadorder_model extends My_Model {
                 $out['msg']=$shipres['msg'];
                 return $out;
             }
+            // Save Shipping Docs
+            $shipdocs = $leadorder['shipdocs'];
+            if (count($shipdocs) > 0) {
+                $shipdocres = $this->_save_shipdocs($shipdocs, $order_id);
+            }
             $shipping_address=$leadorder['shipping_address'];
             $adrres=$this->_save_order_shipaddress($shipping_address, $order_id, $user_id);
             if ($adrres['result']==$this->error_result) {
@@ -5685,76 +5692,47 @@ Class Leadorder_model extends My_Model {
 
     // Save Shipping Info for Order
     private function _save_order_shipping($shipping, $order_id, $user_id) {
-        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
-        $srcpathsh = $this->config->item('pathpreload');
-        $srcpathfull = $this->config->item('upload_path_preload');
-        $targpathsh = $this->config->item('orderattach_path');
-        $targpathfull = $this->config->item('orderattach');
-        createPath($targpathsh);
-        if (isset($shipping['shipdoc1_link'])) {
-            if (!empty($shipping['shipdoc1_link'])) {
-                if (strpos($shipping['shipdoc1_link'], $srcpathsh)!==false) {
-                    $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc1_link']);
-                    $srcfile = $srcpathfull.$filesrc;
-                    $filedet = extract_filename($filesrc);
-                    $newfile = 'shipdoc_'.$order_id.'_01.'.$filedet['ext'];
-                    $targfile = $targpathfull.$newfile;
-                    $cpres = @copy($srcfile, $targfile);
-                    if ($cpres) {
-                        $shipping['shipdoc1_link'] = $targpathsh.$newfile;
-                    } else {
-                        $shipping['shipdoc1_link'] = null;
-                        $shipping['shipdoc1_src'] = null;
-                        $shipping['shipdoc1_type'] = null;
-                    }
-                }
-            }
-        } else {
-            $shipping['shipdoc1_link'] = null;
-            $shipping['shipdoc1_src'] = null;
-            $shipping['shipdoc1_type'] = null;
-        }
-        if (isset($shipping['shipdoc2_link'])) {
-            if (!empty($shipping['shipdoc2_link'])) {
-                if (strpos($shipping['shipdoc2_link'], $srcpathsh)!==false) {
-                    $filesrc = str_replace($srcpathsh,'', $shipping['shipdoc2_link']);
-                    $srcfile = $srcpathfull.$filesrc;
-                    $filedet = extract_filename($filesrc);
-                    $newfile = 'shipdoc_'.$order_id.'_02.'.$filedet['ext'];
-                    $targfile = $targpathfull.$newfile;
-                    $cpres = @copy($srcfile, $targfile);
-                    if ($cpres) {
-                        $shipping['shipdoc2_link'] = $targpathsh.$newfile;
-                    } else {
-                        $shipping['shipdoc2_link'] = null;
-                        $shipping['shipdoc2_src'] = null;
-                        $shipping['shipdoc2_type'] = null;
-                    }
-                }
-            }
-        } else {
-            $shipping['shipdoc2_link'] = null;
-            $shipping['shipdoc2_src'] = null;
-            $shipping['shipdoc2_type'] = null;
-        }
         $this->db->set('event_date', (empty($shipping['event_date']) ? NULL : $shipping['event_date']));
         $this->db->set('rush_idx', $shipping['rush_idx']);
         $this->db->set('rush_price', floatval($shipping['rush_price']));
         $this->db->set('shipdate', intval($shipping['shipdate']));
         $this->db->set('arrive_date', intval($shipping['arrive_date']));
         $this->db->set('rush_list', $shipping['rush_list']);
-        $this->db->set('shipdoc1_link', $shipping['shipdoc1_link']);
-        $this->db->set('shipdoc1_src', $shipping['shipdoc1_src']);
-        $this->db->set('shipdoc1_type', $shipping['shipdoc1_type']);
-        $this->db->set('shipdoc2_link', $shipping['shipdoc2_link']);
-        $this->db->set('shipdoc2_src', $shipping['shipdoc2_src']);
-        $this->db->set('shipdoc2_type', $shipping['shipdoc2_type']);
         if ($shipping['order_shipping_id']<0) {
             $this->db->set('order_id', $order_id);
             $this->db->insert('ts_order_shippings');
         } else {
             $this->db->where('order_shipping_id', $shipping['order_shipping_id']);
             $this->db->update('ts_order_shippings');
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
+    private function _save_shipdocs($shipdocs, $order_id)
+    {
+
+        $srcpathfull = $this->config->item('upload_path_preload');
+        $srcpathsh = $this->config->item('pathpreload');
+        $targpathsh = $this->config->item('orderattach_path');
+        $targpathfull = $this->config->item('orderattach');
+        createPath($targpathsh);
+        foreach ($shipdocs as $shipdoc) {
+            if ($shipdoc['order_shipdoc_id']<0) {
+                // New file
+                $filesrc = str_replace($srcpathsh,'', $shipdoc['shipdoc_link']);
+                $srcfile = $srcpathfull.$filesrc;
+                $filedet = extract_filename($filesrc);
+                $newfile = 'shipdoc_'.$order_id.'_'.time().'.'.$filedet['ext'];
+                $targfile = $targpathfull.$newfile;
+                $cpres = @copy($srcfile, $targfile);
+                if ($cpres) {
+                    $this->db->set('order_id', $order_id);
+                    $this->db->set('shipdoc_link', $targpathsh.$newfile);
+                    $this->db->set('shipdoc_src', substr($shipdoc['shipdoc_src'],0,255));
+                    $this->db->insert('ts_order_shipdocs');
+                }
+            }
         }
         $res['result']=$this->success_result;
         return $res;
@@ -6007,6 +5985,10 @@ Class Leadorder_model extends My_Model {
                 case 'trackings':
                     $this->db->where('tracking_id', $row['id']);
                     $this->db->delete('ts_order_trackings');
+                    break;
+                case 'shipdocs':
+                    $this->db->where('order_shipdoc_id', $row['id']);
+                    $this->db->delete('ts_order_shipdocs');
                     break;
             }
         }
@@ -12566,41 +12548,61 @@ Class Leadorder_model extends My_Model {
 //    }
 
     public function shipdocremove($shipdoc, $leadorder, $session_id)
+    public function shipdocremove($shipdocid, $leadorder, $session_id)
     {
-        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
-        $shipping = $leadorder['shipping'];
-        if ($shipdoc==1) {
-            $shipping['shipdoc1_link'] = null;
-            $shipping['shipdoc1_src'] = null;
-            $out['result'] = $this->success_result;
-        } elseif ($shipdoc==2) {
-            $shipping['shipdoc2_link'] = null;
-            $shipping['shipdoc2_src'] = null;
-            $out['result'] = $this->success_result;
+        $out = ['result' => $this->error_result, 'msg' => 'Doc Not Found'];
+        $shipdocs = $leadorder['shipdocs'];
+        $deleted = $leadorder['delrecords'];
+        $found = 0;
+        $newdocs = [];
+        foreach ($shipdocs as $shipdoc) {
+            if ($shipdoc['order_shipdoc_id']==$shipdocid) {
+                $found = 1;
+                if ($shipdocid > 0) {
+                    $deleted[] = [
+                        'entity' => 'shipdocs',
+                        'id' => $shipdocid,
+                    ];
+                }
+            } else {
+                $newdocs[] = $shipdoc;
+            }
         }
-        $out['multyship'] = count($leadorder['shipping_address']) > 1 ? 1 : 0;
-        $leadorder['shipping'] = $shipping;
-        usersession($session_id, $leadorder);
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $leadorder['shipdocs'] = $newdocs;
+            $leadorder['delrecords'] = $deleted;
+            usersession($session_id, $leadorder);
+            $out['shipdocs'] = $newdocs;
+        }
         return $out;
     }
 
-    public function saveshipdocload($doclink, $docsource, $doctype, $shipdoc, $leadorder, $session_id)
+    public function saveshipdocload($doclink, $docsource, $leadorder, $session_id)
     {
         $out = ['result' => $this->error_result, 'msg' => $this->error_message];
-        $shipping = $leadorder['shipping'];
-        if ($shipdoc==1) {
-            $shipping['shipdoc1_link'] = $doclink;
-            $shipping['shipdoc1_src'] = $docsource;
-            $shipping['shipdoc1_type'] = $doctype;
-            $out['result'] = $this->success_result;
-        } elseif ($shipdoc==2) {
-            $shipping['shipdoc2_link'] = $doclink;
-            $shipping['shipdoc2_src'] = $docsource;
-            $shipping['shipdoc2_type'] = $doctype;
-            $out['result'] = $this->success_result;
-        }
-        $out['multyship'] = count($leadorder['shipping_address']) > 1 ? 1 : 0;
-        $leadorder['shipping'] = $shipping;
+        $shipdocs = $leadorder['shipdocs'];
+        $newid = (count($shipdocs)+1)*(-1);
+        $shipdocs[] = [
+            'order_shipdoc_id' => $newid,
+            'shipdoc_link' => $doclink,
+            'shipdoc_src' => $docsource,
+        ];
+//        if ($shipdoc==1) {
+//            $shipping['shipdoc1_link'] = $doclink;
+//            $shipping['shipdoc1_src'] = $docsource;
+//            $shipping['shipdoc1_type'] = $doctype;
+//            $out['result'] = $this->success_result;
+//        } elseif ($shipdoc==2) {
+//            $shipping['shipdoc2_link'] = $doclink;
+//            $shipping['shipdoc2_src'] = $docsource;
+//            $shipping['shipdoc2_type'] = $doctype;
+//            $out['result'] = $this->success_result;
+//        }
+//        $out['multyship'] = count($leadorder['shipping_address']) > 1 ? 1 : 0;
+        $leadorder['shipdocs'] = $shipdocs;
+        $out['shipdocs'] = $shipdocs;
+        $out['result'] = $this->success_result;
         usersession($session_id, $leadorder);
         return $out;
     }
@@ -12821,6 +12823,12 @@ Class Leadorder_model extends My_Model {
         }
     }
 
+
+    public function get_order_shipdocs($order_id)
+    {
+        $this->db->select('*')->from('ts_order_shipdocs')->where('order_id', $order_id);
+        return $this->db->get()->result_array();
+    }
 }
 /* End of file leadorder_model.php */
 /* Location: ./application/models/leadorder_model.php */

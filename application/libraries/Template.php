@@ -725,7 +725,9 @@ class Template
             }
 
             $rushview=$this->CI->load->view('leadorderdetails/rushlist_view', $rushoptions, TRUE);
-
+            if ($edit==1) {
+                $shipdocs_view = $this->CI->load->view('leadorderdetails/shipdocs_edit', ['shipdocs' => $res['shipdocs']], TRUE);
+            }
             if (count($shipping_address)==1) {
                 $shipcost=$shipping_address[0]['shipping_costs'];
                 if ($edit==0) {
@@ -760,8 +762,10 @@ class Template
                     'taxview'=>$taxview,
                     'shipcntcode' => ifset($cntres,'country_iso_code_2',''),
                     'shipaddress' => $this->CI->shipping_model->prepare_shipaddress($shipping_address[0]),
+                    'shipdocs' => $res['shipdocs'],
                 );
                 if ($edit==1) {
+                    $shipoptions['shipdocs_view']=$shipdocs_view;
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
                 } else {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_view', $shipoptions, TRUE);
@@ -779,8 +783,10 @@ class Template
                     'shipcostview'=>$cost_view,
                     'order'=>$ord_data,
                     'rushview'=>$rushview,
+                    'shipdocs' => $res['shipdocs'],
                 );
                 if ($edit==1) {
+                    $shipoptions['shipdocs_view']=$shipdocs_view;
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/multi_ship_edit', $shipoptions, TRUE);
                 } else {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/multi_ship_view', $shipoptions, TRUE);

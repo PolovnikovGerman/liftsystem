@@ -5474,4 +5474,28 @@ class Test extends CI_Controller
         $res = $this->items_model->export_dbtable();
     }
 
+    public function rebuild_shipdocs()
+    {
+        $this->db->select('o.order_id, o.order_num, s.shipdoc1_link, s.shipdoc1_src, s.shipdoc2_link, s.shipdoc2_src');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_order_shippings s','s.order_id=o.order_id');
+        $this->db->where('(coalesce(s.shipdoc1_link,\'\')!=\'\' or coalesce(s.shipdoc2_link,\'\')!=\'\')');
+        $docs = $this->db->get()->result_array();
+        foreach ($docs as $doc) {
+            if ($doc['shipdoc1_link']!='') {
+                $this->db->set('order_id', $doc['order_id']);
+                $this->db->set('shipdoc_link', $doc['shipdoc1_link']);
+                $this->db->set('shipdoc_src', $doc['shipdoc1_src']);
+                $this->db->insert('ts_order_shipdocs');
+            }
+            if ($doc['shipdoc2_link']!='') {
+                $this->db->set('order_id', $doc['order_id']);
+                $this->db->set('shipdoc_link', $doc['shipdoc2_link']);
+                $this->db->set('shipdoc_src', $doc['shipdoc2_src']);
+                $this->db->insert('ts_order_shipdocs');
+            }
+            echo 'Order '.$doc['order_num'].PHP_EOL;
+        }
+    }
+
 }

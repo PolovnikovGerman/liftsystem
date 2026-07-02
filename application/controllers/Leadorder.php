@@ -186,6 +186,7 @@ class Leadorder extends MY_Controller
                         'charges'=>$res['charges'],
                         'claydocs' => $res['claydocs'],
                         'previewdocs' => $res['previewdocs'],
+                        'shipdocs' => $res['shipdocs'],
                         'delrecords'=>array(),
                         'locrecid'=>$locking,
                     );
@@ -3184,7 +3185,8 @@ class Leadorder extends MY_Controller
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';
-                        $mdata['content'] = $this->load->view('leadorderdetails/shipdoc_empty_view',['shipdoc' => $shipdoc, 'multyship' => $res['multyship']], true);
+                        $mdata['content'] = $this->load->view('leadorderdetails/shipdocs_edit',['shipdocs' => $res['shipdocs']], true);
+                        $mdata['numdocs'] = count($res['shipdocs']);
                     }
                 }
             }
@@ -3205,22 +3207,16 @@ class Leadorder extends MY_Controller
             if (!empty($ordersession)) {
                 $doclink = ifset($postdata, 'doclink','');
                 $docsource = ifset($postdata, 'docsource', '');
-                $shipdoc = ifset($postdata, 'shipdoc', 0);
-                $shiptype = ifset($postdata,'filetype','pdf');
+//                $shipdoc = ifset($postdata, 'shipdoc', 0);
+//                $shiptype = ifset($postdata,'filetype','pdf');
                 $error = 'Some parameters empty';
-                if (!empty($doclink) && !empty($docsource) && !empty($shipdoc)) {
-                    $res = $this->leadorder_model->saveshipdocload($doclink, $docsource, $shiptype, $shipdoc, $leadorder, $ordersession);
+                if (!empty($doclink) && !empty($docsource)) {
+                    $res = $this->leadorder_model->saveshipdocload($doclink, $docsource, $leadorder, $ordersession);
                     $error = $res['msg'];
                     if ($res['result']==$this->success_result) {
                         $error = '';
-                        $options = [
-                            'doclink' => $doclink,
-                            'docsource' => $docsource,
-                            'doctype' => $shiptype,
-                            'shipdoc' => $shipdoc,
-                            'multyship' => $res['multyship'],
-                        ];
-                        $mdata['content'] = $this->load->view('leadorderdetails/shipdoc_data_view', $options, TRUE);
+                        $mdata['content'] = $this->load->view('leadorderdetails/shipdocs_edit', ['shipdocs' => $res['shipdocs']], TRUE);
+                        $mdata['numdocs'] = count($res['shipdocs']);
                     }
                 }
             }

@@ -2004,7 +2004,7 @@ Class Shipping_model extends MY_Model
                                     }
                                     $ship['3DS'] = array(
                                         'ServiceCode' => '3DS',
-                                        'ServiceName' => 'UPS 3 Day Select',
+                                        'ServiceName' => '3 Day',
                                         'Rate' => round($rate['rate'] / $qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
