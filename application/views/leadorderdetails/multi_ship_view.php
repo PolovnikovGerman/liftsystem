@@ -2,7 +2,7 @@
     <div class="ship_tax_content_line1">
         <div class="viewmultishipdetails text_blue">view ship details</div>
         <div class="shipdocs_label multyship">
-            Ship Docs:
+            Ship Docs
             <?php if (count($shipdocs) > 0) : ?>
                 <div class="shipdocview multyship">
                     <div class="shipdocscloseview">

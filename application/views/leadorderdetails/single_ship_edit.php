@@ -52,7 +52,7 @@
             <div class="ship_tax_cont_bl2">
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['resident']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" data-fldname="resident" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" style="float: left;"/>
-                    <div class="label <?=$shipadr['resident']==1 ? '' : 'shipblind'?>" id="residentlabel">Residnl</div>
+                    <div class="label <?=$shipadr['resident']==1 ? '' : 'shipblind'?>" id="residentlabel">Residential</div>
                 </div>
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['ship_blind']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" data-fldname="ship_blind" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" style="float: left;"/>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="line">
                     <div class="shipdocs_label">
-                        Ship Docs:
+                        Ship Docs
                         <div class="shipdocview">
                             <div class="shipdocscloseview">
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 847 847" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd"><g><path class="btn-closemodal-svg" d="M423 592l-196 196c-110,111 -279,-58 -169,-169l196 -196 -196 -196c-110,-110 59,-279 169,-169l196 196 196 -196c111,-110 280,59 169,169l-196 196 196 196c111,111 -58,280 -169,169l-196 -196z"></path></g></svg>
