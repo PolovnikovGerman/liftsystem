@@ -52,7 +52,7 @@
             <div class="ship_tax_cont_bl2">
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['resident']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" data-fldname="resident" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" style="float: left;"/>
-                    <div class="label <?=$shipadr['resident']==1 ? '' : 'shipblind'?>" id="residentlabel">Residential</div>
+                    <div class="label <?=$shipadr['resident']==1 ? '' : 'shipblind'?>" id="residentlabel" title="Residential">Resident</div>
                 </div>
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['ship_blind']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" data-fldname="ship_blind" data-shipadr="<?=$shipadr['order_shipaddr_id']?>" style="float: left;"/>
