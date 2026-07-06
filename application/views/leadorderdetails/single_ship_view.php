@@ -47,7 +47,7 @@
             <div class="ship_tax_cont_bl2 viewdata">
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['resident']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" disabled="disabled" style="float: left;"/>
-                    <div class="label <?=$shipadr['resident']==1 ? '' : 'shipblind'?>" id="residentlabel">Residnl</div>
+                    <div class="label <?=$shipadr['resident']==1 ? '' : 'shipblind'?>" id="residentlabel" title="Residential">Resident</div>
                 </div>
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['ship_blind']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" disabled="disabled" style="float: left;"/>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="line">
                     <div class="shipdocs_label">
-                        Ship Docs:
+                        Ship Docs
                         <?php if (count($shipdocs) > 0) : ?>
                             <div class="shipdocview">
                                 <div class="shipdocscloseview">

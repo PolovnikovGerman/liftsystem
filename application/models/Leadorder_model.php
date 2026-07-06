@@ -7449,6 +7449,7 @@ Class Leadorder_model extends My_Model {
         $out['proofdocs']=array();
         $out['claydocs'] = [];
         $out['previewdocs'] = [];
+        $out['shipdocs'] = [];
         $out['extendview'] = 1;
         $out['item_error'] = $new_data['item_error'];
         $out['item_error_msg'] = $new_data['item_error_msg'];
