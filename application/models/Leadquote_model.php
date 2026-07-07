@@ -3278,6 +3278,7 @@ class Leadquote_model extends MY_Model
                     $out['proofdocs'] = [];
                     $out['claydocs'] = [];
                     $out['previewdocs'] = [];
+                    $out['shipdocs'] = [];
                     $this->load->model('user_model');
                     $usrdata=$this->user_model->get_user_data($user_id);
                     if (!empty($usrdata['user_leadname'])) {
