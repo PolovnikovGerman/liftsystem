@@ -124,5 +124,41 @@ Class Seo_model extends My_Model {
         }
     }
 
+    public function fix_emptygeodata()
+    {
+        $dats = $this->db->select('*')->from('sb_geoips')->where('country_code','')->get()->result_array();
+        if (count($dats)>0) {
+            foreach ($dats as $dat) {
+                $res = $this->get_geolocation($dat['user_ip']);
+                if ($res['result']==$this->success_result) {
+                    $geodata = $res['geodata'];
+//                    'ip' => $user_ip,
+//                'country_code' => $result['country_code2'],
+//                'country_name' => $result['country_name'],
+//                'city_name' => $result['city'],
+//                'region_name' => $result['state_prov'],
+//                'latitude' => $result['latitude'],
+//                'longitude' => $result['longitude'],
+//                'country_id' => $country_id,
+//                'zipcode' => $result['zipcode'],
+                    $this->db->where('geoip_id',$dat['geoip_id']);
+                    $this->db->set('country_code',$geodata['country_code']);
+                    $this->db->set('country_name',$geodata['country_name']);
+                    $this->db->set('city_name',$geodata['city_name']);
+                    $this->db->set('region_name',$geodata['region_name']);
+                    if (!empty($geodata['region_name'])) {
+                        $this->db->set('region_code',$this->get_statecode_byname($geodata['region_name']));
+                    }
+                    $this->db->set('latitude',(isset($geodata['latitude']) ? $geodata['latitude'] : NULL));
+                    $this->db->set('longitude',(isset($geodata['longitude']) ? $geodata['longitude'] : NULL));
+                    if (isset($geodata['zipcode'])) {
+                        $this->db->set('zipcode',($geodata['zipcode']=='-' ? NULL : $geodata['zipcode']));
+                    }
+                    $this->db->update('sb_geoips');
+                    echo 'IP '.$dat['user_ip'].' has been updated'.PHP_EOL;
+                }
+            }
+        }
+    }
 
 }
