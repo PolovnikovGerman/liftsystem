@@ -5487,7 +5487,9 @@ Class Leadorder_model extends My_Model {
             }
             if ($row['order_item_id']<0) {
                 $this->db->set('order_id', $order_id);
-                $this->db->set('print_date', $printdate);
+                if (!empty($printdate)) {
+                    $this->db->set('print_date', $printdate);
+                }
                 $this->db->insert('ts_order_items');
                 if (!$this->db->insert_id()) {
                     $res['msg']='Error During Insert data into Order Items';
