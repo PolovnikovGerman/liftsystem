@@ -63,7 +63,9 @@ Class Seo_model extends My_Model {
 
     public function get_geolocation2api($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
         // $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
-        $url = "https://api.ip2location.io/?key={$apiKey}&ip=".$ip;
+        // $url = "https://api.ip2location.io/?key={$apiKey}&ip=".$ip;
+        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
+
         $cURL = curl_init();
 
         curl_setopt($cURL, CURLOPT_URL, $url);
