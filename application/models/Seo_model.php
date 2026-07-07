@@ -29,7 +29,7 @@ Class Seo_model extends My_Model {
             }
             if ($cron==1) {
                 var_dump($data);
-                die()
+                die();
             }
             // Build data
             $result = [];
