@@ -134,6 +134,11 @@ Class Seo_model extends My_Model {
                 $res = $this->get_geolocation($dat['user_ip'], 1);
                 if ($res['result']==$this->success_result) {
                     $geodata = $res['geodata'];
+                    $regcode = '';
+                    if (!empty($geodata['region_name'])) {
+                        $regcode = $this->get_statecode_byname($geodata['region_name']);
+                    }
+
 //                    'ip' => $user_ip,
 //                'country_code' => $result['country_code2'],
 //                'country_name' => $result['country_name'],
@@ -148,9 +153,9 @@ Class Seo_model extends My_Model {
                     $this->db->set('country_name',$geodata['country_name']);
                     $this->db->set('city_name',$geodata['city_name']);
                     $this->db->set('region_name',$geodata['region_name']);
-                    if (!empty($geodata['region_name'])) {
-                        $this->db->set('region_code',$this->get_statecode_byname($geodata['region_name']));
-                    }
+//                    if (!empty($geodata['region_name'])) {
+                        $this->db->set('region_code', $regcode);
+//                    }
                     $this->db->set('latitude',(isset($geodata['latitude']) ? $geodata['latitude'] : NULL));
                     $this->db->set('longitude',(isset($geodata['longitude']) ? $geodata['longitude'] : NULL));
                     if (isset($geodata['zipcode'])) {
