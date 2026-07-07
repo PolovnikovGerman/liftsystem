@@ -14,7 +14,7 @@ Class Seo_model extends My_Model {
         return $res;
     }
 
-    public function get_geolocation($user_ip) {
+    public function get_geolocation($user_ip, $cron =0) {
         $out = ['result'=> $this->error_result];
         $api_key = $this->config->item('geo_apikey');
         // $d = @file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=$api_key&ip=$user_ip&format=json");
@@ -26,6 +26,10 @@ Class Seo_model extends My_Model {
             $data = json_decode($d,TRUE);
             if (isset($data['error'])) {
                 return $out;
+            }
+            if ($cron==1) {
+                var_dump($data);
+                die()
             }
             // Build data
             $result = [];
@@ -131,7 +135,7 @@ Class Seo_model extends My_Model {
         $dats = $this->db->select('*')->from('sb_geoips')->where('country_code','')->get()->result_array();
         if (count($dats)>0) {
             foreach ($dats as $dat) {
-                $res = $this->get_geolocation($dat['user_ip']);
+                $res = $this->get_geolocation($dat['user_ip'], 1);
                 if ($res['result']==$this->success_result) {
                     $geodata = $res['geodata'];
                     var_dump($geodata);die();
