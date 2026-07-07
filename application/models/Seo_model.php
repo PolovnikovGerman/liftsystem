@@ -134,6 +134,7 @@ Class Seo_model extends My_Model {
                 $res = $this->get_geolocation($dat['user_ip']);
                 if ($res['result']==$this->success_result) {
                     $geodata = $res['geodata'];
+                    var_dump($geodata);die();
 //                    'ip' => $user_ip,
 //                'country_code' => $result['country_code2'],
 //                'country_name' => $result['country_name'],
