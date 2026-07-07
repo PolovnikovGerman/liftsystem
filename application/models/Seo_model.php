@@ -27,19 +27,15 @@ Class Seo_model extends My_Model {
             if (isset($data['error'])) {
                 return $out;
             }
-            if ($cron==1) {
-                var_dump($data);
-                die();
-            }
             // Build data
             $result = [];
-            $result['country_code2'] = ifset($data,'country_code','');
+            $result['country_code2'] = ifset($data,'country_code2','');
             $result['country_name'] = ifset($data,'country_name','');
-            $result['city'] = ifset($data,'city_name','');
-            $result['state_prov'] = ifset($data,'region_name','');
+            $result['city'] = ifset($data,'city','');
+            $result['state_prov'] = ifset($data,'state_prov','');
             $result['latitude'] = ifset($data,'latitude','');
             $result['longitude'] = ifset($data,'longitude','');
-            $result['zipcode'] = ifset($data,'zip_code','');
+            $result['zipcode'] = ifset($data,'zipcode','');
             $country_id='';
             $this->load->model('shipping_model');
             if (ifset($result,'country_code2','')!=='') {
