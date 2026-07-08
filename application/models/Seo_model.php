@@ -83,6 +83,11 @@ Class Seo_model extends My_Model {
         $usrdata=$this->ipdata_exist($user_ip);
         if ($usrdata['result']!==$this->success_result) {
             // Get Code of region
+            if (!isset($ipdata['country_code'])) {
+                log_message('error', 'GeoIP - COUNTRY NOT FOUND '.json_encode($ipdata));
+            } elseif (empty($ipdata['country_code'])) {
+                log_message('error', 'GeoIP - COUNTRY CODE EMPTY '.json_encode($ipdata));
+            }
             $this->db->set('user_ip',$ipdata['ip']);
             $this->db->set('country_code',(isset($ipdata['country_code']) ? $ipdata['country_code'] : NULL));
             $this->db->set('country_name',(isset($ipdata['country_name']) ? $ipdata['country_name'] : NULL));
