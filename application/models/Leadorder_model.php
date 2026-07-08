@@ -4755,9 +4755,12 @@ Class Leadorder_model extends My_Model {
                 return $out;
             }
             // Save Shipping Docs
-            $shipdocs = $leadorder['shipdocs'];
-            if (count($shipdocs) > 0) {
-                $shipdocres = $this->_save_shipdocs($shipdocs, $order_id);
+            $shipdocs = [];
+            if (isset($leadorder['shipdocs'])) {
+                $shipdocs = $leadorder['shipdocs'];
+                if (count($shipdocs) > 0) {
+                    $shipdocres = $this->_save_shipdocs($shipdocs, $order_id);
+                }
             }
             $shipping_address=$leadorder['shipping_address'];
             $adrres=$this->_save_order_shipaddress($shipping_address, $order_id, $user_id);
