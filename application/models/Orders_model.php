@@ -3420,7 +3420,11 @@ Class Orders_model extends MY_Model
                 }
                 $datarow=[];
                 foreach ($fields as $frow) {
-                    $datarow[$frow]=$row[$frow];
+                    if (isset($row[$frow])) {
+                        $datarow[$frow] = $row[$frow];
+                    } else {
+                        $datarow[$frow] = '';
+                    }
                 }
                 $data[]=$datarow;
             }
