@@ -3318,7 +3318,8 @@ Class Orders_model extends MY_Model
                         if ($row['order_id']==52291) {
                             log_message('error','Owndat '.json_encode($owndat));
                         }
-                        if (ifset($owndat, 'order_id',0) > 0) {
+                        $balance_manage = ifset($owndat,'balance_manage','');
+                        if (!empty($balance_manage)) {
                             if ($owndat['balance_manage']==3) {
                                 $stype = $this->accrec_terms;
                             } elseif ($owndat['balance_manage']==2) {
