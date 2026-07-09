@@ -3331,6 +3331,9 @@ Class Orders_model extends MY_Model
                                 }
                             }
                         }
+                        if ($row['order_id']==52291) {
+                            log_message('error', 'SType '.$stype.'!');
+                        }
                         $row['payment_system'] = $stype;
                     }
                 }
