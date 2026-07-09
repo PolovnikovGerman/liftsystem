@@ -4769,9 +4769,12 @@ Class Leadorder_model extends My_Model {
                 return $out;
             }
             // Save Shipping Docs
-            $shipdocs = $leadorder['shipdocs'];
-            if (count($shipdocs) > 0) {
-                $shipdocres = $this->_save_shipdocs($shipdocs, $order_id);
+            $shipdocs = [];
+            if (isset($leadorder['shipdocs'])) {
+                $shipdocs = $leadorder['shipdocs'];
+                if (count($shipdocs) > 0) {
+                    $shipdocres = $this->_save_shipdocs($shipdocs, $order_id);
+                }
             }
             $shipping_address=$leadorder['shipping_address'];
             $adrres=$this->_save_order_shipaddress($shipping_address, $order_id, $user_id);
@@ -5501,7 +5504,9 @@ Class Leadorder_model extends My_Model {
             }
             if ($row['order_item_id']<0) {
                 $this->db->set('order_id', $order_id);
-                $this->db->set('print_date', $printdate);
+                if (!empty($printdate)) {
+                    $this->db->set('print_date', $printdate);
+                }
                 $this->db->insert('ts_order_items');
                 if (!$this->db->insert_id()) {
                     $res['msg']='Error During Insert data into Order Items';
