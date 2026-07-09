@@ -3315,14 +3315,16 @@ Class Orders_model extends MY_Model
                     }
                     if (in_array('payment_system', $fields)) {
                         $stype = '';
-                        if ($owndat['balance_manage']==3) {
-                            $stype = $this->accrec_terms;
-                        } elseif ($owndat['balance_manage']==2) {
-                            $stype = $this->accrec_prepay;
-                        } elseif ($owndat['balance_manage']==1) {
-                            $stype = $this->accrec_willupd;
-                            if (!empty($owndat['cntcard'])) {
-                                $stype = $this->accrec_credit;
+                        if (ifset($owndat, 'order_id',0) > 0) {
+                            if ($owndat['balance_manage']==3) {
+                                $stype = $this->accrec_terms;
+                            } elseif ($owndat['balance_manage']==2) {
+                                $stype = $this->accrec_prepay;
+                            } elseif ($owndat['balance_manage']==1) {
+                                $stype = $this->accrec_willupd;
+                                if (!empty($owndat['cntcard'])) {
+                                    $stype = $this->accrec_credit;
+                                }
                             }
                         }
                         $row['payment_system'] = $stype;
