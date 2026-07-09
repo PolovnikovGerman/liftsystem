@@ -3315,6 +3315,9 @@ Class Orders_model extends MY_Model
                     }
                     if (in_array('payment_system', $fields)) {
                         $stype = '';
+                        if ($row['order_id']==52291) {
+                            log_message('error','Owndat '.json_encode($owndat));
+                        }
                         if (ifset($owndat, 'order_id',0) > 0) {
                             if ($owndat['balance_manage']==3) {
                                 $stype = $this->accrec_terms;
