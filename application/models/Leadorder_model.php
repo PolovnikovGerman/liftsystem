@@ -2965,7 +2965,15 @@ Class Leadorder_model extends My_Model {
                 $shipaddr[$shipidx]['taxview']=0;
             }
             $statedat=$this->shipping_model->get_state($newval);
-            $shipaddr[$shipidx]['out_zip']=$statedat['state_code'].' '.$shipaddr[$shipidx]['zip'];
+            $out_zip = '';
+            if (isset($statedat['state_code'])) {
+                $out_zip.=$statedat['state_code'].' ';
+            }
+            if (isset($shipaddr[$shipidx]['zip'])) {
+                $out_zip.=$shipaddr[$shipidx]['zip'];
+            }
+            $shipaddr[$shipidx]['out_zip'] = $out_zip;
+            // $statedat['state_code'].' '.$shipaddr[$shipidx]['zip'];
         } elseif ($fldname=='zip') {
             // Try to validate Address
             // Validate Address
