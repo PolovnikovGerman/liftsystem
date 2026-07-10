@@ -3035,7 +3035,7 @@ Class Leadorder_model extends My_Model {
             $items=$leadorder['order_items'];
             $qty=0;
             foreach ($items as $row) {
-                $qty+=$row['item_qty'];
+                $qty+=intval($row['item_qty']);
             }
             if ($qty>0) {
                 if (count($shipaddr)==1) {
