@@ -1583,6 +1583,7 @@ class Leadorder extends MY_Controller
                     $mdata['order_revenue']=MoneyOutput($order['revenue']);
                     $shipping = $leadorder['shipping'];
                     $shipping_address = $leadorder['shipping_address'];
+                    $shipdocs = (isset($leadorder['shipdocs']) ? $leadorder['shipdocs'] : array());
                     $mdata['shipdate'] = $shipping['shipdate'];
                     $mdata['rush_price'] = $shipping['rush_price'];
                     $mdata['is_shipping'] = $order['is_shipping'];
@@ -1680,7 +1681,7 @@ class Leadorder extends MY_Controller
                         }
                     } else {
                         // Show New shipp Adress
-                        $mdata['shipcost']=$this->_build_multiship_view($shipping_address, $rushview, $order, $shipping);
+                        $mdata['shipcost']=$this->_build_multiship_view($shipping_address, $rushview, $order, $shipping, $shipdocs);
                     }
                     $locat=$leadorder['artlocations'];
                     $locat_view='';
@@ -2544,8 +2545,8 @@ class Leadorder extends MY_Controller
                                     'shipdate'=>$shipping['shipdate'],
                                 );
                                 $rushview=$this->load->view('leadorderdetails/rushlist_view', $rushopt, TRUE);
-
-                                $mdata['shipcost']=$this->_build_multiship_view($shipping_address, $rushview, $order, $shipping);
+                                $shipdocs = (isset($leadorder['shipdocs']) ? $leadorder['shipdocs'] : array());
+                                $mdata['shipcost']=$this->_build_multiship_view($shipping_address, $rushview, $order, $shipping, $shipdocs);
                             }
                         }
                         $mdata['trackcode'] = 0;
@@ -4939,7 +4940,8 @@ class Leadorder extends MY_Controller
                             );
                             $shippingview = $this->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
                         } else {
-                            $shippingview = $this->_build_multiship_view($shipping_address, $rushview, $order, $shipping);
+                            $shipdocs = (isset($leadorder['shipdocs']) ? $leadorder['shipdocs'] : array());
+                            $shippingview = $this->_build_multiship_view($shipping_address, $rushview, $order, $shipping, $shipdocs);
                         }
                         $mdata['content'] = $shippingview;
                         // New 
@@ -5138,7 +5140,7 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
-    private function _build_multiship_view($shipping_address, $rushview, $order, $shipping) {
+    private function _build_multiship_view($shipping_address, $rushview, $order, $shipping, $shipdocs) {
         $cost_view = '';
         $numpp = 1;
         foreach ($shipping_address as $srow) {
@@ -5151,6 +5153,8 @@ class Leadorder extends MY_Controller
             'shipcostview' => $cost_view,
             'order' => $order,
             'rushview' => $rushview,
+            'shipdocs' => $shipdocs,
+            'shipdocs_view' => $this->load->view('leadorderdetails/shipdocs_edit', ['shipdocs' => $shipdocs], TRUE),
         );
         return $this->load->view('leadorderdetails/multi_ship_edit', $shipoptions, TRUE);
     }
