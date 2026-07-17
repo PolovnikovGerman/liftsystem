@@ -10,7 +10,7 @@
     "require": {
         "phpoffice/phpspreadsheet": "^1.8",
         "dompdf/dompdf": "2.0.4",
-        "fzaninotto/faker": "^1.8"
+        "guzzlehttp/guzzle": "^7.14"
     },
     "suggest": {
         "paragonie/random_compat": "Provides better randomness in PHP 5.x"
