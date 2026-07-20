@@ -5498,4 +5498,34 @@ class Test extends CI_Controller
         }
     }
 
+    public function nmipayment()
+    {
+        $this->load->library('Nmigw');
+        $gw = new Nmigw();
+
+        $gw->setBilling("John","Smith","Acme, Inc.","123 Main St","Suite 200", "Beverly Hills",
+            "CA","90210","US","555-555-5555","555-555-5556","polovnikov.g@gmail.com",
+            "");
+        $gw->setShipping("Mary","Smith","na","124 Shipping Main St","Suite Ship", "Beverly Hills",
+            "CA","90210","US","polovnikov.g@gmail.com");
+        $gw->setOrder("12345","Big Order",1, 2, "PO12345","65.192.14.10");
+
+        $r = $gw->doSale("150.22","4111111111111111","1010");
+        print_r($gw->responses);
+        // var_dump($r);
+//        Array
+//        (
+//            [response] => 1
+//            [responsetext] => SUCCESS
+//            [authcode] => 123456
+//            [transactionid] => 12307142687
+//            [avsresponse] => N
+//            [cvvresponse] =>
+//            [orderid] => 12345
+//            [type] => sale
+//            [response_code] => 100
+//         )
+
+    }
+
 }

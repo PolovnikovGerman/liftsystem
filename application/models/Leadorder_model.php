@@ -2979,7 +2979,15 @@ Class Leadorder_model extends My_Model {
                 $shipaddr[$shipidx]['taxview']=0;
             }
             $statedat=$this->shipping_model->get_state($newval);
-            $shipaddr[$shipidx]['out_zip']=$statedat['state_code'].' '.$shipaddr[$shipidx]['zip'];
+            $out_zip = '';
+            if (isset($statedat['state_code'])) {
+                $out_zip.=$statedat['state_code'].' ';
+            }
+            if (isset($shipaddr[$shipidx]['zip'])) {
+                $out_zip.=$shipaddr[$shipidx]['zip'];
+            }
+            $shipaddr[$shipidx]['out_zip'] = $out_zip;
+            // $statedat['state_code'].' '.$shipaddr[$shipidx]['zip'];
         } elseif ($fldname=='zip') {
             // Try to validate Address
             // Validate Address
@@ -3041,7 +3049,7 @@ Class Leadorder_model extends My_Model {
             $items=$leadorder['order_items'];
             $qty=0;
             foreach ($items as $row) {
-                $qty+=$row['item_qty'];
+                $qty+=intval($row['item_qty']);
             }
             if ($qty>0) {
                 if (count($shipaddr)==1) {
@@ -3400,6 +3408,8 @@ Class Leadorder_model extends My_Model {
             'exp_month'=>str_pad($charge['exp_month'],2,'0', STR_PAD_LEFT),
             'exp_year'=>str_pad($charge['exp_year'],2,'0', STR_PAD_LEFT),
             'brand' =>  $order_data['brand'],
+            'order_id' => $order_id,
+            'order_num' => $order['order_num'],
         );
         $transres=$this->order_payment($pay_options);
         if ($transres['result']==$this->error_result) {
@@ -7058,6 +7068,8 @@ Class Leadorder_model extends My_Model {
             'exp_month'=>'',
             'exp_year'=>'',
             'brand' => $order_data['brand'],
+            'order_id' => $order_id,
+            'order_num' => $order_data['order_num'],
         );
 
         foreach ($res as $row) {
@@ -7199,11 +7211,6 @@ Class Leadorder_model extends My_Model {
             $options['cardnum']=str_replace('-', '',$options['cardnum']);
         }
         if ($this->config->item('default_paysystem')=='paypal') {
-            // $realconfig=1;
-            // $servername=str_replace('www.','',$_SERVER['SERVER_NAME']);
-            // if (empty($servername) || in_array($servername, $this->config->item('localserver'))) {
-            //     $realconfig=0;
-            // }
             $realconfig = 1;
             if (intval($this->config->item('test_server'))==1) {
                 $realconfig = 0;
@@ -7341,6 +7348,36 @@ Class Leadorder_model extends My_Model {
                 // Successful call.  Load view or whatever you need to do here.
                 return array('result' => $this->success_result , 'transaction_id' => $PayPalResult['TRANSACTIONID']);
             }
+        } elseif ($this->config->item('default_paysystem')=='nmi') {
+            $out = array('result'=> $this->error_result, 'error_msg' => 'Payment Attempt Finished unsuccessfully');
+            $this->load->library('Nmigw');
+            $gw = new Nmigw();
+            $gw->setBilling($options['firstname'],$options['lastname'],($options['company']=='' ? 'na' : $options['company']),$options['address1'],$options['address2'], $options['city'],
+                $options['state'],$options['zip'],$cntcode,$options['phone'],"",$options['email'],
+                "");
+            $gw->setShipping($options['firstname'], $options['lastname'], ($options['company']=='' ? 'na' : $options['company']),$options['address1'],$options['address2'], $options['city'],
+                $options['state'],$options['zip'],$cntcode, $options['email']);
+            $order_descr = 'Custom printed stress balls';
+            $gw->setOrder($options['order_id'],$order_descr,0, 0, $options['brand'].$options['order_num'],$this->input->server('REMOTE_ADDR'));
+            $r = $gw->doSale($options['amount'],$options['cardnum'],$options['exp_month'].$options['exp_year'], $options['cardcode']);
+            $payres = $gw->responses;
+            if (is_array($payres)) {
+                if (isset($payres['response'])) {
+                    if ($payres['response'] == 1) {
+                        $out['result'] = $this->success_result;
+                        $out['transaction_id'] = (isset($payres['transactionid']) ? $payres['transactionid'] : 'n/a');
+                    } else {
+                        $errmsg = isset($payres['response_code']) ? 'Err Code '.$payres['response_code'].' ' : '';
+                        if (isset($payres['responsetext'])) {
+                            $errmsg.=$payres['responsetext'];
+                        }
+                        if (!empty($errmsg)) {
+                            $out['error_msg'] = $errmsg;
+                        }
+                    }
+                }
+            }
+            return $out;
         } else {
 //            $this->load->library('authorizenet');
 //            if ($data['firstname']=='test' && $data['lastname']=='test' && $data['emailaddr']=='test@bluetrack.com') {

@@ -6583,6 +6583,7 @@ Class Orders_model extends MY_Model
 
     public function add_liftorder($orddata, $item, $confirmation) {
         $out = array('order_id' => 0, 'order_num' => '');
+        $newlink = uniq_link(12,'any');
         $paymethod = 'PAYPAL';
         // $orddata=$this->order_data($order_id);
         $printdate = strtotime($orddata['order_date']);
@@ -6618,6 +6619,7 @@ Class Orders_model extends MY_Model
         $this->db->set('arttype','new');
         $this->db->set('brand', $orddata['brand']);
         // $this->db->set('customer_code', new_customer_code());
+        $this->db->set('checkout_link', $newlink);
         $this->db->insert('ts_orders');
         $neword = $this->db->insert_id();
         if ($neword != 0) {
