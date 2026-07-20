@@ -87,7 +87,7 @@ $config['goalestim']=1.20;
 $config['cmpprofitpts']=0.10;
 $config['leadpts']=0.025;
 $config['order_system']='Bluetrack ';
-$config['default_paysystem']='paypal';
+$config['default_paysystem']=getenv('DEFAULT_PAYSYSTEM');
 $config['localserver']=array(
     'tempsys.net',
     'tempsys.golden-team.org',

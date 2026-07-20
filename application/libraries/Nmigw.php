@@ -7,12 +7,19 @@ class Nmigw
 {
     private $_CI;
     private $_posturl;
+    private $sandboxmode;
+    private $merhantemail;
+
     function __construct()
     {
         $this->_CI =& get_instance();
         $this->_CI->config->load('nmigw_config');
         $this->login['security_key'] = $this->_CI->config->item('gw_apikey');
         $this->_posturl = $this->_CI->config->item('gw_url');
+        $this->sandboxmode = $this->_CI->config->item('sandboxmode');
+        if (intval($this->sandboxmode)==1) {
+            $this->merhantemail = $this->_CI->config->item('merchantemail');
+        }
     }
 
     function setOrder($orderid,
@@ -53,7 +60,11 @@ class Nmigw
         $this->billing['country']   = $country;
         $this->billing['phone']     = $phone;
         $this->billing['fax']       = $fax;
-        $this->billing['email']     = $email;
+        if (intval($this->sandboxmode)==1) {
+            $this->billing['email']     = $this->merhantemail;
+        } else {
+            $this->billing['email']     = $email;
+        }
         $this->billing['website']   = $website;
     }
 
@@ -76,7 +87,11 @@ class Nmigw
         $this->shipping['state']     = $state;
         $this->shipping['zip']       = $zip;
         $this->shipping['country']   = $country;
-        $this->shipping['email']     = $email;
+        if (intval($this->sandboxmode)==1) {
+            $this->shipping['email']     = $this->merhantemail;
+        } else {
+            $this->shipping['email']     = $email;
+        }
     }
     // Transaction Functions
 
