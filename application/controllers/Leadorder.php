@@ -6754,7 +6754,7 @@ class Leadorder extends MY_Controller
             $itemcolors = $order_item['items'];
             foreach ($itemcolors as $itemcolor) {
                 foreach ($itemcolor['trackings'] as $tracking) {
-                    $tracktotal+=$tracking['qty'];
+                    $tracktotal+=intval($tracking['qty']);
                 }
             }
         }
