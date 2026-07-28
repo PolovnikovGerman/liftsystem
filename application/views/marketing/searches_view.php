@@ -84,6 +84,6 @@
             <div class="weekday">Sat</div>
             <div class="weekday">Sun</div>
         </div>
-        <div class="searchesdailydata">&nbsp;</div>
+        <div class="searchesdailydata" id="searchesdailydata">&nbsp;</div>
     </div>
 </div>

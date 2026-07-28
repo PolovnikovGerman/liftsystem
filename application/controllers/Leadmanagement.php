@@ -754,6 +754,7 @@ class Leadmanagement extends MY_Controller
                     $sessionid = 'lead'.uniq_link('15');
                     usersession($sessionid, $leaddata);
                     $content_options = [
+                        'leadunsign' => count($lead_usr)==0 ? 1 : 0,
                         'customer_view' => $customer_view,
                         'lead' => $lead,
                         'replica_view' => $replica_view,
