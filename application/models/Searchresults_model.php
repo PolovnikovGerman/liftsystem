@@ -105,17 +105,34 @@ class Searchresults_model extends My_Model
 
 
         $d_bgn = $d_bgn - $period;
-        $this->db->select('distinct date_format(search_time,\'%v_%Y\') as search_date',FALSE);
+//        $this->db->select('distinct date_format(search_time,\'%v_%Y\') as search_date',FALSE);
+//        $this->db->from('sb_search_results');
+//        $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
+//        $this->db->where('unix_timestamp(search_time) <= ', $d_end);
+//        $res_ar = $this->db->get()->result_array();
+        $this->db->select('count(*) as cnt, max(unix_timestamp(search_time)) as max_time');
         $this->db->from('sb_search_results');
         $this->db->where('unix_timestamp(search_time) >= ', $d_bgn);
         $this->db->where('unix_timestamp(search_time) <= ', $d_end);
-        $res_ar = $this->db->get()->result_array();
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('brand', $brand);
+            } else {
+                $this->db->where_in('brand', ['BT','SB']);
+            }
+        }
+        $datres = $this->db->get()->row_array();
+        $max_time = $d_end;
+        if ($datres['cnt']>0) {
+            $max_time = $datres['max_time'];
+        }
 
         $out_array = array();
         $search_array = array();
         $start_date = $d_bgn;
 
-        foreach ($res_ar as $row) {
+        // foreach ($res_ar as $row) {
+        while (1==1) {
             $week_bgn = $start_date;
             $week_end = strtotime(date("Y-m-d", $week_bgn) . " +6 days");
             $month_bgn = date('m', $week_bgn);
@@ -140,6 +157,9 @@ class Searchresults_model extends My_Model
             ];
             //= $row['search_date'];
             $start_date = strtotime(date("Y-m-d", $start_date) . " +7 days");
+            if ($start_date >= $max_time) {
+                break;
+            }
         }
 
         $this->db->select('date_format(search_time,\'%Y-%m-%d\') as search_date,search_result,count(*) as cnt');
