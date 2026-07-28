@@ -134,7 +134,11 @@ class Searchresults_model extends My_Model
                 'fri_good' => 0, 'fri_bad' => 0, 'fri_total' => 0,
                 'sat_good' => 0, 'sat_bad' => 0, 'sat_total' => 0,
                 'sun_good' => 0, 'sun_bad' => 0, 'sun_total' => 0,);
-            $search_array[] = $row['search_date'];
+            $search_array[] = [
+                'd_bgn' => $week_bgn,
+                'd_end' => strtotime(date('Y-m-d',$week_end).' 23:59:59'),
+            ];
+            //= $row['search_date'];
             $start_date = strtotime(date("Y-m-d", $start_date) . " +7 days");
         }
 
@@ -156,10 +160,17 @@ class Searchresults_model extends My_Model
         foreach ($res_ar as $row) {
             /* Search week number */
             $dat = strtotime($row['search_date']);
-            $seach_week = date('W_Y', $dat);
-
-
-            $index = array_search($seach_week, $search_array);
+            // $seach_week = date('W_Y', $dat);
+            $index = 0;
+            foreach ($search_array as $searchw) {
+                if ($dat >= $searchw['d_bgn'] && $dat <= $searchw['d_end']) {
+                    break;
+                } else {
+                    $index++;
+                }
+            }
+            $tt = 1;
+            // $index = array_search($seach_week, $search_array);
             if ($row['search_result'] == 0) {
                 $prefix = 'bad';
             } else {
