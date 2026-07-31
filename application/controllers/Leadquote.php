@@ -1499,6 +1499,7 @@ class Leadquote extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $mdata['docurl'] = $res['docurl'];
+                    $mdata['qnumclass'] = ifset($res, 'qnumclass','');
                 }
             }
             $this->ajaxResponse($mdata, $error);

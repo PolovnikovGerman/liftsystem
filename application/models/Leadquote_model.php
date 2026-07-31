@@ -2118,6 +2118,17 @@ class Leadquote_model extends MY_Model
         $this->db->where('q.quote_id', $quote_id);
         $quote = $this->db->get()->row_array();
         if (ifset($quote,'quote_id',0)==$quote_id) {
+            $this->db->where('quote_id', $quote['quote_id']);
+            $this->db->set('pdf_publish', 1);
+            $this->db->update('ts_quotes');
+            // New class
+            $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $quote['quote_id']);
+            $orddat = $this->db->get()->row_array();
+            $qnumclass = 'quotepublish';
+            if ($orddat['orders']>0) {
+                $qnumclass = 'blueactive';
+            }
+            $out['qnumclass'] = $qnumclass;
             $this->load->model('orders_model');
             $this->load->model('leadorder_model');
             $usrrepl = '';
