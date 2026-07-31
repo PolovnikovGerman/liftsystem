@@ -4977,7 +4977,12 @@ function save_leadorderdata() {
                 }
                 $.flash(response.data.popupmsg,7000);
             }
-            navigation_init();
+            if (callpage=='newquoteorder') {
+                // Close window
+                window.close();
+            } else {
+                navigation_init();
+            }
             /*
             $("#artModal").modal('hide');
             if (callpage=='finance') {
