@@ -1150,18 +1150,24 @@ input.discount-exp {
     font-weight: 600;
     font-size: 11px;
     margin: 1px 3px;
+    color: #8c8c8c;
+}
+.leadquotetabl-quotebox.quotepublish {
     color: #0000ff;
 }
-.leadquotetabl-quotebox.blueactive {
-    width: 58px;
-    height: 16px;
-    line-height: 15px;
-    border: 1px solid #616161;
+.leadquotetabl-quotebox.bluerelated {
     background: #0000ff;
-    text-align: center;
-    font-weight: 600;
-    font-size: 11px;
-    margin: 1px 3px;
+}
+.leadquotetabl-quotebox.blueactive {
+    /*width: 58px;*/
+    /*height: 16px;*/
+    /*line-height: 15px;*/
+    /*border: 1px solid #616161;*/
+    background: #0000ff;
+    /*text-align: center;*/
+    /*font-weight: 600;*/
+    /*font-size: 11px;*/
+    /*margin: 1px 3px;*/
     color: #fff;
 }
 .leadquotetabl-doc {
