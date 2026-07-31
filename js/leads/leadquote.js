@@ -155,23 +155,9 @@ function init_leadquotes_content() {
                 $("#loader").show();
                 $.post(url, docparams, function (response) {
                     if (response.errors=='') {
-                        var callpage = 'leads'
-                        var brand = $("#leadviewbrand").val();
+                        var showurl='/leadquote/quoteorderview?dat='+response.data.link;
+                        var newWin = window.open(showurl,"Quoute Order","width=1020,height=845,top=200,left=320,resizable=no,scrollbars=yes,status=yes");
                         $("#loader").hide();
-                        //  $("#leadformModal").modal('hide');
-                        $("#artModalLabel").empty().html(response.data.header);
-                        $("#artModal").find('div.modal-body').empty().html(response.data.content);
-                        $("#artModal").find('div.modal-dialog').css('width','1004px');
-                        $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
-                        $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
-                        init_onlineleadorder_edit();
-                        init_rushpast();
-                        if ($("#duplerroritemmsg").length > 0) {
-                            var errmsg = $("#duplerroritemmsg").val();
-                            alert(errmsg);
-                            var errfld = $("#duplerroritem").val();
-                            $("span.addnewcolor[data-item='"+errfld+"']").trigger('click');
-                        }
                     } else {
                         $("#loader").hide();
                         show_error(response);

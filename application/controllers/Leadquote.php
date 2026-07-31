@@ -1507,7 +1507,164 @@ class Leadquote extends MY_Controller
         show_404();
     }
 
-    public function quoteaddorder() {
+    public function quoteaddorder()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $error = 'Empty Quote';
+            $quote_id = ifset($postdata, 'quote_id', 0);
+            if (!empty($quote_id)) {
+                $res = $this->leadquote_model->addneworder($quote_id, $this->USR_ID);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    // Prepare content
+                    $orddata=$res['order'];
+                    $locking = '';
+
+                    $leadsession = 'leadorder'.uniq_link(15);
+                    if ($res['order_system_type']=='old') {
+                        $leadorder=array(
+                            'order'=>$orddata,
+                            'payments'=>$res['payments'],
+                            'artwork'=>$res['artwork'],
+                            'artlocations'=>$res['artlocations'],
+                            'artproofs'=>$res['proofdocs'],
+                            'claydocs' => $res['claydocs'],
+                            'previewdocs' => $res['previewdocs'],
+                            'message'=>$res['message'],
+                            'order_system'=>$res['order_system_type'],
+                            'locrecid'=>$locking,
+                        );
+                    } else {
+                        $leadorder=array(
+                            'order'=>$orddata,
+                            'payments'=>$res['payments'],
+                            'artwork'=>$res['artwork'],
+                            'artlocations'=>$res['artlocations'],
+                            'artproofs'=>$res['proofdocs'],
+                            'message'=>$res['message'],
+                            'contacts'=>$res['contacts'],
+                            'order_items'=>$res['order_items'],
+                            'order_system'=>$res['order_system_type'],
+                            'shipping'=>$res['shipping'],
+                            'shipping_address'=>$res['shipping_address'],
+                            'billing'=>$res['order_billing'],
+                            'charges'=>$res['charges'],
+                            'claydocs' => $res['claydocs'],
+                            'previewdocs' => $res['previewdocs'],
+                            'delrecords'=>array(),
+                            'locrecid'=>$locking,
+                        );
+                    }
+                    usersession($leadsession, $leadorder);
+                    $mdata['link'] = $leadsession;
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function quoteorderview()
+    {
+        $leadsession = $this->input->get('dat');
+        if (!empty($leadsession)) {
+            $leadorder = usersession($leadsession);
+            if (!empty($leadorder)) {
+                $options = [];
+                $options['current_page']='newquoteorder';
+                $options['leadsession']=$leadsession;
+                $orddata = $leadorder['order'];
+                $options['order_head'] = $this->load->view('leadorderdetails/head_order_view', $orddata, TRUE);
+                $leadorder['numtickets'] = 0;
+                $leadorder['total_due'] = 0;
+                $leadorder['payment_total'] = 0;
+                $leadorder['shipdocs'] = [];
+                $this->load->model('shipping_model');
+                $this->load->model('shipping_model');
+                $cnt_options=array(
+                    'orderby'=>'sort, country_name',
+                );
+                $leadorder['countries'] = $this->shipping_model->get_countries_list($cnt_options);
+                $leadorder['extendview'] = 1;
+                $leadorder['order_system_type'] = $leadorder['order_system'];
+                $leadorder['order_billing'] = $leadorder['billing'];
+                $leadorder['proofdocs'] = $leadorder['artproofs'];
+                if ($orddata['brand']=='SR') {
+                    $out['extendview'] = 0;
+                    $items = $leadorder['order_items'];
+                    foreach ($items as $item) {
+                        if ($item['item_id']==$this->config->item('custom_id')) {
+                            $leadorder['extendview'] = 1;
+                        }
+                    }
+                }
+
+                $data = $this->template->_prepare_leadorder_view($leadorder, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,1);
+                $options['order_data'] = $this->load->view('leadorderdetails/order_content_view', $data, TRUE);
+                $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
+//                if (!empty($res['item_error'])) {
+//                    $options['item_error'] = $res['item_error'];
+//                    $options['item_error_msg'] = $res['item_error_msg'];
+//                }
+                $content = $this->load->view('leadorderdetails/placeorder_menu_edit', $options, TRUE);
+                $head_options = [
+                    'order_head' => $this->load->view('leadorderdetails/head_placeorder_edit', $orddata, TRUE),
+                    'prvorder' => 0,
+                    'nxtorder' => 0,
+                    'order_id' => 0,
+                ];
+                $header = $this->load->view('leadorderdetails/head_edit', $head_options, TRUE);
+                // Prepare page head
+                $head=[];
+                // Utils
+                $head['styles'][]=array('style'=>'/css/page_view/pagination_shop.css');
+                $head['scripts'][]=array('src'=>'/js/adminpage/jquery.mypagination.js');
+                // DatePicker
+                $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+                $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+                /*Google Chart */
+                $head['scripts'][]=array('src'=>"https://www.gstatic.com/charts/loader.js");
+                // Order popup
+                $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+                $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+                if ($options['mapuse']==1) {
+                    $head['gmaps'] = 1;
+                    $head['scripts'][]=array('src' => '/js/leads/order_address.js');
+                }
+                // Uploader
+                $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');
+                $head['styles'][]=array('style'=>'/css/page_view/fileuploader.css');
+                // File Download
+                $head['scripts'][]=array('src'=>'/js/adminpage/jquery.fileDownload.js');
+                // Datepicker
+                $head['scripts'][]=array('src'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js');
+                $head['styles'][]=array('style'=>'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css');
+                // Select 2
+                $head['styles'][]=['style' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"];
+                $head['scripts'][]=['src' => "https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"];
+                // Start edit
+                $head['scripts'][] = ['src' => '/js/leads/initnewquoteorder.js'];
+                $head['title'] = 'Quoute Order';
+                $content_options = [
+                    'head_view' => $this->load->view('page_modern/head_view', $head, TRUE),
+                    'brandclass' => ($orddata['brand']=='SR' ? 'relievers' : ($orddata['brand']=='SG' ? '' : 'stressballs')),
+                    'content_view' => $content,
+                    'header' => $header,
+                    'brand' => $orddata['brand'],
+                ];
+                $this->load->view('leadquotes/neworder_view', $content_options);
+//                $("#artModalLabel").empty().html(response.data.header);
+//                $("#artModal").find('div.modal-body').empty().html(response.data.content);
+
+
+            }
+        }
+    }
+
+    public function quoteaddorder_old() {
         if ($this->isAjax()) {
             $mdata = [];
             $postdata = $this->input->post();
