@@ -5528,4 +5528,24 @@ class Test extends CI_Controller
 
     }
 
+    public function checkallinvent()
+    {
+        $items = $this->db->select('*')->from('ts_inventory_items')->get()->result_array();
+        foreach ($items as $item) {
+            $colors = $this->db->select('*')->from('ts_inventory_colors')->where('inventory_item_id', $item['inventory_item_id'])->get()->result_array();
+            foreach ($colors as $color) {
+                // Income
+                $this->db->select('count(*) as cnt, sum(income_qty) as income, sum(income_expense) as expense')->from('ts_inventory_incomes')->where('inventory_color_id', $color['inventory_color_id']);
+                $incom = $this->db->get()->row_array();
+                // Outcome
+                $this->db->select('count(*) as outcnt, sum(outcome_qty) as outqty')->from('ts_inventory_outcomes')->where('inventory_color_id', $color['inventory_color_id']);
+                $outcom = $this->db->get()->row_array();
+                if (floatval($incom['expense'])!==floatval($outcom['outqty'])) {
+                    $msg = 'Item '.$item['item_num'].' - '.$item['item_name'].' color '.$color['color'].'('.$color['inventory_color_id'].') Expense '.$incom['expense'].' ';
+                    $msg.='Outcome '.$outcom['outqty'].' Diff '.($incom['expense']-$outcom['outqty']).PHP_EOL;
+                    echo $msg;
+                }
+            }
+        }
+    }
 }

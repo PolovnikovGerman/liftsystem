@@ -68,29 +68,41 @@ function init_leadquotes_content() {
     });
     // Buttons
     $(".quotaactionbutton.btnpdf").unbind('click').click(function (){
-        // Save
-        var params = new Array();
-        params.push({name: 'session', value: $("#quotesessionid").val()});
-        params.push({name: 'lead', value: $("#quoteleadconnect").val()});
-        var url = '/leadquote/quotesave';
-        $.post(url, params, function (response) {
-            if (response.errors=='') {
-                $(".quotesdataarea").empty().html(response.data.quotescontent);
-                // New session
-                $("#quotesessionid").val(response.data.session_id);
-                var quote = response.data.quote_id;
-                var docparams = new Array();
-                docparams.push({name: 'quote_id', value: quote});
-                var url = '/leadquote/quotepdfdoc';
-                $.post(url, docparams, function (response){
+        // Change param pdf_publish
+        var fparams = new Array();
+        fparams.push({name: 'session', value: $("#quotesessionid").val()});
+        fparams.push({name: 'fld', value: 'pdf_publish'});
+        fparams.push({name: 'newval', value: 1});
+        var url = '/leadquote/quoteparamchange';
+        $.post(url, fparams, function (fresponse){
+            if (fresponse.errors=='') {
+                // Save
+                var params = new Array();
+                params.push({name: 'session', value: $("#quotesessionid").val()});
+                params.push({name: 'lead', value: $("#quoteleadconnect").val()});
+                var url = '/leadquote/quotesave';
+                $.post(url, params, function (response) {
                     if (response.errors=='') {
-                        var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                        $(".quotesdataarea").empty().html(response.data.quotescontent);
+                        // New session
+                        $("#quotesessionid").val(response.data.session_id);
+                        var quote = response.data.quote_id;
+                        var docparams = new Array();
+                        docparams.push({name: 'quote_id', value: quote});
+                        var url = '/leadquote/quotepdfdoc';
+                        $.post(url, docparams, function (response){
+                            if (response.errors=='') {
+                                var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                            } else {
+                                show_error(response);
+                            }
+                        },'json')
                     } else {
                         show_error(response);
                     }
-                },'json')
+                },'json');
             } else {
-                show_error(response);
+                show_error(fresponse);
             }
         },'json');
     });

@@ -1713,6 +1713,7 @@ class Leadquote_model extends MY_Model
             $this->db->set('items_subtotal', floatval($quote['items_subtotal']));
             $this->db->set('imprint_subtotal', floatval($quote['imprint_subtotal']));
             $this->db->set('quote_total', floatval($quote['quote_total']));
+            $this->db->set('pdf_publish', intval($quote['pdf_publish']));
             if ($quote['quote_id'] > 0 ) {
                 // Update
                 $this->db->where('quote_id', $quote['quote_id']);
@@ -4668,13 +4669,13 @@ class Leadquote_model extends MY_Model
             ];
             $quotes[] = $qrow;
             // Get All quotes
-            $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, sum(qc.item_qty) as item_qty');
+            $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, q.pdf_publish, sum(qc.item_qty) as item_qty');
             $this->db->select('group_concat(distinct(qc.item_description)) as item_name');
             $this->db->from('ts_quotes q');
             $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
             $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
             $this->db->where('q.lead_id', $lead_id);
-            $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source');
+            $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, q.pdf_publish');
             $this->db->order_by('q.quote_date', 'desc');
             $lists = $this->db->get()->result_array();
             $yearlist = date('Y', $lists[0]['quote_date']);
@@ -4701,6 +4702,19 @@ class Leadquote_model extends MY_Model
                 $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $list['quote_id']);
                 $orddat = $this->db->get()->row_array();
                 $list['orders'] = $orddat['orders'];
+                $qnumclass = '';
+                if ($list['pdf_publish']==1) {
+                    if ($list['orders']>0) {
+                        $qnumclass = 'blueactive';
+                    } else {
+                        $qnumclass = 'quotepublish';
+                    }
+                } else {
+                    if ($list['orders']>0) {
+                        $qnumclass = 'bluerelated';
+                    }
+                }
+                $list['qnumclass'] = $qnumclass;
                 $this->db->select('GROUP_CONCAT(qpd.num_colors) as impr');
                 $this->db->from('ts_quote_imprindetails qpd');
                 $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qpd.quote_item_id');
