@@ -1781,7 +1781,7 @@ class Leadquote_model extends MY_Model
                             $this->db->insert('ts_quote_itemcolors');
                         }
                     }
-                    $imprints = $item['imprints'];
+                    $imprints = ifset($item, 'imprints',[]);
                     foreach ($imprints as $imprint) {
                         if ($imprint['imprint_description']!=='&nbsp;') {
                             $this->db->set('imprint_description', $imprint['imprint_description']);
@@ -1797,7 +1797,7 @@ class Leadquote_model extends MY_Model
                             }
                         }
                     }
-                    $imprintdetails = $item['imprint_details'];
+                    $imprintdetails = ifset($item, 'imprint_details',[]);
                     foreach ($imprintdetails as $imprintdetail) {
                         $this->db->set('imprint_active', $imprintdetail['active']);
                         $this->db->set('imprint_type', $imprintdetail['imprint_type']);
