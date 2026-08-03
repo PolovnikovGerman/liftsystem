@@ -708,10 +708,10 @@ input.lead_searchinput {
 }
 @media (max-width: 1536px) {
     .leads_content {
-        width: 1523px;
+        width: 1515px;
     }
     .leads_content_left{
-        margin-right: 50px;
+        margin-right: 40px;
     }
     .leads_content_right {
         width: 988px;
