@@ -707,7 +707,16 @@ input.lead_searchinput {
     min-height: 22px;
 }
 @media (max-width: 1536px) {
+    .leads_content {
+        width: 1523px;
+    }
     .leads_content_left{
         margin-right: 50px;
+    }
+    .leads_content_right {
+        width: 988px;
+    }
+    .leads_section_area {
+        margin-right: 20px;
     }
 }
