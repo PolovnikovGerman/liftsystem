@@ -706,3 +706,8 @@ input.lead_searchinput {
     float: right!important;
     min-height: 22px;
 }
+@media (max-width: 1536px) {
+    .leads_content_left{
+        margin-right: 50px;
+    }
+}
