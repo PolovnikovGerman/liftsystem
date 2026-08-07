@@ -2211,6 +2211,7 @@ Class Shipping_model extends MY_Model
                         }
                     } else {
                         foreach ($rates as $rate) {
+                            $transit = 0;
                             if ($rate['service_code']=='07') {
                                 // UPSWorExpress
                                 foreach ($times as $time) {
