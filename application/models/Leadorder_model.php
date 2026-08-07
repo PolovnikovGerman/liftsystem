@@ -12205,7 +12205,8 @@ Class Leadorder_model extends My_Model {
             $config['smtp_pass'] = $this->config->item('fin_srdept_pass');
         } else {
             $config['smtp_user'] = $this->config->item('fin_sbdept_email');
-            $config['smtp_pass'] = $this->config->item('fin_sbdept_pass');
+            // $config['smtp_pass'] = $this->config->item('fin_sbdept_pass');
+            $config['smtp_pass'] = $this->config->item('fin_sbdept_pass2');
         }
         $email_from = $config['smtp_user'];
         $this->load->library('email');

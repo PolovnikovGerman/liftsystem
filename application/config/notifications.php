@@ -66,3 +66,4 @@ $config['fin_srdept_email'] = getenv('SR_FINANCE_EMAIL');
 $config['fin_srdept_pass'] = getenv('SR_FINANCE_PASS');
 $config['fin_sbdept_email'] = getenv('SB_FINANCE_EMAIL');
 $config['fin_sbdept_pass'] = getenv('SB_FINANCE_PASS');
+$config['fin_sbdept_pass2'] = getenv('SB_FINANCE_PASS2');
