@@ -12226,11 +12226,13 @@ Class Leadorder_model extends My_Model {
             $title = 'Payment Due - '.MoneyOutput($message_options['balance']).' - '.$message_options['itemname'];
         }
         $this->email->subject($title);
-        if (isset($msgoptions['cc_email']) && valid_email_address($msgoptions['cc_email'])) {
-            $this->email->cc($msgoptions['cc_email']);
-        }
-        if (isset($msgoptions['bcc_email']) && valid_email_address($msgoptions['bcc_email'])) {
-            $this->email->bcc($msgoptions['bcc_email']);
+        if (intval($this->config->item('test_server'))==0) {
+            if (isset($msgoptions['cc_email']) && valid_email_address($msgoptions['cc_email'])) {
+                $this->email->cc($msgoptions['cc_email']);
+            }
+            if (isset($msgoptions['bcc_email']) && valid_email_address($msgoptions['bcc_email'])) {
+                $this->email->bcc($msgoptions['bcc_email']);
+            }
         }
         $mail_body = $this->load->view('messages/chekout_invitation_view', $message_options, TRUE);
         $this->email->message($mail_body);
