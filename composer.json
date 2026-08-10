@@ -8,7 +8,8 @@
         "source": "https://github.com/aaron5670/CodeIgniter-3-Database-Migration-and-Seeding"
     },
     "require": {
-        "phpoffice/phpspreadsheet": "^1.8"
+        "phpoffice/phpspreadsheet": "^1.8",
+        "fakerphp/faker": "^1.24"
     },
     "suggest": {
         "paragonie/random_compat": "Provides better randomness in PHP 5.x"
