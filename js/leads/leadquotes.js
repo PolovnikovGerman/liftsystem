@@ -1,7 +1,5 @@
 function init_leadquotes() {
-    // Count total orders
-    search_leadquotes();
-    // initLeadQuotesPagination();
+    initLeadQuotesPagination();
 }
 
 function initLeadQuotesPagination() {
