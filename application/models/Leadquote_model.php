@@ -3131,7 +3131,6 @@ class Leadquote_model extends MY_Model
         $this->db->select('count(q.quote_id) as cnt');
         $this->db->from('ts_quotes q');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
-        $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
 
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
@@ -3141,6 +3140,7 @@ class Leadquote_model extends MY_Model
             }
         }
         if (ifset($options,'search','')!=='') {
+            $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
             $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number, qitem.quote_item)', $options['search']);
         }
         if (!empty(ifset($options,'replica',''))) {

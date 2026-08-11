@@ -602,17 +602,9 @@ div.leadtopstatusselect .btn-default.focus, .btn-default:focus {
     width: 82px;
 }
 .quests-link {
-    width: 34px; /* 38px; */
+    width: 34px;
 }
 .quests-unlink {
-    /*width: 38px;*/
-    /*height: 12px;*/
-    /*background: #767676;*/
-    /*color: #fff;*/
-    /*text-align: center;*/
-    /*line-height: 11px;*/
-    /*font-size: 10px;*/
-    /*cursor: pointer;*/
     width: 34px;
     height: 12px;
     background: #767676;
