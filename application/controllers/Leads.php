@@ -57,6 +57,7 @@ class Leads extends My_Controller {
     }
 
     function index() {
+        $starttime = intval(microtime(true) * 1000);
         $head = [];
         $head['title'] = 'Leads';
         $brand = $this->current_brand;
@@ -215,6 +216,8 @@ class Leads extends My_Controller {
         $content_view = $this->load->view('leads/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('leads/modal_view', [], TRUE);
+        $total = intval(microtime(true) * 1000) - $starttime;
+        log_message('error','Lead page prepare '.($total/1000).'s');
         $this->load->view('page_modern/page_template_view', $dat);
     }
 
@@ -1907,6 +1910,7 @@ class Leads extends My_Controller {
     }
 
     private function _prepare_leadsview($brand) {
+        $start = intval(microtime(true)*1000);
         $ldat = [];
         $this->load->model('leads_model');
         $active = 0;
@@ -1929,10 +1933,13 @@ class Leads extends My_Controller {
         $new_timestamp = strtotime($curdate . ' -1 year');
         $ldat['month'] = date('Y-m', $new_timestamp);
         $content=$this->load->view('leadsview/page_new_view',$ldat,TRUE);
+        $total = intval(microtime(true)*1000)-$start;
+        log_message('error', 'Leadsview page_new_view '.($total/1000).'s');
         return $content;
     }
 
     private function _prepare_itemslistview($brand) {
+        $starttime = intval(microtime(true) * 1000);
         $datqs=array(
             'brand' => $brand,
         );
@@ -1953,10 +1960,13 @@ class Leads extends My_Controller {
         $datqs['cur_page']=0;
         $datqs['prices']=$this->config->item('normal_price_base');
         $content=$this->load->view('leads/itemslist_head_view',$datqs,TRUE);
+        $total = intval(microtime(true) * 1000) - $starttime;
+        log_message('error','Itemslist page prepare '.($total/1000).'s');
         return $content;
     }
 
     private function _prepare_onlinequotesview($brand) {
+        $starttime = intval(microtime(true) * 1000);
         $datqs=[
             'perpage' => $this->config->item('quotes_perpage'),
             'order_by' => 'email_date',
@@ -1968,10 +1978,13 @@ class Leads extends My_Controller {
         $this->load->model('quotes_model');
         $datqs['total_rec']=$this->quotes_model->get_count_quotes($search);
         $content=$this->load->view('leads/quotes_head_view',$datqs,TRUE);
+        $total = intval(microtime(true) * 1000) - $starttime;
+        log_message('error','Online Quote prepare '.($total/1000).'s');
         return $content;
     }
 
     private function _prepare_requestlist_view($brand) {
+        $starttime = intval(microtime(true) * 1000);
         $datqs = [
             'perpage' => $this->config->item('quotes_perpage'),
             'order_by' => 'email_date',
@@ -1986,11 +1999,13 @@ class Leads extends My_Controller {
         $this->load->model('artproof_model');
         $datqs['total_rec']=$this->artproof_model->get_count_proofs($search);
         $content=$this->load->view('artrequest/page_view',$datqs,TRUE);
+        $total = intval(microtime(true) * 1000) - $starttime;
+        log_message('error','Request List prepare '.($total/1000).'s');
         return $content;
-
     }
 
     private function _prepare_questionslist_view($brand) {
+        $starttime = intval(microtime(true) * 1000);
         $datqs=[
             'perpage' => $this->config->item('quotes_perpage'),
             'order_by' => 'email_date',
@@ -2005,19 +2020,24 @@ class Leads extends My_Controller {
         $datqs['total_rec']=$this->questions_model->get_count_questions($search);
 
         $content=$this->load->view('leads/questions_view',$datqs,TRUE);
+        $total = intval(microtime(true) * 1000) - $starttime;
+        log_message('error','Questions page prepare '.($total/1000).'s');
         return $content;
-
     }
 
     private function _prepare_attempts_view($brand) {
+        $starttime = intval(microtime(true) * 1000);
         $options = [
             'brand' => $brand,
         ];
         $content=$this->load->view('leads/order_attempts_view', $options,TRUE);
+        $total = intval(microtime(true) * 1000) - $starttime;
+        log_message('error','WEB Attempts page prepare '.($total/1000).'s');
         return $content;
     }
 
     private function _prepare_customsbform_view($brand) {
+        $starttime = intval(microtime(true) * 1000);
         $datqs=[
             // 'perpage' => $this->config->item('quotes_perpage'),
             'perpage' => $this->PERPAGE_SBFORM,
@@ -2037,13 +2057,16 @@ class Leads extends My_Controller {
         $datqs['total_rec']=$this->customform_model->get_count_forms($search);
 
         $content=$this->load->view('customsbforms/customform_view',$datqs,TRUE);
+        $total = intval(microtime(true) * 1000) - $starttime;
+        log_message('error','Custom SB Forms page prepare '.($total/1000).'s');
         return $content;
-
     }
 
     private function _prepare_leadquotes_view($brand) {
+        $starttime = intval(microtime(true) * 1000);
         $this->load->model('leadquote_model');
-        $totals = $this->leadquote_model->leadquotes_count(['brand' => $brand]);
+        // $totals = $this->leadquote_model->leadquotes_count(['brand' => $brand]);
+        $totals = 0;
         $datqs=[
             'perpage' => $this->config->item('quotes_perpage'),
             'order_by' => 'date_add',
@@ -2064,10 +2087,13 @@ class Leads extends My_Controller {
         }
         $datqs['replicas'] = $replicas;
         $content=$this->load->view('leadquotes/page_view',$datqs,TRUE);
+        $total = intval(microtime(true) * 1000) - $starttime;
+        log_message('error','Lead Quotes page prepare '.($total/1000).'s');
         return $content;
     }
 
     private function _prepare_customorders_view($brand) {
+        $starttime = intval(microtime(true) * 1000);
         $this->load->model('orders_model');
         $legend=$this->load->view('accounting/profit_legend_view',[],TRUE);
         $options = [
@@ -2109,7 +2135,8 @@ class Leads extends My_Controller {
         $view_options['bottom_view']=$this->load->view('accounting/admin_bottom_view',array('year'=>$years,'orders_cnttotal'=>$orders_cnttotal),TRUE);
 
         $content=$this->load->view('customorders/head_view',$view_options,TRUE);
-
+        $total = intval(microtime(true) * 1000) - $starttime;
+        log_message('error','Custom Orders page prepare '.($total/1000).'s');
         return $content;
     }
 
