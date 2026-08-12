@@ -985,25 +985,30 @@ function dropHandler(ev) {
 }
 
 function assignprintdate(order, assigndate) {
+    var yPosition = $('#reschdltabl-body .simplebar-content-wrapper').scrollTop();
+    console.log('Scroll POS '+yPosition);
     var params = new Array();
     params.push({name: 'assigndate', value: assigndate});
     params.push({name: 'order_id', value: order});
     params.push({name: 'showneedaction', value: $("#calendarlateneedaction").val()});
     params.push({name: 'shownotapproved', value: $("#calendarlatenotapproved").val()});
+    params.push({name: 'calendarprintdate', value: $("#calendarprintdate").val()});
     var url = '/printcalendar/orderassignnewdate';
     $.post(url, params, function (response) {
         if (response.errors=='') {
             $(".reschdl-body").empty().html(response.data.calendview);
             $("input[name='reschedulefuture']").val(response.data.curdate);
-            $(".warning-section").empty().html(response.data.warnings);
-            if (parseInt(response.data.warningscnt)==0) {
-                $(".warning-section").hide();
-                $(".maingrey-close").show();
-            } else {
-                $(".warning-section").show();
-                $(".maingrey-close").hide();
+            if ($(".simpltodayblock").css('display')=='block') {
+                $(".warning-section").empty().html(response.data.warnings);
+                if (parseInt(response.data.warningscnt)==0) {
+                    $(".warning-section").hide();
+                    $(".maingrey-close").show();
+                } else {
+                    $(".warning-section").show();
+                    $(".maingrey-close").hide();
+                }
+                $(".regular-section").empty().html(response.data.weekday);
             }
-            $(".regular-section").empty().html(response.data.weekday);
             // Update Calendar
             $(".pscalendar-daybox[data-printdate='"+response.data.olddate+"']").find('div.dayboxorders-numbers').empty().html(response.data.orders);
             $(".pscalendar-daybox[data-printdate='"+response.data.olddate+"']").find('div.dayboxprints-numbers').empty().html(response.data.prints);
@@ -1013,6 +1018,7 @@ function assignprintdate(order, assigndate) {
             init_reschedule_management();
             init_dailydetails_manage();
             new SimpleBar(document.getElementById('reschdltabl-body'), { autoHide: false });
+            $('#reschdltabl-body .simplebar-content-wrapper').scrollTop(yPosition);
             orderid='';
             $.flash(response.data.message, {timeout: 5000});
         } else {
