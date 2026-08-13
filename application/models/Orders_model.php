@@ -7020,10 +7020,10 @@ Class Orders_model extends MY_Model
             $this->db->set('autopay', 1);
             $this->db->set('payment_save',1);
             $this->db->insert('ts_order_payments');
+            $this->db->where('order_id', $neword);
+            $this->db->set('print_date', $printdate);
+            $this->db->update('ts_orders');
             if ($printsched==1) {
-                $this->db->where('order_id', $neword);
-                $this->db->set('print_date', $printdate);
-                $this->db->update('ts_orders');
                 $this->db->where('order_id', $neword);
                 $this->db->set('print_date', $printdate);
                 $this->db->update('ts_order_items');
