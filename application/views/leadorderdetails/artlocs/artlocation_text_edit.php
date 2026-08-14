@@ -1,7 +1,7 @@
 <div class="art_line1">    
     <div class="artlocationarea <?=$locat_ready==1 ? 'locatready' : ''?>" data-artloc="<?=$artwork_art_id?>">        
         <div class="art_block1 <?=$locat_ready==1 ? 'text_blue' : 'text_white'?> opentxtlocation" data-artloc="<?=$artwork_art_id?>" data-arttype="<?=$art_type?>">
-            <div class="label">Text</div>
+            <div class="artlocationlabel">Text</div>
             <div class="customertext <?=($customer_text ? 'active' : '')?>" style="margin-top: 4px;" data-artloc="<?=$artwork_art_id?>">&nbsp;</div>
         </div>        
         <div class="art_block2">

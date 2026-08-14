@@ -3177,7 +3177,8 @@ class Leadquote_model extends MY_Model
         }
         if (ifset($options,'search','')!=='') {
             $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number, qitem.quote_item)', $options['search']);
-        } if (!empty(ifset($options,'replica',''))) {
+        }
+        if (!empty(ifset($options,'replica',''))) {
             $this->db->where('q.create_user', $options['replica']);
         }
         $limit = ifset($options, 'limit', 0);

@@ -1557,6 +1557,10 @@ class Leadquote extends MY_Controller
                             'delrecords'=>array(),
                             'locrecid'=>$locking,
                         );
+                        if (!empty($res['item_error'])) {
+                            $leadorder['item_error'] = $res['item_error'];
+                            $leadorder['item_error_msg'] = $res['item_error_msg'];
+                        }
                     }
                     usersession($leadsession, $leadorder);
                     $mdata['link'] = $leadsession;
@@ -1605,10 +1609,10 @@ class Leadquote extends MY_Controller
                 $data = $this->template->_prepare_leadorder_view($leadorder, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,1);
                 $options['order_data'] = $this->load->view('leadorderdetails/order_content_view', $data, TRUE);
                 $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
-//                if (!empty($res['item_error'])) {
-//                    $options['item_error'] = $res['item_error'];
-//                    $options['item_error_msg'] = $res['item_error_msg'];
-//                }
+                if (isset($leadorder['item_error'])) {
+                    $options['item_error'] = $leadorder['item_error'];
+                    $options['item_error_msg'] = $leadorder['item_error_msg'];
+                }
                 $content = $this->load->view('leadorderdetails/placeorder_menu_edit', $options, TRUE);
                 $head_options = [
                     'order_head' => $this->load->view('leadorderdetails/head_placeorder_edit', $orddata, TRUE),

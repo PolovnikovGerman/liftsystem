@@ -130,7 +130,7 @@
 input.input_checkbox {
     float: left;
     border: 1px solid #858585;
-    padding-left: 0px;
+    padding-left: 0;
     margin-top: 2px;
 }
 .warningprice {
@@ -140,7 +140,7 @@ input.input_checkbox {
 
 .line_1 {
     float: left;
-    margin: 2px 0px -9px 8px;
+    margin: 2px 0 -9px 8px;
     width: 99%;
 }
 .line_2 {
@@ -197,7 +197,7 @@ input.input_checkbox {
     background-repeat: no-repeat;
     width: 112px;
     height: 34px;
-    margin: 0px;
+    margin: 0;
 }
 .block_1_text {
     width: 106px;
@@ -236,7 +236,7 @@ input.calendarinpt[readonly="readonly"] {
 }
 .block_2_text2 {
     float: left;
-    padding: 0px 5px;
+    padding: 0 5px;
 }
 .block_2_text3 {
     float: right;
@@ -257,7 +257,7 @@ input.calendarinpt[readonly="readonly"] {
 .block_3_input {
     width: 250px;
     line-height: 16px;
-    margin: 3px 0px 0px 3px;
+    margin: 3px 0 0 3px;
 }
 .block_4 {
     float: left;
@@ -440,7 +440,7 @@ input.order_itemnumber_input {
 }
 select.order_itemnumber_select {
     height: 18px;
-    padding-left: 0px;
+    padding-left: 0;
     width: 67px;        
 }
 input.order_itemdescript_input {
@@ -675,7 +675,6 @@ input.orderitemadd_input {
 .orderitem_inventoryview {
     display: none;
     position: absolute;
-    position: absolute;
     left: 289px;
     top: 148px;
     z-index: 1052;
@@ -873,13 +872,13 @@ input.orderitemadd_input {
     float: right;
     width: 214px;
     height: 16px;
-    margin: 3px 0px 0px 3px;
+    margin: 3px 0 0 3px;
 }
 .items_input2 {
     float: right;
     width: 156px;    
     height: 16px;
-    margin: 3px 0px 0px 3px;
+    margin: 3px 0 0 3px;
 }
 .items_input3 {
     float: right !important;
@@ -1108,7 +1107,7 @@ span.text_bold {
     margin-top: 6px;
     line-height: 20px;
 }
-.shipdocupload qq-upload-button span {
+.shipdocupload .qq-upload-button span {
     clear: both;
     float: left;
 }
@@ -1330,7 +1329,7 @@ input.shiprushcost {
     width: 104px;
     height: 18px;
     font-size: 11px;
-    margin: 4px 0px 0px 6px;
+    margin: 4px 0 0 6px;
 }
 .shiprateshowarea {
     float: left;
@@ -2065,7 +2064,7 @@ span.taxemptyview {
 .block_7_artwork {
     float: left;
     width: 254px;
-    padding: 5px 0px 0px 5px;
+    padding: 5px 0 0 5px;
 }
 .block_7_artwork_line {
     float: left;
@@ -2095,7 +2094,7 @@ span.taxemptyview {
 }
 .block_7_artwork1 {
     float: right;
-    padding: 0px 12px 0px 0px;
+    padding: 0 12px 0 0;
 }
 .block_7_artwork2 {
     float: left;
@@ -2125,7 +2124,7 @@ span.taxemptyview {
 .block_7_art {
     float: left;
     width: 254px;
-    padding: 5px 0px 0px 5px;
+    padding: 5px 0 0 5px;
     margin-top: -10px;
 }
 .block_7_art1 {
@@ -2147,7 +2146,7 @@ span.taxemptyview {
 }
 .art_line1 {
     float: left;
-    margin: 1px 0px;
+    margin: 1px 0;
 }
 .art_line1.vectorised {
     background: url('/img/leadorder/bacgr_11_1.png') no-repeat transparent;    
@@ -2211,7 +2210,7 @@ span.taxemptyview {
     margin-left: 5px;    
     width: 59px;
 }
-.art_block1 > .label {
+.art_block1 > .artlocationlabel {
     float: left;
     width: 28px;    
 }
@@ -2277,11 +2276,11 @@ input.artrepeat {
 .block_7_proofs {
     float: left;
     width: 254px;
-    padding: 5px 0px 0px 5px;
+    padding: 5px 0 0 5px;
 }
 .block_7_proofs_text {
     float: right;
-    padding: 2px 10px 0px 0px;
+    padding: 2px 10px 0 0;
     font-size: 11px;
 }
 .block_7_proofs1 {
@@ -2603,7 +2602,7 @@ input.artrepeat {
     background-repeat: no-repeat;
     width: 125px;
     height: 29px;
-    margin: 2px 0px 0px;
+    margin: 2px 0 0;
     padding-top: 2px;
 }
 .button_newart_text {
@@ -2618,7 +2617,7 @@ input.artrepeat {
     /* background: url(/img/leadorder/button_email.png) no-repeat transparent; */
     width: 64px;
     height: 27px;
-    margin: 2px 0px 0px;
+    margin: 2px 0 0;
     padding-top: 1px;    
     cursor: pointer;
 }
@@ -2636,7 +2635,7 @@ input.artrepeat {
     background-repeat: no-repeat;
     width: 64px;
     height: 27px;
-    margin: 2px 0px 0px;
+    margin: 2px 0 0;
     padding-top: 1px;
     cursor: pointer;
 }
@@ -4093,7 +4092,7 @@ input.shipaddrqty {
     background-color: #bcbfff;
     border-radius: 7px;
     border: 2px solid #000;
-    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0 10px 20px, rgba(0, 0, 0, 0.23) 0 6px 6px;
 }
 .manualpayment div {
     font-size: 11px;
@@ -4210,7 +4209,7 @@ input.paydatadetails.payamount {
 }
 /* Proof Request POPUP */
 .requestpopuparea {
-    background: url('/img/onlineprofrequest/popup_bg.png') no-repeat transparent;
+    /*background: url('/img/onlineprofrequest/popup_bg.png') no-repeat transparent;*/
     height: 787px;
     width: 506px;
 }
@@ -4226,7 +4225,7 @@ input.paydatadetails.payamount {
     padding-left: 3px;
 }
 .requestpopuparea > .requestdetails  {
-    background: url('/img/onlineprofrequest/requestdata_bg.png') no-repeat transparent;
+    /*background: url('/img/onlineprofrequest/requestdata_bg.png') no-repeat transparent;*/
     margin-top: 10px;
     margin-left: 10px;
     padding-top: 5px;
@@ -4303,8 +4302,8 @@ a.historydetailsview {
 /* Update Details */
 .updatehistorydetailsarea {
     background-color: #FFFFFF;
-    -webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
+    /*-webkit-border-radius: 15px;*/
+    /*-moz-border-radius: 15px;*/
     border-radius: 15px;
     padding: 15px;
     border: 1px dotted #000;
@@ -4723,12 +4722,11 @@ a.historydetailsview {
 /* Confirm new shipcost */
 .confirmshipcost_container {
     background-color: #FFFFFF;
-    -webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
+    /*-webkit-border-radius: 15px;*/
+    /*-moz-border-radius: 15px;*/
     border-radius: 15px;
     padding: 15px;
     min-height: 97px;
-    padding: 15px;
     width: 410px;    
 }
 .confirmshipcost_container div {
@@ -6945,7 +6943,7 @@ input.invitecheckout_input {
 }
 #artNextModal .prpopup-textbox textarea {
     height: 165px;
-    width: 100%;
+    /*width: 100%;*/
     border: 1px solid #000;
     border-radius: 3px;
     padding: 5px;
@@ -6955,4 +6953,73 @@ input.invitecheckout_input {
 }
 #artNextModal .modal-footer {
     padding: 0!important;
+}
+/* Fonts */
+#artNextModal .prp-fonttext {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+#artNextModal .prpopup-fontsarea {
+    width: 100%;
+    height: 475px;
+    overflow-y: auto;
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 5px 0;
+    background: #fff;
+    margin-top: 7px;
+    scrollbar-width: none;
+}
+#artNextModal .prpopup-fontsarea h5 {
+    float: left;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 600;
+    margin: 8px 0;
+}
+#artNextModal .prpopupcolors-btn {
+    margin: 0 175px;
+}
+#artNextModal .tbl-fontslist {
+    width: 100%;
+    padding: 0 10px;
+}
+#artNextModal .tblfontslist-tr {
+    width: 100%;
+    margin-bottom: 7px;
+    float: left;
+}
+#artNextModal .tblfontslist-td {
+    /*border: 1px solid #dfdfdf;*/
+    float: left;
+}
+#artNextModal .td-fontinpt {
+    width: 20px;
+    text-align: right;
+    padding-right: 3px;
+}
+#artNextModal .td-fontinpt input {
+    margin: 6px 0 0 0 !important;
+    height: 12px;
+    width: 12px;
+}
+#artNextModal .verrypopular .td-fontbox {
+    width: 125px;
+    padding: 0 7px;
+}
+#artNextModal .otherpopular .td-fontbox {
+    width: 202px;
+    padding: 0 7px;
+}
+#artNextModal .fontbox {
+    height: 20px;
+}
+#artNextModal .fontbox img {
+    width: 100%;
+    height: auto;
+    max-height: 16px;
 }
