@@ -71,7 +71,7 @@ function navigation_init() {
     init_orderbottom_content(0);
     //init_blinkedtext(1);
     $("div.viewmultishipdetails").unbind('click').click(function(){
-        var params=new Array();
+        var params= new Array();
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         params.push({name: 'edit', value: 0});
         params.push({name: 'manage', value: 0});
@@ -1504,9 +1504,9 @@ function change_artcustomer_text(artloc) {
                 $(document.body).addClass('modal-open');
             })
             $("div#popupwin").empty().html(response.data.content);
-            $("div.vectorsave_data").show();
+            $("div.prpopuptext-save").show();
             $("textarea.artworkusertext").focus();
-            $("div.vectorsave_data").click(function(){
+            $("div.prpopuptext-save").click(function(){
                 save_leadordercustomtext(artloc);
             });
             $("input#loctimeout").val(response.data.loctime);
@@ -1525,13 +1525,14 @@ function change_leadartlockfont(art_id) {
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artNextModal").find('div.modal-dialog').css('width','1005px');
+            $("#artNextModal").find('div.modal-dialog').css('width','533');
             $("#artNextModal").find('.modal-title').empty().html('Select Font');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("#artNextModal").on('hidden.bs.modal', function (e) {
                 $(document.body).addClass('modal-open');
             })
+            new SimpleBar(document.getElementById('prpopup-fontsarea'), { autoHide: false });
             // $("div.imprintfonts").jqTransform();
             $("div#popupwin input.fontmanual").change(function(){
                 var fontval=$(this).val();
@@ -1544,7 +1545,7 @@ function change_leadartlockfont(art_id) {
                 $("div.font_button_select").addClass('active');
             })
             /* Init Management */
-            $("div.font_button_select").click(function(){
+            $("div.prpopupcolors-btn").click(function(){
                 var fontval=$("input#fontselectfor").val();
                 $("input.artfont[data-artworkartid="+art_id+"]").val(fontval);
                 $("#artNextModal").modal('hide');
@@ -1571,6 +1572,13 @@ function save_leadordercustomtext(artloc) {
         if (response.errors=='') {            
             $("#artNextModal").modal('hide');
             $("div.customertext[data-artloc='"+artloc+"']").removeClass('active').addClass(response.data.newclass);
+            if (response.data.newclass=='active') {
+                $("div.artlocationarea[data-artloc='"+artloc+"']").addClass('locatready');
+                $("div.artlocationarea[data-artloc='"+artloc+"']").find('div.opentxtlocation').removeClass('text_white').addClass('text_blue');
+            } else {
+                $("div.artlocationarea[data-artloc='"+artloc+"']").removeClass('locatready');
+                $("div.artlocationarea[data-artloc='"+artloc+"']").find('div.opentxtlocation').removeClass('text_blue').addClass('text_white');
+            }
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
         } else {
