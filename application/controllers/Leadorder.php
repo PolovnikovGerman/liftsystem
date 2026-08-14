@@ -1845,11 +1845,25 @@ class Leadorder extends MY_Controller
                         $locat=$res['artlocations'];
                         $locat_view='';
                         foreach ($locat as $row) {
-                            $row['edit']=1;
-                            if ($row['locat_ready']==0) {
-                                $locat_view.=$this->load->view('leadorderdetails/artwork_sourcelocat_view', $row, TRUE);
-                            } else {
-                                $locat_view.=$this->load->view('leadorderdetails/artwork_readylocat_view', $row, TRUE);
+//                            $row['edit']=1;
+//                            if ($row['locat_ready']==0) {
+//                                $locat_view.=$this->load->view('leadorderdetails/artwork_sourcelocat_view', $row, TRUE);
+//                            } else {
+//                                $locat_view.=$this->load->view('leadorderdetails/artwork_readylocat_view', $row, TRUE);
+//                            }
+                            switch ($row['art_type']) {
+                                case 'Logo':
+                                    $locat_view.=$this->load->view('leadorderdetails/artlocs/artlocation_logo_edit', $row, TRUE);
+                                    break;
+                                case 'Text':
+                                    $locat_view.=$this->load->view('leadorderdetails/artlocs/artlocation_text_edit', $row, TRUE);
+                                    break;
+                                case 'Repeat':
+                                    $locat_view.=$this->load->view('leadorderdetails/artlocs/artlocation_repeat_edit', $row, TRUE);
+                                    break;
+                                case 'Reference':
+                                    $locat_view.=$this->load->view('leadorderdetails/artlocs/artlocation_reference_edit', $row, TRUE);
+                                    break;
                             }
                         }
                         $mdata['content']=$locat_view;
