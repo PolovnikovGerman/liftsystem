@@ -142,6 +142,10 @@ class Template
             $dat['head_view'] = $this->CI->load->view('page_modern/head_view', $head_options, TRUE);
 //        }
 
+        $showhidemenu = 0;
+        if (isset($options['showhidemenu'])) {
+            $showhidemenu = $options['showhidemenu'];
+        }
 
         $topmenu_options = [
             'user_name' => $userdat['first_name'],
@@ -157,6 +161,7 @@ class Template
             'usrrole' => $userdat['user_logged_in'],
             'debtpermiss' => $debt_permissions,
             'debttotal' => $debt_total,
+            'showhidemenu' => $showhidemenu,
         ];
 //        if (ifset($options,'adaptive',0)==1) {
 //            $dat['header_view'] = $this->CI->load->view('page/header_adaptive_view', $topmenu_options, TRUE);
@@ -376,7 +381,7 @@ class Template
         }
         // Shipping Date
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
-        $trackcontent = '';
+        $trackcontent = '<div class="trackingdataarea empty">&nbsp</div>';
         $order_items=$res['order_items'];
         $numcolors = 0;
         foreach ($order_items as $order_item) {
@@ -513,9 +518,15 @@ class Template
         }
         // Total Due
         $total_due=$res['total_due'];
-        $dueoptions=array(
+        $dueoptions = [
             'totaldue'=>$total_due,
-        );
+        ];
+        if ($orddata['brand']=='SR') {
+            $dueoptions['checkoutlink']=$this->CI->config->item('srcheckoutlink').$orddata['checkout_link'];
+        } else {
+            $dueoptions['checkoutlink']=$this->CI->config->item('btcheckoutlink').$orddata['checkout_link'];;
+        }
+
         if ($total_due==0 && $ord_data['payment_total']>0) {
             $dueoptions['class']='closed';
         } else {
@@ -530,7 +541,13 @@ class Template
             'ticketview'=>$ticketview,
             'shippview'=> $trackcontent,
             'totaldueview'=>$dueview,
+            'balance' => $total_due,
         );
+        if ($orddata['brand']=='SR') {
+            $bottom_options['checkoutlink']=$this->CI->config->item('srcheckoutlink').$orddata['checkout_link'];
+        } else {
+            $bottom_options['checkoutlink']=$this->CI->config->item('btcheckoutlink').$orddata['checkout_link'];;
+        }
         $orddata['taxalign']='';
         if ($edit==0)  {
             if ($ord_data['tax']==0) {
@@ -689,7 +706,9 @@ class Template
             }
 
             $rushview=$this->CI->load->view('leadorderdetails/rushlist_view', $rushoptions, TRUE);
-
+            if ($edit==1) {
+                $shipdocs_view = $this->CI->load->view('leadorderdetails/shipdocs_edit', ['shipdocs' => $res['shipdocs']], TRUE);
+            }
             if (count($shipping_address)==1) {
                 $shipcost=$shipping_address[0]['shipping_costs'];
                 if ($edit==0) {
@@ -724,8 +743,10 @@ class Template
                     'taxview'=>$taxview,
                     'shipcntcode' => ifset($cntres,'country_iso_code_2',''),
                     'shipaddress' => $this->CI->shipping_model->prepare_shipaddress($shipping_address[0]),
+                    'shipdocs' => $res['shipdocs'],
                 );
                 if ($edit==1) {
+                    $shipoptions['shipdocs_view']=$shipdocs_view;
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_edit', $shipoptions, TRUE);
                 } else {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/single_ship_view', $shipoptions, TRUE);
@@ -743,8 +764,10 @@ class Template
                     'shipcostview'=>$cost_view,
                     'order'=>$ord_data,
                     'rushview'=>$rushview,
+                    'shipdocs' => $res['shipdocs'],
                 );
                 if ($edit==1) {
+                    $shipoptions['shipdocs_view']=$shipdocs_view;
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/multi_ship_edit', $shipoptions, TRUE);
                 } else {
                     $orddata['shippingview']=$this->CI->load->view('leadorderdetails/multi_ship_view', $shipoptions, TRUE);

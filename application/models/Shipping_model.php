@@ -1813,7 +1813,7 @@ Class Shipping_model extends MY_Model
         $later = new DateTime(date('Y-m-d', $startdeliv));
         $daydiff = $later->diff($earlier)->format("%r%a");
 
-        $token = usersession('upstoken');
+        $token = @usersession('upstoken');
         $tokenres = $this->_UpsAuthToken($token);
         $out['msg'] = $tokenres['msg'];
         if ($tokenres['result']==$this->success_result) {
@@ -2004,7 +2004,7 @@ Class Shipping_model extends MY_Model
                                     }
                                     $ship['3DS'] = array(
                                         'ServiceCode' => '3DS',
-                                        'ServiceName' => 'UPS 3 Day Select',
+                                        'ServiceName' => '3 Day',
                                         'Rate' => round($rate['rate'] / $qtykf, 2),
                                         'DeliveryDate' => $delivdate,
                                         'current' => 0,
@@ -2211,6 +2211,7 @@ Class Shipping_model extends MY_Model
                         }
                     } else {
                         foreach ($rates as $rate) {
+                            $transit = 0;
                             if ($rate['service_code']=='07') {
                                 // UPSWorExpress
                                 foreach ($times as $time) {

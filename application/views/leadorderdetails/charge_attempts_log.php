@@ -10,8 +10,8 @@
     </div>
     <div class="tablebody">
         <?php $numpp=0;?>
-        <?php foreach ($data as $row) { ?>
-        <div class="tabledatarow <?=($numpp%2==0 ? 'white' : 'grey')?>">
+        <?php foreach ($data as $row) : ?>
+        <div class="tabledatarow <?=($numpp%2==0 ? 'whitedatarow' : 'greydatarow')?>">
             <div class="date"><?=$row['paylog_date']?></div>
             <div class="user"><?=$row['user_name']?></div>
             <div class="paysum"><?=$row['paysum']?></div>
@@ -22,6 +22,7 @@
             </div>
             <div class="response <?=$row['payclass']?>"><?=$row['api_response']?></div>
         </div>
-        <?php } ?>
+        <?php $numpp++;?>
+        <?php endforeach; ?>
     </div>
 </div>

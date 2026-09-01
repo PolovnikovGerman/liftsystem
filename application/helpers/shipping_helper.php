@@ -275,7 +275,7 @@ if (!function_exists('calculate_shipcost')) {
                         }
                         $ship['3DS'] = array(
                             'ServiceCode' => '3DS',
-                            'ServiceName' => 'UPS 3 Day Select',
+                            'ServiceName' => '3 Day',
                             'Rate' => round($shipRate, 2),
                             'DeliveryDate' => $delivdate,
                             'current' => 0,

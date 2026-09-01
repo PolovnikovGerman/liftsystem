@@ -5,7 +5,7 @@ Class Leads_model extends MY_Model
 
     private $INIT_ERRMSG = 'Unknown error. Try later';
     private $init_number = 10000;
-    private $init_lead_type = 2;
+    public $init_lead_type = 2;
     private $empty_content = '&nbsp;';
 
     function __construct()
@@ -15,8 +15,9 @@ Class Leads_model extends MY_Model
 
     // Total records
     public function get_total_leads($options) {
-        $this->db->select('count(l.lead_id) as cnt');
+        $this->db->select('count(distinct(l.lead_id)) as cnt');
         $this->db->from('ts_leads l');
+        $this->db->join('ts_lead_contacts lc','lc.lead_id=l.lead_id');
         if (isset($options['usrrepl'])) {
             $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
             $this->db->where('lu.user_id',$options['usrrepl']);
@@ -25,37 +26,10 @@ Class Leads_model extends MY_Model
             // Open - 1, 2 - priority, 6 - Soon
             $this->db->where_in('lead_type',array(1,2,6));
         }
-//        if (isset($options['lead_type'])) {
-//            switch ($options['lead_type']) {
-//                case '1':
-//                    /* Open & Priority & Soon */
-//                    $this->db->where_in('lead_type',array(1,2,6));
-//                    break;
-//                case '2':
-//                    /* Priority */
-//                    $this->db->where('lead_type',1);
-//                    break;
-//                case '3':
-//                    /* Dead */
-//                    $this->db->where('lead_type',4);
-//                    break;
-//                case '4':
-//                    /* Closed */
-//                    $this->db->where('lead_type',3);
-//                    break;
-//                case '5':
-//                    /* Open Only */
-//                    $this->db->where('lead_type',2);
-//                    break;
-//                case '6':
-//                    $this->db->where('lead_type',6);
-//                    break;
-//            }
-//        }
         if (isset($options['search'])) {
             $search='%'.strtoupper($options['search']).'%';
             // $this->db->like('upper(concat(coalesce(l.lead_item,\'\'),coalesce(l.other_item_name,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_company,\'\'),coalesce(l.lead_mail,\'\'),coalesce(l.lead_phone,\'\'),concat(\'L\',l.lead_number))) ',$search);
-            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
+            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone, lc.contact_email, lc.contact_name, lc.contact_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
             $this->db->where("{$searchdata}");
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
@@ -71,8 +45,18 @@ Class Leads_model extends MY_Model
 
     /* Get data about Leads */
     public function get_leads($options,$sort,$limit,$offset) {
-        $this->db->select('l.*');
+        // Quotes QTY
+        $this->db->select('tq.lead_id, max(tqi.item_qty) as qty'); // GROUP_CONCAT(DISTINCT(tqi.item_qty)) as qty
+        $this->db->from('ts_quotes tq');
+        $this->db->join('ts_quote_items tqi', 'tqi.quote_id = tq.quote_id');
+        $this->db->group_by('tq.lead_id');
+        $quotsql = $this->db->get_compiled_select();
+
+        $this->db->select('l.*, v.item_name as viewitemname, q.qty as quoteqty');
         $this->db->from('ts_leads l');
+        $this->db->join('v_itemsearch v','v.item_id=l.lead_item_id','left');
+        $this->db->join("({$quotsql}) q",'q.lead_id=l.lead_id','left');
+
         if (isset($options['usrrepl'])) {
             $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
             $this->db->where('lu.user_id',$options['usrrepl']);
@@ -82,8 +66,10 @@ Class Leads_model extends MY_Model
             $this->db->where_in('lead_type',array(1,2,6));
         }
         if (isset($options['search'])) {
+            //
             $search='%'.strtoupper($options['search']).'%';
-            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
+            $this->db->join('ts_lead_contacts lc','lc.lead_id=l.lead_id');
+            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone, lc.contact_email, lc.contact_name, lc.contact_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
             $this->db->where("{$searchdata}");
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
@@ -240,6 +226,7 @@ Class Leads_model extends MY_Model
         foreach ($fields as $fld) {
             $res[$fld]='';
         }
+        $res['newhistorymsg'] = '';
         return $res;
 
     }
@@ -349,9 +336,9 @@ Class Leads_model extends MY_Model
             $oldlead=$this->get_lead($leadpost['lead_id']);
         }
         /* Check incoming */
-        if (count($lead_usr)==0) {
-            $out['msg']='Assign Lead executor';
-        } else {
+//        if (count($lead_usr)==0) {
+//            $out['msg']='Assign Lead executor';
+//        } else {
             /* Save Lead main data */
             $newhistory='';
             $newval=(floatval($leadpost['lead_value']));
@@ -528,7 +515,7 @@ Class Leads_model extends MY_Model
                 $out['msg']='';
                 $out['result']=$leadpost['lead_id'];
             }
-        }
+//        }
         return $out;
     }
 
@@ -629,7 +616,7 @@ Class Leads_model extends MY_Model
         return $out;
     }
     /* New Proof Number */
-    private function get_new_proofnum($brand) {
+    public function get_new_proofnum($brand) {
         $this->db->select('max(proof_num) as proof');
         $this->db->from('ts_emails');
         $this->db->where('email_type', 'Art_Submit');
@@ -2476,91 +2463,110 @@ Class Leads_model extends MY_Model
         $cur_date='';
         $fl_show=0;
         $numpp=0;
+        $leadid = 0;
         foreach ($leads as $lead) {
-            $row = [];
-            $row['lead_id'] = $lead['lead_id'];
-            if ($sort==1) {
-                $compdate = date('D - M j Y',strtotime($lead['update_date']));
-            } else {
-                $compdate = date('D - M j Y', $lead['lead_date']);
-            }
-            if ($compdate != $cur_date) {
-                $row['dateclass'] = 'outdate';
-                $row['date'] = $compdate;
-                $out[] = $row;
-                $cur_date = $compdate;
-            }
-            $row['dateclass'] = '';
-            $row['leadnum'] = ($brand=='SR' ? 'D' : 'L').str_pad($lead['lead_number'],5,'0',STR_PAD_LEFT);
-            $row['itemshow_class']='normal';
-            if ($lead['lead_item_id']==-3) {
-                $row['itemshow_class']='custom';
-            }
-            $row['lead_priority'] = 0;
-            if ($lead['lead_type']==1 || $lead['lead_type']==6) {
-                $row['lead_priority']=1;
-            }
-
-            $row['contact']=($lead['lead_company']=='' ? ($lead['lead_customer']=='' ? $lead['lead_mail'] : $lead['lead_customer']) : $lead['lead_company']);
-            if (empty($row['contact'])) {
-                $row['contact']=$this->empty_content;
-            }
-            $row['lead_itemqty']=($lead['lead_itemqty']=='' ? '&nbsp;' : $lead['lead_itemqty']);
-            switch ($lead['lead_item']) {
-                case '':
-                    $row['out_lead_item']=$this->empty_content;
-                    break;
-                case 'Other':
-                case 'Multiple':
-                case 'Custom Shaped Stress Balls':
-                    if ($lead['other_item_name']=='') {
-                        $row['out_lead_item']=$lead['lead_item'];
-                    } else {
-                        $row['out_lead_item']=$lead['other_item_name'];
-                    }
-                    break;
-                default :
-                    $row['out_lead_item']=$lead['lead_item'];
-                    break;
-            }
-            $row['leadrow_class']='';
-            switch ($lead['lead_type']) {
-                case '3':
-                    $row['leadrow_class']='dead';
-                    break;
-                case '4':
-                    $row['leadrow_class']='closed';
-                    break;
-            }
-            // Replicas
-            $this->db->select('u.user_initials');
-            $this->db->from('users u');
-            $this->db->join('ts_lead_users lu','lu.user_id=u.user_id');
-            $this->db->where('lu.lead_id',$lead['lead_id']);
-            $usr=$this->db->get()->result_array();
-            $row['usr_data'] = $this->empty_content;
-            $row['usrpopupus'] = '';
-            if (count($usr)>0) {
-                if (count($usr)==1) {
-                    $row['usr_data'] = $usr[0]['user_initials'];
+            if ($lead['lead_id'] != $leadid) {
+                $leadid = $lead['lead_id'];
+                $row = [];
+                $row['lead_id'] = $lead['lead_id'];
+                if ($sort==1) {
+                    $compdate = date('D - M j Y',strtotime($lead['update_date']));
                 } else {
-                    $row['usr_data'] = count($usr);
-                    $lusr='';
-                    foreach ($usr as $urow) {
-                        $lusr.=$urow['user_initials'].' ';
-                    }
-                    $row['usrpopupus'] = $lusr;
+                    $compdate = date('D - M j Y', $lead['lead_date']);
                 }
+                if ($compdate != $cur_date) {
+                    $row['dateclass'] = 'outdate';
+                    $row['date'] = $compdate;
+                    $out[] = $row;
+                    $cur_date = $compdate;
+                }
+                $row['dateclass'] = '';
+                $row['leadnum'] = ($brand=='SR' ? 'D' : 'L').str_pad($lead['lead_number'],5,'0',STR_PAD_LEFT);
+                $row['itemshow_class']='normal';
+                if ($lead['lead_item_id']==-3) {
+                    $row['itemshow_class']='custom';
+                }
+                $row['lead_priority'] = 0;
+                if ($lead['lead_type']==1 || $lead['lead_type']==6) {
+                    $row['lead_priority']=1;
+                }
+
+                $row['contact']=($lead['lead_company']=='' ? ($lead['lead_customer']=='' ? $lead['lead_mail'] : $lead['lead_customer']) : $lead['lead_company']);
+                if (empty($row['contact'])) {
+                    $row['contact']=$this->empty_content;
+                }
+//            $row['lead_itemqty']=($lead['lead_itemqty']=='' ? '&nbsp;' : $lead['lead_itemqty']);
+                $row['lead_itemqty'] = empty($lead['quoteqty']) ? '&nbsp;' : $lead['quoteqty'];
+                switch ($lead['lead_item']) {
+                    case '':
+                        if (!empty($lead['viewitemname'])) {
+                            $row['out_lead_item']=$lead['viewitemname'];
+                        } else {
+                            $row['out_lead_item']=$this->empty_content;
+                        }
+                        break;
+                    case 'Other':
+                    case 'Multiple':
+                    case 'Custom Shaped Stress Balls':
+                        if ($lead['other_item_name']=='') {
+                            $row['out_lead_item']=$lead['lead_item'];
+                        } else {
+                            $row['out_lead_item']=$lead['other_item_name'];
+                        }
+                        break;
+                    default :
+                        $row['out_lead_item']=$lead['lead_item'];
+                        break;
+                }
+                $row['leadrow_class']='';
+                switch ($lead['lead_type']) {
+                    case '3':
+                        $row['leadrow_class']='dead';
+                        break;
+                    case '4':
+                        $row['leadrow_class']='closed';
+                        break;
+                }
+                // Replicas
+                $this->db->select('u.user_initials');
+                $this->db->from('users u');
+                $this->db->join('ts_lead_users lu','lu.user_id=u.user_id');
+                $this->db->where('lu.lead_id',$lead['lead_id']);
+                $usr=$this->db->get()->result_array();
+                $row['usr_data'] = $this->empty_content;
+                $row['usrpopupus'] = '';
+                if (count($usr)>0) {
+                    if (count($usr)==1) {
+                        $row['usr_data'] = $usr[0]['user_initials'];
+                    } else {
+                        $row['usr_data'] = count($usr);
+                        $lusr='';
+                        foreach ($usr as $urow) {
+                            $lusr.=$urow['user_initials'].' ';
+                        }
+                        $row['usrpopupus'] = $lusr;
+                    }
+                }
+                $out[]=$row;
             }
-            $out[]=$row;
         }
         return $out;
     }
 
     public function get_priority_leads($options,$sort)
     {
-        $this->db->select('l.*');
+        // Quotes QTY
+        $this->db->select('tq.lead_id, max(tqi.item_qty) as qty'); // GROUP_CONCAT(DISTINCT(tqi.item_qty)) as qty
+        $this->db->from('ts_quotes tq');
+        $this->db->join('ts_quote_items tqi', 'tqi.quote_id = tq.quote_id');
+        $this->db->group_by('tq.lead_id');
+        $quotsql = $this->db->get_compiled_select();
+
+        $this->db->select('l.*, v.item_name as viewitemname, q.qty as quoteqty');
         $this->db->from('ts_leads l');
+        $this->db->join('ts_lead_contacts lc','lc.lead_id = l.lead_id');
+        $this->db->join('v_itemsearch v','v.item_id=l.lead_item_id','left');
+        $this->db->join("({$quotsql}) q",'q.lead_id=l.lead_id','left');
         if (isset($options['usrrepl'])) {
             $this->db->join('ts_lead_users lu','lu.lead_id=l.lead_id');
             $this->db->where('lu.user_id',$options['usrrepl']);
@@ -2569,7 +2575,7 @@ Class Leads_model extends MY_Model
         $this->db->where_in('lead_type',array(1,6));
         if (isset($options['search'])) {
             $search='%'.strtoupper($options['search']).'%';
-            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
+            $searchdata="(CONCAT_WS('',l.lead_item,l.other_item_name,l.lead_customer,l.lead_company,l.lead_mail,l.lead_phone, lc.contact_email, lc.contact_name, lc.contact_phone)  LIKE '{$search}' or concat('L',l.lead_number) like '{$search}')";
             $this->db->where("{$searchdata}");
         }
         if (isset($options['brand']) && $options['brand']!=='ALL') {
@@ -2597,60 +2603,69 @@ Class Leads_model extends MY_Model
         $cur_date='';
         $fl_show=0;
         $numpp=0;
+        $leadid = 0;
         foreach ($leads as $lead) {
-            $row['dateclass'] = '';
-            $row['lead_id'] = $lead['lead_id'];
-            $row['leadnum'] = ($brand == 'SR' ? 'D' : 'L') . str_pad($lead['lead_number'], 5, '0', STR_PAD_LEFT);
-            $row['itemshow_class'] = 'normal';
-            if ($lead['lead_item_id'] == -3) {
-                $row['itemshow_class'] = 'custom';
-            }
-            $row['lead_priority'] = 1;
-
-            $row['contact'] = ($lead['lead_company'] == '' ? ($lead['lead_customer'] == '' ? $lead['lead_mail'] : $lead['lead_customer']) : $lead['lead_company']);
-            if (empty($row['contact'])) {
-                $row['contact'] = $this->empty_content;
-            }
-            $row['lead_itemqty'] = ($lead['lead_itemqty'] == '' ? '&nbsp;' : $lead['lead_itemqty']);
-            switch ($lead['lead_item']) {
-                case '':
-                    $row['out_lead_item'] = $this->empty_content;
-                    break;
-                case 'Other':
-                case 'Multiple':
-                case 'Custom Shaped Stress Balls':
-                    if ($lead['other_item_name'] == '') {
-                        $row['out_lead_item'] = $lead['lead_item'];
-                    } else {
-                        $row['out_lead_item'] = $lead['other_item_name'];
-                    }
-                    break;
-                default :
-                    $row['out_lead_item'] = $lead['lead_item'];
-                    break;
-            }
-            $row['leadrow_class'] = '';
-            // Replicas
-            $this->db->select('u.user_initials');
-            $this->db->from('users u');
-            $this->db->join('ts_lead_users lu', 'lu.user_id=u.user_id');
-            $this->db->where('lu.lead_id', $lead['lead_id']);
-            $usr = $this->db->get()->result_array();
-            $row['usr_data'] = $this->empty_content;
-            $row['usrpopupus'] = '';
-            if (count($usr) > 0) {
-                if (count($usr) == 1) {
-                    $row['usr_data'] = $usr[0]['user_initials'];
-                } else {
-                    $row['usr_data'] = count($usr);
-                    $lusr = '';
-                    foreach ($usr as $urow) {
-                        $lusr .= $urow['user_initials'] . ' ';
-                    }
-                    $row['usrpopupus'] = $lusr;
+            if ($lead['lead_id']!==$leadid) {
+                $leadid = $lead['lead_id'];
+                $row['dateclass'] = '';
+                $row['lead_id'] = $lead['lead_id'];
+                $row['leadnum'] = ($brand == 'SR' ? 'D' : 'L') . str_pad($lead['lead_number'], 5, '0', STR_PAD_LEFT);
+                $row['itemshow_class'] = 'normal';
+                if ($lead['lead_item_id'] == -3) {
+                    $row['itemshow_class'] = 'custom';
                 }
+                $row['lead_priority'] = 1;
+
+                $row['contact'] = ($lead['lead_company'] == '' ? ($lead['lead_customer'] == '' ? $lead['lead_mail'] : $lead['lead_customer']) : $lead['lead_company']);
+                if (empty($row['contact'])) {
+                    $row['contact'] = $this->empty_content;
+                }
+//            $row['lead_itemqty']=($lead['lead_itemqty']=='' ? '&nbsp;' : $lead['lead_itemqty']);
+                $row['lead_itemqty'] = empty($lead['quoteqty']) ? '&nbsp;' : $lead['quoteqty'];
+                switch ($lead['lead_item']) {
+                    case '':
+                        if (!empty($lead['viewitemname'])) {
+                            $row['out_lead_item'] = $lead['viewitemname'];
+                        } else {
+                            $row['out_lead_item'] = $this->empty_content;
+                        }
+                        break;
+                    case 'Other':
+                    case 'Multiple':
+                    case 'Custom Shaped Stress Balls':
+                        if ($lead['other_item_name'] == '') {
+                            $row['out_lead_item'] = $lead['lead_item'];
+                        } else {
+                            $row['out_lead_item'] = $lead['other_item_name'];
+                        }
+                        break;
+                    default :
+                        $row['out_lead_item'] = $lead['lead_item'];
+                        break;
+                }
+                $row['leadrow_class'] = '';
+                // Replicas
+                $this->db->select('u.user_initials');
+                $this->db->from('users u');
+                $this->db->join('ts_lead_users lu', 'lu.user_id=u.user_id');
+                $this->db->where('lu.lead_id', $lead['lead_id']);
+                $usr = $this->db->get()->result_array();
+                $row['usr_data'] = $this->empty_content;
+                $row['usrpopupus'] = '';
+                if (count($usr) > 0) {
+                    if (count($usr) == 1) {
+                        $row['usr_data'] = $usr[0]['user_initials'];
+                    } else {
+                        $row['usr_data'] = count($usr);
+                        $lusr = '';
+                        foreach ($usr as $urow) {
+                            $lusr .= $urow['user_initials'] . ' ';
+                        }
+                        $row['usrpopupus'] = $lusr;
+                    }
+                }
+                $out[] = $row;
             }
-            $out[] = $row;
         }
         return $out;
     }
@@ -2958,6 +2973,7 @@ Class Leads_model extends MY_Model
     public function save_leadpopup($leaddata, $user_id, $session_id, $closesession=0)
     {
         $out = ['result' => $this->error_result, 'msg' => 'Contact doesn\'t found'];
+        $customquote_flag = $onlinequote_flag = 0;
         $lead = $leaddata['lead'];
         $contacts = $leaddata['lead_contacts'];
         $leadusers = $leaddata['lead_users'];
@@ -2971,6 +2987,22 @@ Class Leads_model extends MY_Model
             if ($closesession==1) {
                 usersession($session_id, null);
             }
+            $this->db->select('l.email_id, l.custom_quote_id, e.email_type, e.email_subtype');
+            $this->db->from('ts_lead_emails l');
+            $this->db->join('ts_emails e','e.email_id=l.email_id','left');
+            $this->db->where('l.lead_id',$lead['lead_id']);
+            $rellists = $this->db->get()->result_array();
+            foreach ($rellists as $rellist) {
+                if (!empty($rellists['custom_quote_id'])) {
+                    $customquote_flag = 1;
+                } else {
+                    if (isset($rellist['email_type']) && $rellist['email_type']=='Leads' && isset($rellist['email_subtype']) && $rellist['email_subtype']=='Quote') {
+                        $onlinequote_flag = 1;
+                    }
+                }
+            }
+            $out['customquote_flag'] = $customquote_flag;
+            $out['onlinequote_flag'] = $onlinequote_flag;
             return $out;
         }
         // Save main data
@@ -3087,6 +3119,23 @@ Class Leads_model extends MY_Model
             }
             $out['lead_id'] = $lead_id;
             $out['lead_number'] = $leadnum;
+            $customquote_flag = $onlinequote_flag = 0;
+            $this->db->select('l.email_id, l.custom_quote_id, e.email_type, e.email_subtype');
+            $this->db->from('ts_lead_emails l');
+            $this->db->join('ts_emails e','e.email_id=l.email_id','left');
+            $this->db->where('l.lead_id',$lead_id);
+            $rellists = $this->db->get()->result_array();
+            foreach ($rellists as $rellist) {
+                if (!empty($rellists['custom_quote_id'])) {
+                    $customquote_flag = 1;
+                } else {
+                    if (isset($rellist['email_type']) && $rellist['email_type']=='Leads' && isset($rellist['email_subtype']) && $rellist['email_subtype']=='Quote') {
+                        $onlinequote_flag = 1;
+                    }
+                }
+            }
+            $out['customquote_flag'] = $customquote_flag;
+            $out['onlinequote_flag'] = $onlinequote_flag;
             // Remove session
             if ($closesession==1) {
                 usersession($session_id, null);
@@ -3138,6 +3187,101 @@ Class Leads_model extends MY_Model
         return true;
     }
 
+    public function onlinequote_addlead($leadpost)
+    {
+        $newhistory='';
+        $newval=(floatval($leadpost['lead_value']));
+        if ($newval==0) {
+            $newval=NULL;
+        }
+        $this->db->set('lead_company',$leadpost['lead_company']);
+        $this->db->set('lead_phone',$leadpost['lead_phone']);
+        // $this->db->set('lead_value',$leadpost['lead_value']);
+        $this->db->set('lead_value',$newval);
+        $this->db->set('lead_needby',$leadpost['lead_needby']);
+        $this->db->set('lead_customer',$leadpost['lead_customer']);
+        $this->db->set('lead_mail',$leadpost['lead_mail']);
+        $this->db->set('lead_itemqty',$leadpost['lead_itemqty']);
+        $this->db->set('lead_note',$leadpost['lead_note']);
+        if (isset($leadpost['lead_item_id'])) {
+            if ($leadpost['lead_item_id']=='') {
+                $leadpost['lead_item_id']=NULL;
+                $leadpost['lead_item']='';
+            } else {
+                /* Get DATA about Item */
+                $itemdat=$this->search_itemid($leadpost['lead_item_id']);
+                if ($itemdat['result']==$this->error_result) {
+                    $leadpost['lead_item']='';
+                    $leadpost['lead_item_id']=NULL;
+                } else {
+                    $leadpost['lead_item']=$itemdat['item_name'];
+                }
+            }
+            $this->db->set('lead_item',$leadpost['lead_item']);
+            $this->db->set('lead_item_id',$leadpost['lead_item_id']);
+        }
+        if (isset($leadpost['other_item_name'])) {
+            $this->db->set('other_item_name',$leadpost['other_item_name']);
+        }
+        if ($leadpost['lead_status']!='') {
+            $this->db->set('lead_status',$leadpost['lead_status']);
+            $this->db->set('update_date', date('Y-m-d H:i:s'));
+            $newhistory=$leadpost['lead_status'];
+        }
+        if (isset($leadpost['lead_customtype']) && !empty($leadpost['lead_customtype'])) {
+            $this->db->set('lead_customtype',$leadpost['lead_customtype']);
+        }
+        $this->db->set('lead_type',$leadpost['lead_type']);
+        $this->db->set('brand', $leadpost['brand']);
+        $this->db->set('lead_date',time());
+        $this->db->set('lead_assign_time',time());
+        $this->db->set('create_date',date('Y-m-d H:i:s'));
+        $leadnum=$this->get_leadnum($leadpost['brand']);
+        $this->db->set('lead_number',$leadnum);
+        if (isset($leadpost['country_id'])) {
+            $this->db->set('country_id', $leadpost['country_id']);
+        }
+        if (isset($leadpost['state'])) {
+            $this->db->set('state', $leadpost['state']);
+        }
+        if (isset($leadpost['city'])) {
+            $this->db->set('city', $leadpost['city']);
+        }
+        if (isset($leadpost['zip'])) {
+            $this->db->set('zip', $leadpost['zip']);
+        }
+        if (isset($leadpost['address_1'])) {
+            $this->db->set('address_line1', $leadpost['address_1']);
+        }
+        if (isset($leadpost['address_2'])) {
+            $this->db->set('address_line2', $leadpost['address_2']);
+        }
+        $this->db->insert('ts_leads');
+        $lead_id=$this->db->insert_id();
+        if ($lead_id==0) {
+            $out['msg']='Unable to add record. Try later';
+        } else {
+            $leadpost['lead_id']=$lead_id;
+            $leadpost['lead_number']=$leadnum;
+            // Add Lead Contact
+            $this->db->set('contact_name', $leadpost['lead_customer']);
+            $this->db->set('contact_phone', $leadpost['lead_phone']);
+            $this->db->set('contact_email', $leadpost['lead_mail']);
+            $this->db->set('lead_id', $lead_id);
+            $this->db->insert('ts_lead_contacts');
+            // Empty Contact
+            $this->db->set('contact_name', null);
+            $this->db->set('contact_phone', null);
+            $this->db->set('contact_email', null);
+            $this->db->set('lead_id', $lead_id);
+            $this->db->insert('ts_lead_contacts');
+        }
+        /* Update - create related data */
+        $out['msg'] = '';
+        $out['result'] = $leadpost['lead_id'];
+        return $out;
+    }
+
     private function _prepare_leads_session($lead_id)
     {
         $this->load->model('leadquote_model');
@@ -3170,6 +3314,34 @@ Class Leads_model extends MY_Model
             'edit_flag' => 0,
         ];
         return $leaddata;
+    }
+
+    public function get_unassignleads_interest($brand, $showall)
+    {
+        $this->db->select('lead_id, count(leaduser_id) as cnt');
+        $this->db->from('ts_lead_users');
+        $this->db->group_by('lead_id');
+        $leadusr = $this->db->get_compiled_select();
+
+        $this->db->select('l.*, coalesce(lu.cnt,0) as cnt');
+        $this->db->from('ts_leads l');
+        $this->db->join('('.$leadusr.') lu','lu.lead_id=l.lead_id','left');
+        $this->db->having('cnt',0);
+        if ($brand!=='ALL') {
+            if ($brand=='SR') {
+                $this->db->where('l.brand', $brand);
+            } else {
+                $this->db->where_in('l.brand', ['SB','BT']);
+            }
+        }
+        // $this->db->where('q.active', 1);
+        if ($showall==0) {
+            $limitdate = strtotime('now - 90 days');
+            $this->db->where('l.lead_date >= ', $limitdate);
+        }
+        $this->db->order_by('l.lead_id', 'desc');
+        $dats = $this->db->get()->result_array();
+        return $dats;
     }
 }
 /* End of file leads_model.php */

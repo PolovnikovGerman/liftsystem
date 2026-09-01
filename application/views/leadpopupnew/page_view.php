@@ -3,7 +3,7 @@
     <input type="hidden" id="leadmapuse" value="<?=$mapuse?>"/>
     <div class="section-customer"><?=$customer_view?></div>
     <div class="section-content">
-        <div class="leadblock">
+        <div class="leadblock <?=$leadunsign==1 ? 'unassign' : ''?>">
 <!--            <div class="btnclose"><i class="fa fa-times" aria-hidden="true"></i></div>-->
             <div class="leadblock-header">
                 <div class="leadnumber">Lead: <span>#<?=($lead['brand']=='SR' ? 'D' : 'L').str_pad($lead['lead_number'],5,'0', STR_PAD_LEFT)?></span></div>
@@ -77,7 +77,7 @@
                     <div class="lead-statushistory">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active"><a href="#custom-status-history" aria-controls="custom-status-history" role="tab" data-toggle="tab">Status & History:</a></li>
-                            <li role="presentation"><a href="#custom-interest-history" aria-controls="custom-interest-history" role="tab" data-toggle="tab">Interest History</a></li>
+<!--                            <li role="presentation"><a href="#custom-interest-history" aria-controls="custom-interest-history" role="tab" data-toggle="tab">Interest History</a></li>-->
                         </ul>
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="custom-status-history">
@@ -91,10 +91,11 @@
                                         <div class="list-leadhistory" id="list-leadhistory"><?=$history_view?></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div role="tabpanel" class="tab-pane" id="custom-interest-history">
                                 <div class="list-quests"><?=$tasks_view?></div>
                             </div>
+<!--                            <div role="tabpanel" class="tab-pane" id="custom-interest-history">-->
+<!--                                <div class="list-quests">--><?php //=$tasks_view?><!--</div>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>

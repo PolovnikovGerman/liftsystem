@@ -71,7 +71,7 @@ function navigation_init() {
     init_orderbottom_content(0);
     //init_blinkedtext(1);
     $("div.viewmultishipdetails").unbind('click').click(function(){
-        var params=new Array();
+        var params= new Array();
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         params.push({name: 'edit', value: 0});
         params.push({name: 'manage', value: 0});
@@ -208,7 +208,10 @@ function navigation_init() {
     $("a.historydetailsview").unbind('click').click(function(){
         var history=$(this).data('history');
         show_updatedetails(history);
-    });    
+    });
+    // Scroll for Payments
+    new SimpleBar(document.getElementById('payments_tableview'), { autoHide: false });
+    new SimpleBar(document.getElementById('pay_methods_area'), { autoHide: false });
     // Show Attempts
     $("div.chargeattemptlogcall").unbind('click').click(function(){        
         var order=$(this).data('order');
@@ -272,6 +275,11 @@ function navigation_init() {
         // Open new window
         window.open(url, 'trackformwin', 'width=600, height=800,toolbar=1')
     });
+    // Open shipping doc
+    $(".shipdocs_link").unbind('click').click(function (){
+        $(".shipdocview").show();
+        init_shipdocview();
+    })
 }
 
 
@@ -488,6 +496,9 @@ function init_onlineleadorder_edit() {
             init_pooverview();
         }
     });
+    // Scroll for Payments
+    new SimpleBar(document.getElementById('payments_tableview'), { autoHide: false });
+    new SimpleBar(document.getElementById('pay_methods_area'), { autoHide: false });
     // Calendar call
     $("input#shipdatecalendinput").datepicker({
         autoclose: true,
@@ -1369,9 +1380,10 @@ function init_leadorder_artmanage() {
                 $("#artNextModal").on('hidden.bs.modal', function (e) {
                     $(document.body).addClass('modal-open');
                 })
-                $("div.vectorsave_data").show();
+                // $("div.vectorsave_data").show();
                 $("textarea.artworkusertext").focus();
-                $("div.vectorsave_data").unbind('click').click(function(){
+                // $("div.vectorsave_data").unbind('click').click(function(){
+                $("div.prpopuptext-save").unbind('click').click(function(){
                     save_leadorderrdnote(artloc);
                 });
                 $("input#loctimeout").val(response.data.loctime);
@@ -1492,9 +1504,9 @@ function change_artcustomer_text(artloc) {
                 $(document.body).addClass('modal-open');
             })
             $("div#popupwin").empty().html(response.data.content);
-            $("div.vectorsave_data").show();
+            $("div.prpopuptext-save").show();
             $("textarea.artworkusertext").focus();
-            $("div.vectorsave_data").click(function(){
+            $("div.prpopuptext-save").click(function(){
                 save_leadordercustomtext(artloc);
             });
             $("input#loctimeout").val(response.data.loctime);
@@ -1513,13 +1525,14 @@ function change_leadartlockfont(art_id) {
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artNextModal").find('div.modal-dialog').css('width','1005px');
+            $("#artNextModal").find('div.modal-dialog').css('width','533');
             $("#artNextModal").find('.modal-title').empty().html('Select Font');
             $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
             $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
             $("#artNextModal").on('hidden.bs.modal', function (e) {
                 $(document.body).addClass('modal-open');
             })
+            new SimpleBar(document.getElementById('prpopup-fontsarea'), { autoHide: false });
             // $("div.imprintfonts").jqTransform();
             $("div#popupwin input.fontmanual").change(function(){
                 var fontval=$(this).val();
@@ -1532,7 +1545,7 @@ function change_leadartlockfont(art_id) {
                 $("div.font_button_select").addClass('active');
             })
             /* Init Management */
-            $("div.font_button_select").click(function(){
+            $("div.prpopupcolors-btn").click(function(){
                 var fontval=$("input#fontselectfor").val();
                 $("input.artfont[data-artworkartid="+art_id+"]").val(fontval);
                 $("#artNextModal").modal('hide');
@@ -1559,6 +1572,13 @@ function save_leadordercustomtext(artloc) {
         if (response.errors=='') {            
             $("#artNextModal").modal('hide');
             $("div.customertext[data-artloc='"+artloc+"']").removeClass('active').addClass(response.data.newclass);
+            if (response.data.newclass=='active') {
+                $("div.artlocationarea[data-artloc='"+artloc+"']").addClass('locatready');
+                $("div.artlocationarea[data-artloc='"+artloc+"']").find('div.opentxtlocation').removeClass('text_white').addClass('text_blue');
+            } else {
+                $("div.artlocationarea[data-artloc='"+artloc+"']").removeClass('locatready');
+                $("div.artlocationarea[data-artloc='"+artloc+"']").find('div.opentxtlocation').removeClass('text_blue').addClass('text_white');
+            }
             $("input#loctimeout").val(response.data.loctime);
             init_onlineleadorder_edit();
         } else {
@@ -3215,6 +3235,88 @@ function init_leadorder_shipping() {
         copyOrderToClipboard(element);
         $('.ship_tax_textareainpt[data-fldname="ship_company"]').focus();
     });
+    // Ships docs - view
+    $(".shipdocs_link").unbind('click').click(function (){
+        $(".shipdocview").show();
+        init_shipdocview();
+        init_shipdocupload();
+    });
+}
+
+function init_shipdocupload() {
+
+    var upload_templ= '<div class="qq-uploader"><div class="shipdocupload qq-upload-button"><span><em>+ add file</em></span></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>' +
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('shipdocviewadd'),
+        action: '/utils/save_shipdoc',
+        uploadButtonText: '',
+        multiple: true,
+        debug: false,
+        template: upload_templ,
+        // allowedExtensions: ['pdf','PDF', 'doc', 'DOC', 'docx','DOCX',''],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url='/leadorder/saveshipdocload';
+                var params=new Array();
+                params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                params.push({name: 'doclink', value: responseJSON.filename});
+                params.push({name: 'docsource', value: responseJSON.srcname});
+                // params.push({name: 'filetype', value: responseJSON.filetype});
+                // params.push({name: 'shipdoc', value: shipdoc})
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $(".shipdocviewarea").empty().html(response.data.content);
+                        $(".shipdocviewtitle").empty().html(response.data.numdocs+' ship docs');
+                        $(".shipdocs_link").find('span').empty().html(response.data.numdocs+' files');
+                        init_shipdocview();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
+}
+
+function init_shipdocview() {
+    $(".shipdocscloseview").unbind('click').click(function (){
+        $(".shipdocview").hide();
+    });
+    // View doc
+    $(".shipdocviewdoc").unbind('click').click(function (){
+        var lnkurl = $(this).data('link');
+        var srcname = $(this).data('source');
+        openai(lnkurl, srcname);
+    });
+    // Ship docs - remove
+    $(".removeshipdoc").unbind('click').click(function (){
+        if (confirm('Remove Shipping Document?')==true) {
+            var shipdoc = $(this).data('shipdoc');
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'shipdoc', value: shipdoc});
+            var url="/leadorder/shipdocremove";
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".shipdocviewarea").empty().html(response.data.content);
+                    $(".shipdocviewtitle").empty().html(response.data.numdocs+' ship docs');
+                    $(".shipdocs_link").find('span').empty().html(response.data.numdocs+' files');
+                    init_shipdocview();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
 }
 
 function edit_multishipaddress() {
@@ -3650,9 +3752,10 @@ function init_taxdocupload(shipadr) {
         action: '/utils/redrawattach',
         /* template: temp, */
         multiple: false,
-        debug: false,
+        debug: true,
         onComplete: function(id, fileName, responseJSON){
             if (responseJSON.success) {
+                console.log('Src File '+responseJSON.source);
                 var url="/leadorder/taxexcptdocsave";
                 $("ul.qq-upload-list").css('display','none');
                 var params = new Array();
@@ -4078,6 +4181,32 @@ function init_orderbottom_content(edit_mode) {
                 init_profitedit_call(edit_mode);
             } else {
                 show_error(cogresponse);
+            }
+        },'json');
+    });
+    $(".icon_link_checkout").unbind('click').click(function (){
+        var element = document.querySelector("#checkoutlink");
+        copyOrderToClipboard(element);
+        $(element).hide();
+        var url = $("#checkoutlink").val();
+        var newWindow = window.open(url, 'paymentview');
+    });
+    $(".sendcheckoutnotification").unbind('click').click(function (){
+        var url="/leadorder/prepare_checkout_invite";
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".sendcheckoutnotificationcontent").empty().html(response.data.content);
+                $(".sendcheckoutnotificationarea").show();
+                $(".sendcheckoutnotificationclosewin").unbind('click').click(function(){
+                    $(".sendcheckoutnotificationarea").hide();
+                });
+                $(".invitecheckout_send").unbind('click').click(function (){
+                    send_checkout_invite();
+                })
+            } else {
+                show_error(response);
             }
         },'json');
     });
@@ -4846,7 +4975,12 @@ function save_leadorderdata() {
                 }
                 $.flash(response.data.popupmsg,7000);
             }
-            navigation_init();
+            if (callpage=='newquoteorder') {
+                // Close window
+                window.close();
+            } else {
+                navigation_init();
+            }
             /*
             $("#artModal").modal('hide');
             if (callpage=='finance') {
@@ -6117,4 +6251,29 @@ function init_tracking_manage() {
         $(element).show();
 
     });
+}
+
+function send_checkout_invite() {
+    var url="/leadorder/send_checkout_invite";
+    var params=new Array();
+    params.push({name: 'ordersession', value: $("input#ordersession").val()});
+    params.push({name: 'invite_name', value: $("#invitecheckoutname_to").val()});
+    params.push({name: 'invite_email', value: $("#invitecheckoutemail_to").val()});
+    if ($("#invitecheckoutemail_cc").length > 0) {
+        // params.push({name: 'cc_name', value: $("#invitecheckoutname_cc").val()});
+        params.push({name: 'cc_email', value: $("#invitecheckoutemail_cc").val()});
+    }
+    if ($("#invitecheckoutemail_bcc").length > 0) {
+        // params.push({name: 'bcc_name', value: $("#invitecheckoutname_bcc").val()});
+        params.push({name: 'bcc_email', value: $("#invitecheckoutemail_bcc").val()});
+    }
+    params.push({name: 'subject', value: $("#invitecheckoutsubject").val()})
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".sendcheckoutnotificationarea").hide();
+            $(".block_6_historytext").empty().html(response.data.histoyview);
+        } else {
+            show_error(response);
+        }
+    },'json');
 }

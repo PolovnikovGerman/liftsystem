@@ -9,8 +9,7 @@
     <div class="shippingdataviewarea">
         <?=$shippview?>
     </div>
-    <div class="bottomfinancearea">
-        <div class="icon_file" style="margin-top: 11px; margin-right: 11px;">&nbsp;</div>
+    <div class="bottomfinancearea <?=$balance > 0 ? '' : 'paiddataview' ?>">
         <div class="totalduedataviewarea">
             <?=$totaldueview?>
         </div>

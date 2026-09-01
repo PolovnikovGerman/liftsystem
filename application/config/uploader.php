@@ -3,19 +3,19 @@
 $config['base_upload']=BASEPATH.'../';
 $config['upload_path_preload']=BASEPATH.'../uploads/preload/';
 $config['pathpreload']='/uploads/preload/';
-$config['orderattach']=BASEPATH.'/../uploads/orderattach/';
+$config['orderattach']=BASEPATH.'../uploads/orderattach/';
 $config['orderattach_path']="/uploads/orderattach/";
 /* Path for save attachs for tickets */
-$config['ticketattach']=BASEPATH.'/../uploads/ticketattach/';
+$config['ticketattach']=BASEPATH.'../uploads/ticketattach/';
 $config['ticketattach_path']='/uploads/ticketattach/';
 /* Path for save attachs for accounts */
-$config['accountattach']=BASEPATH.'/../uploads/accattach/';
+$config['accountattach']=BASEPATH.'../uploads/accattach/';
 $config['accountattach_path']='/uploads/accattach/';
 /* Path for save attach for amounts */
-$config['amountattach']=BASEPATH.'/../uploads/amountattach/';
+$config['amountattach']=BASEPATH.'../uploads/amountattach/';
 $config['amountattach_path']='/uploads/amountattach/';
 /* Path to save documents for Deposits */
-$config['depositattach']=BASEPATH.'/../uploads/depositattach/';
+$config['depositattach']=BASEPATH.'../uploads/depositattach/';
 $config['depositattach_path']='/uploads/depositattach/';
 /* Path to save documents attachment */
 $config['documattach']=BASEPATH.'../uploads/documsattach/';

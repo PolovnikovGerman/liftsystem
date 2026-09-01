@@ -219,13 +219,21 @@ Class Quotes_model extends My_Model {
             // $new_timestamp = strtotime($curdate . ' -1 year');
             $new_timestamp = strtotime($curdate . ' -90 days');
         }
-        $this->db->select('e.*');
+        $this->db->select('lead_id, count(leaduser_id) as cnt');
+        $this->db->from('ts_lead_users');
+        $this->db->group_by('lead_id');
+        $leadusr = $this->db->get_compiled_select();
+
+        $this->db->select('e.*, coalesce(lu.cnt,0) as cnt');
         $this->db->from('ts_emails e');
         $this->db->join('ts_lead_emails lem','lem.email_id=e.email_id','left');
+        $this->db->join('ts_leads l','l.lead_id=lem.lead_id','left');
+        $this->db->join('('.$leadusr.') lu','lu.lead_id=l.lead_id','left');
         $this->db->where('e.email_type', $this->EMAIL_TYPE);
         $this->db->where('e.email_subtype', $this->EMAIL_SUBTYPE);
-        $this->db->where('lem.email_id is null');
+//        $this->db->where('lem.email_id is null');
         $this->db->where('e.email_include_lead',1);
+        $this->db->having('cnt',0);
         if (isset($options['brand']) && $options['brand']!=='ALL') {
             if ($options['brand']=='SR') {
                 $this->db->where('e.brand', $options['brand']);

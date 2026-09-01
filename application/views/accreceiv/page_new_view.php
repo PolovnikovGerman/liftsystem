@@ -2,6 +2,8 @@
     <input type="hidden" id="accreceivebrand" value="<?=$brand?>">
     <input type="hidden" id="accreceiverefundsort" value="order_date"/>
     <input type="hidden" id="accreceiverefunddir" value="asc"/>
+    <input type="hidden" id="accreceivesection" value=""/>
+    <input type="hidden" id="accreceiveoffset" value=""/>
     <div class="accreceiv-content-data">
         <div class="accreceiv-content-left <?=$brand=='SG' ? 'sigmasystem' : ($brand=='SR' ? 'stressrelievers'  : '')?>">
             <div class="datarow">

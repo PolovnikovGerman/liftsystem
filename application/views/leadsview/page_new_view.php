@@ -9,6 +9,7 @@
 <input type="hidden" id="leadviewshowclosed" value="0"/>
 <input type="hidden" id="leaddatasort" value="1"/>
 <input type="hidden" id="leadpriorsort" value="1"/>
+<input type="hidden" id="unassignleadsall" value="0"/>
 <input type="hidden" id="unassigncustquoteall" value="0"/>
 <input type="hidden" id="unassignwebquestall" value="0"/>
 <input type="hidden" id="unassignwebquoteall" value="0"/>
@@ -19,6 +20,20 @@
 <div class="leads_content">
     <div class="leads_content_left">
         <div class="newunassign_header">NEW / Unassigned Interest</div>
+        <div class="newunassign_taskheader emptycontent" data-task="freeleads">
+            <div class="newunassign_tasks_label">Unassigned Leads:</div>
+            <div class="newunassign_tasks_total" data-task="freeleads">0 New</div>
+            <div class="newunassign_tasks_hideold">
+                <span>Showing < 90 days</span>
+                <input type="checkbox" name="oldfreeleadschk" id="oldfreeleadschk"/>
+                <label for="oldcustomquotechk">Show All</label>
+            </div>
+        </div>
+        <div class="newunassign_tasktable emptycontent" id="freeleadstable">
+            <div class="datarow whitedatarow">
+                <div class="newunassign_emptydata">No new records</div>
+            </div>
+        </div>
         <div class="newunassign_taskheader emptycontent" data-task="sbcustomform">
             <div class="newunassign_tasks_label">Custom SB Form:</div>
             <div class="newunassign_tasks_total" data-task="sbcustomform">0 New</div>

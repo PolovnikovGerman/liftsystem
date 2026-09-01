@@ -1,5 +1,5 @@
 <?php $numpp=0;?>
-<div class="payments_table payments_table_text">
+<div class="payments_table payments_table_text" id="payments_tableview">
     <?php foreach ($payments as $row) { ?>
         <div class="payments_table_line">
             <div class="payments_date2"><?=$row['out_date']?></div>

@@ -1,9 +1,9 @@
-<div class="pay_method_content1">
-    <div class="pm_content1_tx text_blue">Finance Notes:</div>
-    <input type="text" class="pay_method_input4 input_border_gray" value="<?=$order['finance_notes']?>"/>
-</div>
-<div class="pay_method_content2">
-    <div class="pay_methods_area">
+<!--<div class="pay_method_content1">-->
+<!--    <div class="pm_content1_tx text_blue">Finance Notes:</div>-->
+<!--    <input type="text" class="pay_method_input4 input_border_gray" value="--><?php //=$order['finance_notes']?><!--"/>-->
+<!--</div>-->
+<div class="pay_method_content2 preview">
+    <div class="pay_methods_area" id="pay_methods_area">
     <?php foreach ($charges as $row) { ?>
     <div class="pay_method_content1_line">
         <div class="pay_method_inputs">

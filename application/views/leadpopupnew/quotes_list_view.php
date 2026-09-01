@@ -21,7 +21,9 @@
                 <?php endif; ?>
             </div>
             <div class="leadquotetabl-quote" data-quote="<?=$quote['quote_id']?>">
-                <div class="leadquotetabl-quotebox <?=$quote['orders'] > 0 ? 'blueactive' : ''?>"><?=$quote['brand']=='SR' ? '' : 'QB-'?><?=$quote['quote_number']?><?=$quote['brand']=='SR' ? '-QS' : ''?></div>
+                <div class="leadquotetabl-quotebox <?=$quote['qnumclass']?>">
+                    <?=$quote['brand']=='SR' ? '' : 'QB-'?><?=$quote['quote_number']?><?=$quote['brand']=='SR' ? '-QS' : ''?>
+                </div>
             </div>
             <div class="leadquotetabl-doc" data-quote="<?=$quote['quote_id']?>"><i class="fa fa-file-pdf-o"></i></div>
             <div class="leadquotetabl-web"><?=$quote['quote_source']=='WEB' ? $quote['quote_source'] : '&nbsp;'?></div>

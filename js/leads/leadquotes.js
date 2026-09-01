@@ -42,12 +42,8 @@ function pageLeadQuotesCallback(page_index) {
             $("#leadquote_tabledat").empty().html(response.data.content);
             $("#curpageleadquote").val(page_index);
             // init_leadpage_manage();
-            if (parseInt($('#leadquotestotal').val()) > 25) {
-                $(".leadquote_tabledat").scrollpanel({
-                    'prefix' : 'sp-'
-                });
-                leftmenu_alignment();
-            }
+            new SimpleBar(document.getElementById('leadquote_tabledat'), { autoHide: false });
+            leftmenu_alignment();
             init_leadquotes_list();
             $("#loader").hide();
         } else {
@@ -112,10 +108,12 @@ function search_leadquotes() {
     params.push({name: 'search', value: $("#leadquotessearch").val()});
     params.push({name: 'replica', value: $("#quotareplica").val()});
     var url='/leads/leadquotessearch';
+    $("#loader").show();
     $.post(url, params, function (response){
         if (response.errors=='') {
             $('#leadquotestotal').val(response.data.total);
             initLeadQuotesPagination();
+            $("#loader").hide();
         } else {
             show_error(response);
         }

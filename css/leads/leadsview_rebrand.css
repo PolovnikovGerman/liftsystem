@@ -706,3 +706,17 @@ input.lead_searchinput {
     float: right!important;
     min-height: 22px;
 }
+@media (max-width: 1536px) {
+    .leads_content {
+        width: 1512px;
+    }
+    .leads_content_left{
+        margin-right: 38px;
+    }
+    .leads_content_right {
+        width: 988px;
+    }
+    .leads_section_area {
+        margin-right: 20px;
+    }
+}

@@ -1,0 +1,175 @@
+<div class="reschedular-table">
+    <div class="reschdltabl-body" id="reschdltabl-body">
+        <?php if ($lates > 0) : ?>
+        <?php $numpp = 1;?>
+        <div class="late-section">
+            <div class="latesection-title">LATE ORDERS:</div>
+            <div class="latesection-totals">
+                <div class="latesection-totals-section">
+                    <div class="latesection-totals-label totaldisplayed">Displaying:</div>
+                    <div class="latesection-totals-value" data-content="totaldisplay">
+                        <?=$latetotals==0 ? '&nbsp;' : QTYOutput($latetotals).' orders ('.QTYOutput($lateprints).' prints)'?>
+                    </div>
+                </div>
+                <div class="latesection-totals-manage">
+                    <input type="checkbox" name="hideneedactionlates" id="hideneedactionlates" <?=$showneedaction==0 ? 'checked="checked"' : ''?>/>
+                    <label for="hideneedactionlates">Hide</label>
+                </div>
+                <div class="latesection-totals-section">
+                    <div class="latesection-totals-label"><div class="keymaps-box lightpink">&nbsp;</div> Print Qty < Ship Qty</div>
+                    <div class="latesection-totals-value" data-content="needactions">
+                        <?=$order_needact==0 ? '&nbsp;' : QTYOutput($order_needact).' orders ('.QTYOutput($prints_needact).' prints)'?>
+                    </div>
+                </div>
+                <div class="latesection-totals-manage">
+                    <input type="checkbox" name="hidenotapprovedlates" id="hidenotapprovedlates" <?=$shownotapproved==0 ? 'checked="checked"' : ''?>/>
+                    <label for="hidenotapprovedlates">Hide</label>
+                </div>
+                <div class="latesection-totals-section">
+                    <div class="latesection-totals-label notapprv">Not Approved</div>
+                    <div class="latesection-totals-value" data-content="notaproved">
+                        <?=$order_approved==0 ? '&nbsp;' : QTYOutput($order_approved).' orders ('.QTYOutput($prints_approved).' prints)'?>
+                    </div>
+                </div>
+            </div>
+            <div class="reschdltabl-tr reschdltabl-header lateordershead">
+                <div class="reschdltabl-td reschdltabl-sequencenum">#</div>
+                <div class="reschdltabl-td reschdltabl-prcful">%Ful</div>
+                <div class="reschdltabl-td reschdltabl-prcship">%Ship</div>
+                <div class="reschdltabl-td reschdltabl-approval">Approval</div>
+                <div class="reschdltabl-td reschdltabl-daylate">Days</div>
+                <div class="reschdltabl-td reschdltabl-brand">&nbsp;</div>
+                <div class="reschdltabl-td reschdltabl-rush">&nbsp;</div>
+                <div class="reschdltabl-td reschdltabl-order">Order#</div>
+                <div class="reschdltabl-td reschdltabl-items">#Items</div>
+                <div class="reschdltabl-td reschdltabl-imp">Imp</div>
+                <div class="reschdltabl-td reschdltabl-prints">#Prints</div>
+                <div class="reschdltabl-td reschdltabl-itmcolor">Item Color/s</div>
+                <div class="reschdltabl-td reschdltabl-description">Item / Description</div>
+                <div class="reschdltabl-td reschdltabl-inkcolor">Ink Color/s</div>
+            </div>
+            <div class="dayschedulearea" data-printdata="lateorders" id="printday_late" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)">
+                <?php $order_id = 0;  ?>
+                <?php $neworderview = 0; ?>
+                <?php foreach ($lateorders as $list) : ?>
+                    <?php if ($list['order_id']!=$order_id) : ?>
+                        <?php $order_id=$list['order_id'];?>
+                        <?php $neworderview=1; ?>
+                    <?php endif; ?>
+                    <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
+                        <div class="reschdltabl-apprblock lateordershead">
+                            <div class="reschdltabl-sequencenumdata"><?=$numpp?></div>
+                            <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : $list['class']?>"><?=$list['fulfillprc']?>%</div>
+                            <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : $list['class']?>"><?=$list['shippedprc']?>%</div>
+                            <div class="reschdltabl-td reschdltabl-approval <?=$list['approv']==0 ? 'notapprv' : '' ?>">
+                                <?=$list['approv'] == 0 ? 'Not Approved' : ($list['order_blank']==1 ? 'Blank' : 'Approved')?>
+                                <?php if ($list['approv'] > 0 && $list['order_blank']==0) : ?>
+                                    <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="reschdltabl-daylatedata"><?=$list['diffdays']?> d</div>
+                        </div>
+                        <div class="reschdltabl-mainblock <?=$neworderview==0 ? 'repeatrow' : ''?>">
+                            <?php if ($neworderview==1) :?>
+                                <div class="reschdltabl-td reschdltabl-brand">
+                                    <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
+                                </div>
+                                <div class="reschdltabl-td reschdltabl-rush <?=$list['shipclass']?>">
+                                    <?php if (empty($list['shipdate'])) : ?>
+                                        <?=$list['shiplabel']?>
+                                    <?php else : ?>
+                                        <div class="shipclasslabel"><?=$list['shiplabel']?></div>
+                                        <div class="shipclassvalue"><?=$list['shipdate']?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="reschdltabl-td reschdltabl-order" data-order="<?=$list['order_id']?>" data-brand="<?=$list['brand']?>"><?=$list['order_num']?></div>
+                                <?php $neworderview = 0; ?>
+                            <?php endif; ?>
+                            <div class="reschdltabl-td reschdltabl-items"><?=QTYOutput($list['item_qty'])?></div>
+                            <div class="reschdltabl-td reschdltabl-imp"><?=empty($list['cntprint']) ? '-' : $list['cntprint']?></div>
+                            <div class="reschdltabl-td reschdltabl-prints"><?=QTYOutput($list['prints'])?></div>
+                            <div class="reschdltabl-td reschdltabl-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+                            <div class="reschdltabl-td reschdltabl-description truncateoverflowtext"><?=$list['item']?></div>
+                            <div class="reschdltabl-td reschdltabl-inkcolor truncateoverflowtext">&nbsp;</div>
+                        </div>
+                    </div>
+                    <?php $numpp++?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        <?php if ($ontime > 0) : ?>
+            <div class="ontime-section">
+                <div class="ontimesection-title">ON TIME ORDERS:</div>
+                <div class="reschdltabl-tr reschdltabl-header">
+                    <div class="reschdltabl-td reschdltabl-prcful">%Ful</div>
+                    <div class="reschdltabl-td reschdltabl-prcship">%Ship</div>
+                    <div class="reschdltabl-td reschdltabl-approval">Approval</div>
+                    <div class="reschdltabl-td reschdltabl-brand">&nbsp;</div>
+                    <div class="reschdltabl-td reschdltabl-rush">&nbsp;</div>
+                    <div class="reschdltabl-td reschdltabl-order">Order#</div>
+                    <div class="reschdltabl-td reschdltabl-items">#Items</div>
+                    <div class="reschdltabl-td reschdltabl-imp">Imp</div>
+                    <div class="reschdltabl-td reschdltabl-prints">#Prints</div>
+                    <div class="reschdltabl-td reschdltabl-itmcolor">Item Color/s</div>
+                    <div class="reschdltabl-td reschdltabl-description ontimedescription">Item / Description</div>
+                    <div class="reschdltabl-td reschdltabl-inkcolor">Ink Color/s</div>
+                </div>
+                <?php foreach ($calendars as $calendar) : ?>
+                    <div class="rightsideviewarea"  id="printday_<?=$calendar['print_date']?>" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)">
+                        <div class="ontimesection-date"><?=date('D - M, j, Y', $calendar['print_date']);?></div>
+                        <div class="dayschedulearea" data-printdata="<?=$calendar['print_date']?>">
+                            <?php $order_id = 0;  ?>
+                            <?php $neworderview = 0; ?>
+                            <?php foreach ($calendar['data'] as $list) : ?>
+                                <?php if ($list['order_id']!=$order_id) : ?>
+                                    <?php $order_id=$list['order_id'];?>
+                                    <?php $neworderview=1; ?>
+                                <?php endif; ?>
+                                <div class="reschdltabl-tr" id="shedulord_<?=$list['order_item_id']?>" draggable="true" ondragstart="dragstartHandler(event)">
+                                    <div class="reschdltabl-apprblock">
+                                        <div class="reschdltabl-td reschdltabl-prcful <?=$list['class']=='critical' ? 'peach' : ($list['class']=='pink' ? 'pink' : '')?>"><?=$list['fulfillprc']?>%</div>
+                                        <div class="reschdltabl-td reschdltabl-prcship <?=$list['class']=='critical' ? 'peach' : ($list['class']=='pink' ? 'pink' : '')?>"><?=$list['shippedprc']?>%</div>
+                                        <div class="reschdltabl-td reschdltabl-approval <?=$list['approv']==0 ? 'notapprv' : '' ?>">
+                                            <?=$list['approv']==0 ? 'Not Approved' : ($list['order_blank']==1 ? 'Blank' : 'Approved')?>
+                                            <?php if ($list['approv'] > 0 && $list['order_blank']==0) : ?>
+                                                <span class="iconart" data-order="<?=$list['order_id']?>"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <div class="reschdltabl-mainblock <?=$neworderview==0 ? 'repeatrow' : ''?>">
+                                        <?php if ($neworderview==1) :?>
+                                            <div class="reschdltabl-td reschdltabl-brand">
+                                                <div class="icon-move <?=$list['brand']=='SR' ? 'relievers' : 'stressball'?>">&nbsp;</div>
+                                            </div>
+                                            <div class="reschdltabl-td reschdltabl-rush <?=$list['shipclass']?>">
+                                                <?php if (empty($list['shipdate'])) : ?>
+                                                    <?=$list['shiplabel']?>
+                                                <?php else : ?>
+                                                    <div class="shipclasslabel"><?=$list['shiplabel']?></div>
+                                                    <div class="shipclassvalue"><?=$list['shipdate']?></div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="reschdltabl-td reschdltabl-order" data-order="<?=$list['order_id']?>"><?=$list['order_num']?></div>
+                                        <?php $neworderview = 0; ?>
+                                        <?php endif; ?>
+                                        <div class="reschdltabl-td reschdltabl-items"><?=QTYOutput($list['item_qty'])?></div>
+                                        <div class="reschdltabl-td reschdltabl-imp"><?=$list['cntprint']?></div>
+                                        <div class="reschdltabl-td reschdltabl-prints"><?=QTYOutput($list['prints'])?></div>
+                                        <div class="reschdltabl-td reschdltabl-itmcolor truncateoverflowtext"><?=$list['color']?></div>
+                                        <div class="reschdltabl-td reschdltabl-description ontimedescription  truncateoverflowtext"><?=$list['item']?></div>
+                                        <div class="reschdltabl-td reschdltabl-inkcolor truncateoverflowtext">&nbsp;</div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class="reschedular-future-dates" id="printday_future" ondrop="dropHandler(event)" ondragover="dragoverHandler(event)">
+        <input type="text" name="reschedulefuture" value="<?=date('m/d/Y')?>"/>
+        <div class="btnreschedular-future-dates">+ Add to Future Dates</div>
+    </div>
+</div>

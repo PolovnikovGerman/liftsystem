@@ -68,29 +68,41 @@ function init_leadquotes_content() {
     });
     // Buttons
     $(".quotaactionbutton.btnpdf").unbind('click').click(function (){
-        // Save
-        var params = new Array();
-        params.push({name: 'session', value: $("#quotesessionid").val()});
-        params.push({name: 'lead', value: $("#quoteleadconnect").val()});
-        var url = '/leadquote/quotesave';
-        $.post(url, params, function (response) {
-            if (response.errors=='') {
-                $(".quotesdataarea").empty().html(response.data.quotescontent);
-                // New session
-                $("#quotesessionid").val(response.data.session_id);
-                var quote = response.data.quote_id;
-                var docparams = new Array();
-                docparams.push({name: 'quote_id', value: quote});
-                var url = '/leadquote/quotepdfdoc';
-                $.post(url, docparams, function (response){
+        // Change param pdf_publish
+        var fparams = new Array();
+        fparams.push({name: 'session', value: $("#quotesessionid").val()});
+        fparams.push({name: 'fld', value: 'pdf_publish'});
+        fparams.push({name: 'newval', value: 1});
+        var url = '/leadquote/quoteparamchange';
+        $.post(url, fparams, function (fresponse){
+            if (fresponse.errors=='') {
+                // Save
+                var params = new Array();
+                params.push({name: 'session', value: $("#quotesessionid").val()});
+                params.push({name: 'lead', value: $("#quoteleadconnect").val()});
+                var url = '/leadquote/quotesave';
+                $.post(url, params, function (response) {
                     if (response.errors=='') {
-                        var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                        $(".quotesdataarea").empty().html(response.data.quotescontent);
+                        // New session
+                        $("#quotesessionid").val(response.data.session_id);
+                        var quote = response.data.quote_id;
+                        var docparams = new Array();
+                        docparams.push({name: 'quote_id', value: quote});
+                        var url = '/leadquote/quotepdfdoc';
+                        $.post(url, docparams, function (response){
+                            if (response.errors=='') {
+                                var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                            } else {
+                                show_error(response);
+                            }
+                        },'json')
                     } else {
                         show_error(response);
                     }
-                },'json')
+                },'json');
             } else {
-                show_error(response);
+                show_error(fresponse);
             }
         },'json');
     });
@@ -143,23 +155,9 @@ function init_leadquotes_content() {
                 $("#loader").show();
                 $.post(url, docparams, function (response) {
                     if (response.errors=='') {
-                        var callpage = 'leads'
-                        var brand = $("#leadviewbrand").val();
+                        var showurl='/leadquote/quoteorderview?dat='+response.data.link;
+                        var newWin = window.open(showurl,"Quoute Order","width=1020,height=845,top=200,left=320,resizable=no,scrollbars=yes,status=yes");
                         $("#loader").hide();
-                        //  $("#leadformModal").modal('hide');
-                        $("#artModalLabel").empty().html(response.data.header);
-                        $("#artModal").find('div.modal-body').empty().html(response.data.content);
-                        $("#artModal").find('div.modal-dialog').css('width','1004px');
-                        $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
-                        $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
-                        init_onlineleadorder_edit();
-                        init_rushpast();
-                        if ($("#duplerroritemmsg").length > 0) {
-                            var errmsg = $("#duplerroritemmsg").val();
-                            alert(errmsg);
-                            var errfld = $("#duplerroritem").val();
-                            $("span.addnewcolor[data-item='"+errfld+"']").trigger('click');
-                        }
                     } else {
                         $("#loader").hide();
                         show_error(response);

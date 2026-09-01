@@ -1713,6 +1713,7 @@ class Leadquote_model extends MY_Model
             $this->db->set('items_subtotal', floatval($quote['items_subtotal']));
             $this->db->set('imprint_subtotal', floatval($quote['imprint_subtotal']));
             $this->db->set('quote_total', floatval($quote['quote_total']));
+            $this->db->set('pdf_publish', intval($quote['pdf_publish']));
             if ($quote['quote_id'] > 0 ) {
                 // Update
                 $this->db->where('quote_id', $quote['quote_id']);
@@ -1780,7 +1781,7 @@ class Leadquote_model extends MY_Model
                             $this->db->insert('ts_quote_itemcolors');
                         }
                     }
-                    $imprints = $item['imprints'];
+                    $imprints = ifset($item, 'imprints',[]);
                     foreach ($imprints as $imprint) {
                         if ($imprint['imprint_description']!=='&nbsp;') {
                             $this->db->set('imprint_description', $imprint['imprint_description']);
@@ -1796,7 +1797,7 @@ class Leadquote_model extends MY_Model
                             }
                         }
                     }
-                    $imprintdetails = $item['imprint_details'];
+                    $imprintdetails = ifset($item, 'imprint_details',[]);
                     foreach ($imprintdetails as $imprintdetail) {
                         $this->db->set('imprint_active', $imprintdetail['active']);
                         $this->db->set('imprint_type', $imprintdetail['imprint_type']);
@@ -1905,6 +1906,7 @@ class Leadquote_model extends MY_Model
                     $itemdata=$this->orders_model->get_newitemdat($item['item_id']);
                 } else {
                     $itemdata=$this->leadorder_model->_get_itemdata($item['item_id']);
+                    $newprice = $this->leadorder_model->_get_item_priceqty($item['item_id'], '', $item['item_qty']);
                 }
                 $colors = $itemdata['colors'];
                 $curcolors = $curimprints = $curimprdetails = [];
@@ -1915,17 +1917,22 @@ class Leadquote_model extends MY_Model
                 $itemcolors = $this->db->get()->result_array();
                 $colorid = 1;
                 $colorrow = 1;
-                $colorssubtotal = 0;
                 foreach ($itemcolors as $itemcolor) {
                     foreach ($itemcolor as $ckey=>$cval) {
                         if ($ckey=='quote_itemcolor_id') {
                             $itemcolor['item_id'] = $colorid*(-1);
                         } elseif ($ckey=='quote_item_id') {
                             $itemcolor[$key] = $itemid * (-1);
+                        } elseif ($ckey=='item_price') {
+                            if ($item['item_id']>0) {
+                                $itemcolor['item_price'] = $newprice;
+                            } else {
+                                $itemcolor['item_price'] = $cval;
+                            }
                         }
                     }
                     $itemcolor['item_subtotal'] = $itemcolor['item_qty'] * $itemcolor['item_price'];
-                    $colorssubtotal+=$itemcolor['item_qty'] * $itemcolor['item_price'];
+
                     $itemcolor['item_number'] = $itemdata['item_number'];
                     $itemcolor['item_row'] = $colorrow;
                     $itemcolor['colors'] = $colors;
@@ -2030,11 +2037,12 @@ class Leadquote_model extends MY_Model
                     $item['vendor_zipcode']=ifset($itemdata, 'vendor_zipcode','');
                     $item['charge_perorder']=ifset($itemdata, 'charge_perorder',0);
                     $item['charge_pereach']=ifset($itemdata,'charge_pereach',0);
-                    $item['item_subtotal']=$colorssubtotal;
+
                     // Add Imprins, colors, details
                     $item['items'] = $curcolors;
                     $item['imprints'] = $curimprints;
                     $item['imprint_details'] = $curimprdetails;
+
                 }
                 $quoteitems[] = $item;
                 $itemid++;
@@ -2057,6 +2065,42 @@ class Leadquote_model extends MY_Model
                 $curship[] = $ship;
                 $shipid++;
             }
+            // Recalc totals
+            $items_subtotal = 0;
+            $total = 0;
+            $itmidx = 0;
+            foreach ($quoteitems as $item) {
+                $item_subtotal = 0;
+                $imprint_subtotal = 0;
+                $colors = $item['items'];
+                foreach ($colors as $color) {
+                    $colorqty = ifset($color,'item_qty',0);
+                    $colorprice = ifset($color,'item_price',0);
+                    $item_subtotal+=intval($colorqty)*floatval($colorprice);
+                }
+                $quoteitems[$itmidx]['item_subtotal'] = $item_subtotal;
+                $imprints = ifset($item, 'imprints',[]);
+                foreach ($imprints as $imprint) {
+                    $imprint_subtotal += $imprint['imprint_qty'] * $imprint['imprint_price'];
+                }
+                $quoteitems[$itmidx]['imprint_subtotal'] = $imprint_subtotal;
+                $items_subtotal+=($item_subtotal + $imprint_subtotal);
+                $total+=($item_subtotal + $imprint_subtotal);
+                $itmidx++;
+            }
+            $items_subtotal+=($quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value']);
+            $total+=($quote['mischrg_value1']+$quote['mischrg_value2']-$quote['discount_value']);
+            $quotedat['sales_tax'] = 0;
+            if ($quotedat['taxview']==1 && $quotedat['tax_exempt']==0) {
+                // Calc tax
+                $basecost = $total + $quotedat['rush_cost']+$quotedat['shipping_cost'];
+                $tax = round($basecost * ($this->config->item('salesnewtax')/100),2);
+                $quotedat['sales_tax'] = $tax;
+            }
+            $total+=$quotedat['sales_tax'] + $quotedat['rush_cost'] + $quotedat['shipping_cost'];
+            $quotedat['quote_total'] = $total;
+            $quotedat['items_subtotal'] = $items_subtotal;
+            // End recalc
             $out['quote'] = $quotedat;
             $out['items'] = $quoteitems;
             $out['shippings'] = $curship;
@@ -2074,6 +2118,17 @@ class Leadquote_model extends MY_Model
         $this->db->where('q.quote_id', $quote_id);
         $quote = $this->db->get()->row_array();
         if (ifset($quote,'quote_id',0)==$quote_id) {
+            $this->db->where('quote_id', $quote['quote_id']);
+            $this->db->set('pdf_publish', 1);
+            $this->db->update('ts_quotes');
+            // New class
+            $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $quote['quote_id']);
+            $orddat = $this->db->get()->row_array();
+            $qnumclass = 'quotepublish';
+            if ($orddat['orders']>0) {
+                $qnumclass = 'blueactive';
+            }
+            $out['qnumclass'] = $qnumclass;
             $this->load->model('orders_model');
             $this->load->model('leadorder_model');
             $usrrepl = '';
@@ -3076,7 +3131,6 @@ class Leadquote_model extends MY_Model
         $this->db->select('count(q.quote_id) as cnt');
         $this->db->from('ts_quotes q');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
-        $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
 
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
@@ -3086,6 +3140,7 @@ class Leadquote_model extends MY_Model
             }
         }
         if (ifset($options,'search','')!=='') {
+            $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
             $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number, qitem.quote_item)', $options['search']);
         }
         if (!empty(ifset($options,'replica',''))) {
@@ -3109,7 +3164,7 @@ class Leadquote_model extends MY_Model
 
         $this->db->select('q.quote_id, q.lead_id, q.quote_date, q.brand, q.quote_number, q.quote_total, l.lead_company, l.lead_customer, u.user_name, u.user_initials');
         $this->db->from('ts_quotes q');
-        $this->db->join('users u','u.user_id=q.create_user');
+        $this->db->join('users u','u.user_id=q.create_user','left');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
         // $this->db->join('ts_leadquote_orders o','q.quote_id = o.quote_id','left');
         $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
@@ -3122,7 +3177,8 @@ class Leadquote_model extends MY_Model
         }
         if (ifset($options,'search','')!=='') {
             $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number, qitem.quote_item)', $options['search']);
-        } if (!empty(ifset($options,'replica',''))) {
+        }
+        if (!empty(ifset($options,'replica',''))) {
             $this->db->where('q.create_user', $options['replica']);
         }
         $limit = ifset($options, 'limit', 0);
@@ -3235,6 +3291,7 @@ class Leadquote_model extends MY_Model
                     $out['proofdocs'] = [];
                     $out['claydocs'] = [];
                     $out['previewdocs'] = [];
+                    $out['shipdocs'] = [];
                     $this->load->model('user_model');
                     $usrdata=$this->user_model->get_user_data($user_id);
                     if (!empty($usrdata['user_leadname'])) {
@@ -3335,30 +3392,63 @@ class Leadquote_model extends MY_Model
         $data['revenue'] = $quote['quote_total'];
         $data['tax'] = $quote['sales_tax'];
         // Contacts
-        $contacts=array();
-        for ($i=1; $i<=3; $i++) {
-            if ($i==1) {
-                $contacts[]=[
+        $this->load->model('leads_model');
+        $lcontacts = $this->leads_model->get_lead_contacts($lead['lead_id']);
+        $contacts = [];
+        if (empty($lcontacts)) {
+            for ($i=1; $i<=3; $i++) {
+                if ($i==1) {
+                    $contacts[]=[
+                        'order_contact_id'=>($i)*(-1),
+                        'order_id'=>0,
+                        'contact_name'=> $lead['lead_customer'],
+                        'contact_phone'=> $lead['lead_phone'],
+                        'contact_emal'=> $lead['lead_mail'],
+                        'contact_art'=>1,
+                        'contact_inv'=>1,
+                        'contact_trk'=>1,
+                    ];
+                } else {
+                    $contacts[]=[
+                        'order_contact_id'=>($i)*(-1),
+                        'order_id'=>0,
+                        'contact_name'=>'',
+                        'contact_phone'=>'',
+                        'contact_emal'=>'',
+                        'contact_art'=>0,
+                        'contact_inv'=>0,
+                        'contact_trk'=>0,
+                    ];
+                }
+            }
+        } else {
+            $i=1;
+            foreach ($lcontacts as $lcontact) {
+                $contacts[] = [
                     'order_contact_id'=>($i)*(-1),
                     'order_id'=>0,
-                    'contact_name'=> $lead['lead_customer'],
-                    'contact_phone'=> $lead['lead_phone'],
-                    'contact_emal'=> $lead['lead_mail'],
-                    'contact_art'=>1,
-                    'contact_inv'=>1,
-                    'contact_trk'=>1,
+                    'contact_name'=> $lcontact['contact_name'],
+                    'contact_phone'=> $lcontact['contact_phone'],
+                    'contact_emal'=> $lcontact['contact_email'],
+                    'contact_art'=>(!empty($lcontact['contact_phone']) || !empty($lcontact['contact_email'])) ? 1 : 0,
+                    'contact_inv'=>(!empty($lcontact['contact_phone']) || !empty($lcontact['contact_email'])) ? 1 : 0,
+                    'contact_trk'=>(!empty($lcontact['contact_phone']) || !empty($lcontact['contact_email'])) ? 1 : 0,
                 ];
-            } else {
-                $contacts[]=[
-                    'order_contact_id'=>($i)*(-1),
-                    'order_id'=>0,
-                    'contact_name'=>'',
-                    'contact_phone'=>'',
-                    'contact_emal'=>'',
-                    'contact_art'=>0,
-                    'contact_inv'=>0,
-                    'contact_trk'=>0,
-                ];
+                $i++;
+            }
+            if ($i<4) {
+                for ($j=$i; $j<=3; $j++) {
+                    $contacts[]=[
+                        'order_contact_id'=>($j)*(-1),
+                        'order_id'=>0,
+                        'contact_name'=>'',
+                        'contact_phone'=>'',
+                        'contact_emal'=>'',
+                        'contact_art'=>0,
+                        'contact_inv'=>0,
+                        'contact_trk'=>0,
+                    ];
+                }
             }
         }
         $out['contacts']=$contacts;
@@ -3612,6 +3702,8 @@ class Leadquote_model extends MY_Model
                 $shipping['arriveclass'] = '';
             }
         }
+        $shipping['shipdoc1_src'] = $shipping['shipdoc1_type'] = $shipping['shipdoc1_link'] = null;
+        $shipping['shipdoc2_src'] = $shipping['shipdoc2_type'] = $shipping['shipdoc2_link'] = null;
         // Get shipping costs
         $rates = $this->_shiptimesrecalc($quote, $quoteitems, $data['shipdate']);
 
@@ -4250,6 +4342,14 @@ class Leadquote_model extends MY_Model
                 ];
                 if (!empty($quote_items[$idx]['inventory_item_id'])) {
                     $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quotesritem_color_choice', $coloropt, true);
+                    // Get inventory color id
+                    $invcolor = $this->_inventory_color($quote_items[$idx]['inventory_item_id'], $newval);
+                    if (!empty($invcolor)) {
+                        $quote_items[$idx]['items'][0]['inventory_color_id'] = $invcolor;
+                    } else {
+                        $out['msg'] = 'Quote Inventory Item Color Not Found';
+                        return $out;
+                    }
                 } else {
                     $quote_items[$idx]['items'][0]['out_colors'] = $this->load->view('leadpopup/quoteitem_color_choice', $coloropt, true);
                 }
@@ -4439,13 +4539,13 @@ class Leadquote_model extends MY_Model
             ];
             $quotes[] = $qrow;
             // Get All quotes
-            $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, sum(qc.item_qty) as item_qty');
+            $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, q.pdf_publish, sum(qc.item_qty) as item_qty');
             $this->db->select('group_concat(distinct(qc.item_description)) as item_name');
             $this->db->from('ts_quotes q');
             $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
             $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
             $this->db->where('q.lead_id', $lead_id);
-            $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source');
+            $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, q.pdf_publish');
             $this->db->order_by('q.quote_date', 'desc');
             $lists = $this->db->get()->result_array();
             $yearlist = date('Y', $lists[0]['quote_date']);
@@ -4472,6 +4572,19 @@ class Leadquote_model extends MY_Model
                 $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $list['quote_id']);
                 $orddat = $this->db->get()->row_array();
                 $list['orders'] = $orddat['orders'];
+                $qnumclass = '';
+                if ($list['pdf_publish']==1) {
+                    if ($list['orders']>0) {
+                        $qnumclass = 'blueactive';
+                    } else {
+                        $qnumclass = 'quotepublish';
+                    }
+                } else {
+                    if ($list['orders']>0) {
+                        $qnumclass = 'bluerelated';
+                    }
+                }
+                $list['qnumclass'] = $qnumclass;
                 $this->db->select('GROUP_CONCAT(qpd.num_colors) as impr');
                 $this->db->from('ts_quote_imprindetails qpd');
                 $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qpd.quote_item_id');
@@ -4663,11 +4776,11 @@ class Leadquote_model extends MY_Model
                             } else {
                                 $this->db->set('print_1', $quoteparams['print_price']);
                             }
-                            if ($quoteparams['setuptype']=='NEW') {
-                                $this->db->set('setup_1', $quoteparams['setup_price']);
-                            } else {
-                                $this->db->set('setup_1', 0); // $quoteparams['setup_price']
-                            }
+                        }
+                        if ($quoteparams['setuptype']=='NEW') {
+                            $this->db->set('setup_1', $quoteparams['setup_price']);
+                        } else {
+                            $this->db->set('setup_1', 0); // $quoteparams['setup_price']
                         }
                         $this->db->set('print_2', $quoteparams['print_price']);
                         $this->db->set('print_3', $quoteparams['print_price']);

@@ -12,6 +12,7 @@ class Welcome extends MY_Controller {
     {
         $head=[];
         $head['title']='Welcome';
+        $head['scripts'][] = array('src' => '/js/welcome/page.js');
         $brand = $this->menuitems_model->get_current_brand();
         if (empty($brand)) {
             $brands = $this->menuitems_model->get_userbrands($this->USR_ID);
@@ -30,6 +31,7 @@ class Welcome extends MY_Controller {
         if ($url=='/welcome' || $url=='/' || empty($url)) {
             $options = [
                 'title' => $head['title'],
+                'scripts' => $head['scripts'],
                 'user_id' => $this->USR_ID,
                 'user_name' => $this->USER_NAME,
                 'activelnk' => '',
@@ -235,5 +237,20 @@ class Welcome extends MY_Controller {
         $totals = $this->dashboard_model->get_leadvisits_week($curweek);
         $msg = $this->load->view('page/dashboard_leadvisitors_view', $totals, TRUE);
         echo $msg;
+    }
+
+    public function checknote()
+    {
+//        $order_id = 51854;
+//        $this->load->model('orders_model');
+//        $res = $this->orders_model->get_checkout_invite($order_id);
+//        if ($res['result']==$this->success_result) {
+//            $data = $res['data'];
+//            $this->load->view('messages/chekout_invitation_view', $data);
+//        } else {
+//            show_404();
+//        }
+         $this->load->view('messages/checkout_notification_view',[]);
+
     }
 }

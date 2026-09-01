@@ -266,7 +266,7 @@ Class Leadorder_model extends My_Model {
             $row['proofstage'] = 'Not Approved';
             if ($row['order_blank']==1) {
                 $row['proofclass'] = 'approved';
-                $row['proofstage'] = 'Approved';
+                $row['proofstage'] = 'Blank'; // 'Approved';
             } else {
                 if (!empty($row['proofdocs'])) {
                     $row['proofclass'] = 'approved';
@@ -663,6 +663,7 @@ Class Leadorder_model extends My_Model {
             $out['charges']=$this->get_order_charges($order_id);
             // Get Shipping packages
             // $out['trackings'] = $this->get_order_trackinfo($order_id);
+            $out['shipdocs'] = $this->get_order_shipdocs($order_id);
         } else {
             $out['contacts']=$out['order_items']=$out['shipping']=$out['order_billing']=$out['charges']=array();
             $out['shipping_address']=$this->get_orderold_shippaddress($res);
@@ -941,6 +942,7 @@ Class Leadorder_model extends My_Model {
         }
         // Empty items
         $out['order_items'] = $this->_create_empty_orderitems();
+        $out['shipdocs'] = [];
         return $out;
     }
 
@@ -959,6 +961,8 @@ Class Leadorder_model extends My_Model {
             $row['out_date'] = date('m/d/y', $row['batch_date']);
             if ($row['batch_type']=='American Express') {
                 $row['batch_type']='AmEx';
+            } elseif ($row['batch_type']=='Mastercard') {
+                $row['batch_type']='MC';
             }
             if (abs($row['batch_vmd']) > 0) {
                 if (!empty($row['batch_type'])) {
@@ -1086,6 +1090,15 @@ Class Leadorder_model extends My_Model {
                 // Start
                 $order=$leadorder['order'];
                 $order['shipdate']=$shipping['shipdate'];
+                $order_items = $leadorder['order_items'];
+                $itmidx = 0;
+                foreach ($order_items as $order_item) {
+                    if (isset($order_item['print_date'])) {
+                        $order_items[$itmidx]['print_date'] = $params[0];
+                    }
+                    $itmidx++;
+                }
+                $leadorder['order_items'] = $order_items;
                 // Calculate shipping
                 $this->load->model('shipping_model');
                 $shiprate=0;
@@ -2952,7 +2965,15 @@ Class Leadorder_model extends My_Model {
                 $shipaddr[$shipidx]['taxview']=0;
             }
             $statedat=$this->shipping_model->get_state($newval);
-            $shipaddr[$shipidx]['out_zip']=$statedat['state_code'].' '.$shipaddr[$shipidx]['zip'];
+            $out_zip = '';
+            if (isset($statedat['state_code'])) {
+                $out_zip.=$statedat['state_code'].' ';
+            }
+            if (isset($shipaddr[$shipidx]['zip'])) {
+                $out_zip.=$shipaddr[$shipidx]['zip'];
+            }
+            $shipaddr[$shipidx]['out_zip'] = $out_zip;
+            // $statedat['state_code'].' '.$shipaddr[$shipidx]['zip'];
         } elseif ($fldname=='zip') {
             // Try to validate Address
             // Validate Address
@@ -3014,7 +3035,7 @@ Class Leadorder_model extends My_Model {
             $items=$leadorder['order_items'];
             $qty=0;
             foreach ($items as $row) {
-                $qty+=$row['item_qty'];
+                $qty+=intval($row['item_qty']);
             }
             if ($qty>0) {
                 if (count($shipaddr)==1) {
@@ -3382,6 +3403,7 @@ Class Leadorder_model extends My_Model {
                 'cardnum'=>hide_cardnumber($cardnum),
                 'cardtype'=>($cardtype=='American Express' ? 'Amex' : $cardtype),
                 'cardcode'=>$charge['cardcode'],
+                'cardnum_orig' => $pay_options['cardnum'],
             ];
             $this->_save_order_paymentlog($order_id, $usr_id, $transres['error_msg'], $cc_options);
             // $charge['cardnum'] = '';
@@ -4740,6 +4762,14 @@ Class Leadorder_model extends My_Model {
                 $out['msg']=$shipres['msg'];
                 return $out;
             }
+            // Save Shipping Docs
+            $shipdocs = [];
+            if (isset($leadorder['shipdocs'])) {
+                $shipdocs = $leadorder['shipdocs'];
+                if (count($shipdocs) > 0) {
+                    $shipdocres = $this->_save_shipdocs($shipdocs, $order_id);
+                }
+            }
             $shipping_address=$leadorder['shipping_address'];
             $adrres=$this->_save_order_shipaddress($shipping_address, $order_id, $user_id);
             if ($adrres['result']==$this->error_result) {
@@ -5253,7 +5283,9 @@ Class Leadorder_model extends My_Model {
             } else {
                 $confirm=strtoupper(uniq_link(2,'chars')).'-'.uniq_link(5,'digits');
             }
+            $newlink = uniq_link(12,'any');
             $this->db->set('order_confirmation', $confirm);
+            $this->db->set('checkout_link', $newlink);
             $this->db->set('create_usr',$user_id);
             $this->db->set('create_date',time());
             $this->db->set('brand', $data['brand']);
@@ -5461,9 +5493,14 @@ Class Leadorder_model extends My_Model {
             $this->db->set('setup_price', $row['setup_price']);
             $this->db->set('base_price', $row['base_price']);
             $this->db->set('inventory_item_id', empty($row['inventory_item_id']) ? NULL : $row['inventory_item_id']);
+            if (isset($row['print_date'])) {
+                $this->db->set('print_date', $row['print_date']);
+            }
             if ($row['order_item_id']<0) {
                 $this->db->set('order_id', $order_id);
-                $this->db->set('print_date', $printdate);
+                if (!empty($printdate)) {
+                    $this->db->set('print_date', $printdate);
+                }
                 $this->db->insert('ts_order_items');
                 if (!$this->db->insert_id()) {
                     $res['msg']='Error During Insert data into Order Items';
@@ -5654,7 +5691,6 @@ Class Leadorder_model extends My_Model {
 
     // Save Shipping Info for Order
     private function _save_order_shipping($shipping, $order_id, $user_id) {
-        $res=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $this->db->set('event_date', (empty($shipping['event_date']) ? NULL : $shipping['event_date']));
         $this->db->set('rush_idx', $shipping['rush_idx']);
         $this->db->set('rush_price', floatval($shipping['rush_price']));
@@ -5667,6 +5703,35 @@ Class Leadorder_model extends My_Model {
         } else {
             $this->db->where('order_shipping_id', $shipping['order_shipping_id']);
             $this->db->update('ts_order_shippings');
+        }
+        $res['result']=$this->success_result;
+        return $res;
+    }
+
+    private function _save_shipdocs($shipdocs, $order_id)
+    {
+
+        $srcpathfull = $this->config->item('upload_path_preload');
+        $srcpathsh = $this->config->item('pathpreload');
+        $targpathsh = $this->config->item('orderattach_path');
+        $targpathfull = $this->config->item('orderattach');
+        createPath($targpathsh);
+        foreach ($shipdocs as $shipdoc) {
+            if ($shipdoc['order_shipdoc_id']<0) {
+                // New file
+                $filesrc = str_replace($srcpathsh,'', $shipdoc['shipdoc_link']);
+                $srcfile = $srcpathfull.$filesrc;
+                $filedet = extract_filename($filesrc);
+                $newfile = 'shipdoc_'.$order_id.'_'.time().'.'.$filedet['ext'];
+                $targfile = $targpathfull.$newfile;
+                $cpres = @copy($srcfile, $targfile);
+                if ($cpres) {
+                    $this->db->set('order_id', $order_id);
+                    $this->db->set('shipdoc_link', $targpathsh.$newfile);
+                    $this->db->set('shipdoc_src', substr($shipdoc['shipdoc_src'],0,255));
+                    $this->db->insert('ts_order_shipdocs');
+                }
+            }
         }
         $res['result']=$this->success_result;
         return $res;
@@ -5919,6 +5984,10 @@ Class Leadorder_model extends My_Model {
                 case 'trackings':
                     $this->db->where('tracking_id', $row['id']);
                     $this->db->delete('ts_order_trackings');
+                    break;
+                case 'shipdocs':
+                    $this->db->where('order_shipdoc_id', $row['id']);
+                    $this->db->delete('ts_order_shipdocs');
                     break;
             }
         }
@@ -6326,6 +6395,7 @@ Class Leadorder_model extends My_Model {
                 'base_price' => $row['base_price'],
                 'vendor_item_id' => '',
                 'inventory_item_id' => $row['inventory_item_id'],
+                'print_date' => $row['print_date'],
             );
             $qty_class='normal';
             if ($item_id<0) {
@@ -7014,13 +7084,18 @@ Class Leadorder_model extends My_Model {
 
                 $pay_options['amount']=$row['amount'];
                 $pay_options['cardnum']=  str_replace('-', '',$row['cardnum']);
-                $pay_options['cardcode']=$row['cardcode'];
+                if ($row['payment_save']==1) {
+                    $pay_options['cardcode']=show_card_code($row['cardcode']);
+                } else {
+                    $pay_options['cardcode']=$row['cardcode'];
+                }
                 $pay_options['exp_month']=$row['exp_month'];
                 $pay_options['exp_year']=$row['exp_year'];
                 $transres=$this->order_payment($pay_options);
                 if ($transres['result']==$this->error_result) {
                     $out['msg']=$transres['error_msg'];
                     if (!empty($pay_options['cardnum'])) {
+                        $pay_options['cardnum_orig'] = $pay_options['cardnum'];
                         $pay_options['cardnum'] = hide_cardnumber($pay_options['cardnum']);
                     }
                     $this->_save_order_paymentlog($order_id, $user_id, $out['msg'], $pay_options);
@@ -7373,6 +7448,7 @@ Class Leadorder_model extends My_Model {
         $out['proofdocs']=array();
         $out['claydocs'] = [];
         $out['previewdocs'] = [];
+        $out['shipdocs'] = [];
         $out['extendview'] = 1;
         $out['item_error'] = $new_data['item_error'];
         $out['item_error_msg'] = $new_data['item_error_msg'];
@@ -9428,6 +9504,9 @@ Class Leadorder_model extends My_Model {
             $this->db->set('card_num', $ccdetails['cardnum']);
             $this->db->set('card_system', $ccdetails['cardtype']);
             $this->db->set('cvv', (empty($ccdetails['cardcode']) ? 0 : 1));
+            if ($succes==0) {
+                $this->_extend_paylog($order_id, $user_id, $msg, $ccdetails);
+            }
         }
         $this->db->set('order_id', $order_id);
         $this->db->set('user_id', $user_id);
@@ -9548,7 +9627,7 @@ Class Leadorder_model extends My_Model {
                     'card_system'=>$row['card_system'],
                     'cvv'=>$row['cvv'],
                     'payclass'=>$payclass,
-                    'api_response'=>$row['api_response'],
+                    'api_response'=> ($row['paysucces']==1 ? 'Success - ' : 'Declined - ').$row['api_response'],
                 );
             }
             $out['data']=$data;
@@ -10609,6 +10688,7 @@ Class Leadorder_model extends My_Model {
         // Calc proof date
         $order = $leadorder['order'];
         $shipping = $leadorder['shipping'];
+        $order_items = $leadorder['order_items'];
         $item_id = $order['item_id'];
         if ($order['order_blank']==1) {
             $proofdate = $newval;
@@ -10638,6 +10718,14 @@ Class Leadorder_model extends My_Model {
                 $out['current']=$row['id'];
             }
         }
+        $itemidx = 0;
+        foreach ($order_items as $order_item) {
+            if (isset($order_item['print_date'])) {
+                $order_items[$itemidx]['print_date'] = $shipping['shipdate'];
+            }
+            $itemidx++;
+        }
+        $leadorder['order_items'] = $order_items;
         $leadorder['shipping']=$shipping;
         $leadorder['order']=$order;
         $out['shipdate']=$shipping['shipdate'];
@@ -11894,6 +11982,290 @@ Class Leadorder_model extends My_Model {
             $out['project'] = round(($cog - $amntres['itemtotal']) / $cog * 100,2);
         }
         return $out;
+    }
+
+    public function shipdocremove($shipdocid, $leadorder, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Doc Not Found'];
+        $shipdocs = $leadorder['shipdocs'];
+        $deleted = $leadorder['delrecords'];
+        $found = 0;
+        $newdocs = [];
+        foreach ($shipdocs as $shipdoc) {
+            if ($shipdoc['order_shipdoc_id']==$shipdocid) {
+                $found = 1;
+                if ($shipdocid > 0) {
+                    $deleted[] = [
+                        'entity' => 'shipdocs',
+                        'id' => $shipdocid,
+                    ];
+                }
+            } else {
+                $newdocs[] = $shipdoc;
+            }
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $leadorder['shipdocs'] = $newdocs;
+            $leadorder['delrecords'] = $deleted;
+            usersession($session_id, $leadorder);
+            $out['shipdocs'] = $newdocs;
+        }
+        return $out;
+    }
+
+    public function saveshipdocload($doclink, $docsource, $leadorder, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->error_message];
+        $shipdocs = $leadorder['shipdocs'];
+        $newid = (count($shipdocs)+1)*(-1);
+        $shipdocs[] = [
+            'order_shipdoc_id' => $newid,
+            'shipdoc_link' => $doclink,
+            'shipdoc_src' => $docsource,
+        ];
+//        if ($shipdoc==1) {
+//            $shipping['shipdoc1_link'] = $doclink;
+//            $shipping['shipdoc1_src'] = $docsource;
+//            $shipping['shipdoc1_type'] = $doctype;
+//            $out['result'] = $this->success_result;
+//        } elseif ($shipdoc==2) {
+//            $shipping['shipdoc2_link'] = $doclink;
+//            $shipping['shipdoc2_src'] = $docsource;
+//            $shipping['shipdoc2_type'] = $doctype;
+//            $out['result'] = $this->success_result;
+//        }
+//        $out['multyship'] = count($leadorder['shipping_address']) > 1 ? 1 : 0;
+        $leadorder['shipdocs'] = $shipdocs;
+        $out['shipdocs'] = $shipdocs;
+        $out['result'] = $this->success_result;
+        usersession($session_id, $leadorder);
+        return $out;
+    }
+
+    private function _extend_paylog($order_id, $user_id, $msg, $ccdetails)
+    {
+        $filepath = APPPATH.'logs/payment_log.txt';
+        $fw = fopen($filepath, FOPEN_READ_WRITE_CREATE);
+        if ($fw) {
+            $msg = 'Date '.date('Y-m-d H:i:s').' Order '.$order_id.' Atempt payment '.MoneyOutput($ccdetails['amount']).' User '.$user_id.PHP_EOL;
+            fwrite($fw, $msg);
+            $msg = 'Card '.$ccdetails['cardtype'].' # ';
+            if (isset($ccdetails['cardnum_orig'])) {
+                $msg.=$ccdetails['cardnum_orig'];
+            } else {
+                $msg.=$ccdetails['cardnum'];
+            }
+            $msg.=' CVV '.$ccdetails['cardcode'].PHP_EOL;
+            fwrite($fw, $msg);
+            fclose($fw);
+        }
+    }
+
+    public function prepare_checkout_invite($leadorder, $user_id, $session_id)
+    {
+        $out = ['result' => $this->success_result, 'msg' => $this->error_message];
+        $invite_name = $invite_email = [];
+        $contacts = $leadorder['contacts'];
+        foreach ($contacts as $contact) {
+            if (!empty($contact['contact_emal']) && !empty($contact['contact_name']) && intval($contact['contact_inv'])==1) {
+                $invite_email[] = $contact['contact_emal'];
+                $invite_name[] = $contact['contact_name'];
+            }
+        }
+        $order = $leadorder['order'];
+        $paid = 0;
+        $payments = $leadorder['payments'];
+        foreach ($payments as $payment) {
+            $paid+=$payment['batch_amount'];
+        }
+        $balance = $order['revenue'] - $paid;
+        if ($order['item_id'] > 0) {
+            $itemname = $order['order_qty'] . ' ' . $order['order_items'];
+        } else {
+            $items = $leadorder['order_items'];
+            $itemname = '';
+            $itemdata = '';
+            foreach ($items as $item) {
+                $colors = $item['items'];
+                $itemname = '';
+                $itmqty = 0;
+                foreach ($colors as $itemcolor) {
+                    if ($itemcolor['item_description']!==$itemname) {
+                        if (!empty($itemname)) {
+                            $itemdata.=$itmqty.' '.$itemname.', ';
+                        }
+                        $itemname = $itemcolor['item_description'];
+                        $itmqty = $itemcolor['item_qty'];
+                    } else {
+                        $itmqty+=$itemcolor['item_qty'];
+                    }
+                }
+                if (!empty($itmqty)) {
+                    $itemdata.=$itmqty.' '.$itemname.', ';
+                }
+            }
+            $itemname = substr($itemdata,0, -2);
+        }
+        $out['subject'] = 'Payment Due - '.MoneyOutput($balance).' - '.$itemname;
+        $out['invite_name'] = $invite_name[0];
+        $out['invite_email'] = $invite_email[0];
+        if (count($invite_email) > 1) {
+            $out['cc_name'] = $invite_name[1];
+            $out['cc_email'] = $invite_email[1];
+        }
+        if (count($invite_email) > 2) {
+            $out['bcc_name'] = $invite_name[2];
+            $out['bcc_email'] = $invite_email[2];
+        }
+        $out['count_contacts'] = count($invite_email);
+        $out['order'] = $leadorder['order'];
+        usersession($session_id, $leadorder);
+        return $out;
+    }
+
+    public function send_checkout_invite($leadorder, $msgoptions, $user_id, $session_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order not found'];
+        $invite_name = $msgoptions['invite_name'];
+        $invite_email = $msgoptions['invite_email'];
+        $subject = $msgoptions['subject'];
+        if (empty($invite_name) || empty($invite_email)) {
+            // Get from contacts
+            $contacts = $leadorder['contacts'];
+            foreach ($contacts as $contact) {
+                if (!empty($contact['contact_emal']) && !empty($contact['contact_name']) && intval($contact['contact_inv'])==1) {
+                    $invite_email = $contact['contact_emal'];
+                    $invite_name = $contact['contact_name'];
+                    break;
+                }
+            }
+        }
+        $order = $leadorder['order'];
+        $message_options = [
+            'name' => $invite_name,
+            'email' => $invite_email,
+            'itemname' => '',
+            'revenue' => $order['revenue'],
+            'brand' => $order['brand']=='SR' ? 'SR' : 'SB',
+        ];
+        $paid = 0;
+        $payments = $leadorder['payments'];
+        foreach ($payments as $payment) {
+            $paid+=$payment['batch_amount'];
+        }
+        $message_options['paid'] = $paid;
+        $message_options['balance'] = $message_options['revenue'] - $message_options['paid'];
+        if ($order['item_id'] > 0) {
+            $message_options['itemname'] = $order['order_qty'].' '.$order['order_items'];
+        } else {
+            $items = $leadorder['order_items'];
+            $itemname = '';
+            $itemdata = '';
+            foreach ($items as $item) {
+                $colors = $item['items'];
+                $itemname = '';
+                $itmqty = 0;
+                foreach ($colors as $itemcolor) {
+                    if ($itemcolor['item_description']!==$itemname) {
+                        if (!empty($itemname)) {
+                            $itemdata.=$itmqty.' '.$itemname.', ';
+                        }
+                        $itemname = $itemcolor['item_description'];
+                        $itmqty = $itemcolor['item_qty'];
+                    } else {
+                        $itmqty+=$itemcolor['item_qty'];
+                    }
+                }
+                if (!empty($itmqty)) {
+                    $itemdata.=$itmqty.' '.$itemname.', ';
+                }
+            }
+            $message_options['itemname'] = substr($itemdata,0, -2);
+        }
+        if ($message_options['brand']=='SR') {
+            $message_options['link'] = $this->config->item('srcheckoutlink').$order['checkout_link'];
+        } else {
+            $message_options['link'] = $this->config->item('btcheckoutlink').$order['checkout_link'];
+        }
+        // Send email
+        $this->load->config('notifications');
+        $config = [
+            'protocol'=>'smtp',
+            'smtp_host' => $this->config->item('sb_smtp_host'),
+            'smtp_port' => $this->config->item('sb_smtp_port'),
+            'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+            'charset'=>'utf-8',
+            'mailtype'=>'html',
+            'wordwrap'=>TRUE,
+            'newline' => "\r\n",
+        ];
+        if ($message_options['brand']=='SR') {
+            $config['smtp_user'] = $this->config->item('fin_srdept_email');
+            $config['smtp_pass'] = $this->config->item('fin_srdept_pass');
+        } else {
+            $config['smtp_user'] = $this->config->item('fin_sbdept_email');
+            $config['smtp_pass'] = $this->config->item('fin_sbdept_pass');
+        }
+        $email_from = $config['smtp_user'];
+        $this->load->library('email');
+        $this->email->initialize($config);
+        if (intval($this->config->item('test_server'))==1) {
+            $mail_to = $this->config->item('fin_test_email');
+            // ,'ticktoriya@gmail.com'
+            $message_options['imgbase'] = 'https://lift.bluetrack.com/';
+        } else {
+            $mail_to = $message_options['email'];
+            $message_options['imgbase'] = base_url();
+        }
+        $this->email->to($mail_to);
+        $this->email->from($email_from);
+        if (!empty($subject)) {
+            $title = $subject;
+        } else {
+            $title = 'Payment Due - '.MoneyOutput($message_options['balance']).' - '.$message_options['itemname'];
+        }
+        $this->email->subject($title);
+        if (intval($this->config->item('test_server'))==0) {
+            if (isset($msgoptions['cc_email']) && valid_email_address($msgoptions['cc_email'])) {
+                $this->email->cc($msgoptions['cc_email']);
+            }
+            if (isset($msgoptions['bcc_email']) && valid_email_address($msgoptions['bcc_email'])) {
+                $this->email->bcc($msgoptions['bcc_email']);
+            }
+        }
+        $mail_body = $this->load->view('messages/chekout_invitation_view', $message_options, TRUE);
+        $this->email->message($mail_body);
+        if (!$this->email->send()) {
+            $out['msg'] = $this->email->print_debugger();
+            log_message('error','Email fail, reason '.$this->email->print_debugger());
+            log_message('error', 'Email send fail. Email Config '.json_encode($config));
+
+        } else {
+            $out['result'] = $this->success_result;
+            $artwork = $leadorder['artwork'];
+            $artid = $artwork['artwork_id'];
+            // Add History
+            $this->db->set('artwork_id', $artid);
+            $this->db->set('user_id', $user_id);
+            $this->db->set('created_time', time());
+            $this->db->set('message', 'Payment link sent');
+            $this->db->insert('ts_artwork_history');
+            // New Artw history
+            $this->load->model('artwork_model');
+            $newhist = $this->artwork_model->get_artmsg_history($artid);
+            $artwork['art_history'] = $newhist;
+            $leadorder['artwork'] = $artwork;
+            usersession($session_id, $leadorder);
+            $out['history'] = $newhist;
+        }
+        return $out;
+    }
+
+    public function get_order_shipdocs($order_id)
+    {
+        $this->db->select('*')->from('ts_order_shipdocs')->where('order_id', $order_id);
+        return $this->db->get()->result_array();
     }
 }
 /* End of file leadorder_model.php */

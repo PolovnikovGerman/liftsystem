@@ -25,11 +25,11 @@ function view_daily_view() {
     $("#loader").show();
     $.post(url, params, function(response){
         if (response.errors=='') {
-            if (parseInt(response.data.total) > 25) {
-                $(".searchesdailydata").removeClass('short');
-            } else {
-                $(".searchesdailydata").addClass('short');
-            }
+            // if (parseInt(response.data.total) > 25) {
+            //     $(".searchesdailydata").removeClass('short');
+            // } else {
+            //     $(".searchesdailydata").addClass('short');
+            // }
             $(".searchesdailydata").empty().html(response.data.content);
             $(".dailysearchpaginator").find('div.navigateprev').removeClass('active');
             $(".dailysearchpaginator").find('div.navigatenext').removeClass('active');
@@ -40,6 +40,8 @@ function view_daily_view() {
             if (parseInt(response.data.next)==1) {
                 $(".dailysearchpaginator").find('div.navigatenext').addClass('active');
             }
+            // Add scroll
+            new SimpleBar(document.getElementById('searchesdailydata'), { autoHide: false });
             init_searches_manage();
             $("#loader").hide();
             leftmenu_alignment();

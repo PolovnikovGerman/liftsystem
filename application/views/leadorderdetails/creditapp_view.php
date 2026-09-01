@@ -6,7 +6,7 @@
     <option value="Business" <?=$balance_term=='Business' ? 'selected="selected"' : '' ?>>Business</option>
     <option value="Non-Profit" <?=$balance_term=='Non-Profit' ? 'selected="selected"' : '' ?>>Non-Profit</option>
 </select>
-<div class="icon_file creditappview">&nbsp;</div>
+<div class="icon_file creditappview" style="margin-top: 2px;">&nbsp;</div>
 <div class="button_no">
     <div class="button_no_text">NO</div>
 </div>

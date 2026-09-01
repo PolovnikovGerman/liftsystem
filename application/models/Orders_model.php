@@ -3005,13 +3005,15 @@ Class Orders_model extends MY_Model
     }
 
     public function get_profitexport_fields() {
-        $fields=['field_order_date', 'field_order_num', 'field_is_canceled', 'field_customer_name', 'field_order_qty', 'field_colors', 'field_order_itemnumber',
+        $fields=['field_order_date', 'field_order_num', 'field_is_canceled', 'field_order_approved', 'field_customer_name', 'field_order_qty', 'field_colors', 'field_order_itemnumber',
             'field_order_items', 'field_revenue', 'field_balance', 'field_shipping', 'field_tax', 'field_shipping_state', 'field_order_cog','field_profit', 'field_profit_perc',
             'field_vendor_dates', 'field_vendor_name', 'field_vendor_cog', 'field_rush_days', 'field_order_usr_repic','field_order_new','field_payment_system',
-            'field_credit_card','field_payment_type'];
-        $labels=['Date', 'Order#', 'Canceled', 'Customer', 'QTY', 'Colors', 'Item #',
+            'field_credit_card','field_payment_type', 'field_completed_perc', 'field_qty_restship', 'field_qty_shipped', 'field_ship_date',
+            'field_arrive_date', 'field_event_date'];
+        $labels=['Date', 'Order#', 'Canceled', 'Order Approved?', 'Customer', 'QTY', 'Colors', 'Item #',
             'Item Name', 'Revenue', 'Balance', 'Shipping','Sales Tax','Shipping States', 'COG','Profit','Profit %',
-            'PO Dates', 'PO Vendor', 'COG/PO Vendors','Rush Days','Sales Replica','Order New/Repeat','Payment System','Credit Card','Payment Type'];
+            'PO Dates', 'PO Vendor', 'COG/PO Vendors','Rush Days','Sales Replica','Order New/Repeat','Payment System','Credit Card','Payment Type',
+            '% Completed', 'Qty Remaining to Ship', 'Qty Shipped', 'Ship Date', 'Arrival Date', 'Event Date'];
         $data=[];
         $idx=0;
         foreach ($fields as $row) {
@@ -3028,6 +3030,8 @@ Class Orders_model extends MY_Model
         $out=['result'=>$this->error_result,'msg'=>'Select Fields for Export'];
         $fields=$this->_export_fields($postdata);
         $labels=$this->_export_labels($fields);
+        $notdirectflds = ['colors','vendor_dates', 'vendor_name', 'vendor_cog','rush_days','shipping_state','order_new','balance', 'order_approved',
+            'completed_perc', 'qty_restship', 'qty_shipped', 'ship_date', 'arrive_date', 'event_date',];
         if (count($fields)>0) {
             $search=array();
             if (isset($postdata['search'])) {
@@ -3075,14 +3079,17 @@ Class Orders_model extends MY_Model
                 $search['item_type'] = $postdata['item_type'];
             }
 
-
             $select_flds=[];
             foreach ($fields as $row) {
-                if (!in_array($row,['colors','vendor_dates', 'vendor_name', 'vendor_cog','rush_days','shipping_state','order_new','balance'])) {
+                if (!in_array($row, $notdirectflds)) {
                     array_push($select_flds, $row);
                 }
             }
-            $this->db->select('o.order_id, o.is_canceled, o.order_blank, o.arttype, o.revenue');
+            if (in_array('order_approved', $fields)) {
+                $this->db->select('a.order_id, count(p.artwork_proof_id) as cnt')->from('ts_artworks a')->join('ts_artwork_proofs p','p.artwork_id=a.artwork_id')->where('p.approved > ',0)->group_by('a.order_id');
+                $proofsql = $this->db->get_compiled_select();
+            }
+            $this->db->select('o.order_id, o.is_canceled, o.order_blank, o.arttype, o.revenue, o.order_qty as totalqty');
             foreach ($select_flds as $select_fld) {
                 if ($select_fld!=='payment_system' && $select_fld!=='credit_card' && $select_fld!=='payment_type') {
                     $this->db->select("o.{$select_fld}");
@@ -3169,6 +3176,23 @@ Class Orders_model extends MY_Model
             if (ifset($postdata,'custom_orders',0)==1) {
                 $this->db->where_in('o.item_id',[$this->config->item('custom_id')]); // $this->config->item('other_id'),
             }
+            if (in_array('order_approved', $fields)) {
+                $this->db->select('proof.cnt as aproveddocs');
+                $this->db->join("({$proofsql}) as proof",'proof.order_id=o.order_id','left');
+            }
+            if (in_array('ship_date', $fields) || in_array('arrive_date', $fields) || in_array('event_date', $fields)) {
+                $this->db->join("ts_order_shippings as ships",'ships.order_id=o.order_id','left');
+                if (in_array('ship_date', $fields)) {
+                    $this->db->select('ships.shipdate');
+                }
+                if (in_array('arrive_date', $fields)) {
+                    $this->db->select('ships.arrive_date');
+                }
+                if (in_array('event_date', $fields)) {
+                    $this->db->select('ships.event_date');
+                }
+            }
+
             $this->db->order_by('o.order_id');
             $res=$this->db->get()->result_array();
 
@@ -3291,15 +3315,24 @@ Class Orders_model extends MY_Model
                     }
                     if (in_array('payment_system', $fields)) {
                         $stype = '';
-                        if ($owndat['balance_manage']==3) {
-                            $stype = $this->accrec_terms;
-                        } elseif ($owndat['balance_manage']==2) {
-                            $stype = $this->accrec_prepay;
-                        } elseif ($owndat['balance_manage']==1) {
-                            $stype = $this->accrec_willupd;
-                            if (!empty($owndat['cntcard'])) {
-                                $stype = $this->accrec_credit;
+                        if ($row['order_id']==52291) {
+                            log_message('error','Owndat '.json_encode($owndat));
+                        }
+                        $balance_manage = ifset($owndat,'balance_manage','');
+                        if (!empty($balance_manage)) {
+                            if ($owndat['balance_manage']==3) {
+                                $stype = $this->accrec_terms;
+                            } elseif ($owndat['balance_manage']==2) {
+                                $stype = $this->accrec_prepay;
+                            } elseif ($owndat['balance_manage']==1) {
+                                $stype = $this->accrec_willupd;
+                                if (!empty($owndat['cntcard'])) {
+                                    $stype = $this->accrec_credit;
+                                }
                             }
+                        }
+                        if ($row['order_id']==52291) {
+                            log_message('error', 'SType '.$stype.'!');
                         }
                         $row['payment_system'] = $stype;
                     }
@@ -3321,13 +3354,82 @@ Class Orders_model extends MY_Model
                         $row['payment_type']=$paysystem;
                     }
                 }
+                if (in_array('order_approved', $fields)) {
+                    if ($row['order_blank']==1) {
+                        $row['order_approved'] = 'Blank';
+                    } else {
+                        if (empty($row['aproveddocs'])) {
+                            $row['order_approved'] = 'Not Approved';
+                        } else {
+                            $row['order_approved'] = 'Approved';
+                        }
+                    }
+                }
+                if (in_array('ship_date', $fields)) {
+                    if (empty($row['shipdate'])) {
+                        $row['ship_date'] = '';
+                    } else {
+                        $row['ship_date'] = date('m/d/Y', $row['shipdate']);
+                    }
+                }
+                if (in_array('arrive_date', $fields)) {
+                    if (!empty($row['arrive_date'])) {
+                        $row['arrive_date'] = date('m/d/Y', $row['arrive_date']);
+                    } else {
+                        $row['arrive_date'] = '';
+                    }
+                }
+                if (in_array('event_date', $fields)) {
+                    if (!empty($row['event_date'])) {
+                        $row['event_date'] = date('m/d/Y', $row['event_date']);
+                    } else {
+                        $row['event_date'] = '';
+                    }
+                }
+                if (in_array('qty_restship', $fields) || in_array('qty_shipped', $fields)) {
+                    //
+                    $totalqty = $row['totalqty'];
+                    $shiped = 0;
+                    $this->db->select('t.qty')->from('ts_order_trackings t')->join('ts_order_itemcolors oic','oic.order_itemcolor_id = t.order_itemcolor_id');
+                    $this->db->join('ts_order_items oi','oi.order_item_id = oic.order_item_id')->where('oi.order_id', $row['order_id']);
+                    $tracks = $this->db->get()->result_array();
+                    foreach ($tracks as $track) {
+                        $shiped+=$track['qty'];
+                    }
+                    if (in_array('qty_restship', $fields)) {
+                        $row['qty_restship'] = $totalqty - $shiped;
+                    }
+                    if (in_array('qty_shipped', $fields)) {
+                        $row['qty_shipped'] = $shiped;
+                    }
+                }
+                if (in_array('completed_perc', $fields)) {
+                    $row['completed_perc'] = '';
+                    $amnts = $this->db->select('*')->from('ts_order_amounts')->where('order_id', $row['order_id'])->get()->result_array();
+                    $printed = 0;
+                    if (count($amnts) > 0) {
+                        foreach ($amnts as $amnt) {
+                            if (!empty($amnt['inventory_color_id'])) {
+                                $printed+=$amnt['shipped'];
+                            }
+                        }
+                    }
+                    if ($printed > 0 && $row['totalqty'] > 0) {
+                        $row['completed_perc'] = round($printed / $row['totalqty']*100, 1).'%';
+                    }
+                }
                 $datarow=[];
                 foreach ($fields as $frow) {
-                    $datarow[$frow]=$row[$frow];
+                    if (isset($row[$frow])) {
+                        $datarow[$frow] = $row[$frow];
+                    } else {
+                        $datarow[$frow] = '';
+                    }
                 }
                 $data[]=$datarow;
             }
             // save to file
+            // return $out;
             $this->load->model('exportexcell_model');
             $replink=$this->exportexcell_model->export_profitorders($data, $labels);
             $out['result']=$this->success_result;
@@ -3356,6 +3458,8 @@ Class Orders_model extends MY_Model
                 array_push($labels, 'Order#');
             } elseif ($frow=='is_canceled') {
                 array_push($labels, 'Canceled');
+            } elseif ($frow=='order_approved') {
+                array_push($labels, 'Approved?');
             } elseif ($frow=='customer_name') {
                 array_push($labels, 'Customer');
             } elseif ($frow=='order_qty') {
@@ -3371,7 +3475,13 @@ Class Orders_model extends MY_Model
             } elseif ($frow=='balance') {
                 array_push($labels,'Balance');
             } elseif ($frow=='shipping') {
-                array_push($labels,'Shipping');
+                array_push($labels, 'Shipping');
+            } elseif ($frow=='ship_date') {
+                array_push($labels, 'Ship Date');
+            } elseif ($frow=='arrive_date') {
+                array_push($labels, 'Arrival Date');
+            } elseif ($frow=='event_date') {
+                array_push($labels, 'Event Date');
             } elseif ($frow=='tax') {
                 array_push($labels, 'Tax');
             } elseif ($frow=='shipping_state') {
@@ -3400,6 +3510,14 @@ Class Orders_model extends MY_Model
                 array_push($labels,'Credit Card #');
             } elseif ($frow=='payment_type') {
                 array_push($labels,'Payment Type');
+            } elseif ($frow=='completed_perc') {
+                array_push($labels, '% Completed');
+            } elseif ($frow=='qty_restship') {
+                array_push($labels, 'Qty Remaining to Ship');
+            } elseif ($frow=='qty_shipped') {
+                array_push($labels, 'Qty Shipped');
+            } else {
+                array_push($labels, $frow);
             }
         }
         return $labels;
@@ -6465,6 +6583,7 @@ Class Orders_model extends MY_Model
 
     public function add_liftorder($orddata, $item, $confirmation) {
         $out = array('order_id' => 0, 'order_num' => '');
+        $newlink = uniq_link(12,'any');
         $paymethod = 'PAYPAL';
         // $orddata=$this->order_data($order_id);
         $printdate = strtotime($orddata['order_date']);
@@ -6500,6 +6619,7 @@ Class Orders_model extends MY_Model
         $this->db->set('arttype','new');
         $this->db->set('brand', $orddata['brand']);
         // $this->db->set('customer_code', new_customer_code());
+        $this->db->set('checkout_link', $newlink);
         $this->db->insert('ts_orders');
         $neword = $this->db->insert_id();
         if ($neword != 0) {
@@ -6900,10 +7020,10 @@ Class Orders_model extends MY_Model
             $this->db->set('autopay', 1);
             $this->db->set('payment_save',1);
             $this->db->insert('ts_order_payments');
+            $this->db->where('order_id', $neword);
+            $this->db->set('print_date', $printdate);
+            $this->db->update('ts_orders');
             if ($printsched==1) {
-                $this->db->where('order_id', $neword);
-                $this->db->set('print_date', $printdate);
-                $this->db->update('ts_orders');
                 $this->db->where('order_id', $neword);
                 $this->db->set('print_date', $printdate);
                 $this->db->update('ts_order_items');
@@ -10440,10 +10560,10 @@ Class Orders_model extends MY_Model
             $ship = empty($order['shipcnt']) ? 0 : 1;
             $shipclass = $ship==0 ? $missclass : $readyclass;
             if (empty($order['amntcnt'])) {
-                $payment = 0;
+                $payment = $order['revenue']; // 0;
                 $payment_class = $missclass;
             } else {
-                $payment = $order['amntsum'];
+                $payment = $order['revenue']-$order['amntsum']; // $order['amntsum'];
                 if ($order['amntsum']>=$order['revenue']) {
                     $payment_class = $readyclass;
                 } else {
@@ -10605,4 +10725,78 @@ Class Orders_model extends MY_Model
             'refunds' => $refunds,
         );
     }
+
+    public function get_checkout_invite($order_id)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Not Found'];
+        $this->db->select('*')->from('ts_orders')->where(['order_id'=>$order_id,'order_system'=>'new']);
+        $orddat = $this->db->get()->row_array();
+        if (ifset($orddat,'order_id',0)==$order_id) {
+            $out['result'] = $this->success_result;
+            $data = [
+                'name' => '',
+                'email' => '',
+                'itemname' => '',
+                'revenue' => $orddat['revenue'],
+                'paid' => 0,
+                'balance' => $orddat['revenue'],
+                'link' => '',
+                'brand' => $orddat['brand']=='SR' ? 'SR' : 'SB',
+            ];
+            $this->db->select('*')->from('ts_order_contacts')->where(['order_id'=>$order_id,'contact_inv'=>1]);
+            $contacts = $this->db->get()->result_array();
+            foreach ($contacts as $contact) {
+                if (!empty($contact['contact_emal'])) {
+                    $data['name'] = $contact['contact_name'];
+                    $data['email'] = $contact['contact_emal'];
+                    break;
+                }
+            }
+            $this->db->select('*')->from('v_order_balances')->where('order_id', $order_id);
+            $balance = $this->db->get()->row_array();
+            if (isset($balance['order_id'])) {
+                $data['paid'] = $balance['payment'];
+                $data['balance'] = $data['revenue'] - $data['paid'];
+            }
+            if ($orddat['item_id']>0) {
+                $data['itemname'] = $orddat['order_qty'].' '.$orddat['order_items'];
+            } else {
+                $itemdata = '';
+                $this->db->select('oic.item_description, oic.item_qty');
+                $this->db->from('ts_order_itemcolors oic');
+                $this->db->join('ts_order_items oi','oi.order_item_id=oic.order_item_id');
+                $this->db->where('oi.order_id', $order_id);
+                $this->db->order_by('oic.item_description');
+                $itemcolors = $this->db->get()->result_array();
+                $itemname = '';
+                $itmqty = 0;
+                foreach ($itemcolors as $itemcolor) {
+                    if ($itemcolor['item_description']!==$itemname) {
+                        if (!empty($itemname)) {
+                            $itemdata.=$itmqty.' '.$itemname.', ';
+                        }
+                        $itemname = $itemcolor['item_description'];
+                        $itmqty = $itemcolor['item_qty'];
+                    } else {
+                        $itmqty+=$itemcolor['item_qty'];
+                    }
+                }
+                if (!empty($itmqty)) {
+                    $itemdata.=$itmqty.' '.$itemname.', ';
+                }
+                $data['itemname'] = substr($itemdata,0, -2);
+            }
+            if ($orddat['brand']=='SR') {
+                $link = $this->config->item('srcheckoutlink').$orddat['checkout_link'];
+            } else {
+                $link = $this->config->item('btcheckoutlink').$orddat['checkout_link'];
+            }
+            if (!empty($link)) {
+                $data['link'] = $link;
+            }
+            $out['data'] = $data;
+        }
+        return $out;
+    }
+
 }

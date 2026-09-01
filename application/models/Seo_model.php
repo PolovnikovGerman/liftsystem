@@ -14,7 +14,7 @@ Class Seo_model extends My_Model {
         return $res;
     }
 
-    public function get_geolocation($user_ip) {
+    public function get_geolocation($user_ip, $cron =0) {
         $out = ['result'=> $this->error_result];
         $api_key = $this->config->item('geo_apikey');
         // $d = @file_get_contents("http://api.ipinfodb.com/v3/ip-city/?key=$api_key&ip=$user_ip&format=json");
@@ -29,13 +29,13 @@ Class Seo_model extends My_Model {
             }
             // Build data
             $result = [];
-            $result['country_code2'] = ifset($data,'country_code','');
+            $result['country_code2'] = ifset($data,'country_code2','');
             $result['country_name'] = ifset($data,'country_name','');
-            $result['city'] = ifset($data,'city_name','');
-            $result['state_prov'] = ifset($data,'region_name','');
+            $result['city'] = ifset($data,'city','');
+            $result['state_prov'] = ifset($data,'state_prov','');
             $result['latitude'] = ifset($data,'latitude','');
             $result['longitude'] = ifset($data,'longitude','');
-            $result['zipcode'] = ifset($data,'zip_code','');
+            $result['zipcode'] = ifset($data,'zipcode','');
             $country_id='';
             $this->load->model('shipping_model');
             if (ifset($result,'country_code2','')!=='') {
@@ -63,7 +63,9 @@ Class Seo_model extends My_Model {
 
     public function get_geolocation2api($apiKey, $ip, $lang = "en", $fields = "*", $excludes = "") {
         // $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
-        $url = "https://api.ip2location.io/?key={$apiKey}&ip=".$ip;
+        // $url = "https://api.ip2location.io/?key={$apiKey}&ip=".$ip;
+        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=".$apiKey."&ip=".$ip."&lang=".$lang."&fields=".$fields."&excludes=".$excludes;
+
         $cURL = curl_init();
 
         curl_setopt($cURL, CURLOPT_URL, $url);
@@ -81,6 +83,11 @@ Class Seo_model extends My_Model {
         $usrdata=$this->ipdata_exist($user_ip);
         if ($usrdata['result']!==$this->success_result) {
             // Get Code of region
+            if (!isset($ipdata['country_code'])) {
+                log_message('error', 'GeoIP - COUNTRY NOT FOUND '.json_encode($ipdata));
+            } elseif (empty($ipdata['country_code'])) {
+                log_message('error', 'GeoIP - COUNTRY CODE EMPTY '.json_encode($ipdata));
+            }
             $this->db->set('user_ip',$ipdata['ip']);
             $this->db->set('country_code',(isset($ipdata['country_code']) ? $ipdata['country_code'] : NULL));
             $this->db->set('country_name',(isset($ipdata['country_name']) ? $ipdata['country_name'] : NULL));
@@ -124,5 +131,46 @@ Class Seo_model extends My_Model {
         }
     }
 
+    public function fix_emptygeodata()
+    {
+        $dats = $this->db->select('*')->from('sb_geoips')->where('country_code','')->get()->result_array();
+        if (count($dats)>0) {
+            foreach ($dats as $dat) {
+                $res = $this->get_geolocation($dat['user_ip'], 1);
+                if ($res['result']==$this->success_result) {
+                    $geodata = $res['geodata'];
+                    $regcode = '';
+                    if (!empty($geodata['region_name'])) {
+                        $regcode = $this->get_statecode_byname($geodata['region_name']);
+                    }
+
+//                    'ip' => $user_ip,
+//                'country_code' => $result['country_code2'],
+//                'country_name' => $result['country_name'],
+//                'city_name' => $result['city'],
+//                'region_name' => $result['state_prov'],
+//                'latitude' => $result['latitude'],
+//                'longitude' => $result['longitude'],
+//                'country_id' => $country_id,
+//                'zipcode' => $result['zipcode'],
+                    $this->db->where('geoip_id',$dat['geoip_id']);
+                    $this->db->set('country_code',$geodata['country_code']);
+                    $this->db->set('country_name',$geodata['country_name']);
+                    $this->db->set('city_name',$geodata['city_name']);
+                    $this->db->set('region_name',$geodata['region_name']);
+//                    if (!empty($geodata['region_name'])) {
+                        $this->db->set('region_code', $regcode);
+//                    }
+                    $this->db->set('latitude',(isset($geodata['latitude']) ? $geodata['latitude'] : NULL));
+                    $this->db->set('longitude',(isset($geodata['longitude']) ? $geodata['longitude'] : NULL));
+                    if (isset($geodata['zipcode'])) {
+                        $this->db->set('zipcode',($geodata['zipcode']=='-' ? NULL : $geodata['zipcode']));
+                    }
+                    $this->db->update('sb_geoips');
+                    echo 'IP '.$dat['user_ip'].' has been updated'.PHP_EOL;
+                }
+            }
+        }
+    }
 
 }

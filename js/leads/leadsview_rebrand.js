@@ -1,4 +1,5 @@
 function init_leadsview() {
+    init_unassign_leads();
     init_customform_interest();
     init_webquest_interest();
     init_webquotes_interest();
@@ -185,6 +186,31 @@ function search_leadsdata() {
     },'json')
 }
 
+function init_unassign_leads() {
+    var params = new Array();
+    params.push({name: 'brand', value: $("#leadviewbrand").val()});
+    params.push({name: 'showall', value: $("#unassignleadsall").val()});
+    var url = '/leads/unassignlead_interest';
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $("#freeleadstable").empty().html(response.data.content);
+            $(".newunassign_tasks_total[data-task='freeleads']").empty().html(response.data.total);
+            if (parseInt(response.data.cntrec)==0) {
+                $(".newunassign_taskheader[data-task='freeleads']").addClass('emptycontent');
+                $(".newunassign_tasksubheader[data-task='freeleads']").addClass('emptycontent');
+                $("#freeleadstable").addClass('emptycontent');
+            } else {
+                $(".newunassign_taskheader[data-task='freeleads']").removeClass('emptycontent');
+                $(".newunassign_tasksubheader[data-task='freeleads']").removeClass('emptycontent');
+                $("#freeleadstable").removeClass('emptycontent');
+                new SimpleBar(document.getElementById('freeleadstable'), { autoHide: false })
+            }
+            init_interest_management();
+        } else {
+            show_error(response);
+        }
+    },'json');
+}
 function init_customform_interest() {
     var params = new Array();
     params.push({name: 'brand', value: $("#leadviewbrand").val()});
@@ -355,6 +381,13 @@ function init_interest_management() {
         function(){
             $(this).removeClass("current_row");
         });
+    // Click on unassign leads
+    $("#freeleadstable").find('div.datarow').unbind('click').click(function (){
+        var task = parseInt($(this).data('task'));
+        if (task > 0) {
+            edit_lead(task);
+        }
+    })
     // Click on SB forms row
     $("#sbcustomformstable").find('div.datarow').unbind('click').click(function (){
         var task = parseInt($(this).data('task'));
@@ -413,6 +446,15 @@ function init_interest_management() {
             },'json');
         }
     });
+    // Change limit unsign leads
+    $("#oldfreeleadschk").unbind('change').change(function (){
+        var showall = 0;
+        if ($("#oldfreeleadschk").prop('checked')==true) {
+            showall = 1;
+            $("#unassignleadsall").val(showall);
+            init_unassign_leads();
+        }
+    })
     // Change limit for custom quotes
     $("#oldcustomquotechk").unbind('change').change(function (){
         var showall = 0;

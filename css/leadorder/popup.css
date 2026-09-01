@@ -3,6 +3,9 @@
     Author     : polovnikov-go
     Popup Window for Order Details
 */
+#artModal .modal-header {
+    padding: 3px 15px 6px 15px!important;
+}
 #artModal .modal-header.cancelorder {
     background-color: #000000;
 }
@@ -21,6 +24,9 @@
     right: -11px;
     top: -14px;
 }
+#artModal .modal-content {
+    top: -12px;
+}
 .leadorderdetailspopup {
     /* background: url(/img/leadorder/backgr_content.png) no-repeat transparent; */
     background: #c59e51;
@@ -35,7 +41,7 @@
     margin-left: -15px;
     font-size: 13px;
     margin-bottom: -30px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
 }
 .leadorderdetailspopupheader {
     float: left;
@@ -124,7 +130,7 @@
 input.input_checkbox {
     float: left;
     border: 1px solid #858585;
-    padding-left: 0px;
+    padding-left: 0;
     margin-top: 2px;
 }
 .warningprice {
@@ -134,12 +140,13 @@ input.input_checkbox {
 
 .line_1 {
     float: left;
-    margin: 2px 0px -9px 8px;
+    margin: 2px 0 -9px 8px;
     width: 99%;
 }
 .line_2 {
     float: left;
-    margin: 13px 0px 0px 8px;
+    /*margin: 13px 0px 0px 8px;*/
+    margin: 6px 0 0 8px;
 }
 .line_3_4 {
     float: left;
@@ -190,7 +197,7 @@ input.input_checkbox {
     background-repeat: no-repeat;
     width: 112px;
     height: 34px;
-    margin: 0px;
+    margin: 0;
 }
 .block_1_text {
     width: 106px;
@@ -229,7 +236,7 @@ input.calendarinpt[readonly="readonly"] {
 }
 .block_2_text2 {
     float: left;
-    padding: 0px 5px;
+    padding: 0 5px;
 }
 .block_2_text3 {
     float: right;
@@ -250,7 +257,7 @@ input.calendarinpt[readonly="readonly"] {
 .block_3_input {
     width: 250px;
     line-height: 16px;
-    margin: 3px 0px 0px 3px;
+    margin: 3px 0 0 3px;
 }
 .block_4 {
     float: left;
@@ -322,12 +329,18 @@ input.calendarinpt[readonly="readonly"] {
     margin-left: 5px;
 }
 .bl_contact_tx {
-    margin-top: 14px;
+    margin-top: 8px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_contact_content{
     float: left;
     width: 508px;
-    height: 78px;
+    height: 72px;
     background: #dadada;
     border: 2px solid #000;
 }
@@ -347,7 +360,7 @@ input.calendarinpt[readonly="readonly"] {
 .contact_content_email {
     float: left;
     width: 205px;
-    max-height: 20px;
+    max-height: 16px;
 }
 .contact_content_art,
 .contact_content_inv,
@@ -361,9 +374,9 @@ input.calendarinpt[readonly="readonly"] {
 }
 .contact_input {
     float:left;
-    height: 16px;
-    font-size: 12px !important;
-    margin: 2px 2px;
+    height: 14px;
+    /*font-size: 12px !important;*/
+    margin: 1px 1px;
 }
 .contact_name_input {
     width: 102px;
@@ -378,31 +391,37 @@ input.calendarinpt[readonly="readonly"] {
     float: right;
     position: relative;
     left: -8px;
-    top: -17px;
+    top: -15px;
     background: #000;
     color: #fff;
     font-size: 9px;
-    height: 14.9px;
-    width: 16px;
+    height: 13.9px;
+    width: 14px;
     text-align: center;
     cursor: pointer;
 }
 .contact_art_input,
 .contact_inv_input,
 .contact_trk_input {
-    margin-top: 2px;
+    margin-top: 1px;
 }
 .bl_items {
     float: left;
     margin-top: 5px;
 }
 .bl_items_tx {
-    margin-top: 82px;
+    margin-top: 63px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_items_content{
     float: left;
     width: 536px;
-    height: 183px;
+    /*height: 183px;*/
     border: 2px solid #000;
 }
 .items_content_line{
@@ -421,7 +440,7 @@ input.order_itemnumber_input {
 }
 select.order_itemnumber_select {
     height: 18px;
-    padding-left: 0px;
+    padding-left: 0;
     width: 67px;        
 }
 input.order_itemdescript_input {
@@ -571,8 +590,8 @@ input.order_itemqty_input {
 .bl_items_content_table{
     float: left;
     width: 531px;
-    height: 159px;
-    /* overflow-y: scroll; */
+    height: 139px;
+    /*height: 159px;*/
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -655,7 +674,6 @@ input.orderitemadd_input {
 /* Invertory popup */
 .orderitem_inventoryview {
     display: none;
-    position: absolute;
     position: absolute;
     left: 289px;
     top: 148px;
@@ -854,13 +872,13 @@ input.orderitemadd_input {
     float: right;
     width: 214px;
     height: 16px;
-    margin: 3px 0px 0px 3px;
+    margin: 3px 0 0 3px;
 }
 .items_input2 {
     float: right;
     width: 156px;    
     height: 16px;
-    margin: 3px 0px 0px 3px;
+    margin: 3px 0 0 3px;
 }
 .items_input3 {
     float: right !important;
@@ -895,7 +913,13 @@ input.items_discount {
     margin-top: -4px;
 }
 .bl_ship_tax_tx {
-    margin-top: 10px;
+    margin-top: 25px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_ship_tax_content{
     float: left;
@@ -913,7 +937,8 @@ input.items_discount {
     font-size: 12px;
     margin-left: 15px;
     padding-top: 5px;
-    width: 120px;
+    /*width: 120px;*/
+    margin-right: 7px;
 }
 .multishipadresslist {
     float: left;
@@ -974,6 +999,7 @@ span.text_bold {
 }
 .ship_tax_tabs {
     float: left;
+    width: 100%;
 }
 .ship_tax_tabs1 {
     float: left;
@@ -993,11 +1019,181 @@ span.text_bold {
 .ship_tax_tabs2.active {
     cursor: pointer;
 }
-.shipotherparamsarea {
+/* Shipping docs */
+.shipdocsarea {
     float: left;
-    margin-left: 16px;
+}
+.shipdocsarea.first {
+    margin-left: -2px; /* -8px; */
+    margin-right: 3px;
+}
+.shipdocs_label {
+    float: left;
+    font-weight: 600;
+    font-size: 11px;
+    /*margin-left: -5px;*/
+    width: 100%;
+    text-align: center;
+    position: relative;
+    margin-top: 4px;
+    margin-bottom: 3px;
+}
+.shipdocs_label.multyship {
+    margin-left: 0;
+    margin-right: 5px;
+    margin-top: 5px;
+    width: 60px;
+    margin-bottom: 0;
+}
+.shipdocs_link {
+    float: left;
+    font-size: 14px;
+    /* width: 32px; */
+    margin-right: 3px;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+}
+.shipdocs_link span {
+    font-size: 11px;
+}
+.shipdocs_link.view {
+    margin-right: 5px;
+}
+.shipdocs_link.multyship {
+    margin-top: 5px;
+    width: 54px;
+}
+.shipdocs_link i {
+    /*font-weight: 600;*/
+}
+.shipdocs_delete {
+    float: right;
+    /*width: 12px;*/
+    margin-right: 3px;
+    cursor: pointer;
+}
+.shipdocs_delete.multyship {
+    margin-top: 3px;
+}
+.shipdocs_empty {
+    float: left;
+    width: 40px;
+}
+.shipdocs_addbtn {
+    float: left;
+    background: #efefef;
+    border: 1px solid #000;
+    border-radius: 5px;
     height: 18px;
-    width: 391px;
+    line-height: 16px;
+    text-align: center;
+}
+.shipdocs_addbtn.multyship {
+    margin-top: 2px;
+}
+.shipdocviewadd {
+    float: right!important;
+}
+.shipdocupload.qq-upload-button {
+    background: #0000FF;
+    height: 20px;
+    width: 62px;
+    font-size: 11px;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-top: 6px;
+    line-height: 20px;
+}
+.shipdocupload .qq-upload-button span {
+    clear: both;
+    float: left;
+}
+/* Shipdocs view*/
+.shipdocview {
+    position: absolute;
+    left: -166px;
+    top: 36px;
+    display: none;
+    background-color: #fff;
+    border: 2px solid #303030;
+    z-index: 3;
+    padding: 10px;
+    width: 295px;
+}
+.shipdocview.multyship {
+    top: 18px;
+    left: -100px;
+}
+.shipdocview div {
+    float: left;
+}
+.shipdocscloseview {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    border: 1px solid #2a2a2a;
+    background: #e20000;
+    background: linear-gradient(to top, #c60000, #ff0000);
+    color: #fff;
+    font-weight: 900;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 18px;
+    cursor: pointer;
+}
+.shipdocscloseview svg {
+    width: 12px;
+    height: auto;
+    position: relative;
+    top: 0.5px;
+    fill: #fff;
+}
+.shipdocviewtitle {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.shipdocviewarea {
+
+}
+.shipdocnumpp {
+    font-size: 14px;
+    margin-right: 5px;
+}
+.shipdocviewdoc {
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    font-style: italic;
+    color: #0000FF;
+    width: 240px;
+}
+.shipdocviewdoc.editmode {
+    width: 213px;
+}
+.removeshipdoc {
+    font-size: 14px;
+    font-style: italic;
+    color: #FF0000;
+    cursor: pointer;
+}
+
+.shipotherparamsarea {
+    float: right;
+    margin-right: 8px;
+    margin-left: 6px; /* 16px; */
+    height: 18px;
+    /*width: 391px;*/
+}
+.shipotherparamsarea.multyship {
+    margin-left: 0;
+    margin-top: 4px;
 }
 .eventdate {
     float: left;
@@ -1040,8 +1236,8 @@ input.rushpastvalue.arrivelate {
 }
 .rushselectarea {
     float: left;
-    width: 223px;
-    margin-left: 114px;
+    /*width: 223px;*/
+    /*margin-left: 114px;*/
 }
 .rushselectarea.admin {
     margin-left: 0;
@@ -1051,21 +1247,36 @@ input.rushpastvalue.arrivelate {
     font-size: 12px;
     width: 65px;
     color:  #000000;
+    padding: 0;
+    margin-top: 3px;
 }
 .rushselectarea > .rushdataselect {
     float: left;
-    width: 148px;
+    /*width: 148px;*/
+    width: 170px;
+    margin-right: 14px;
+}
+.rushselectarea.multyship > .rushdataselect {
+    margin-right: 27px;
+    width: 158px;
 }
 select.shiprashselect {
     float: left;
     font-size: 11px;
     height: 19px;
     margin: 0 2px;
-    width: 145px;
+    /*width: 145px;*/
+    width: 173px;
+}
+.rushselectarea.multyship > .rushdataselect > select.shiprashselect {
+    width: 157px;
 }
 input.shiprushcost, input.shippingcost, input.salestaxcost {
     height: 18px;
     width: 45px;    
+}
+input.shiprushcost {
+    margin-left: 7px;
 }
 .ship_tax_container {
     float: left;
@@ -1084,7 +1295,8 @@ input.shiprushcost, input.shippingcost, input.salestaxcost {
     overflow-y: scroll;
     overflow-x: hidden;
     position: absolute;
-    width: 234px;    
+    width: 234px;
+    /*width: 239px;*/
 }
 .shipdetailsarea {    
     float: left;
@@ -1117,7 +1329,7 @@ input.shiprushcost, input.shippingcost, input.salestaxcost {
     width: 104px;
     height: 18px;
     font-size: 11px;
-    margin: 4px 0px 0px 6px;
+    margin: 4px 0 0 6px;
 }
 .shiprateshowarea {
     float: left;
@@ -1155,6 +1367,7 @@ input.shiprushcost, input.shippingcost, input.salestaxcost {
     clear: both;
     line-height: 20px;
     width: 100%;
+    padding-left: 4px;
 }
 .ship_tax_textarea {
     resize: none;
@@ -1201,10 +1414,11 @@ input.ship_tax_textareainpt {
 .ship_tax_cont_bl2 {
     float: left;
     margin-top: 5px;
-    width: 55px;
+    width: 64px; /* 55px; */
+    margin-left: -9px;
 }
 .ship_tax_cont_bl2.viewdata {
-    margin-left: 10px;
+    /*margin-left: 10px;*/
 }
 .ship_tax_cont_bl2 > .line {
     clear: both;
@@ -1213,28 +1427,35 @@ input.ship_tax_textareainpt {
 }
 .ship_tax_cont_bl2 > .line > .label {
     float: left;
-    font-size: 11px;
+    font-size: 10px;
     text-align: left;
-    width: 34px;
+    width: 49px; /* 34px; */
     color: #2E2E2E;
     font-weight: normal;
     white-space: unset!important;
+    line-height: 12px!important;
+    padding: 4px 0 0 2px;
 }
 .ship_tax_cont_bl2 > .line > .label.shipblind {
     /* line-height: 13px; */
     /* height: 28px; */
     /* opacity: 0.5; */
 }
-.ship_tax_cont_bl3 {
+.taxdataarea {
+    width: 301px;
     float: left;
+    margin-top: 2px;
+}
+.taxdataarea.noshipdocs {
+    margin-top: 21px; /* 15px; */
+}
+.ship_tax_cont_bl3 {
+    float: right;
     height: 17px;
     line-height: 17px;
-    margin-top: 33px;
-    /*width: 244px;*/
-    /*margin-left: 67px;*/
-    width: 266px;
-    margin-left: 40px;
-    text-align: right;
+    /*width: 266px;*/
+    /*margin-left: 40px;*/
+    /*text-align: right;*/
 }
 .taxlabel {
     color: #000d6e;
@@ -1339,8 +1560,13 @@ span.taxemptyview {
     /* margin-top: 5px; */
 }
 .bl_billing_tx {
-    /* margin-top: 20px; */
-    margin-top: 27px;
+    margin-top: 40px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_billing_content{
     float: left;
@@ -1516,34 +1742,48 @@ span.taxemptyview {
     margin-top: 5px;
 }
 .bl_pay_method_tx {
-    margin-top: 10px;
+    margin-top: 2px;
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    writing-mode: tb-rl;
+    transform: rotate(180deg);
+    text-transform: uppercase;
 }
 .bl_pay_method_content{
     float: left;
-    height: 113px;
+    /*height: 113px;*/
+    height: 88px;
     width: 341px;
 }
 .pay_method_content1{
     line-height: 18px;
 }
 .pay_method_content3{
-    margin-left: -13px;
+    /*margin-left: -13px;*/
     line-height: 18px;
     margin-top: 3px;
+    float: left;
+    width: 410px;
 }
-.pay_method_content2{
+.pay_method_content2 {
     float: left;
     width: 322px;
-    height: 63px;
+    height: 58px;
     border: 2px solid #000;    
     margin: 2px 0;
+}
+.pay_method_content2.preview {
+    height: 48px;
 }
 .pay_methods_area {
     clear: both;
     float: left;
-    height: 44px;
+    height: 38px;
     overflow-y: auto;
     width: 100%;
+    overflow-x: hidden;
+    scrollbar-width: none;
 }
 .pay_method_content1_line{
     float: left;
@@ -1641,13 +1881,14 @@ span.taxemptyview {
     font-size: 11px;
     height: 19px;
     margin: 0 0 0 3px;
-    width: 53px;
+    /*width: 53px;*/
+    width: 77px;
 }
 .pm_content3_tx1 {
     float: left;
     font-size: 9px;
     padding-left: 3px;
-    margin-top: -3px;
+    margin-top: -4px;
     line-height: 13px;
 }
 .pay_method_input5 {
@@ -1657,14 +1898,21 @@ span.taxemptyview {
 }
 .bl_payments {
     float: left;
-    margin-top: 5px;
+    margin-top: -12px;
     margin-left: -9px;
+    width: 202px;
 }
 .bl_payments > .bl_tx {
-    margin-left: -4px;
+    margin-left: 0;
+    width: 100%;
 }
 .bl_payments_tx {
-    margin-top: 18px;
+    /*margin-top: -10px;*/
+    color: #0000FF;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    text-align: center;
 }
 .bl_payments_content{
     border: 2px solid #000;
@@ -1693,10 +1941,12 @@ span.taxemptyview {
 }
 .payments_table{
     float: left;
-    max-height: 65px;
+    /*max-height: 65px;*/
+    max-height: 50px;
     min-height: 16px;
     overflow-y: auto;
     width: 195px;
+    scrollbar-width: none;
 }
 .payments_date {
     float: left;
@@ -1734,16 +1984,13 @@ span.taxemptyview {
 }
 .block_6 {
     float: left;
-    /* background-image: url(/img/leadorder/bacgr_5.png);
-    background-repeat: no-repeat; */
     border: 1px solid #000000;
     border-radius: 5px;
     background-color: #ffffff;
     width: 154px;
-    /* height: 726px; */
-    height: 654px;
-    /* margin-left: -2px; */
+    /*height: 654px;*/
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
+    height: 640px;
 }
 .block_6_generalnotes, .block_6_update, .block_6_history {
     float: left;
@@ -1769,14 +2016,15 @@ span.taxemptyview {
 }
 .block_6_historytext {
     /* height: 357px; */
-    height: 278px;
+    /*height: 278px;*/
+    height: 261px;
     margin-left: 5px;
     overflow-y: auto;
     width: 143px;
 }
 .block_6_historytext.previewmode {
-    /* height: 527px; */
-    height: 453px;
+    /*height: 453px;*/
+    height: 439px;
 }
 .history_day {
     height: 18px;
@@ -1804,22 +2052,19 @@ span.taxemptyview {
 }
 .block_7 {
     float: left;
-    /* background-image: url(/img/leadorder/bacgr_7.png);
-    background-repeat: no-repeat;
-     */
     background-color: #ffffff;
     border: 1px solid #0e7600;
     border-radius: 5px;
     width: 253px;
     box-shadow: 0.3em 0.3em 6px rgb(0 0 0 / 50%);
-    /* height: 761px; */
-    height: 654px;
+    /*height: 654px;*/
+    height: 639px;
     margin-left: -2px;
 }
 .block_7_artwork {
     float: left;
     width: 254px;
-    padding: 5px 0px 0px 5px;
+    padding: 5px 0 0 5px;
 }
 .block_7_artwork_line {
     float: left;
@@ -1849,7 +2094,7 @@ span.taxemptyview {
 }
 .block_7_artwork1 {
     float: right;
-    padding: 0px 12px 0px 0px;
+    padding: 0 12px 0 0;
 }
 .block_7_artwork2 {
     float: left;
@@ -1879,14 +2124,15 @@ span.taxemptyview {
 .block_7_art {
     float: left;
     width: 254px;
-    padding: 5px 0px 0px 5px;
+    padding: 5px 0 0 5px;
+    margin-top: -10px;
 }
 .block_7_art1 {
     float: left;
     overflow-y: auto;
     width: 239px;
-    /* height: 120px; */
-    height: 102px;
+    /*height: 102px;*/
+    height: 92px;
     margin-left: 2px;
 }
 .blankorderlogos {
@@ -1900,7 +2146,7 @@ span.taxemptyview {
 }
 .art_line1 {
     float: left;
-    margin: 1px 0px;
+    margin: 1px 0;
 }
 .art_line1.vectorised {
     background: url('/img/leadorder/bacgr_11_1.png') no-repeat transparent;    
@@ -1964,7 +2210,7 @@ span.taxemptyview {
     margin-left: 5px;    
     width: 59px;
 }
-.art_block1 > .label {
+.art_block1 > .artlocationlabel {
     float: left;
     width: 28px;    
 }
@@ -2030,11 +2276,11 @@ input.artrepeat {
 .block_7_proofs {
     float: left;
     width: 254px;
-    padding: 5px 0px 0px 5px;
+    padding: 5px 0 0 5px;
 }
 .block_7_proofs_text {
     float: right;
-    padding: 2px 10px 0px 0px;
+    padding: 2px 10px 0 0;
     font-size: 11px;
 }
 .block_7_proofs1 {
@@ -2046,7 +2292,7 @@ input.artrepeat {
 .block_7_proofs1_scrool {
     /* border-bottom: 1px solid rgb(62, 62, 62); */
     /* height: 154px; */
-    height: 139px;
+    height: 136px;
     overflow-x: auto;
 }
 .proofs_line1 {
@@ -2161,12 +2407,13 @@ input.artrepeat {
 }
 .block_8bottom_text1 {
     float: left;
-    padding-left: 5px;    
+    padding-left: 7px;
 }
 .block_8_text2 {
-    float: left;
+    float: right!important;
     text-align: right;
-    width: 70px;
+    /* width: 70px; */
+    padding-right: 8px;
 }
 .block_8_text3 {
     float: right;
@@ -2175,19 +2422,23 @@ input.artrepeat {
     width: 97px;
 }
 .block_9 {
-    background-image: url("/img/leadorder/bacgr_10.png");
-    background-repeat: no-repeat;
+    /*background-image: url("/img/leadorder/bacgr_10.png");*/
+    /*background-repeat: no-repeat;*/
+    background: #c59d51;
+    border: 1px solid #0b0b0b;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 4px;
     float: left;
-    height: 34px;
+    height: 24px; /* 34px; */
     margin-top: -5px;
     padding-left: 7px;
-    width: 159px;
+    width: 197px; /* 159px; */
 }
 .block_9_text {
     float: left;
-    line-height: 33px;
+    line-height: 24px; /* 33px; */
     text-align: center;
-    width: 145px;
+    width: 100%; /* 145px; */
 }
 .block_10 {
     float: left;
@@ -2195,7 +2446,7 @@ input.artrepeat {
     line-height: 22px;
     /* width: 126px; */
     border-radius: 7px;
-    margin-top: 7px;
+    /*margin-top: 7px;*/
     border: 1px solid #000000;
     cursor: pointer;
 }
@@ -2206,8 +2457,8 @@ input.artrepeat {
     /* background: url('/img/leadorder/bacgr_6_project.png') no-repeat transparent; */
     background-color: #001072;
     color: #FFFFEE;
-    height: 36px;
-    line-height: 36px;
+    /*height: 36px;*/
+    /*line-height: 36px;*/
     margin-top: 0;
 }
 .block_10.black {
@@ -2236,6 +2487,8 @@ input.artrepeat {
     text-align: right;
     padding-right: 5px;
     width: 83px;
+    height: 23px;
+    line-height: 22px;
 }
 /*.block_10_text_project {*/
 /*    float: left;    */
@@ -2249,22 +2502,24 @@ input.artrepeat {
     width: 60px;
 }
 .block_10.project .block_10_text2 {
-    border-left: none;
-    width: 106px;
+    width: 176px;
 }
 .block_10.project .block_10_text2 > .detailsproject {
-    width: 100%;
+    float: left;
+    width: 80px;
     text-align: left;
-    height: 18px;
-    line-height: 18px;
+    height: 23px;
+    line-height: 22px;
     font-size: 14px;
     padding-left: 5px;
 }
 .block_10.project .block_10_text2 > .detailscomplet {
-    width: 100%;
+    border-left: 1px solid;
+    float: left;
+    width: 87px;
     text-align: left;
-    height: 14px;
-    line-height: 14px;
+    height: 23px;
+    line-height: 22px;
     font-size: 11px;
     padding-left: 5px;
 }
@@ -2347,7 +2602,7 @@ input.artrepeat {
     background-repeat: no-repeat;
     width: 125px;
     height: 29px;
-    margin: 2px 0px 0px;
+    margin: 2px 0 0;
     padding-top: 2px;
 }
 .button_newart_text {
@@ -2362,7 +2617,7 @@ input.artrepeat {
     /* background: url(/img/leadorder/button_email.png) no-repeat transparent; */
     width: 64px;
     height: 27px;
-    margin: 2px 0px 0px;
+    margin: 2px 0 0;
     padding-top: 1px;    
     cursor: pointer;
 }
@@ -2380,7 +2635,7 @@ input.artrepeat {
     background-repeat: no-repeat;
     width: 64px;
     height: 27px;
-    margin: 2px 0px 0px;
+    margin: 2px 0 0;
     padding-top: 1px;
     cursor: pointer;
 }
@@ -2419,11 +2674,11 @@ input.artrepeat {
     margin-top: 2px;
 }
 .button_no_text {
-    line-height: 16px;
+    line-height: 18px;
     text-align: center;
     font-size: 12px;
     color: #fff;
-    width: 32px;
+    width: 31px;
 }
 .icon_file {
     background: url(/img/leadorder/icon_file.png) no-repeat transparent;
@@ -2447,6 +2702,44 @@ input.artrepeat {
 }
 .empty_icon_file.active {
     cursor: pointer;
+}
+.icon_link_checkout {
+    height: 22px;
+    float: left;
+    width: 22px;
+    cursor: pointer;
+    text-align: center;
+    border-right: 1px solid #5e5e5e;
+}
+.icon_link_checkout img {
+    width: 12px;
+    height: auto;
+    opacity: 0.5;
+}
+.icon_link_checkout:hover {
+    background: #73510d;
+}
+.icon_link_checkout:hover img {
+    opacity: 1;
+}
+.sendcheckoutnotification {
+    height: 22px;
+    float: left;
+    width: 28px;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 14px;
+    text-align: center;
+    border-right: 1px solid #5e5e5e;
+}
+.sendcheckoutnotification i {
+    opacity: 0.5;
+}
+.sendcheckoutnotification:hover {
+    background: #73510d;
+}
+.sendcheckoutnotification:hover i {
+    opacity: 1;
 }
 .discountdescript.empty_icon_file,
 .discountdescript.icon_file {
@@ -2504,14 +2797,19 @@ input.artrepeat {
 .marglef .bottomfinancearea {
     float: right!important;
     margin-right: 26px;
+    margin-top: -4px;
+}
+.marglef .bottomfinancearea.paiddataview {
+    margin-right: 39px; /* 26px; */
+    margin-top: 0; /* -4px; */
 }
 .shippingdataviewarea {
     float: right !important;
 }
 .totalduedataviewarea {
     float: left;
-    width: 160px;
-    margin-top: 6px;
+    width: 180px;
+    margin-top: 3px;
 }
 /* System Switcher */
 .orderssystemswitch {
@@ -3615,7 +3913,7 @@ textarea.proofrequestnotes {
     line-height: 27px;
 }
 .multishipsubtitle > .eventdate {
-    width: 107px;
+    width: 102px; /* 107px; */
     margin-right: 7px;
     text-align: right;    
 }
@@ -3628,7 +3926,7 @@ textarea.proofrequestnotes {
 }
 .multishipsubtitle > .rushdataselect {
     padding-top: 4px;
-    width: 152px;
+    width: 172px; /* 152px; */
 }
 .multishipsubtitle > .rushpricevalue {
      padding-top: 4px;
@@ -3706,7 +4004,8 @@ input.shipaddrqty {
 }
 .multishipadressdatarow .shipdetailsarea {
     margin-top: -124px;
-    margin-left: 255px;
+    /*margin-left: 255px;*/
+    float: right!important;
 }
 .multishipadressdatarow .shipdetailsarea > .labeltax {
     margin-top: 6px;
@@ -3793,7 +4092,7 @@ input.shipaddrqty {
     background-color: #bcbfff;
     border-radius: 7px;
     border: 2px solid #000;
-    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0 10px 20px, rgba(0, 0, 0, 0.23) 0 6px 6px;
 }
 .manualpayment div {
     font-size: 11px;
@@ -3910,7 +4209,7 @@ input.paydatadetails.payamount {
 }
 /* Proof Request POPUP */
 .requestpopuparea {
-    background: url('/img/onlineprofrequest/popup_bg.png') no-repeat transparent;
+    /*background: url('/img/onlineprofrequest/popup_bg.png') no-repeat transparent;*/
     height: 787px;
     width: 506px;
 }
@@ -3926,7 +4225,7 @@ input.paydatadetails.payamount {
     padding-left: 3px;
 }
 .requestpopuparea > .requestdetails  {
-    background: url('/img/onlineprofrequest/requestdata_bg.png') no-repeat transparent;
+    /*background: url('/img/onlineprofrequest/requestdata_bg.png') no-repeat transparent;*/
     margin-top: 10px;
     margin-left: 10px;
     padding-top: 5px;
@@ -4003,8 +4302,8 @@ a.historydetailsview {
 /* Update Details */
 .updatehistorydetailsarea {
     background-color: #FFFFFF;
-    -webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
+    /*-webkit-border-radius: 15px;*/
+    /*-moz-border-radius: 15px;*/
     border-radius: 15px;
     padding: 15px;
     border: 1px dotted #000;
@@ -4122,7 +4421,7 @@ a.historydetailsview {
     width: 27px;
 }
 .chargeattemptlogarea > .tablehead > .response {
-    width: 327px;
+    width: 335px;
 }
 .chargeattemptlogarea > .tablebody {
     width: 100%;    
@@ -4157,13 +4456,18 @@ a.historydetailsview {
     width: 27px;
 }
 .chargeattemptlogarea > .tablebody > .tabledatarow > .response {
-    /* width: 122px; */
+    width: 327px;
+    word-wrap: break-word;
+    text-align: left;
+    height: auto;
 }
 .chargeattemptlogarea > .tablebody > .tabledatarow > .response.error {
     color: #FF0000;
 }
 .chargeattemptlogarea > .tablebody > .tabledatarow > .response.success {
     color: #008000;
+    font-weight: 600;
+    text-align: center;
 }
 /* COG Details Popup */
 .orderamountdetailsarea {
@@ -4418,12 +4722,11 @@ a.historydetailsview {
 /* Confirm new shipcost */
 .confirmshipcost_container {
     background-color: #FFFFFF;
-    -webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
+    /*-webkit-border-radius: 15px;*/
+    /*-moz-border-radius: 15px;*/
     border-radius: 15px;
     padding: 15px;
     min-height: 97px;
-    padding: 15px;
     width: 410px;    
 }
 .confirmshipcost_container div {
@@ -5718,9 +6021,12 @@ input.ticket_date {
 .trackingdataarea {
     background: #FFFFFF;
     width: 412px;
-    height: 150px;
-    margin-top: -120px;
+    /*height: 150px;*/
+    margin-top: -93px;
     border-radius: 7px;
+}
+.trackingdataarea.empty {
+    background: none;
 }
 .trackingdataarea div {
     float: left;
@@ -5779,6 +6085,7 @@ input.ticket_date {
     font-style: italic;
     width: 100%;
     margin-bottom: -24px;
+    display: none;
 }
 .trackingdatafooter .trackshippeddata.completed {
     color: #000000;
@@ -5801,7 +6108,8 @@ input.ticket_date {
     width: 100%;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
-    height: 102px;
+    /*height: 102px;*/
+    height: 86px;
 }
 .trackingdatabodyarea {
     width: 100%;
@@ -5904,11 +6212,13 @@ input.ticket_date {
 }
 /* Multi item tracks */
 .multitrackbodyarea {
-    max-height: 126px;
+    /*max-height: 126px;*/
+    max-height: 94px;
     overflow-y: auto;
 }
 .multitrackdatabody {
-    min-height: 39px;
+    /*min-height: 39px;*/
+    min-height: 22px;
     background: #FFFFFF;
     padding: 5px;
     width: 100%;
@@ -5925,6 +6235,7 @@ input.ticket_date {
     font-style: italic;
     width: 100%;
     margin-bottom: 3px;
+    display: none;
 }
 .multitrackdatabody .multitrackshipped.completed {
     color: #000000;
@@ -6422,4 +6733,293 @@ div.trackservicelnk > input {
 /*}*/
 .profitdetails_tooltip .qtip-content {
     padding: 0!important;
+}
+/* Invite Checkout Email */
+.sendcheckoutnotificationarea {
+    position: absolute;
+    left: 15px;
+    bottom: 20px;
+    display: none;
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    z-index: 3;
+}
+.sendcheckoutnotificationclosewin {
+    position: absolute;
+    right: -10px;
+    top: -12px;
+    border: 1px solid #2a2a2a;
+    background: #e20000;
+    background: linear-gradient(to top, #c60000, #ff0000);
+    color: #fff;
+    font-weight: 900;
+    width: 29px;
+    height: 29px;
+    line-height: 25px;
+    font-size: 17px;
+    text-align: center;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.sendcheckoutnotificationclosewin svg {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    top: 2.5px;
+    fill: #fff;
+}
+.invitecheckout_content {
+    clear: both;
+    float: left;
+    margin: 10px 20px 10px 20px;
+    width: 488px;
+}
+.invitecheckout_content div {
+    float: left;
+}
+.invitecheckout_header {
+    width: 100%;
+}
+.lined-heading {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #000;
+}
+.lined-heading::before,
+.lined-heading::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background-color: #000000;
+}
+.lined-heading::before {
+    margin-right: 15px;
+}
+.lined-heading::after {
+    margin-left: 15px;
+}
+.securepaymenttitle {
+    position: relative;
+    top: -1px;
+}
+.invitecheckout_row {
+    text-align: left;
+    margin-bottom: 11px;
+    width: 100%;
+}
+.invitecheckout_label {
+    color: #000000;
+    float: left;
+    font-size: 15px;
+    padding-top: 4px;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 5px;
+}
+.invitecheckout_data {
+    float: left;
+    width: 100%;
+}
+input.invitecheckout_input {
+    float: left;
+    border: 1px solid #dadce5;
+    border-radius: 4px;
+    color: #000;
+    font-size: 16px !important;
+    padding: 10px 5px 10px 10px;
+    width: 100%;
+}
+.invitecheckout_send {
+    border-radius: 4px;
+    border: 1px solid #15801c;
+    background: #1dac21;
+    background: linear-gradient(to top, #1b9424, #1fc11e);
+    width: 95px;
+    text-align: center;
+    float: right!important;
+    color: #ffffff;
+    font-size: 22px;
+    height: 35px;
+    line-height: 33px;
+    cursor: pointer;
+    font-weight: 600;
+}
+/* Paid area */
+.blockduedataarea {
+    width: 215px;
+    height: 25px;
+    line-height: 22px;
+    background: #192119;
+    background: linear-gradient(to top, #020602, #3e3f3e);
+    border: 1px solid #342e23;
+    border-radius: 5px;
+    padding: 0 7px 0 0;
+    color: #fff;
+    margin-left: -23px;
+}
+.blockduenegative {
+    width: 177px;
+    height: 25px;
+    line-height: 22px;
+    background: #192119;
+    background: linear-gradient(to top, #020602, #3e3f3e);
+    border: 1px solid #342e23;
+    border-radius: 5px;
+    padding: 0 7px;
+    color: #fff;
+
+}
+/* Art POP up part */
+#artNextModal .modal-body {
+    float: left;
+}
+#artNextModal .prpopup-contant {
+    width: 100%;
+    background: #ebeaea;
+    background: linear-gradient(to top, #e2e1e1, #eeeded);
+    border-radius: 0 0 5px 5px;
+    padding: 0 14px;
+}
+#artNextModal .modal-prpopups .modal-body {
+    padding: 0;
+}
+#artNextModal button.closemodal {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid #000;
+    background: #ff0000;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    opacity: 1;
+    z-index: 1;
+    font-size: 20px;
+    line-height: 18px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+    padding: 0;
+}
+#artNextModal .modal-prpopups h5.modal-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+}
+#artNextModal .prpopup-footer {
+    width: 100%;
+    padding: 10px 0;
+    float: left;
+}
+#artNextModal .prpopup-bluebtn {
+    width: auto;
+    height: 30px;
+    line-height: 28px;
+    background: #5b5afe;
+    background: linear-gradient(to top, #4c4bfe, #6664fe);
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #1a1b70;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+    padding: 0 15px;
+}
+#artNextModal .prpopuptext-save {
+    float: right !important;
+    margin-right: 14px;
+}
+
+#artNextModal .prpopup-textbox {
+    width: 100%;
+}
+#artNextModal .prpopup-textbox textarea {
+    height: 165px;
+    /*width: 100%;*/
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 14px;
+    resize: none;
+    width: 413px;
+}
+#artNextModal .modal-footer {
+    padding: 0!important;
+}
+/* Fonts */
+#artNextModal .prp-fonttext {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+#artNextModal .prpopup-fontsarea {
+    width: 100%;
+    height: 475px;
+    overflow-y: auto;
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 5px 0;
+    background: #fff;
+    margin-top: 7px;
+    scrollbar-width: none;
+}
+#artNextModal .prpopup-fontsarea h5 {
+    float: left;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 600;
+    margin: 8px 0;
+}
+#artNextModal .prpopupcolors-btn {
+    margin: 0 175px;
+}
+#artNextModal .tbl-fontslist {
+    width: 100%;
+    padding: 0 10px;
+}
+#artNextModal .tblfontslist-tr {
+    width: 100%;
+    margin-bottom: 7px;
+    float: left;
+}
+#artNextModal .tblfontslist-td {
+    /*border: 1px solid #dfdfdf;*/
+    float: left;
+}
+#artNextModal .td-fontinpt {
+    width: 20px;
+    text-align: right;
+    padding-right: 3px;
+}
+#artNextModal .td-fontinpt input {
+    margin: 6px 0 0 0 !important;
+    height: 12px;
+    width: 12px;
+}
+#artNextModal .verrypopular .td-fontbox {
+    width: 125px;
+    padding: 0 7px;
+}
+#artNextModal .otherpopular .td-fontbox {
+    width: 202px;
+    padding: 0 7px;
+}
+#artNextModal .fontbox {
+    height: 20px;
+}
+#artNextModal .fontbox img {
+    width: 100%;
+    height: auto;
+    max-height: 16px;
 }

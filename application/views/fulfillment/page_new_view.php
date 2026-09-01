@@ -1,5 +1,10 @@
 <?=$menu_view?>
 <div class="contentdata_view">
+    <div class="datarow">
+        <div class="pagemenurow <?=$brandclass?>" style="display: <?=$showhidemenu==1 ? 'block' : 'none'?>">
+            <div class="linkshowmainmenu"><i class="fa fa-chevron-down"></i> Open Menu</div>
+        </div>
+    </div>
     <?php if (isset($vendorsview)) { ?>
         <div class="fulfillcontentarea" id="vendorsview" style="display: none;"><?=$vendorsview?></div>
     <?php } ?>
@@ -29,5 +34,8 @@
     <?php } ?>
     <?php if (isset($sritemsview)) { ?>
         <div class="fulfillcontentarea" id="sritemsview" style="display: none;"><?=$sritemsview?></div>
+    <?php } ?>
+    <?php if (isset($printcalendarview)) { ?>
+        <div class="fulfillcontentarea" id="printcalendarview" style="display: none;"><?=$printcalendarview?></div>
     <?php } ?>
 </div>

@@ -192,6 +192,7 @@ class Leads extends My_Controller {
             'scripts' => $head['scripts'],
             'gmaps' => $gmaps,
             'brand' => $brand,
+            'showhidemenu' => 0,
         ];
         if (isset($head['outscripts'])) {
             $options['outscripts'] = $head['outscripts'];
@@ -209,6 +210,8 @@ class Leads extends My_Controller {
             'webquestions' => $newwebquest,
         ];
         $content_options['menu_view'] = $this->load->view('leads/submenu_view', $menuoptions , TRUE);
+        $content_options['showhidemenu'] = 0;
+        $content_options['brandclass'] = $brandclass;
         $content_view = $this->load->view('leads/page_new_view', $content_options, TRUE);
         $dat['content_view'] = $content_view;
         $dat['modal_view'] = $this->load->view('leads/modal_view', [], TRUE);
@@ -333,8 +336,26 @@ class Leads extends My_Controller {
             $brand = ifset($postdata,'brand');
             if (!empty($brand)) {
                 $error = '';
-                // $sort = ifset($postdata,'sorttime',1);
-                $newleads = [];
+                $pagenum = ifset($postdata, 'offset',0);
+                $limit = ifset($postdata, 'limit', 250);
+                $offset = $pagenum*$limit;
+                $options=[
+                    'brand' => $brand,
+                ];
+                $search = ifset($postdata,'search');
+                if (!empty($search)) {
+                    $options['search']=$search;
+                }
+//                $usrrepl = ifset($postdata, 'userrepl');
+//                if (!empty($usrrepl)) {
+//                    $options['usrrepl']=$usrrepl;
+//                }
+                $options['showcloded'] = ifset($postdata, 'showcloded',0);
+                $sort = ifset($postdata,'sorttime',1);
+                $this->load->model('leads_model');
+                $newleads = $this->leads_model->get_unsignleads($options,$sort,$limit,$offset);
+
+                // $newleads = [];
                 if (count($newleads)==0) {
                     $mdata['content'] = $this->load->view('leads/leads_emptydata_view', [], TRUE);
                 } else {
@@ -1966,7 +1987,6 @@ class Leads extends My_Controller {
         $datqs['total_rec']=$this->artproof_model->get_count_proofs($search);
         $content=$this->load->view('artrequest/page_view',$datqs,TRUE);
         return $content;
-
     }
 
     private function _prepare_questionslist_view($brand) {
@@ -1985,7 +2005,6 @@ class Leads extends My_Controller {
 
         $content=$this->load->view('leads/questions_view',$datqs,TRUE);
         return $content;
-
     }
 
     private function _prepare_attempts_view($brand) {
@@ -2017,7 +2036,6 @@ class Leads extends My_Controller {
 
         $content=$this->load->view('customsbforms/customform_view',$datqs,TRUE);
         return $content;
-
     }
 
     private function _prepare_leadquotes_view($brand) {
@@ -2088,7 +2106,6 @@ class Leads extends My_Controller {
         $view_options['bottom_view']=$this->load->view('accounting/admin_bottom_view',array('year'=>$years,'orders_cnttotal'=>$orders_cnttotal),TRUE);
 
         $content=$this->load->view('customorders/head_view',$view_options,TRUE);
-
         return $content;
     }
 
@@ -2184,6 +2201,28 @@ class Leads extends My_Controller {
                 $res = $this->customform_model->get_customform_monthchart($brand);
                 $mdata['data'] = $res['data'];
                 $mdata['labels'] = $res['labels'];
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function unassignlead_interest()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = '';
+            $postdata = $this->input->post();
+            $brand = ifset($postdata, 'brand', 'ALL');
+            $showall = ifset($postdata, 'showall', 1);
+            $this->load->model('leads_model');
+            $data = $this->leads_model->get_unassignleads_interest($brand, $showall);
+            $mdata['cntrec'] = count($data);
+            $mdata['total'] = QTYOutput($mdata['cntrec']).' New';
+            if ($mdata['cntrec'] == 0) {
+                $mdata['content'] = $this->load->view('leadsview/interest_empty_view',[], TRUE);
+            } else {
+                $mdata['content'] = $this->load->view('leadsview/interest_unsignleads_view',['leads' => $data],TRUE);
             }
             $this->ajaxResponse($mdata, $error);
         }

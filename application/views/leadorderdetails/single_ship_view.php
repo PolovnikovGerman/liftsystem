@@ -47,14 +47,50 @@
             <div class="ship_tax_cont_bl2 viewdata">
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['resident']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" disabled="disabled" style="float: left;"/>
-                    <div class="label <?=$shipadr['resident']==1 ? '' : 'shipblind'?>" id="residentlabel">Resd</div>
+                    <div class="label <?=$shipadr['resident']==1 ? '' : 'shipblind'?>" id="residentlabel" title="Residential">Resident</div>
                 </div>
                 <div class="line">
                     <input type="checkbox" <?=$shipadr['ship_blind']==1 ? 'checked="checked"' : ''?> class="input_checkbox shipadrchk" disabled="disabled" style="float: left;"/>
                     <div class="label <?=$shipadr['ship_blind']==1 ? '' : 'shipblind'?>" id="shblindlabel">Ship Blind</div>                    
                 </div>
+                <div class="line">
+                    <div class="shipdocs_label">
+                        Ship Docs
+                        <?php if (count($shipdocs) > 0) : ?>
+                            <div class="shipdocview">
+                                <div class="shipdocscloseview">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 847 847" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd"><g><path class="btn-closemodal-svg" d="M423 592l-196 196c-110,111 -279,-58 -169,-169l196 -196 -196 -196c-110,-110 59,-279 169,-169l196 196 196 -196c111,-110 280,59 169,169l-196 196 196 196c111,111 -58,280 -169,169l-196 -196z"></path></g></svg>
+                                </div>
+                                <div class="datarow">
+                                    <div class="shipdocviewtitle"><?=count($shipdocs)?> ship docs</div>
+                                </div>
+                                <div class="shipdocviewarea">
+                                    <?php $numpp = 1;?>
+                                    <?php foreach ($shipdocs as $shipdoc) : ?>
+                                        <div class="datarow">
+                                            <div class="shipdocnumpp"><?=$numpp?></div>
+                                            <div class="shipdocviewdoc truncateoverflowtext" data-link="<?=$shipdoc['shipdoc_link']?>"
+                                                 data-source="<?=$shipdoc['shipdoc_src']?>"><?=$shipdoc['shipdoc_src']?></div>
+                                        </div>
+                                        <?php $numpp++;?>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php if (count($shipdocs) > 0) : ?>
+                    <div class="line">
+                        <div class="shipdocs_link">
+                            <i class="fa fa-file-text-o"></i>
+                            <span><?=count($shipdocs)?> files</span>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
-            <div class="ship_tax_cont_bl3"><?=$taxview?></div>
+            <div class="taxdataarea <?=(count($shipdocs)==0) ? 'noshipdocs' : ''?>">
+                <div class="ship_tax_cont_bl3"><?=$taxview?></div>
+            </div>
         </div>
         <div class="ship_tax_container2" data-shipadr="<?=$shipadr['order_shipaddr_id']?>">                    
             <?= $shipcostview ?>

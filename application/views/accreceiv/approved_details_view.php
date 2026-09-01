@@ -41,7 +41,7 @@
             <?php if ($brand=='all') : ?>
                 <div class="accreceiv-owndetails-bodybrand <?=$own['brand']=='SR' ? 'stressrelievers' : 'bluetrack'?>"><?=$own['brand']?></div>
             <?php endif; ?>
-            <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>"><?=$own['order_num']?></div>
+            <div class="accreceiv-owndetails-bodyorder" data-order="<?=$own['order_id']?>" data-ordertype="approved"><?=$own['order_num']?></div>
             <div class="accreceiv-owndetails-bodyconfirm"><?=$own['order_confirm']?></div>
             <?php if ($brand=='sr') : ?>
                 <div class="accreceiv-owndetails-bodyponumber" title="<?=$own['customer_ponum']?>"><?=$own['customer_ponum']?></div>

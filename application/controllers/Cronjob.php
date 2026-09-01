@@ -1096,4 +1096,15 @@ Class Cronjob extends CI_Controller
         $this->orders_model->daily_orders_report();
         return true;
     }
+
+    public function customquote_transform() {
+        $this->load->model('customform_model');
+        $this->customform_model->customquote_transform();
+    }
+
+    public function fix_geoipdata()
+    {
+        $this->load->model('seo_model');
+        $this->seo_model->fix_emptygeodata();
+    }
 }
