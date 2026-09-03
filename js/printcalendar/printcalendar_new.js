@@ -412,11 +412,13 @@ function init_printdate_details(printdate) {
             if (parseInt(smallview)==1) {
                 $(".todayblock").hide();
                 $(".simpltodayblock").show();
+                $("#regularview-full").empty();
                 $("#regularview-short").empty().html(response.data.content);
                 $("#historyview-short").empty().html(response.data.historyview);
             } else {
                 $(".simpltodayblock").hide()
                 $(".todayblock").show();
+                $("#regularview-short").empty();
                 $("#regularview-full").empty().html(response.data.content);
                 $("#historyview-full").empty().html(response.data.historyview);
             }
