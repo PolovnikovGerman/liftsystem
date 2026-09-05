@@ -487,11 +487,12 @@ function edit_order(order) {
     params.push({name: 'brand', value: brand});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artModalLabel").empty().html(response.data.header);
-            $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").find('div.modal-dialog').css('width','1004px');
-            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
-            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // $("#modalLeadOrderLabel").empty().html(response.data.header);
+            $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
+            $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
+            // $("#artModal").find('div.modal-dialog').css('width','1004px');
+            $("#modalLeadOrder").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+            $("#modalLeadOrder").modal({backdrop: 'static', keyboard: false, show: true});
             if (parseInt(order)==0) {
                 init_onlineleadorder_edit();
                 init_rushpast();
