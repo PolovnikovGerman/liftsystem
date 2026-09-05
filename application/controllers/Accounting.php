@@ -107,10 +107,13 @@ class Accounting extends MY_Controller
         /*Google Chart */
         $head['scripts'][]=array('src'=>"https://www.gstatic.com/charts/loader.js");
         // Order popup
-        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
-        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+//        $head['styles'][]=array('style'=>'/css/leadorder/popup.css');
+//        $head['scripts'][]=array('src'=>'/js/leads/leadorderpopup.js');
+        $head['styles'][]=array('style'=>'/css/leadorder/popup_rebrand.css');
+        $head['scripts'][]=array('src' => '/js/leadorder/popup_rebrand.js');
         if ($gmaps==1) {
-            $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+            // $head['scripts'][]=array('src'=>'/js/leads/order_address.js');
+            $head['scripts'][]=array('src'=>'/js/leadorder/order_address.js');
         }
         // Uploader
         $head['scripts'][]=array('src'=>'/js/adminpage/fileuploader.js');

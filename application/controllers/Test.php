@@ -5549,18 +5549,13 @@ class Test extends CI_Controller
         }
     }
 
-    public function artsubmit_number()
+    public function paymentsreport()
     {
-        $emails = $this->db->select('*')->from('ts_emails')->where('email_type', 'Art_Submit')->where('proof_num is null')->get()->result_array();
-        $this->load->model('leads_model');
-        foreach ($emails as $email) {
-            $newnum = $this->leads_model->get_new_proofnum($email['brand']);
-            echo $newnum.PHP_EOL;
-            $proofupd = strtotime($email['email_date']);
-            $this->db->where('email_id', $email['email_id']);
-            $this->db->set('proof_num', $newnum);
-            $this->db->set('proof_updated', $proofupd);
-            $this->db->update('ts_emails');
-        }
+        $this->load->model('batches_model');
+        $payments = $this->batches_model->create_payments_report();
+        // Send to new table
+        $this->load->model('exportexcell_model');
+        $res = $this->exportexcell_model->payments_report($payments);
+        echo 'Report '.$res.' ready'.PHP_EOL;
     }
 }

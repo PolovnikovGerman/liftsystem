@@ -24,7 +24,21 @@ class Leadorder extends MY_Controller
     {
     }
 
-    public function leadorder_change() {
+    public function leadorder_change()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $content = $this->load->view('leadordernew/page_view', [], true);
+            $mdata['content'] = $content;
+            $header = $this->load->view('leadordernew/header_view', $mdata, true);
+            $mdata['header'] = $header;
+            $mdata['cancelorder'] = 0;
+            $this->ajaxResponse($mdata, '');
+        }
+        show_404();
+    }
+
+    public function leadorder_change_old() {
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
