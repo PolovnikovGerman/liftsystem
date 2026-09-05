@@ -263,7 +263,7 @@
 
 
 .ordblock_artapproval .ordblock_body {
-    height: 362pxpx;
+    height: 362px;
 }
 .ordblock_details .ordblock_body {
     height: 642px;
@@ -274,14 +274,14 @@
 .orddtls_dates {
     width: 100%;
     background: #0000FF;
-    height: 22px;
+    height: auto;
     padding: 4px 0;
 }
 .ord_datetitle {
     font-size: 11px;
     font-weight: bold;
     color: #fff;
-    line-height: 26px;
+    line-height: 20px;
 }
 .ord_datebox {
     height: 20px;
@@ -323,7 +323,6 @@
     font-size: 15px;
     font-weight: bold;
     text-align: right;
-    font-weight: bold;
     line-height: 24px;
     color: #fff;
 }
@@ -383,8 +382,8 @@
 }
 .orddtls_historybox {
     border: 1px solid #BCBBBB;
-    height: 85px;
-    /*width: 212px;*/
+    height: 75px;
+    /* width: 212px; */
     width: 195px;
     font-size: 10px;
     overflow-y: auto;
@@ -570,7 +569,7 @@
     margin-right: 20px;
 }
 .itemsfooter_message label  {
-    font-size: 11px;
+    font-size: 10px;
 }
 .itemsfooter_message textarea {
     width: 174px;
@@ -585,7 +584,8 @@
 }
 .inpts_row {
     width: 100%;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
+    height: 15px;
 }
 .itemsfooter_inpts input {
     width: 187px;
@@ -615,7 +615,7 @@
     text-align: right;
     padding: 0 5px;
     font-size: 11px;
-    margin-bottom: 2px;
+    margin-top: 2px;
 }
 .item_subtotal {
     width: 100%;
@@ -709,12 +709,12 @@
 }
 .shiptax_bodyleft {
     position: relative;
-    width: 174px;
-    padding-left: 7px;
+    width: 162px;
+    padding-left: 5px;
 }
 .shiptax_bodyright {
     float: right !important;
-    width: 328px;
+    width: 327px;
 }
 .shiptax_topright {
     width: 327px;
@@ -723,6 +723,7 @@
     position: relative;
     top: -1px;
     right: -2px;
+    float: right !important;
 }
 .shiptax_bottomright {
     width: 327px;
@@ -785,7 +786,7 @@
 }
 .select_addressarea {
     float: left;
-    width: calc(100% - 4px);
+    /*width: calc(100% - 4px);*/
     border-left: none !important;
     border-top: none !important;
     border-right: none !important;
@@ -812,7 +813,7 @@
     border: 1px solid #95939E;
     background: #fff;
     font-size: 10px;
-    line-height: 14pxs;
+    line-height: 14px;
 }
 .btn_blind {
     position: absolute;
@@ -857,8 +858,9 @@
 .artapprvl_instructitle {
     font-size: 12px;
 }
+.artapprvl_instrucbox {width: 100%;}
 .artapprvl_instrucbox textarea {
-    width: 306px;
+    width: 100%;
     height: 49px;
     background: #DADADA;
     border: 1px solid #BDBDBD;
@@ -870,12 +872,17 @@
 }
 .templates_title {
     font-size: 12px;
+    line-height: 14px;
 }
 .templatebox {
     margin-left: 3px;
+    line-height: 14px;
 }
 .templatebox_icon {
     margin-right: 3px;
+    height: 14px;
+    position: relative;
+    top: -1px;
 }
 .templatebox_icon img {
     height: 14px;
@@ -888,11 +895,11 @@
 .artapprvl_colors {
     font-size: 11px;
     line-height: 18px;
-    margin-top: 3px;
+    /* margin-top: 3px; */
 }
 .artapprvl_font {
     float: right !important;
-    margin-top: 3px;
+    /* margin-top: 3px; */
 }
 .artapprvl_font label {
     font-size: 11px;
@@ -900,6 +907,7 @@
     color: #9F9898;
     position: relative;
     top: -3px;
+    margin: 0;
 }
 .artapprvl_font select {
     width: 78px;
@@ -1030,7 +1038,7 @@
 }
 .artproofs_addoptn {
     width: 47px;
-    height: 25px;
+    height: auto;
     border: 1px dashed #C2C1C1;
     border-radius: 5px;
     text-align: center;
@@ -1079,6 +1087,9 @@
 }
 .optn_star {
     margin-left: 2px;
+    height: 14px;
+    position: relative;
+    top: -3px;
 }
 .optn_star img {
     height: 14px;
@@ -1099,7 +1110,7 @@
 }
 .artproofheader_apprvl {
     width: 114px;
-    height: 22px;
+    height: 21px;
     padding: 0 5px;
     font-weight: bold;
     line-height: 21px;
@@ -1112,7 +1123,8 @@
 }
 .artproofapprvl_icon {
     position: relative;
-    top: 3px;
+    top: -2px;
+    font-size: 11px;
 }
 .artproofapprvl_icon img {
     height: 15px;
@@ -1122,11 +1134,11 @@
     float: right !important;
     font-size: 11px;
     font-weight: 400;
+    line-height: 22px;
 }
 .artproofheader_open {
     width: 67px;
     text-align: center;
-    font-size: 11px;
     color: #05059D;
     border-right: 1px solid #000;
     font-size: 12px;
@@ -1140,13 +1152,12 @@
     height: 17px;
     width: auto;
     position: relative;
-    top: 5px;
+    top: 1px;
     margin-left: 4px;
 }
 .artproofheader_send {
-    width: 62px;
+    width: 60px;
     text-align: center;
-    font-size: 11px;
     color: #9e9ea0;
     font-size: 12px;
     line-height: 21px;
@@ -1179,7 +1190,7 @@
 }
 .fulflmprofit_interest {
     width: 82px;
-    padding-right: 5px;
+    /*padding-right: 5px;*/
     text-align: center;
     line-height: 28px;
     font-size: 15px;
@@ -1604,7 +1615,7 @@
 }
 .billing_addressarea .select_addressarea {
     float: left;
-    width: calc(100% - 4px);
+    /*width: calc(100% - 4px);*/
     border-left: none !important;
     border-top: none !important;
     border-right: none !important;
@@ -1631,7 +1642,7 @@
     border: 1px solid #95939E;
     background: #fff;
     font-size: 10px;
-    line-height: 14pxs;
+    line-height: 14px;
 }
 .sameaddress {}
 .sameaddress input {
