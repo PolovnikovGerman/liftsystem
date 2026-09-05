@@ -545,11 +545,13 @@
 }
 .tblitems_inforow {
     padding-left: 10px;
-    width: 242px;
+    /*width: 242px;*/
+    width: 239px;
 }
 .textgreen {
     color: #026F11;
     font-size: 10px;
+    cursor: pointer;
 }
 .doprow {
     border-bottom: 1px solid transparent;
@@ -1375,11 +1377,12 @@
 
 
 .paymentsection_left {
-    width: 150px;
+    width: 140px;
     margin-right: 4px;
 }
 .paymentsection_right {
-    width: 160px;
+    width: 156px;
+    float: right !important;
 }
 .paymentsection_bottom {
     width: 100%;
@@ -1500,7 +1503,7 @@
     margin-top: 20px;
 }
 .paymenthistory_box {
-    width: 163px;
+    width: 156px;
     height: 68px;
     background: #fff;
     border: 1px solid #000;
@@ -1529,11 +1532,11 @@
     border-right: none;
 }
 .paymhist_date {
-    width: 40px;
+    width: 38px;
     color: #414141;
 }
 .paymhist_payment {
-    width: 59px;
+    width: 54px;
     color: #0000D5;
 }
 .paymhist_amount {
@@ -1651,7 +1654,7 @@
 }
 .sameaddress label {
     float: left;
-    font-size: 11px;
+    font-size: 10px;
     line-height: 16px;
 }
 .po_inputgroup {}
