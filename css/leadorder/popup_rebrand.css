@@ -42,6 +42,11 @@
 #modalLeadOrder .modal-header .close {
     display: none;
 }
+#modalLeadOrder .modal-footer {
+    padding: 15px;
+    text-align: right;
+    border-top: none;
+}
 .neworder_close {
     position: absolute;
     top: -9px;
@@ -224,7 +229,7 @@
     z-index: 5;
 }
 .ordblock_body {
-    width: calc(100% - 16px);
+    width: 100%;
     background: #fff;
     border: 1px solid #000;
     border-radius: 0 4px 4px 4px;
@@ -242,7 +247,7 @@
 }
 .ordblock_payment .ordblock_body {
     background: #8080FF;
-    height: 252px;
+    height: 247px;
 }
 .ordblock_fulfillment .ordblock_tab {
     background: #8080FF;
@@ -250,7 +255,7 @@
 }
 .ordblock_fulfillment .ordblock_body {
     background: #8080FF;
-    height: 642px;
+    height: 645px;
 }
 .orddetails_row {
     width: 100%;
@@ -263,10 +268,10 @@
 
 
 .ordblock_artapproval .ordblock_body {
-    height: 362px;
+    height: 370px;
 }
 .ordblock_details .ordblock_body {
-    height: 642px;
+    height: 645px;
 }
 
 
@@ -329,7 +334,7 @@
 
 .orddtls_notes {
     width: 152px;
-    margin-right: 9px;
+    margin-right: 8px;
 }
 .orddtls_notestitle {
     font-size: 10px;
@@ -338,7 +343,7 @@
 .orddtls_notesbox {
     border: 1px solid #BCBBBB;
     height: 75px;
-    width: 142px;
+    width: 100%;
     padding: 5px;
     font-size: 10px;
 }
@@ -353,8 +358,7 @@
 .orddtls_updatebox {
     border: 1px solid #BCBBBB;
     height: 58px;
-    /*width: 115px;*/
-    width: 126px;
+    width: 100%;
     padding: 5px;
     font-size: 10px;
 }
@@ -383,8 +387,7 @@
 .orddtls_historybox {
     border: 1px solid #BCBBBB;
     height: 75px;
-    /* width: 212px; */
-    width: 195px;
+    width: 100%;
     font-size: 10px;
     overflow-y: auto;
 }
@@ -424,9 +427,8 @@
     color: #3736FE;
 }
 .orddtls_contactsbox {
-    /*width: calc(100% - 14px);*/
     width: 100%;
-    height: 69px;
+    height: 72px;
     background: #DADADA;
     border: 1px solid #747474;
     border-radius: 4px 0 0 4px;
@@ -440,6 +442,7 @@
     width: 100%;
     line-height: 14px;
     margin-bottom: 3px;
+    height: 14px;
 }
 .tblconts_td {
     margin-right: 5px;
@@ -456,7 +459,7 @@
     width: 180px;
 }
 .tblconts_inptbox {
-    width: calc(100% - 10px);
+    width: 100%;
     height: 14px;
     line-height: 14px;
     font-size: 12px;
@@ -467,7 +470,7 @@
 .tblconts_subtitle {
     width: 100%;
     text-align: center;
-    font-size: 12px;
+    font-size: 11px;
 }
 .tblconts_header {
     margin-bottom: 2px;
@@ -609,7 +612,7 @@
     float: right !important;
 }
 .inptsprice_box {
-    width: 55px;
+    width: 65px;
     height: 15px;
     background: #DADADA;
     border: 1px solid #ACACAC;
@@ -716,19 +719,19 @@
 }
 .shiptax_bodyright {
     float: right !important;
-    width: 327px;
+    width: 328px;
 }
 .shiptax_topright {
     width: 327px;
     height: 38px;
-    background: url(/img/leadorder/shiptax_topright.jpg) no-repeat;
+    background: url(/img/leadorder/shiptax_topright_2.jpg) no-repeat;
     position: relative;
     top: -1px;
     right: -2px;
     float: right !important;
 }
 .shiptax_bottomright {
-    width: 327px;
+    width: 328px;
 }
 .shiptax_groupdates {
     float: right !important;
@@ -1178,7 +1181,7 @@
     background: #001072;
     border: 1px solid #001072;
     border-radius: 7px;
-    margin-top: 194px;
+    margin-top: 200px;
 }
 .fulflmprofit_price {
     width: 85px;
@@ -1217,7 +1220,7 @@
     overflow: hidden;
 }
 .claymodels_header {
-    width: 313px;
+    width: 100%;
     height: 22px;
     background: #c2c4c3;
     border-bottom: 1px solid #000;
@@ -1227,7 +1230,7 @@
     padding-left: 5px;
 }
 .claymodels_body {
-    width: 308px;
+    width: 100%;
     height: 98px;
     overflow-x: auto;
     background: #fff;
@@ -1253,7 +1256,7 @@
     overflow: hidden;
 }
 .previewpict_header {
-    width: 313px;
+    width: 100%;
     height: 22px;
     background: #c2c4c3;
     border-bottom: 1px solid #000;
@@ -1263,7 +1266,7 @@
     padding-left: 5px;
 }
 .previewpict_body {
-    width: 308px;
+    width: 100%;
     height: 98px;
     overflow-x: auto;
     background: #fff;
@@ -1381,7 +1384,7 @@
     margin-right: 4px;
 }
 .paymentsection_right {
-    width: 150px;
+    width: 156px;
     float: right !important;
 }
 .paymentsection_bottom {
@@ -1429,7 +1432,7 @@
     width: 22px;
 }
 .paymentcard_cvc {
-    width: 22px;
+    width: 24px;
 }
 .paymentcard_cvc::placeholder {
     font-size: 9px;
@@ -1498,14 +1501,14 @@
     margin-left: 5px;
 }
 .balancedue_linkicon img {
-    height: 16px;
+    height: 15px;
     width: auto;
 }
 .paymenthistory {
     margin-top: 20px;
 }
 .paymenthistory_box {
-    width: 150px;
+    width: 156px;
     height: 68px;
     background: #fff;
     border: 1px solid #000;
@@ -1542,7 +1545,7 @@
     color: #0000D5;
 }
 .paymhist_amount {
-    width: 54px;
+    width: 60px;
     color: #414141;
 }
 .paymhist_tr.tr_white {
@@ -1566,7 +1569,7 @@
 }
 .totalpaymnt_price {
     font-size: 12px;
-    width: 76px;
+    width: 80px;
     float: right !important;
     font-weight: bold;
     line-height: 14px;
