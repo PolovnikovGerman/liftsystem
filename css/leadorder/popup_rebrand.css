@@ -17,7 +17,7 @@
 }
 
 #modalLeadOrder .modal-dialog {
-    margin: 0 auto;
+    /*margin: 0 auto;*/
     width: 1244px;
     height: 755px;
     background: #0000FF;
@@ -377,8 +377,8 @@
     margin-top: 3px;
 }
 .orddtls_history {
-    /*width: 213px;*/
-    width: 195px;
+    width: 213px;
+    float: right !important;
 }
 .orddtls_historytitle {
     font-size: 10px;
@@ -722,12 +722,12 @@
     width: 328px;
 }
 .shiptax_topright {
-    width: 327px;
+    width: 328px;
     height: 38px;
     background: url(/img/leadorder/shiptax_topright_2.jpg) no-repeat;
     position: relative;
     top: -1px;
-    right: -2px;
+    right: -1px;
     float: right !important;
 }
 .shiptax_bottomright {
