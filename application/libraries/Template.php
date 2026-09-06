@@ -1361,4 +1361,51 @@ class Template
         }
         return $content;
     }
+
+    public function _prepare_newleadorder_view($res, $user_id, $user_role='manager', $user_payment=0, $edit=0)
+    {
+        $data = [];
+        $this->CI->load->model('user_model');
+        $this->CI->load->model('shipping_model');
+        $usrdat=$this->CI->user_model->get_user_data($user_id);
+        // Messages
+        $message = $res['message'];
+        $message['edit']=$edit;
+        $data['messages_view']=$this->CI->load->view('leadordernew/message_view', $message, TRUE);
+        // Contacts
+        if ($edit==0) {
+            $contacts = $this->CI->load->view('leadordernew/contact_detail_view', array('contacts'=>$res['contacts']), TRUE);
+        } else {
+            $contacts = $this->CI->load->view('leadordernew/contact_detail_edit', array('contacts'=>$res['contacts']), TRUE);
+        }
+        $data['contacts'] = $contacts;
+        $data['order'] = $res['order'];
+        // Prepare shipping view
+        if (count($res['shipping_address'])<2) {
+            // 1 shipping address
+            if ($edit==0) {
+                // View
+                $shipaddres = $res['shipping_address'][0];
+                $country_id = $shipaddres['country_id'];
+                $states=$this->CI->shipping_model->get_country_states($country_id);
+                $shipoptions = [
+                    'address' => $shipaddres,
+                    'countries' => $res['countries'],
+                    'states' => $states,
+                    'shipping' => $res['shipping'],
+                    'shipdocs' => $res['shipdocs'],
+                    'order' => $res['order'],
+                ];
+                $shiptaxview = $this->CI->load->view('leadordernew/shipaddres_single_view', $shipoptions, TRUE);
+            } else {
+                // Edit
+                // $shpadrview = $this->CI->load->view('leadordernew/shipaddres_single_view', ['address'=>$res['shipping_address'][0], 'countries'=>$res['countriew']], TRUE);
+            }
+        } else {
+            // Multiship
+        }
+        $data['shiptaxview'] = $shiptaxview;
+        $data['shipping'] = $res['shipping'];
+        return $data;
+    }
 }

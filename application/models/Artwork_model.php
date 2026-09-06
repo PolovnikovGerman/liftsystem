@@ -450,7 +450,7 @@ Class Artwork_model extends MY_Model
                 }
             }
             $row['history_head']=($row['user_name']=='' ? 'System' : $row['user_name']).','.date('m/d/y g:i:s a',$create_time);
-            $row['out_date']=date('D - M d, Y',$create_time);
+            $row['out_date']=date('m/d/y',$create_time); // date('D - M d, Y',$create_time);
             if (!empty($row['user_leadname'])) {
                 $row['out_subdate']=date('g:i a',$create_time).' - '.$row['user_leadname'];
             } elseif (!empty($row['user_name'])) {
