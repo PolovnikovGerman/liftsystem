@@ -27,13 +27,84 @@ class Leadorder extends MY_Controller
     public function leadorder_change()
     {
         if ($this->isAjax()) {
+            $postdata=$this->input->post();
+            $order=(isset($postdata['order']) ? $postdata['order'] : 0);
+            $brand = ifset($postdata,'brand','ALL');
+            $callpage = ifset($postdata, 'page', 'art_tasks');
+            $edit = ifset($postdata, 'edit', 1);
+            $ordersession = ifset($postdata, 'session', '');
+            // Remove from session
+            if (!empty($ordersession)) {
+                usersession($ordersession,NULL);
+            }
+            $locrecid = ifset($postdata,'locrecid', 0);
+            if ($locrecid > 0) {
+                $this->engaded_model->clean_engade($locrecid);
+            }
             $mdata = [];
-            $content = $this->load->view('leadordernew/page_view', [], true);
-            $mdata['content'] = $content;
-            $header = $this->load->view('leadordernew/header_view', $mdata, true);
-            $mdata['header'] = $header;
-            $mdata['cancelorder'] = 0;
-            $this->ajaxResponse($mdata, '');
+            if ($order==0) {
+                // New Order
+            } else {
+                // Get Order Data
+                $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
+                $edit = 0;
+            }
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
+                $mdata['cancelorder'] = 0;
+                $leadsession='leadorder'.uniq_link(15);
+                // Generate new session
+                $options = [];
+                $options['current_page'] = $callpage;
+                $options['leadsession'] = $leadsession;
+                $options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
+                $orddata=$res['order'];
+                if ($order==0) {
+                    // Prepare New Order view
+                } else {
+                    if ($edit==0) {
+                        // View order
+                        // Get Data about Engaded records
+                        $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order));
+                        $res['unlocked']=$engade_res['result'];
+                        // Build Head
+                        $head_options = [
+                            // 'order_head' => $this->load->view('leadorderdetails/head_order_view', $orddata,TRUE),
+                            'callpage' => $callpage,
+                            'leadsession' => $leadsession,
+                            'prvorder' => $res['prvorder'],
+                            'nxtorder' => $res['nxtorder'],
+                            'order_id' => $orddata['order_id'],
+                            'brand' => $brand,
+                            'customer' => $orddata['customer_name'],
+                            'order_num' => $orddata['order_num'],
+                            'order_date' => $orddata['order_date'],
+                            'order_confirm' => $orddata['order_confirmation'],
+                        ];
+                        $head_options['unlocked']=$engade_res['result'];
+                        if ($engade_res['result']==$this->error_result) {
+                            $voptions=array(
+                                'user'=>$engade_res['lockusr'],
+                            );
+                            // $options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+                            // $head_options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+                        } elseif ($orddata['is_canceled']==1) {
+                            $head_options['unlocked']=$this->error_result;
+                            // $head_options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
+                        }
+                        $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
+                    } else {
+
+                    }
+                    $header = $this->load->view('leadordernew/header_view', $head_options, true);
+                    $mdata['cancelorder'] = $orddata['is_canceled'];
+                }
+                $content = $this->load->view('leadordernew/page_view', $data, true);
+                $mdata['content'] = $content;
+                $mdata['header'] = $header;
+            }
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }

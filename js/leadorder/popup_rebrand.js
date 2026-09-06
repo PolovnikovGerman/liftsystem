@@ -3,4 +3,7 @@ function navigation_init() {
     $(".neworder_close").unbind("click").click(function () {
         $("#modalLeadOrder").modal("hide");
     });
+    // Art history - change scroll
+    new SimpleBar(document.getElementById('orddtls_historybox'), {autoHide: false});
+    new SimpleBar(document.getElementById('ordercontacts_table'), {autoHide: false});
 }
