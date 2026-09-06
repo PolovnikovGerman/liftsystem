@@ -548,7 +548,7 @@
     text-align: right;
 }
 .tblitems_each {
-    width: 39px;
+    width: 50px;
     text-align: center;
 }
 .tblitems_subtotal {
@@ -608,6 +608,7 @@
     border: 1px solid #ACACAC;
     padding: 0 5px;
     line-height: 15px;
+    font-size: 11px;
 }
 .itemsfooter_inpts input::placeholder {
     color: #BFBFC2;
@@ -765,7 +766,7 @@
     font-size: 9px;
     font-weight: bold;
     text-align: center;
-    line-height: 13px;
+    line-height: 12px;
 }
 
 .ship_addressarea {}
