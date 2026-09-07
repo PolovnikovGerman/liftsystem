@@ -1096,6 +1096,21 @@ class Template
         $data['artwork'] = $res['artwork'];
         // Art locations
         $data['artlocatview'] = $this->CI->load->view('leadordernew/artlocations_view', ['artlocations' => $res['artlocations'], 'edit' => $edit], TRUE);
+        // Billing, Payments, CC
+        $billing = $res['order_billing'];
+        $country_id = $billing['country_id'];
+        $states=$this->CI->shipping_model->get_country_states($country_id);
+
+        $payoptions = [
+            'billing' => $billing,
+            'countries' => $res['countries'],
+            'states' => $states,
+            'charges' => $res['charges'],
+            'payments' => $res['payments'],
+            'order' => $res['order'],
+            'edit' => $edit,
+        ];
+        $data['paymentsview'] = $this->CI->load->view('leadordernew/payment_view', $payoptions, TRUE);
         return $data;
     }
 }
