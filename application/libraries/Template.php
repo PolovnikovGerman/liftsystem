@@ -1100,7 +1100,6 @@ class Template
         $billing = $res['order_billing'];
         $country_id = $billing['country_id'];
         $states=$this->CI->shipping_model->get_country_states($country_id);
-
         $payoptions = [
             'billing' => $billing,
             'countries' => $res['countries'],
@@ -1111,6 +1110,16 @@ class Template
             'edit' => $edit,
         ];
         $data['paymentsview'] = $this->CI->load->view('leadordernew/payment_view', $payoptions, TRUE);
+        // Fullfilment
+        if (empty($res['order']['order_cog'])) {
+            $data['profitview'] = $this->CI->load->view('leadordernew/profit_project_view', ['order' => $res['order']], TRUE);
+        } else {
+            $data['profitview'] = $this->CI->load->view('leadordernew/profit_view', ['order' => $res['order']], TRUE);
+        }
+        // Clay Models
+        $data['claydocsview'] = $this->CI->load->view('leadordernew/claydocs_view', ['claydocs' => $res['claydocs']], TRUE);
+        // Previews
+        $data['prevdocsview'] = $this->CI->load->view('leadordernew/previewdocs_view', ['previews' => $res['previewdocs']], TRUE);
         return $data;
     }
 }
