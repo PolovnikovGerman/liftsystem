@@ -4674,4 +4674,22 @@ Class Artwork_model extends MY_Model
     {
         return $this->db->select('*')->from('ts_lead_emails')->where('email_id', $email_id)->get()->row_array();
     }
+
+    public function update_proof_options()
+    {
+        $proofs = $this->db->select('*')->from('ts_artwork_proofs')->order_by('artwork_proof_id','desc')->get()->result_array();
+        foreach ($proofs as $proof) {
+            $file = $proof['source_name'];
+            $option = 'A';
+            $optposit = stripos(strtoupper($file), '_OPT');
+            if ($optposit===false) {
+            } else {
+                $option = strtoupper(substr($file, $optposit+4, 1));
+            }
+            $this->db->where('artwork_proof_id', $proof['artwork_proof_id']);
+            $this->db->set('option', $option);
+            $this->db->update('ts_artwork_proofs');
+        }
+        echo 'Proof Options entered '.PHP_EOL;
+    }
 }

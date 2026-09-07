@@ -5558,4 +5558,9 @@ class Test extends CI_Controller
         $res = $this->exportexcell_model->payments_report($payments);
         echo 'Report '.$res.' ready'.PHP_EOL;
     }
+
+    public function proofoptions() {
+        $this->load->model('artwork_model');
+        $res = $this->artwork_model->update_proof_options();
+    }
 }

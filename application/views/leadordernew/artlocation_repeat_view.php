@@ -1,7 +1,7 @@
 <div class="artbox_number"><?=$artlocation['art_ordnum']?>.</div>
 <div class="art_block1 openlocation" data-artloc="<?=$artlocation['artwork_art_id']?>" data-arttype="<?=$artlocation['art_type']?>"><?=$artlocation['artlabel']?></div>
 <div class="art_block5">
-    <input type="text" readonly="readonly" value="<?=$repeat_text?>" data-artloc="<?=$artlocation['artwork_art_id']?>" class="artrepeat"/>
+    <input type="text" readonly="readonly" value="<?=$artlocation['repeat_text']?>" data-artloc="<?=$artlocation['artwork_art_id']?>" class="artrepeat"/>
 </div>
 <div class="art_block4">
     <div class="redrawmsgarea <?=($artlocation['redraw_message']) ? 'active' : ''?>" data-artloc="<?=$artlocation['artwork_art_id']?>">&nbsp;</div>
