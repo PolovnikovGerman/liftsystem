@@ -103,6 +103,18 @@ Class Artlead_model extends MY_Model
                 'title'=>'Rush',
             );
             $row['rushchk']=$this->load->view('leadorderdetails/artlocs/artlocation_check_view', $inptopt, TRUE);
+            // Add Source name and Vector name
+            $row['source_title'] = $row['vector_title'] = '';
+            if ($row['art_type']=='Logo') {
+                if (!empty($row['logo_src'])) {
+                    $slashpos = strripos($row['logo_src'], '/');
+                    $row['source_title'] = substr($row['logo_src'], $slashpos+1);
+                }
+                if (!empty($row['logo_vectorized'])) {
+                    $slashpos = strripos($row['logo_vectorized'], '/');
+                    $row['vector_title'] = substr($row['logo_vectorized'], $slashpos+1);
+                }
+            }
             $return_array[]=$row;
         }
         return $return_array;

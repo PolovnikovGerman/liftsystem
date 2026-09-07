@@ -24,7 +24,7 @@ class Leadorder extends MY_Controller
     {
     }
 
-    public function leadorder_change()
+    public function leadorder_change_new()
     {
         if ($this->isAjax()) {
             $postdata=$this->input->post();
@@ -109,7 +109,7 @@ class Leadorder extends MY_Controller
         show_404();
     }
 
-    public function leadorder_change_old() {
+    public function leadorder_change() {
         if ($this->isAjax()) {
             $mdata=array();
             $error='';
