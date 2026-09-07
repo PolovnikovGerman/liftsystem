@@ -543,6 +543,9 @@
 .tblitems_color {
     width: 77px;
 }
+.tblitems_customdescript {
+    width: 239px;
+}
 .tblitems_qty {
     width: 47px;
     text-align: right;
@@ -564,6 +567,11 @@
     color: #026F11;
     font-size: 10px;
     cursor: pointer;
+}
+.orderitemsarea {
+    width: 100%;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 .doprow {
     border-bottom: 1px solid transparent;
@@ -939,6 +947,7 @@
     height: 85px;
     border: 1px solid #858585;
     overflow-y: auto;
+    scrollbar-width: none;
 }
 .art_header span {
     font-size: 10px;
@@ -1015,6 +1024,7 @@
     font-size: 12px;
     line-height: 25px;
     color: #0A0AD4;
+    width: 84px;
 }
 .artbox_filenamevect.redrawing {
     font-size: 12px;

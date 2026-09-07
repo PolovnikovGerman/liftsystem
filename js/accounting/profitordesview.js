@@ -479,7 +479,7 @@ function delete_order(obj) {
 function edit_order(order) {
     var callpage = 'profitlist';
     var brand = $("#profitordersbrand").val();
-    var url="/leadorder/leadorder_change";
+    var url="/leadorder/leadorder_change_new";
     var params = new Array();
     params.push({name: 'order', value: order});
     params.push({name: 'page', value: callpage});

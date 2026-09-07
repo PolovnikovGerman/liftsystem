@@ -50,32 +50,7 @@
                                 <div class="tblitems_td tblitems_each">Each</div>
                                 <div class="tblitems_td tblitems_subtotal">Sub-total</div>
                             </div>
-                            <div class="tblitems_tr whiterow">
-                                <div class="tblitems_td tblitems_item">i020</div>
-                                <div class="tblitems_td tblitems_descript">Light Bulb Stress Balls</div>
-                                <div class="tblitems_td tblitems_color">White</div>
-                                <div class="tblitems_td tblitems_qty">2500</div>
-                                <div class="tblitems_td tblitems_each">0.72</div>
-                                <div class="tblitems_td tblitems_subtotal">$1,800.00</div>
-                            </div>
-                            <div class="tblitems_tr doprow whiterow">
-                                <div class="tblitems_td tblitems_item textgreen">
-<!--                                        <span class="textgreen">-->
-                                        Print Details:
-<!--                                        </span>-->
-                                </div>
-                                <div class="tblitems_td tblitems_inforow">Loc 1: 1st Color Imprinting</div>
-                                <div class="tblitems_td tblitems_qty">2500</div>
-                                <div class="tblitems_td tblitems_each">--</div>
-                                <div class="tblitems_td tblitems_subtotal">$0.00</div>
-                            </div>
-                            <div class="tblitems_tr greyrow">
-                                <div class="tblitems_td tblitems_item">&nbsp;</div>
-                                <div class="tblitems_td tblitems_inforow">One Time Art Setup Charge</div>
-                                <div class="tblitems_td tblitems_qty">1</div>
-                                <div class="tblitems_td tblitems_each">$28.00</div>
-                                <div class="tblitems_td tblitems_subtotal">$28.00</div>
-                            </div>
+                            <?=$itemsview?>
                         </div>
                         <div class="items_footer">
                             <div class="itemsfooter_message">
@@ -153,12 +128,12 @@
                     <div class="artapprvl_subtitle">Artwork:</div>
                     <div class="artapprvl_blankrush">
                         <div class="artapprvl_blank">
-                            <input type="checkbox" class="">
-                            <label>blank</label>
+                            <input id="checkorderblank" type="checkbox" class="orderdata" <?=$order['order_blank']==1 ? 'checked' : ''?> <?=$edit==0 ? 'disabled="disabled"' : ''?>/>
+                            <label for="checkorderblank">blank</label>
                         </div>
                         <div class="artapprvl_rush">
-                            <input type="checkbox" class="">
-                            <label>rush</label>
+                            <input id="checkorderrush" type="checkbox" class="orderdata" <?=$order['order_rush']==1 ? 'checked' : ''?> <?=$edit==0 ? 'disabled="disabled"' : ''?>>
+                            <label for="checkorderrush">rush</label>
                         </div>
                     </div>
                 </div>
@@ -167,11 +142,12 @@
                     <div class="artapprvl_templates">
                         <div class="templates_title">Templates:</div>
                         <div class="templatebox">
-                            <div class="templatebox_icon">
+                            <div class="templatebox_icon" data-url="<?=$empty_url?>" data-title="<?=$empty_title?>">
                                 <img src="/img/leadorder/file-alt-green.svg">
                             </div>
                             <div class="templatebox_text">Master</div>
                         </div>
+                        <!-- URL for Item AI -->
                         <div class="templatebox">
                             <div class="templatebox_icon">
                                 <img src="/img/leadorder/file-alt-green.svg">
@@ -182,17 +158,17 @@
                 </div>
                 <div class="artapprvl_row">
                     <div class="artapprvl_instrucbox">
-                        <textarea></textarea>
+                        <textarea <?=$edit==0 ? 'readonly' : ''?>><?=$artwork['artwork_note']?></textarea>
                     </div>
                 </div>
                 <div class="artapprvl_row">
-                    <div class="artapprvl_colors">Colors: Scarlet Red (485)</div>
+                    <div class="artapprvl_colors">Colors: <?=$artwork['item_color']?></div>
                     <div class="artapprvl_font">
                         <label>Font:</label>
-                        <select>
-                            <option></option>
-                            <option>Arial</option>
-                        </select>
+<!--                        <select>-->
+<!--                            <option></option>-->
+<!--                            <option>Arial</option>-->
+<!--                        </select>-->
                     </div>
                 </div>
                 <div class="artapprvl_row">
@@ -202,37 +178,8 @@
                             <span class="artheader_original">Original:</span>
                             <span class="artheader_vector">Vector:</span>
                         </div>
-                        <div class="art_boxes">
-                            <div class="artapprvl_artbox">
-                                <div class="artbox_number">1.</div>
-                                <div class="artbox_filenameorg">examplefile.jpg</div>
-                                <div class="artbox_iconfile">
-                                    <img src="/img/leadorder/file-alt-grey.svg">
-                                </div>
-                                <div class="artbox_rush">
-                                    <input type="checkbox" class="">
-                                    <label>RUSH</label>
-                                </div>
-                                <div class="artbox_step arrow">
-                                    <img src="/img/leadorder/artbox-arrow.svg">
-                                </div>
-                                <div class="artbox_filenamevect redrawing">Redrawing...</div>
-                            </div>
-                            <div class="artapprvl_artbox">
-                                <div class="artbox_number">2.</div>
-                                <div class="artbox_filenameorg unactive">examplefile.jpg</div>
-                                <div class="artbox_iconfile unactive">
-                                    <img src="/img/leadorder/file-alt-grey.svg">
-                                </div>
-                                <div class="artbox_rush unactive">
-                                    <input type="checkbox" class="">
-                                    <label>RUSH</label>
-                                </div>
-                                <div class="artbox_step tick">
-                                    <img src="/img/leadorder/tick-blue.svg">
-                                </div>
-                                <div class="artbox_filenamevect">examplefile.ai</div>
-                            </div>
+                        <div class="art_boxes" id="order_art_boxes">
+                            <?=$artlocatview?>
                         </div>
                     </div>
                 </div>

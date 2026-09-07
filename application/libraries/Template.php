@@ -1074,9 +1074,28 @@ class Template
             }
         } else {
             // Multiship
+            $shiptaxview = '';
         }
         $data['shiptaxview'] = $shiptaxview;
         $data['shipping'] = $res['shipping'];
+        // Items & colors
+        $items = $res['order_items'];
+        if ($edit==0) {
+            $data['itemsview'] = $this->CI->load->view('leadordernew/items_data_view', ['items' => $items], TRUE);
+        } else {
+            // $data['items'] = $this->CI->load->view('leadordernew/items_data_view', ['items' => $items], TRUE);
+        }
+        // Art section
+        if ($res['order']['brand']=='SR') {
+            $data['empty_url'] = $this->CI->config->item('sr_empty_template');
+            $data['empty_title'] = $this->CI->config->item('sr_empty_title');
+        } else {
+            $data['empty_url'] = $this->CI->config->item('sb_empty_template');
+            $data['empty_title'] = $this->CI->config->item('sb_empty_title');
+        }
+        $data['artwork'] = $res['artwork'];
+        // Art locations
+        $data['artlocatview'] = $this->CI->load->view('leadordernew/artlocations_view', ['artlocations' => $res['artlocations'], 'edit' => $edit], TRUE);
         return $data;
     }
 }
