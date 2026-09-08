@@ -4681,10 +4681,12 @@ Class Artwork_model extends MY_Model
         foreach ($proofs as $proof) {
             $file = $proof['source_name'];
             $option = 'A';
-            $optposit = stripos(strtoupper($file), '_OPT');
-            if ($optposit===false) {
-            } else {
-                $option = strtoupper(substr($file, $optposit+4, 1));
+            if (!empty($file)) {
+                $optposit = stripos(strtoupper($file), '_OPT');
+                if ($optposit===false) {
+                } else {
+                    $option = strtoupper(substr($file, $optposit+4, 1));
+                }
             }
             $this->db->where('artwork_proof_id', $proof['artwork_proof_id']);
             $this->db->set('option', $option);
