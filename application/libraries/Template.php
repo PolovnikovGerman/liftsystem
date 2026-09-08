@@ -1446,10 +1446,11 @@ class Template
         } else {
             $data['profitview'] = $this->CI->load->view('leadordernew/profit_view', ['order' => $res['order']], TRUE);
         }
+        $artwork = $res['artwork']['artwork_id'];
         // Clay Models
-        $data['claydocsview'] = $this->CI->load->view('leadordernew/claydocs_view', ['claydocs' => $res['claydocs']], TRUE);
+        $data['claydocsview'] = $this->CI->load->view('leadordernew/claydocs_view', ['claydocs' => $res['claydocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
         // Previews
-        $data['prevdocsview'] = $this->CI->load->view('leadordernew/previewdocs_view', ['previews' => $res['previewdocs']], TRUE);
+        $data['prevdocsview'] = $this->CI->load->view('leadordernew/previewdocs_view', ['previews' => $res['previewdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
         // Trackings
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
         $data['trackingview'] = $this->_prepare_tracking_content($res['order_items'], $shipstatus, $edit);
@@ -1519,79 +1520,73 @@ class Template
             }
         } elseif ($numcolors > 1) {
             // Multi Items Track
-            $totalitems = 0;
-            $tracktotal = 0;
+//            $totalitems = 0;
+//            $tracktotal = 0;
+//            foreach ($order_items as $order_item) {
+//                $totalitems+=$order_item['item_qty'];
+//                $itemcolors = $order_item['items'];
+//                foreach ($itemcolors as $itemcolor) {
+//                    foreach ($itemcolor['trackings'] as $tracking) {
+//                        $tracktotal+=$tracking['qty'];
+//                    }
+//                }
+//            }
+//            $remains = $totalitems - $tracktotal;
+//            $allcompleted = 1;
+//            if ($remains > 0) {
+//                $allcompleted = 0;
+//            }
+            $trackcontent = '';
+            $numpp = 0;
             foreach ($order_items as $order_item) {
-                $totalitems+=$order_item['item_qty'];
-                $itemcolors = $order_item['items'];
-                foreach ($itemcolors as $itemcolor) {
-                    foreach ($itemcolor['trackings'] as $tracking) {
-                        $tracktotal+=$tracking['qty'];
+                $items = $order_item['items'];
+                foreach ($items as $item) {
+                    if (!empty($item['item_qty'])) {
+                        if ($order_item['item_id'] > 0) {
+                            $itemname = $order_item['item_name'] . (empty($item['item_color']) ? '' : ' - ' . $item['item_color']);
+                        } else {
+                            $itemname = $item['item_description'];
+                        }
+                        $shipoptions = [
+                            'shipdate' => $shipstatus['order_status'],
+                            'item' => $itemname, // $orderitem['item_name'].(empty($itemdata['item_color']) ? '' : ' - '.$itemdata['item_color']),
+                            'qty' => $item['item_qty'],
+                            'order_item' => $order_item['order_item_id'],
+                            'item_color' => $item['item_id'],
+                        ];
+                        $tracktotal = 0;
+                        if (!empty($item['trackings'])) {
+                            foreach ($item['trackings'] as $tracking) {
+                                $tracktotal += $tracking['qty'];
+                            }
+                        }
+                        $resttrack = intval($item['item_qty']) - intval($tracktotal);
+                        $shipoptions['remind'] = $resttrack;
+                        $shipoptions['completed'] = ($resttrack > 0 ? 0 : 1);
+                        $shipoptions['shipped'] = intval($tracktotal);
+                        $shipoptions['edit'] = $edit;
+                        $trackbody = '';
+                        if (!empty($item['trackings'])) {
+                            $tbodyoptions = [
+                                'trackings' => $item['trackings'],
+                                'completed' => ($resttrack > 0 ? 0 : 1),
+                                'order_item' => $order_item['order_item_id'],
+                                'item_color' => $item['item_id'],
+                                'shipped' => $tracktotal,
+                                'services' => $services,
+                                'edit' => $edit,
+                            ];
+                            $trackbody = $this->CI->load->view('leadordernew/tracking_data_view', $tbodyoptions, TRUE);
+                        }
+                        $shipoptions['trackbody'] = $trackbody;
+                        if ($numpp > 0) {
+                            $trackcontent.='<div class="fulflmshipping_track_separator">&nbsp;</div>';
+                        }
+                        $trackcontent.=$this->CI->load->view('leadordernew/tracking_view', $shipoptions, TRUE);
+                        $numpp++;
                     }
                 }
             }
-            $remains = $totalitems - $tracktotal;
-            $allcompleted = 1;
-            if ($remains > 0) {
-                $allcompleted = 0;
-            }
-            $trackcontent = '<div class="trackingdataarea">';
-            $numhead = 1;
-            $trackcontent.='<div class="multitrackbodyarea">';
-            foreach ($order_items as $order_item) {
-                $itemcolors = $order_item['items'];
-                foreach ($itemcolors as $itemcolor) {
-                    $trackings = $itemcolor['trackings'];
-                    $shipped = 0;
-                    foreach ($trackings as $tracking) {
-                        $shipped+=$tracking['qty'];
-                    }
-                    $completed = ($itemcolor['item_qty'] > $shipped ? 0 : 1);
-                    if ($order_item['item_id'] > 0) {
-                        $itemname = $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
-                    } else {
-                        $itemname = $itemcolor['item_description'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']);
-                    }
-                    $headoptions = [
-                        'item' => $itemname, // $order_item['item_name'].(empty($itemcolor['item_color']) ? '' : ' - '.$itemcolor['item_color']),
-                        'qty' => $itemcolor['item_qty'],
-                        'order_item' => $order_item['order_item_id'],
-                        'item_color' => $itemcolor['item_id'],
-                        'headclass' => ($numhead==1 ? '' : 'middlehead'),
-                        'completed' => $completed,
-                    ];
-                    if ($edit==1) {
-                        //if ($completed==1) {
-                        //    $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
-                        //} else {
-                        $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_edit', $headoptions, TRUE);
-                        // }
-                    } else {
-                        $trackcontent.= $this->CI->load->view('leadorderdetails/multitrack_head_view', $headoptions, TRUE);
-                    }
-                    $tbodyoptions = [
-                        'trackings' => $itemcolor['trackings'],
-                        'completed' => $completed,
-                        'order_item' => $order_item['order_item_id'],
-                        'item_color' => $itemcolor['item_id'],
-                        'shipped' => $shipped,
-                    ];
-                    if ($edit==1) {
-                        $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_edit', $tbodyoptions, TRUE);
-                    } else {
-                        $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_data_view', $tbodyoptions, TRUE);
-                    }
-                    $numhead++;
-                }
-            }
-            $trackcontent.='</div>';
-            $tfooteroptions = [
-                'completed' => $allcompleted,
-                'remind' => $remains,
-                'shipdate' => $shipstatus['order_status']
-            ];
-            $trackcontent.=$this->CI->load->view('leadorderdetails/multitrack_footer_view', $tfooteroptions, TRUE);
-            $trackcontent.='</div>';
         }
         return $trackcontent;
     }

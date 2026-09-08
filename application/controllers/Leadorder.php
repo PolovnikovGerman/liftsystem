@@ -54,6 +54,13 @@ class Leadorder extends MY_Controller
                     $this->load->model('artwork_model');
                     $proofdat = $this->artwork_model->get_artwork_proofnew($artwork_id);
                     $res['proofs'] = $proofdat;
+                    $this->load->model('artlead_model');
+                    // Previews
+                    $prevdat = $this->artlead_model->get_previewsnew($artwork_id);
+                    $res['previewdocs'] = $prevdat;
+                    // Clay models
+                    $claydat = $this->artlead_model->get_claymodelsnew($artwork_id);
+                    $res['claydocs'] = $claydat;
                 }
                 $edit = 0;
             }
