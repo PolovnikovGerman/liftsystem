@@ -1210,7 +1210,7 @@
     line-height: 28px;
     font-size: 14px;
     font-weight: bold;
-    color: #fff;
+    /*color: #fff;*/
     border-right: 1px solid #fff;
 }
 .fulflmprofit_interest {
@@ -1220,7 +1220,7 @@
     line-height: 28px;
     font-size: 14px;
     font-weight: bold;
-    color: #fff;
+    /*color: #fff;*/
     border-right: 1px solid #fff;
     padding: 0 5px;
 }
@@ -1228,7 +1228,7 @@
     width: 103px;
     float: right !important;
     font-size: 12px;
-    color: #fff;
+    /*color: #fff;*/
     text-align: center;
     line-height: 28px;
 }

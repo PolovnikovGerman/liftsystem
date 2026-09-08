@@ -4692,4 +4692,37 @@ Class Artwork_model extends MY_Model
         }
         echo 'Proof Options entered '.PHP_EOL;
     }
+
+    public function get_artwork_proofnew($artwork_id)
+    {
+        $out = ['head'=>[], 'options' => []];
+        $head = [
+            'status' => 'Not Approved',
+            'class' => 'notapproval',
+            'apprtime' => '',
+        ];
+        $proofhead = $this->db->select('count(artwork_proof_id) as cnt, max(approved_time) as aprtime')->from('ts_artwork_proofs')->where('artwork_id', $artwork_id)->get()->row_array();
+        if ($proofhead['cnt'] > 0) {
+            if ($proofhead['aprtime'] > 0) {
+                $aprdays = ceil((time()-$proofhead['aprtime'])/(24*60*60));
+                $head = [
+                    'status' => 'Approved',
+                    'class' => 'approval',
+                    'apprtime' => $aprdays.' d',
+                ];
+            }
+            // Get Options
+            $this->db->select('option, count(*) as cnt, max(approved_time) as aprt, max(sended_time) as sendt')->from('ts_artwork_proofs')->where('artwork_id', $artwork_id)->group_by('option')->order_by('option','desc');
+            $options = $this->db->get()->result_array();
+            $optidx = 0;
+            foreach ($options as $option) {
+                $proofs = $this->db->select('*')->from('ts_artwork_proofs')->where(['artwork_id' => $artwork_id, 'option' => $option['option']])->get()->result_array();
+                $options[$optidx]['data'] = $proofs;
+                $optidx++;
+            }
+            $out['head'] = $head;
+            $out['options'] = $options;
+        }
+        return $out;
+    }
 }

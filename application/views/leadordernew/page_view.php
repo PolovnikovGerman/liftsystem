@@ -185,72 +185,8 @@
                 </div>
                 <div class="artapprvl_row">
                     <div class="artapprvl_proofs">
-                        <div class="artproofs_header">
-                            <div class="artproofheader_title">Proofs:</div>
-                            <div class="artproofheader_apprvl approval">
-                                <span class="artproofapprvl_icon"><img src="/img/leadorder/tick-black.svg"></span>
-                                <span>Approved</span>
-                                <div class="artproofapprvl_days">6d</div>
-                            </div>
-                            <div class="artproofheader_open"><span>Open</span><span><img src="/img/leadorder/icon-link.svg"></span></div>
-                            <div class="artproofheader_send">Send<span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></div>
-                        </div>
-                        <div class="artproofs_body">
-                            <div class="artproofs_optn">
-                                <div class="artproofs_addoptn">+Add<br>Option</div>
-                            </div>
-                            <div class="artproofs_optn approved">
-                                <div class="optn_header">
-                                    <div class="optn_checkbox">
-                                        <input type="checkbox" class="">
-                                    </div>
-                                    <div class="optn_title">Opt C</div>
-                                    <div class="optn_star">
-                                        <img src="/img/leadorder/star-yellow.svg">
-                                    </div>
-                                </div>
-                                <div class="optn_box">
-                                    <ul>
-                                        <li>proof_10</li>
-                                        <li>proof_11</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="artproofs_optn">
-                                <div class="optn_header">
-                                    <div class="optn_checkbox">
-                                        <input type="checkbox" class="">
-                                    </div>
-                                    <div class="optn_title">Opt B</div>
-                                    <div class="optn_star">
-                                        <img src="/img/leadorder/star.svg">
-                                    </div>
-                                </div>
-                                <div class="optn_box">
-                                    <ul>
-                                        <li>proof_08</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="artproofs_optn">
-                                <div class="optn_header">
-                                    <div class="optn_checkbox">
-                                        <input type="checkbox" class="">
-                                    </div>
-                                    <div class="optn_title">Opt A</div>
-                                    <div class="optn_star">
-                                        <img src="/img/leadorder/star.svg">
-                                    </div>
-                                </div>
-                                <div class="optn_box">
-                                    <ul>
-                                        <li>proof_01</li>
-                                        <li>proof_02</li>
-                                        <li>proof_07</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Art Proofs -->
+                        <?=$proofsview?>
                     </div>
                 </div>
                 <div class="artapprvl_row"></div>
@@ -267,18 +203,15 @@
         <div class="ord_block ordblock_fulfillment">
             <div class="ordblock_tab">Fulfillment</div>
             <div class="ordblock_body">
-                <div class="fulflm_row">
-                    <div class="fulflm_profit">
-                        <div class="fulflmprofit_price">$80.00</div>
-                        <div class="fulflmprofit_interest">40% PROJ</div>
-                        <div class="fulflmprofit_complt">0% COMPLETE</div>
-                    </div>
-                </div>
+                <div class="fulflm_row"><?=$profitview?></div>
                 <div class="fulflm_row">
                     <div class="fulflm_claymodels">
                         <div class="claymodels_header">Clay Models:</div>
                         <div class="claymodels_body">
+                            <?php if ($edit==1) : ?>
                             <div class="claymodels_addoptn">+Add<br>Option</div>
+                            <?php endif; ?>
+                            <?=$claydocsview?>
                         </div>
                     </div>
                 </div>
@@ -286,29 +219,15 @@
                     <div class="fulflm_previewpict">
                         <div class="previewpict_header">Preview Pictures:</div>
                         <div class="previewpict_body">
+                            <?php if ($edit==1) : ?>
                             <div class="previewpict_addoptn">+Add<br>Option</div>
+                            <?php endif; ?>
+                            <?=$prevdocsview?>
                         </div>
                     </div>
                 </div>
                 <div class="fulflm_row">
-                    <div class="fulflm_shipping">
-                        <div class="fulflmshipping_header">1 Art Proof for Custom Robot Skull SBs</div>
-                        <div class="fulflmshipping_body">
-                            <div class="fulflmshipping_box">
-                                <input class="fulflmship_inptqty" type="text" name="" >
-                                <input class="fulflmship_inptdate" type="text" name="" placeholder="09/17/2026">
-                                <select class="fulflmship_inptcarrier">
-                                    <option>UPS</option>
-                                </select>
-                                <input class="fulflmship_inpttrack" type="text" name="" >
-                            </div>
-                            <div class="fulflmshipping_addnew">[add new]</div>
-                        </div>
-                        <div class="fulflmshipping_footer">
-                            <div class="fulflmshipping_remaining">1 Remaining</div>
-                            <div class="fulflmshipping_ship">To Ship 09/17/26</div>
-                        </div>
-                    </div>
+                    <?=$trackingview?>
                 </div>
                 <div class="fulflm_row"></div>
             </div>
