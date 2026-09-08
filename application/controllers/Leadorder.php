@@ -47,6 +47,14 @@ class Leadorder extends MY_Controller
             } else {
                 // Get Order Data
                 $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
+                if ($res['result']==$this->success_result) {
+                    // Temporary
+                    $artwork_id = $res['artwork']['artwork_id'];
+                    // Get new proofs
+                    $this->load->model('artwork_model');
+                    $proofdat = $this->artwork_model->get_artwork_proofnew($artwork_id);
+                    $res['proofs'] = $proofdat;
+                }
                 $edit = 0;
             }
             $error=$res['msg'];
