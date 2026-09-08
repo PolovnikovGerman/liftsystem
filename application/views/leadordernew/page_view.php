@@ -227,7 +227,9 @@
                     </div>
                 </div>
                 <div class="fulflm_row">
+                    <div class="fulflm_shipping" id="trackcodesarea">
                     <?=$trackingview?>
+                    </div>
                 </div>
                 <div class="fulflm_row"></div>
             </div>
