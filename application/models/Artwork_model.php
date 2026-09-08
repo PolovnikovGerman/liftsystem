@@ -4722,9 +4722,9 @@ Class Artwork_model extends MY_Model
                 $options[$optidx]['data'] = $proofs;
                 $optidx++;
             }
-            $out['head'] = $head;
             $out['options'] = $options;
         }
+        $out['head'] = $head;
         return $out;
     }
 }
