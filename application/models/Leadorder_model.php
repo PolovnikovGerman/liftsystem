@@ -9345,17 +9345,58 @@ Class Leadorder_model extends My_Model {
             return $out;
         }
         $invdoc=$docdata['doc_path'];
-
         // Send message
         $this->load->library('email');
-        $config = $this->config->item('email_setup');
-        $config['mailtype'] = 'text';
+        $brand = $leadorder['order']['brand'];
+        $sendsmtp = intval($brand=='SR' ? $this->config->item('arttasksr_smtp') : $this->config->item('arttasksb_smtp'));
+        if ($sendsmtp==1) {
+            if ($brand=='SR') {
+                $config = [
+                    'protocol'=>'smtp',
+                    'smtp_host' => $this->config->item('sr_smtp_host'),
+                    'smtp_port' => $this->config->item('sr_smtp_port'),
+                    'smtp_crypto' => $this->config->item('sr_smtp_crypto'),
+                    'smtp_user' => $this->config->item('arttasksr_user'),
+                    'smtp_pass' => $this->config->item('arttasksr_pass'),
+                    'charset'=>'utf-8',
+                    'mailtype'=>'text',
+                    'wordwrap'=>TRUE,
+                    'newline' => "\r\n",
+                ];
+            } else {
+                $config = [
+                    'protocol'=>'smtp',
+                    'smtp_host' => $this->config->item('sb_smtp_host'),
+                    'smtp_port' => $this->config->item('sb_smtp_port'),
+                    'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                    'smtp_user' => $this->config->item('arttasksb_user'),
+                    'smtp_pass' => $this->config->item('arttasksb_pass'),
+                    'charset'=>'utf-8',
+                    'mailtype'=>'text',
+                    'wordwrap'=>TRUE,
+                    'newline' => "\r\n",
+                ];
+            }
+        } else {
+            $config = $this->config->item('email_setup');
+            $config['mailtype'] = 'text';
+        }
         $this->email->initialize($config);
-        if ($config['protocol']=='smtp') {
+        if ($sendsmtp==1) {
             $this->email->from($config['smtp_user']);
         } else {
             $this->email->from($data['from']);
         }
+
+//
+//        $config = $this->config->item('email_setup');
+//        $config['mailtype'] = 'text';
+//        $this->email->initialize($config);
+//        if ($config['protocol']=='smtp') {
+//            $this->email->from($config['smtp_user']);
+//        } else {
+//            $this->email->from($data['from']);
+//        }
 
         $this->email->to($data['customer']);
         if ($data['cc'] != '') {
