@@ -4710,7 +4710,7 @@ Class Artwork_model extends MY_Model
                 $head = [
                     'status' => 'Approved',
                     'class' => 'approval',
-                    'apprtime' => $aprdays.' d',
+                    'apprtime' => $aprdays.'d',
                 ];
             }
             // Get Options

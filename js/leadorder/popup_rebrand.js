@@ -17,5 +17,9 @@ function navigation_init() {
     $(".previewpict_body").find('div.previewpict_optn_box').each(function () {
         boxid = $(this).attr('id');
         new SimpleBar(document.getElementById(boxid), {autoHide: false});
+    });
+    $(".artproofs_optn").find('div.optn_box').each(function () {
+        boxid = $(this).attr('id');
+        new SimpleBar(document.getElementById(boxid), {autoHide: false});
     })
 }

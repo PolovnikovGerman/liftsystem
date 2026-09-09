@@ -35,7 +35,7 @@
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="optn_box">
+            <div class="optn_box" id="artproof_<?=$artwork?>_<?=$option['option']?>">
                 <ul>
                     <?php foreach ($option['data'] as $proof) : ?>
                     <li>proof_<?=str_pad($proof['proof_ordnum'],2,0,STR_PAD_LEFT)?></li>
