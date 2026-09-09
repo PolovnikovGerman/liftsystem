@@ -1638,6 +1638,13 @@
     float: right !important;
     width: 168px;
 }
+.balancedue.paid {
+    background: #1e211f;
+    background: linear-gradient(to top, #040805, #3a3b3a);
+    border: 1px solid #040805;
+    border-radius: 5px;
+    margin-top: 5px;
+}
 .balancedue_txt {
     color: #fff;
     font-size: 13px;

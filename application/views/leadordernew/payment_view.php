@@ -87,8 +87,8 @@
         </div>
     </div>
     <div class="balancedueblock">
-        <div class="balanceduebox">
             <?php if ($order['payment_total']<$order['revenue']): ?> : ?>
+            <div class="balanceduebox">
                 <div class="balancedue_link">
                     <div class="balancedue_linkicon">
                         <img src="/img/leadorder/icon-link-grey.svg">
@@ -99,12 +99,12 @@
                     <div class="balancedue_txt">Balance Due:</div>
                     <div class="balancedue_price"><?=MoneyOutput($order['revenue']-$order['payment_total'])?></div>
                 </div>
+            </div>
             <?php else: ?>
-                <div class="balancedue">
-                    <div class="balancedue_txt">Total Due:</div>
+                <div class="balancedue paid">
+                    <div class="balancedue_txt">Balance Due:</div>
                     <div class="balancedue_price">PAID</div>
                 </div>
             <?php endif; ?>
-        </div>
     </div>
 </div>
