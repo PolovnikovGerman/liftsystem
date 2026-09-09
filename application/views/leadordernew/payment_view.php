@@ -64,29 +64,11 @@
     </div>
 </div>
 <div class="paymentsection_bottom">
-    <div class="balancedueblock">
-        <div class="balanceduebox">
-            <?php if ($order['payment_total']<$order['revenue']): ?> : ?>
-            <div class="balancedue_link">
-                <div class="balancedue_linkicon">
-                    <img src="/img/leadorder/icon-link-grey.svg">
-                </div>
-            </div>
-            <div class="balancedue_send"><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
-            <div class="balancedue">
-                <div class="balancedue_txt">Balance Due:</div>
-                <div class="balancedue_price"><?=MoneyOutput($order['revenue']-$order['payment_total'])?></div>
-            </div>
-            <?php else: ?>
-                <div class="balancedue">
-                    <div class="balancedue_txt">Total Due:</div>
-                    <div class="balancedue_price">PAID</div>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
     <div class="paymentblock">
         <div class="orddtls_subtitle">PAYMENT</div>
+        <?php if ($edit==0) : ?>
+            <div class="orddtls_addmanual">+ add manual payment / refund</div>
+        <?php endif; ?>
         <div class="paymentbox">
             <?php foreach ($charges as $charge): ?>
             <div class="paymentbox_card">
@@ -101,6 +83,27 @@
             <?php endforeach; ?>
             <?php if ($edit==1) : ?>
                 <div class="btn_addcard">+add credit card</div>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="balancedueblock">
+        <div class="balanceduebox">
+            <?php if ($order['payment_total']<$order['revenue']): ?> : ?>
+                <div class="balancedue_link">
+                    <div class="balancedue_linkicon">
+                        <img src="/img/leadorder/icon-link-grey.svg">
+                    </div>
+                </div>
+                <div class="balancedue_send"><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
+                <div class="balancedue">
+                    <div class="balancedue_txt">Balance Due:</div>
+                    <div class="balancedue_price"><?=MoneyOutput($order['revenue']-$order['payment_total'])?></div>
+                </div>
+            <?php else: ?>
+                <div class="balancedue">
+                    <div class="balancedue_txt">Total Due:</div>
+                    <div class="balancedue_price">PAID</div>
+                </div>
             <?php endif; ?>
         </div>
     </div>

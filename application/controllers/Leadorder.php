@@ -44,6 +44,15 @@ class Leadorder extends MY_Controller
             $mdata = [];
             if ($order==0) {
                 // New Order
+                $res=$this->leadorder_model->add_newlead_order($this->USR_ID, $brand);
+                $edit=1;
+                // Add items list
+                $this->load->model('orders_model');
+                $dboptions=array(
+                    'exclude'=>array(-4, -5, -2),
+                    'brand' => ($brand=='SR') ? 'SR' : 'BT',
+                );
+                $res['itemslist']=$this->orders_model->get_item_list($dboptions);
             } else {
                 // Get Order Data
                 $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
@@ -53,7 +62,7 @@ class Leadorder extends MY_Controller
                     // Get new proofs
                     $this->load->model('artwork_model');
                     $proofdat = $this->artwork_model->get_artwork_proofnew($artwork_id);
-                    $res['proofs'] = $proofdat;
+                    $res['proofdocs'] = $proofdat;
                     $this->load->model('artlead_model');
                     // Previews
                     $prevdat = $this->artlead_model->get_previewsnew($artwork_id);
@@ -77,6 +86,24 @@ class Leadorder extends MY_Controller
                 $orddata=$res['order'];
                 if ($order==0) {
                     // Prepare New Order view
+                    $head_options = [
+                        // 'order_head' => $this->load->view('leadorderdetails/head_order_view', $orddata,TRUE),
+                        'callpage' => $callpage,
+                        'leadsession' => $leadsession,
+                        'prvorder' => 0,
+                        'nxtorder' => 0,
+                        'order_id' => $orddata['order_id'],
+                        'brand' => $brand,
+                        'customer' => $orddata['customer_name'],
+                        'order_num' => $orddata['order_num'],
+                        'order_date' => $orddata['order_date'],
+                        'order_confirm' => $orddata['order_confirmation'],
+                    ];
+                    $head_options['unlocked']=0;
+                    $header = $this->load->view('leadordernew/header_view', $head_options, true);
+                    $mdata['cancelorder'] = $orddata['is_canceled'];
+                    $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
+                    $locking='';
                 } else {
                     if ($edit==0) {
                         // View order

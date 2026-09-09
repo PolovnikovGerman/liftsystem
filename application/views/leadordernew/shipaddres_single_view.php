@@ -45,11 +45,11 @@
         <div class="shiptax_groupdates">
             <div class="groupdates_block">
                 <div class="groupdates_title">Ships on:</div>
-                <div class="groupdates_box"><?=date('M j', $shipping['shipdate'])?></div>
+                <div class="groupdates_box"><?=empty($shipping['shipdate']) ? '' : date('M j', $shipping['shipdate'])?></div>
             </div>
             <div class="groupdates_block">
                 <div class="groupdates_title">Arives on:</div>
-                <div class="groupdates_box"><?=date('M j', $shipping['arrive_date'])?></div>
+                <div class="groupdates_box"><?=empty($shipping['arrive_date']) ? '' : date('M j', $shipping['arrive_date'])?></div>
             </div>
             <div class="groupdates_block">
                 <div class="groupdates_title">Event Date:</div>
