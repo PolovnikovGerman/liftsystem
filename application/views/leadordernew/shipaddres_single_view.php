@@ -3,7 +3,7 @@
     <!-- Change design for 0 / 1 -->
     <div class="inptaddress_country">
         <select class="shipaddressdat" name="shipadrcntr" data-address="<?= $address['order_shipaddr_id'] ?>"
-                data-fld="country_id">
+                data-fld="country_id" <?=$edit==0 ? 'disabled' : '' ?>>
             <option value="">Select country</option>
             <?php foreach ($countries as $country) : ?>
                 <option value="<?= $country['country_id'] ?>" <?= $country['country_id'] == $address['country_id'] ? 'selected' : '' ?>><?= $country['country_name'] ?></option>
@@ -12,30 +12,30 @@
     </div>
     <div class="shipaddress_box">
         <div class="copyaddress"><i class="fa fa-clone" aria-hidden="true"></i></div>
-        <input class="inpt_addressarea inptaddress_name" type="text" name="shipname" readonly="readonly"
+        <input class="inpt_addressarea inptaddress_name" type="text" name="shipname" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="Contact Name" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="ship_contact"
                value="<?= $address['ship_contact'] ?>"/>
-        <input class="inpt_addressarea inptaddress_company" type="text" name="shipcompany" readonly="readonly"
+        <input class="inpt_addressarea inptaddress_company" type="text" name="shipcompany" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="Company" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="ship_company"
                value="<?= $address['ship_company'] ?>"/>
-        <input class="inpt_addressarea inptaddress_addressline" type="text" name="shipaddr1" readonly="readonly"
+        <input class="inpt_addressarea inptaddress_addressline" type="text" name="shipaddr1" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="Address Line 1" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="ship_address1"
                value="<?= $address['ship_address1'] ?>"/>
-        <input class="inpt_addressarea inptaddress_addressline" type="text" name="shipaddr2" readonly="readonly"
+        <input class="inpt_addressarea inptaddress_addressline" type="text" name="shipaddr2" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="Address Line 2" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="ship_address2"
                value="<?= $address['ship_address2'] ?>"/>
-        <input class="inpt_addressarea inptaddress_city" type="text" name="shipcity" readonly="readonly"
+        <input class="inpt_addressarea inptaddress_city" type="text" name="shipcity" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="City" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="city"
                value="<?= $address['city'] ?>"/>
         <?php if (count($states) > 0) : ?>
-            <select class="select_addressarea" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="state_id">
+            <select class="select_addressarea" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="state_id" <?=$edit==0 ? 'disabled' : ''?>>
                 <option value="">State</option>
                 <?php foreach ($states as $state) : ?>
                     <option value="<?= $state['state_id'] ?>" <?= $state['state_id'] == $address['state_id'] ? 'selected="selected"' : '' ?>><?= $state['state_code'] ?></option>
                 <?php endforeach; ?>
             </select>
         <?php endif; ?>
-        <input class="inpt_addressarea inptaddress_zipcode" type="text" name="shipzip" readonly="readonly"
+        <input class="inpt_addressarea inptaddress_zipcode" type="text" name="shipzip" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="Zip Code" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="zip"
                value="<?= $address['zip'] ?>"/>
     </div>

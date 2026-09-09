@@ -1384,24 +1384,21 @@ class Template
         // Prepare shipping view
         if (count($res['shipping_address'])<2) {
             // 1 shipping address
-            if ($edit==0) {
+            // if ($edit==0) {
                 // View
-                $shipaddres = $res['shipping_address'][0];
-                $country_id = $shipaddres['country_id'];
-                $states=$this->CI->shipping_model->get_country_states($country_id);
-                $shipoptions = [
-                    'address' => $shipaddres,
-                    'countries' => $res['countries'],
-                    'states' => $states,
-                    'shipping' => $res['shipping'],
-                    'shipdocs' => $res['shipdocs'],
-                    'order' => $res['order'],
-                ];
-                $shiptaxview = $this->CI->load->view('leadordernew/shipaddres_single_view', $shipoptions, TRUE);
-            } else {
-                // Edit
-                // $shpadrview = $this->CI->load->view('leadordernew/shipaddres_single_view', ['address'=>$res['shipping_address'][0], 'countries'=>$res['countriew']], TRUE);
-            }
+            $shipaddres = $res['shipping_address'][0];
+            $country_id = $shipaddres['country_id'];
+            $states=$this->CI->shipping_model->get_country_states($country_id);
+            $shipoptions = [
+                'address' => $shipaddres,
+                'countries' => $res['countries'],
+                'states' => $states,
+                'shipping' => $res['shipping'],
+                'shipdocs' => $res['shipdocs'],
+                'order' => $res['order'],
+                'edit' => $edit,
+            ];
+            $shiptaxview = $this->CI->load->view('leadordernew/shipaddres_single_view', $shipoptions, TRUE);
         } else {
             // Multiship
             $shiptaxview = '';
