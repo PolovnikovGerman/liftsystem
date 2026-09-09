@@ -199,7 +199,8 @@ function send_invoicemail() {
     $.post(url, params, function(response){
         if (response.errors=='') {
             $("#loader").hide();
-            $("#artNextModal").modal('hide');
+            $("#sendnotification_body").empty();
+            $("#sendnotification").hide();
         } else {
             $("#loader").hide();
             show_error(response);
