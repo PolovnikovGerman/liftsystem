@@ -235,5 +235,10 @@
             </div>
         </div>
     </div>
-
+</div>
+<div class="sendnotification" id="sendnotification">
+    <div class="sendnotification_close">
+        <span aria-hidden="true">×</span>
+    </div>
+    <div id="sendnotification_body"></div>
 </div>

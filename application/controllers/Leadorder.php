@@ -32,7 +32,7 @@ class Leadorder extends MY_Controller
             $brand = ifset($postdata,'brand','ALL');
             $callpage = ifset($postdata, 'page', 'art_tasks');
             $edit = ifset($postdata, 'edit', 1);
-            $ordersession = ifset($postdata, 'session', '');
+            $ordersession = ifset($postdata, 'ordersession', '');
             // Remove from session
             if (!empty($ordersession)) {
                 usersession($ordersession,NULL);
@@ -109,6 +109,7 @@ class Leadorder extends MY_Controller
                             // $head_options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
                         }
                         $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
+                        $locking='';
                     } else {
 
                     }
@@ -118,6 +119,40 @@ class Leadorder extends MY_Controller
                 $content = $this->load->view('leadordernew/page_view', $data, true);
                 $mdata['content'] = $content;
                 $mdata['header'] = $header;
+                if ($res['order_system_type']=='old') {
+                    $leadorder=array(
+                        'order'=>$orddata,
+                        'payments'=>$res['payments'],
+                        'artwork'=>$res['artwork'],
+                        'artlocations'=>$res['artlocations'],
+                        'artproofs'=>$res['proofdocs'],
+                        'message'=>$res['message'],
+                        'order_system'=>$res['order_system_type'],
+                        'locrecid'=>$locking,
+                    );
+                } else {
+                    $leadorder=array(
+                        'order'=>$orddata,
+                        'payments'=>$res['payments'],
+                        'artwork'=>$res['artwork'],
+                        'artlocations'=>$res['artlocations'],
+                        'artproofs'=>$res['proofdocs'],
+                        'message'=>$res['message'],
+                        'contacts'=>$res['contacts'],
+                        'order_items'=>$res['order_items'],
+                        'order_system'=>$res['order_system_type'],
+                        'shipping'=>$res['shipping'],
+                        'shipping_address'=>$res['shipping_address'],
+                        'billing'=>$res['order_billing'],
+                        'charges'=>$res['charges'],
+                        'claydocs' => $res['claydocs'],
+                        'previewdocs' => $res['previewdocs'],
+                        'shipdocs' => $res['shipdocs'],
+                        'delrecords'=>[],
+                        'locrecid'=>$locking,
+                    );
+                }
+                usersession($leadsession, $leadorder);
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -5488,7 +5523,7 @@ class Leadorder extends MY_Controller
                         'subject' => $data['subject'],
                         'message' => $data['message'],
                     );
-                    $mdata['content'] = $this->load->view('leadorderdetails/invoice_preemail_view', $options, TRUE);
+                    $mdata['content'] = $this->load->view('leadordernew/invoice_sendemail_view', $options, TRUE);
                 }
             }
             $this->ajaxResponse($mdata, $error);
@@ -5507,10 +5542,8 @@ class Leadorder extends MY_Controller
             if (empty($leadorder)) {
                 $error = $this->restore_orderdata_error;
             } else {
-                $data = $this->input->post();
-
-                $res = $this->leadorder_model->send_invoicemail($data, $leadorder, $this->USR_ID, $ordersession);
-
+                // $data = $this->input->post();
+                $res = $this->leadorder_model->send_invoicemail($postdata, $leadorder, $this->USR_ID, $ordersession);
                 if ($res['result'] == $this->error_result) {
                     $error = $res['msg'];
                 }

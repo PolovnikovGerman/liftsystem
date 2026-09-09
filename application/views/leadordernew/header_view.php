@@ -2,6 +2,7 @@
 <input type="hidden" id="unlockedrec" value="<?=$unlocked?>"/>
 <input type="hidden" id="ordersession" value="<?=$leadsession?>"/>
 <input type="hidden" id="currentpage" value="<?=$callpage?>"/>
+<input type="hidden" id="leadorderbrand" value="<?=$brand?>"/>
 <div class="neworder_header">
     <div class="neworder_close">
         <span aria-hidden="true">×</span>
@@ -22,11 +23,11 @@
     <div class="whiteline_btns">
         <div class="btnsbox">
             <div class="btnsbox-button prevorder <?=!empty($prvorder) ? '' : 'unactive'?>" data-order="<?=$prvorder?>"><span><i class="fa fa-caret-left" aria-hidden="true"></i></span>prev</div>
-            <div class="btnsbox-button nxtorder" <?=!empty($nxtorder) ? '' : 'unactive'?> data-order="<?=$nxtorder?>">next <span><i class="fa fa-caret-right" aria-hidden="true"></i></span></div>
+            <div class="btnsbox-button nxtorder <?=!empty($nxtorder) ? '' : 'unactive'?>" data-order="<?=$nxtorder?>">next <span><i class="fa fa-caret-right" aria-hidden="true"></i></span></div>
             <div class="btnsbox-button unactive duplicateorder" data-order="<?=$order_id?>">duplicate <span><i class="fa fa-caret-up" aria-hidden="true"></i></span></div>
-            <div class="btnsbox-button sendpdf" data-order="<?=$order_id?>">send</div>
-            <div class="btnsbox-button viewpdf" data-order="<?=$order_id?>">pdf</div>
+            <div class="btnsbox-button sendpdf">send</div>
+            <div class="btnsbox-button viewpdf">pdf</div>
         </div>
-        <div class="btnsbox-btnedit" data-order="<?=$order_id?>">edit</div>
+        <div class="btnsbox-btnedit">edit</div>
     </div>
 </div>
