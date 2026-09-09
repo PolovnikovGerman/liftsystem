@@ -23,7 +23,6 @@
                 <span class="historybox_icon"><i class="fa fa-search" aria-hidden="true"></i></span>
                 <span><?=$row['out_date']?></span> -
                 <span><?=$row['out_subdate']?></span>
-<!--                <span>Sean</span>-->
             </div>
             <div class="historybox">
                 <div class="historybox_text"><?=$row['message']?></div>

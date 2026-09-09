@@ -207,3 +207,50 @@ function send_invoicemail() {
         }
     }, 'json');
 }
+
+// Init Lead Order Edit
+function init_onlineleadorder_edit() {
+    $(".neworder_close").unbind("click").click(function () {
+        $("#modalLeadOrder").modal("hide");
+        if ($("input#currentpage").length>0) {
+            var callpage=$("input#currentpage").val();
+            if (callpage=='artorderlist') {
+                $("#orderlist").show();
+                if (parseInt(updorders)==0) {
+                } else {
+                    // init_orders();
+                }
+            } else if (callpage=='art_tasks') {
+                $("#taskview").show();
+                if (parseInt(updorders)==0) {
+                } else {
+                    init_tasks_management();
+                    init_tasks_page();
+                }
+            } else if (callpage=='orderslist') {
+                // Orders list
+                if (parseInt(updorders)==0) {
+                } else {
+                    // search_leadorders();
+                }
+            } else if (callpage=='profitlist') {
+                if (parseInt(updorders)==0) {
+                } else {
+                    // search_profit_data();
+                }
+            } else if (callpage=='accrecive') {
+                if (parseInt(updorders)==0) {
+                } else {
+                    init_accounts_receivable();
+                }
+            } else if (callpage=='pooverview') {
+                // PO Overview
+                if (parseInt(updorders)==0) {
+                } else {
+                    init_pooverview();
+                }
+            }
+        }
+    });
+
+}

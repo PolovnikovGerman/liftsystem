@@ -539,7 +539,7 @@ function add_neworder() {
 
 function add_leadorder(brand) {
     var callpage = 'profitlist';
-    var url="/leadorder/leadorder_change";
+    var url="/leadorder/leadorder_change_new";
     var params = new Array();
     params.push({name: 'order', value: 0});
     params.push({name: 'page', value: callpage});
@@ -547,11 +547,14 @@ function add_leadorder(brand) {
     params.push({name: 'brand', value: brand});
     $.post(url, params, function(response){
         if (response.errors=='') {
-            $("#artModalLabel").empty().html(response.data.header);
-            $("#artModal").find('div.modal-body').empty().html(response.data.content);
-            $("#artModal").find('div.modal-dialog').css('width','1004px');
-            $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
-            $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            // $("#artModalLabel").empty().html(response.data.header);
+            // $("#artModal").find('div.modal-body').empty().html(response.data.content);
+            // $("#artModal").find('div.modal-dialog').css('width','1004px');
+            // $("#artModal").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
+            // $("#artModal").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
+            $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
+            $("#modalLeadOrder").modal({backdrop: 'static', keyboard: false, show: true});
             init_onlineleadorder_edit();
             init_rushpast();
             if (parseInt($("#ordermapuse").val())==1) {

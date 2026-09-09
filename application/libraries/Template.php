@@ -1374,11 +1374,7 @@ class Template
         $message['edit']=$edit;
         $data['messages_view']=$this->CI->load->view('leadordernew/message_view', $message, TRUE);
         // Contacts
-        if ($edit==0) {
-            $contacts = $this->CI->load->view('leadordernew/contact_detail_view', array('contacts'=>$res['contacts']), TRUE);
-        } else {
-            $contacts = $this->CI->load->view('leadordernew/contact_detail_edit', array('contacts'=>$res['contacts']), TRUE);
-        }
+        $contacts = $this->CI->load->view('leadordernew/contact_detail_view', ['contacts'=>$res['contacts'], $edit => $edit], TRUE);
         $data['contacts'] = $contacts;
         $data['order'] = $res['order'];
         // Prepare shipping view
@@ -1410,7 +1406,7 @@ class Template
         if ($edit==0) {
             $data['itemsview'] = $this->CI->load->view('leadordernew/items_data_view', ['items' => $items], TRUE);
         } else {
-            // $data['items'] = $this->CI->load->view('leadordernew/items_data_view', ['items' => $items], TRUE);
+            $data['itemsview'] = $this->CI->load->view('leadordernew/items_data_edit', ['items' => $items], TRUE);
         }
         // Art section
         if ($res['order']['brand']=='SR') {
@@ -1452,7 +1448,7 @@ class Template
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
         $data['trackingview'] = $this->_prepare_tracking_content($res['order_items'], $shipstatus, $edit);
         // Proofs
-        $data['proofsview'] = $this->CI->load->view('leadordernew/proofs_view', ['proofs' => $res['proofs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+        $data['proofsview'] = $this->CI->load->view('leadordernew/proofs_view', ['proofs' => $res['proofdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
         return $data;
     }
 
