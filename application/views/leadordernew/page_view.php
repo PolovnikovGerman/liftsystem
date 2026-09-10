@@ -204,28 +204,28 @@
             <div class="ordblock_tab">Fulfillment</div>
             <div class="ordblock_body">
                 <div class="fulflm_row"><?=$profitview?></div>
-                <div class="fulflm_row">
-                    <div class="fulflm_claymodels">
-                        <div class="claymodels_header">Clay Models:</div>
-                        <div class="claymodels_body">
-                            <?php if ($edit==1) : ?>
-                            <div class="claymodels_addoptn">+Add<br>Option</div>
-                            <?php endif; ?>
-                            <?=$claydocsview?>
-                        </div>
-                    </div>
-                </div>
-                <div class="fulflm_row">
-                    <div class="fulflm_previewpict">
-                        <div class="previewpict_header">Preview Pictures:</div>
-                        <div class="previewpict_body">
-                            <?php if ($edit==1) : ?>
-                            <div class="previewpict_addoptn">+Add<br>Option</div>
-                            <?php endif; ?>
-                            <?=$prevdocsview?>
-                        </div>
-                    </div>
-                </div>
+                <div class="fulflm_row"><?=$clayprevview?></div>
+<!--                    <div class="fulflm_claymodels">-->
+<!--                        <div class="claymodels_header">Clay Models:</div>-->
+<!--                        <div class="claymodels_body">-->
+<!--                            --><?php //if ($edit==1) : ?>
+<!--                            <div class="claymodels_addoptn">+Add<br>Option</div>-->
+<!--                            --><?php //endif; ?>
+<!--                            --><?php //=$claydocsview?>
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="fulflm_row">-->
+<!--                    <div class="fulflm_previewpict">-->
+<!--                        <div class="previewpict_header">Preview Pictures:</div>-->
+<!--                        <div class="previewpict_body">-->
+<!--                            --><?php //if ($edit==1) : ?>
+<!--                            <div class="previewpict_addoptn">+Add<br>Option</div>-->
+<!--                            --><?php //endif; ?>
+<!--                            --><?php //=$prevdocsview?>
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <div class="fulflm_row">
                     <div class="fulflm_shipping" id="trackcodesarea">
                     <?=$trackingview?>

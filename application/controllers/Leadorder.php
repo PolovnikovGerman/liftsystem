@@ -57,25 +57,26 @@ class Leadorder extends MY_Controller
                 // Get Order Data
                 $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
                 if ($res['result']==$this->success_result) {
-                    // Temporary
-                    $artwork_id = $res['artwork']['artwork_id'];
-                    // Get new proofs
-                    $this->load->model('artwork_model');
-                    $proofdat = $this->artwork_model->get_artwork_proofnew($artwork_id);
-                    $res['proofdocs'] = $proofdat;
-                    $this->load->model('artlead_model');
-                    // Previews
-                    $prevdat = $this->artlead_model->get_previewsnew($artwork_id);
-                    $res['previewdocs'] = $prevdat;
-                    // Clay models
-                    $claydat = $this->artlead_model->get_claymodelsnew($artwork_id);
-                    $res['claydocs'] = $claydat;
                 }
                 $edit = 0;
             }
             $error=$res['msg'];
             if ($res['result']==$this->success_result) {
                 $error = '';
+                // Temporary
+                $artwork_id = $res['artwork']['artwork_id'];
+                // Get new proofs
+                $this->load->model('artwork_model');
+                $proofdat = $this->artwork_model->get_artwork_proofnew($artwork_id);
+                $res['proofdocs'] = $proofdat;
+                $this->load->model('artlead_model');
+                // Previews
+                $prevdat = $this->artlead_model->get_previewsnew($artwork_id);
+                $res['previewdocs'] = $prevdat;
+                // Clay models
+                $claydat = $this->artlead_model->get_claymodelsnew($artwork_id);
+                $res['claydocs'] = $claydat;
+                // End Temporary
                 $mdata['cancelorder'] = 0;
                 $leadsession='leadorder'.uniq_link(15);
                 // Generate new session
