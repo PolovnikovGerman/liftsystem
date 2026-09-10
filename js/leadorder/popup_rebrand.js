@@ -55,11 +55,11 @@ function navigation_init() {
     new SimpleBar(document.getElementById('orderitemsarea'), {autoHide: false});
     new SimpleBar(document.getElementById('order_art_boxes'), {autoHide: false});
     new SimpleBar(document.getElementById('trackcodesarea'), {autoHide: false});
-    $(".claymodels_body").find('div.claymodels_optn_box').each(function () {
+    $('div.claymodels_optn_box').each(function () {
         boxid = $(this).attr('id');
         new SimpleBar(document.getElementById(boxid), {autoHide: false});
     });
-    $(".previewpict_body").find('div.previewpict_optn_box').each(function () {
+    $('div.previewpict_optn_box').each(function () {
         boxid = $(this).attr('id');
         new SimpleBar(document.getElementById(boxid), {autoHide: false});
     });
@@ -104,6 +104,24 @@ function navigation_init() {
             prepare_send_invoice();
         }
     });
+    $(".leadorderclaytab").unbind('click').click(function () {
+        if ($(this).hasClass("active")) {
+        } else {
+            $(".leadorderpreviewtab").removeClass("active");
+            $(".leadorderpreviewcontent").removeClass("active");
+            $(".leadorderclaytab").addClass("active");
+            $(".leadorderclaycontent").addClass("active");
+        }
+    });
+    $(".leadorderpreviewtab").unbind('click').click(function () {
+        if ($(this).hasClass("active")) {
+        } else {
+            $(".leadorderclaytab").removeClass("active");
+            $(".leadorderclaycontent").removeClass("active");
+            $(".leadorderpreviewtab").addClass("active");
+            $(".leadorderpreviewcontent").addClass("active");
+        }
+    })
     // Art Locations and proofs
     // init_showartlocs();
     // Edit order

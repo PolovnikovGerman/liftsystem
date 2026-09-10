@@ -1112,9 +1112,10 @@ class Template
         }
         $artwork = $res['artwork']['artwork_id'];
         // Clay Models
-        $data['claydocsview'] = $this->CI->load->view('leadordernew/claydocs_view', ['claydocs' => $res['claydocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
-        // Previews
-        $data['prevdocsview'] = $this->CI->load->view('leadordernew/previewdocs_view', ['previews' => $res['previewdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+        $data['clayprevview'] = $this->CI->load->view('leadordernew/claypreview_tabs_view', ['claydocs' => $res['claydocs'], 'previews' => $res['previewdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+//        $data['claydocsview'] = $this->CI->load->view('leadordernew/claydocs_view', ['claydocs' => $res['claydocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+//        // Previews
+//        $data['prevdocsview'] = $this->CI->load->view('leadordernew/previewdocs_view', ['previews' => $res['previewdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
         // Trackings
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
         $data['trackingview'] = $this->_prepare_tracking_content($res['order_items'], $shipstatus, $edit);
