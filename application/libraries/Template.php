@@ -1125,7 +1125,8 @@ class Template
 
     public function _prepare_tracking_content($order_items, $shipstatus, $edit)
     {
-        $trackcontent = '<div class="fulflm_shipping empty">&nbsp</div>';
+        // $trackcontent = '<div class="fulflm_shipping empty">&nbsp</div>';
+        $trackcontent = '&nbsp;';
         $numcolors = 0;
         foreach ($order_items as $order_item) {
             $numcolors+=count($order_item['items']);

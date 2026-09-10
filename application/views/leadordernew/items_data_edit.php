@@ -16,7 +16,9 @@
             </div>
             <?php $nrow++;?>
         <?php endforeach; ?>
-        <?php $this->load->view('leadordernew/imprint_data_view', array('imprints'=>$orderitem['imprints'])); ?>
+        <?php if (count($orderitem['imprints']) > 0) : ?>
+            <?php $this->load->view('leadordernew/imprint_data_view', array('imprints'=>$orderitem['imprints'])); ?>
+        <?php endif; ?>
     <?php endforeach; ?>
     <div class="tblitems_tr <?=($nrow%2==0 ? 'whitedatarow' : 'greydatarow')?>">
         <div class="tblitems_td tblitems_item textgreen additem">+Add Item</div>
