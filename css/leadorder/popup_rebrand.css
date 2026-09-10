@@ -1293,6 +1293,7 @@
 }
 .claymodels_optn_header {
     width: 100%;
+    margin-top: 3px;
 }
 .claymodels_optn_box {
     width: 54px;
@@ -1379,6 +1380,7 @@
 }
 .previewpict_optn_header {
     width: 100%;
+    margin-top: 3px;
 }
 .previewpict_optn_box {
     width: 73px;
@@ -1964,4 +1966,50 @@ textarea.aprovemail_message {
     margin-top: -6px;
     width: 60px;
     cursor: pointer;
+}
+/* Clay preview tabs */
+.leadorderclaytab, .leadorderpreviewtab {
+    width: 124px;
+    height: 35px;
+    background: #C2C4C3;
+    color: #000000;
+    border-top: 1px solid #333333;
+    border-left: 1px solid #333333;
+    border-right: 1px solid #333333;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    cursor: pointer;
+    margin-top: 6px;
+    position: relative;
+}
+.leadorderpreviewtab {
+    float: right!important;
+    margin-right: 2px;
+}
+.leadorderpreviewtab.active, .leadorderclaytab.active {
+    background: #FFFFFF;
+    height: 37px;
+    z-index: 10;
+}
+.leadorderclaycontent, .leadorderpreviewcontent {
+    width: 315px;
+    height: 137px;
+    border: 1px solid #333333;
+    display: none;
+    margin-top: -2px;
+}
+.leadorderclaycontent.active, .leadorderpreviewcontent.active {
+    display: block;
+    background: #FFFFFF;
+}
+.claypreviewtab_title {
+    width: 100%;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+.claypreviewtab_subtitle {
+    width: 100%;
+    font-size: 11px;
+    text-align: center;
 }
