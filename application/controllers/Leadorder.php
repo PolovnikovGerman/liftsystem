@@ -99,6 +99,7 @@ class Leadorder extends MY_Controller
                         'order_num' => $orddata['order_num'],
                         'order_date' => $orddata['order_date'],
                         'order_confirm' => $orddata['order_confirmation'],
+                        'edit' => $edit,
                     ];
                     $head_options['unlocked']=0;
                     $header = $this->load->view('leadordernew/header_view', $head_options, true);
@@ -106,25 +107,25 @@ class Leadorder extends MY_Controller
                     $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
                     $locking='';
                 } else {
+                    $head_options = [
+                        // 'order_head' => $this->load->view('leadorderdetails/head_order_view', $orddata,TRUE),
+                        'callpage' => $callpage,
+                        'leadsession' => $leadsession,
+                        'prvorder' => $res['prvorder'],
+                        'nxtorder' => $res['nxtorder'],
+                        'order_id' => $orddata['order_id'],
+                        'brand' => $brand,
+                        'customer' => $orddata['customer_name'],
+                        'order_num' => $orddata['order_num'],
+                        'order_date' => $orddata['order_date'],
+                        'order_confirm' => $orddata['order_confirmation'],
+                    ];
                     if ($edit==0) {
                         // View order
                         // Get Data about Engaded records
                         $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order));
                         $res['unlocked']=$engade_res['result'];
                         // Build Head
-                        $head_options = [
-                            // 'order_head' => $this->load->view('leadorderdetails/head_order_view', $orddata,TRUE),
-                            'callpage' => $callpage,
-                            'leadsession' => $leadsession,
-                            'prvorder' => $res['prvorder'],
-                            'nxtorder' => $res['nxtorder'],
-                            'order_id' => $orddata['order_id'],
-                            'brand' => $brand,
-                            'customer' => $orddata['customer_name'],
-                            'order_num' => $orddata['order_num'],
-                            'order_date' => $orddata['order_date'],
-                            'order_confirm' => $orddata['order_confirmation'],
-                        ];
                         $head_options['unlocked']=$engade_res['result'];
                         if ($engade_res['result']==$this->error_result) {
                             $voptions=array(
@@ -139,7 +140,7 @@ class Leadorder extends MY_Controller
                         $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
                         $locking='';
                     } else {
-
+                        $head_options['prvorder'] = $head_options['nxtorder'] = 0;
                     }
                     $header = $this->load->view('leadordernew/header_view', $head_options, true);
                     $mdata['cancelorder'] = $orddata['is_canceled'];
