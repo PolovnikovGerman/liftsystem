@@ -248,6 +248,7 @@ function init_onlineleadorder_edit() {
     init_leadorderparts_scrolls();
     init_claypreview_tabs();
     init_orderdata_change();
+    init_contacts_change();
 }
 
 function init_orderdata_change() {
@@ -263,9 +264,11 @@ function init_orderdata_change() {
         $.post(url, params, function(response) {
             if (response.errors=='') {
                 // Total due
+                // $(".totalduedataviewarea").empty().html(response.data.total_due);
                 // Order Total
                 $(".ordtotal_price").empty().html(response.data.order_revenue);
                 // Tax value
+                // $("input.salestaxcost").val(response.data.tax);
                 // Items subtotal
                 $(".itemsubtotal_price").empty().html(response.data.item_subtotal);
                 // Update ship_company
@@ -276,9 +279,87 @@ function init_orderdata_change() {
                 if (parseInt(response.data.freshbill)==1) {
                     $("input.inpt_addressarea[data-field='company']").val(response.data.billcompany);
                 }
-
+                // $("input#loctimeout").val(response.data.loctime);
+                // if (response.data.ordersystem=='new') {
+                //     openbalancemanage(response.data.balanceopen);
+                // }
                 init_onlineleadorder_edit();
                 $("#loader").hide();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".btn-update").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'entity', value: 'message'});
+        params.push({name: 'fldname', value: 'update'});
+        params.push({name: 'newval', value: $('textarea[data-field="update"]').val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadorder/change_leadorder_item";
+        $.post(url, params, function(response) {
+            if (response.errors=='') {
+            } else {
+                show_error(response);
+            }
+        },'json');
+
+    });
+}
+
+function init_contacts_change() {
+    $("input.contactdata").unbind('change').change(function() {
+        var fldname=$(this).data('fld');
+        var contact=$(this).data('contact');
+        var params=new Array();
+        params.push({name: 'fldname', value:fldname});
+        params.push({name: 'contact', value:contact});
+        params.push({name: 'newval', value:$(this).val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadorder/change_contact";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // if (fldname==='contact_emal') {
+                //     if (parseInt(response.data.locstatus)===1) {
+                //         $("input.ordecontactchk[data-contact='"+contact+"']").prop('checked',false).prop('disabled',true);
+                //     } else {
+                //         $("input.ordecontactchk[data-contact='"+contact+"']").prop('disabled',false).prop('checked',true);
+                //     }
+                // }
+                // Update phone by formated value
+                if (fldname==='contact_phone') {
+                    $("input.contactdata[data-contact='"+contact+"'][data-fld='contact_phone']").val(response.data.contact_phone);
+                }
+                // Update Shipping address Name
+                if (parseInt(response.data.freshship)==1) {
+                    $("input.inpt_addressarea[data-fld='ship_contact']").val(response.data.shipcontact);
+                }
+                // Update billing address Name
+                if (parseInt(response.data.freshbill)==1) {
+                    $("input.inpt_addressarea[data-field='customer_name']").val(response.data.billcontact);
+                }
+                // $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $("input.contactdatachk").unbind('change').change(function() {
+        var fldname=$(this).data('fld');
+        var contact=$(this).data('contact');
+        var newval = 0;
+        if ($(this).prop('checked')==true) {
+            newval = 1;
+        }
+        var params=new Array();
+        params.push({name: 'fldname', value:fldname});
+        params.push({name: 'contact', value:contact});
+        params.push({name: 'newval', value: newval});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadorder/change_contact";
+        $.post(url, params, function(response) {
+            if (response.errors=='') {
             } else {
                 show_error(response);
             }

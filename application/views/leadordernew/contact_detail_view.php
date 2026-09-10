@@ -26,20 +26,20 @@
         </div>
         <div class="tblconts_td tblconts_boxes">
             <div class="tblconts_checkbox">
-                <input type="checkbox" name="contact_art" class="contactdata" data-contact="<?=$contact['order_contact_id']?>"
+                <input type="checkbox" name="contact_art" class="contactdatachk" data-contact="<?=$contact['order_contact_id']?>"
                        data-fld="contact_art" <?=$contact['contact_art']==1 ? "checked" : ""?> <?=$edit==0 ? 'disabled' : ''?>/>
             </div>
         </div>
         <div class="tblconts_td tblconts_boxes">
             <div class="tblconts_checkbox">
-                <input type="checkbox" name="contact_inv" class="contactdata" data-contact="<?=$contact['order_contact_id']?>"
+                <input type="checkbox" name="contact_inv" class="contactdatachk" data-contact="<?=$contact['order_contact_id']?>"
                        data-fld="contact_inv" <?=$contact['contact_inv']==1 ? "checked" : ""?> <?=$edit==0 ? 'disabled' : ''?>/>
             </div>
         </div>
         <div class="tblconts_td tblconts_boxes">
             <div class="tblconts_checkbox">
-                <input type="checkbox" name="contact_inv" class="contactdata" data-contact="<?=$contact['order_contact_id']?>"
-                       data-fld="contact_emal" <?=$contact['contact_trk']==1 ? "checked" : ""?> <?=$edit==0 ? 'disabled' : ''?>/>
+                <input type="checkbox" name="contact_inv" class="contactdatachk" data-contact="<?=$contact['order_contact_id']?>"
+                       data-fld="contact_trk" <?=$contact['contact_trk']==1 ? "checked" : ""?> <?=$edit==0 ? 'disabled' : ''?>/>
             </div>
         </div>
     </div>

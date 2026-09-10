@@ -1,7 +1,7 @@
 <div class="orddtls_notes">
     <div class="orddtls_notestitle">General Notes:</div>
     <div class="orddtls_notesbox">
-        <textarea class="inputleadorddatas" name="general_notes" <?=($edit==0 ? 'readonly="readonly"' : 'data-entity="message" data-field="general_notes"')?>><?=$general_notes?></textarea>
+        <textarea class="orderdata" name="general_notes" <?=($edit==0 ? 'readonly="readonly"' : 'data-entity="message" data-field="general_notes"')?>><?=$general_notes?></textarea>
     </div>
 </div>
 <div class="orddtls_update">
@@ -10,7 +10,7 @@
         <?php if ($edit==0) : ?>
         &nbsp;
         <?php else : ?>
-            <textarea name="name2" class="inputleadorddata" data-entity="message" data-field="update"></textarea>
+            <textarea name="updatemsg" class="msgorderdata" data-entity="message" data-field="update"></textarea>
             <div class="btn_update">update</div>
         <?php endif; ?>
     </div>
@@ -30,4 +30,3 @@
         <?php endforeach; ?>
     </div>
 </div>
-
