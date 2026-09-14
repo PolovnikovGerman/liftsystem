@@ -87,7 +87,7 @@
         </div>
     </div>
     <div class="balancedueblock">
-            <?php if ($order['payment_total']<$order['revenue']): ?> : ?>
+            <?php if ($order['payment_total']<$order['revenue']): ?>
             <div class="balanceduebox">
                 <div class="balancedue_link">
                     <div class="balancedue_linkicon">
