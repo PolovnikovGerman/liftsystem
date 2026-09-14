@@ -120,6 +120,9 @@ function init_leadorderparts_scrolls() {
         boxid = $(this).attr('id');
         new SimpleBar(document.getElementById(boxid), {autoHide: false});
     })
+    if ($("#shiptax_bodyleftmultiple").length > 0) {
+        new SimpleBar(document.getElementById('shiptax_bodyleftmultiple'), {autoHide: false});
+    }
 }
 
 // Switch Clay / Preview Tabs

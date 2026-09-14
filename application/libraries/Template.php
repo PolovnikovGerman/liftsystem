@@ -1039,6 +1039,7 @@ class Template
         $this->CI->load->model('user_model');
         $this->CI->load->model('shipping_model');
         $this->CI->load->model('leadorder_model');
+        // User Data
         $usrdat=$this->CI->user_model->get_user_data($user_id);
         // Messages
         $message = $res['message'];
@@ -1055,6 +1056,7 @@ class Template
                 // View
             $shipaddres = $res['shipping_address'][0];
             $country_id = $shipaddres['country_id'];
+            // States
             $states=$this->CI->shipping_model->get_country_states($country_id);
             $shipoptions = [
                 'address' => $shipaddres,
@@ -1068,7 +1070,14 @@ class Template
             $shiptaxview = $this->CI->load->view('leadordernew/shipaddres_single_view', $shipoptions, TRUE);
         } else {
             // Multiship
-            $shiptaxview = '';
+            $shipoptions = [
+                'addresses' => $res['shipping_address'],
+                'shipping' => $res['shipping'],
+                'shipdocs' => $res['shipdocs'],
+                'order' => $res['order'],
+                'edit' => $edit,
+            ];
+            $shiptaxview = $this->CI->load->view('leadordernew/shipaddres_multiple_view', $shipoptions, TRUE);;
         }
         $data['shiptaxview'] = $shiptaxview;
         $data['shipping'] = $res['shipping'];
