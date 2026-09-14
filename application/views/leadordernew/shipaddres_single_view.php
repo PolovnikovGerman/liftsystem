@@ -45,15 +45,15 @@
         <div class="shiptax_groupdates">
             <div class="groupdates_block">
                 <div class="groupdates_title">Ships on:</div>
-                <div class="groupdates_box"><?=empty($shipping['shipdate']) ? '' : date('M j', $shipping['shipdate'])?></div>
+                <div class="groupdates_box" data-fld="shipdate"><?=empty($shipping['shipdate']) ? '' : date('M j', $shipping['shipdate'])?></div>
             </div>
             <div class="groupdates_block">
                 <div class="groupdates_title">Arives on:</div>
-                <div class="groupdates_box"><?=empty($shipping['arrive_date']) ? '' : date('M j', $shipping['arrive_date'])?></div>
+                <div class="groupdates_box" data-fld="arrive_date"><?=empty($shipping['arrive_date']) ? '' : date('M j', $shipping['arrive_date'])?></div>
             </div>
             <div class="groupdates_block">
                 <div class="groupdates_title">Event Date:</div>
-                <div class="groupdates_box"><?=empty($shipping['event_date']) ? '&nbsp;' : date('M j', $shipping['event_date'])?></div>
+                <div class="groupdates_box" data-fld="event_date"><?=empty($shipping['event_date']) ? '&nbsp;' : date('M j', $shipping['event_date'])?></div>
             </div>
         </div>
     </div>
@@ -68,11 +68,22 @@
         </div>
         <div class="shiptax_info">
             <div class="infoshiptax_row">
-                <div class="infoshiptax_pricebox"><?=MoneyOutput($shipping['rush_price'])?></div>
+                <div class="infoshiptax_pricebox">
+                    <?php if ($edit==0) : ?>
+                    <?=MoneyOutput($shipping['rush_price'])?>
+                    <?php else : ?>
+                    <input type="text" class="inptpaymentdata" data-fld="rush_price" value="<?=$shipping['rush_price']?>"/>
+                    <?php endif; ?>
+                </div>
                 <div class="infoshiptax_title">Production:</div>
             </div>
             <div class="infoshiptax_row">
-                <div class="infoshiptax_pricebox"><?=MoneyOutput($order['shipping'])?></div>
+                <div class="infoshiptax_pricebox">
+                    <?php if ($edit==0) : ?>
+                        <?=MoneyOutput($order['shipping'])?></div>
+                    <?php else : ?>
+                    <input type="text" class="inptpaymentdata" data-fld="rush_price" value="<?=$order['shipping']?>"/>
+                    <?php endif; ?>
                 <div class="infoshiptax_title">Shipping:</div>
                 <?php foreach ($address['shipping_costs'] as $shipping_cost) : ?>
                     <?php if ($shipping_cost['current'] == 1) : ?>
@@ -82,7 +93,13 @@
                 <?php endforeach; ?>
             </div>
             <div class="infoshiptax_row">
-                <div class="infoshiptax_pricebox"><?=MoneyOutput($address['sales_tax'])?></div>
+                <div class="infoshiptax_pricebox">
+                    <?php if ($edit==0) : ?>
+                        <?=MoneyOutput($address['sales_tax'])?>
+                    <?php else: ?>
+                        <input type="text" class="inptpaymentdata" data-fld="rush_price" value="<?=$address['sales_tax']?>"/>
+                    <?php endif; ?>
+                </div>
                 <div class="infoshiptax_title">Sale Tax:</div>
 <!--                --><?php //if ($address['taxview']==0) : ?>
 <!--                --><?php //endif; ?>

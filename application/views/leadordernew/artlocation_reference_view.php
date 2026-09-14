@@ -9,7 +9,7 @@
     <div class="art_block2">
         <?=$artlocation['rushchk']?>
     </div>
-    <div class="art_block3 <?=$locat_ready==1 ? 'text_blue' : 'text_white'?> <?=(empty($artlocation['logo_vectorized']) ? '' : 'viewreadyloc')?>" data-artloc="<?=$artlocation['artwork_art_id']?>">
+    <div class="art_block3 <?=$artlocation['locat_ready']==1 ? 'text_blue' : 'text_white'?> <?=(empty($artlocation['logo_vectorized']) ? '' : 'viewreadyloc')?>" data-artloc="<?=$artlocation['artwork_art_id']?>">
         <?=(empty($logo_vectorized) ? '&nbsp;' : 'Open AI')?>
     </div>
     <div class="art_block4">
@@ -20,4 +20,3 @@
         <?php endif; ?>
     </div>
 </div>
-

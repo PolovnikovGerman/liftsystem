@@ -55,17 +55,17 @@
                         <div class="items_footer">
                             <div class="itemsfooter_message">
                                 <label>Add’l message to appear on invoice:</label>
-                                <textarea class="orderdata" name="invoice_message" data-fld="invoice_message" readonly><?=$order['invoice_message']?></textarea>
+                                <textarea class="ordercommondata" name="invoice_message" data-fld="invoice_message" readonly><?=$order['invoice_message']?></textarea>
                             </div>
                             <div class="itemsfooter_inpts">
                                 <div class="inpts_row">
-                                    <input type="text" name="misc_charge1" class="orderdata" data-fld="mischrg_label1" readonly="readonly" placeholder="Misc Charge" value="<?=$order['mischrg_label1']?>"/>
+                                    <input type="text" name="misc_charge1" class="ordercommondata" data-fld="mischrg_label1" readonly="readonly" placeholder="Misc Charge" value="<?=$order['mischrg_label1']?>"/>
                                 </div>
                                 <div class="inpts_row">
-                                    <input type="text" name="misc_charge2" class="orderdata" data-fld="mischrg_label2" readonly="readonly" placeholder="Misc Charge" value="<?=$order['mischrg_label2']?>">
+                                    <input type="text" name="misc_charge2" class="ordercommondata" data-fld="mischrg_label2" readonly="readonly" placeholder="Misc Charge" value="<?=$order['mischrg_label2']?>">
                                 </div>
                                 <div class="inpts_row">
-                                    <input type="text" name="discount_label" class="orderdata" data-fld="discount_label" readonly="readonly" placeholder="Courtesy Discount" value="<?=$order['discount_label']?>">
+                                    <input type="text" name="discount_label" class="ordercommondata" data-fld="discount_label" readonly="readonly" placeholder="Courtesy Discount" value="<?=$order['discount_label']?>">
                                 </div>
                             </div>
                             <div class="itemsfooter_inptsprice">
@@ -128,11 +128,11 @@
                     <div class="artapprvl_subtitle">Artwork:</div>
                     <div class="artapprvl_blankrush">
                         <div class="artapprvl_blank">
-                            <input id="checkorderblank" type="checkbox" class="orderdata" <?=$order['order_blank']==1 ? 'checked' : ''?> <?=$edit==0 ? 'disabled="disabled"' : ''?>/>
+                            <input id="checkorderblank" type="checkbox" class="" <?=$order['order_blank']==1 ? 'checked' : ''?> <?=$edit==0 ? 'disabled="disabled"' : ''?>/>
                             <label for="checkorderblank">blank</label>
                         </div>
                         <div class="artapprvl_rush">
-                            <input id="checkorderrush" type="checkbox" class="orderdata" <?=$order['order_rush']==1 ? 'checked' : ''?> <?=$edit==0 ? 'disabled="disabled"' : ''?>>
+                            <input id="checkorderrush" type="checkbox" class="ordercommondatachk" <?=$order['order_rush']==1 ? 'checked' : ''?> <?=$edit==0 ? 'disabled="disabled"' : ''?>>
                             <label for="checkorderrush">rush</label>
                         </div>
                     </div>
@@ -242,3 +242,5 @@
     </div>
     <div id="sendnotification_body"></div>
 </div>
+<div class="orderitem_inventoryview"></div>
+<div class="imprintdetails_popup"></div>

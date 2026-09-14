@@ -1,5 +1,6 @@
 <div class="artbox_number"><?=$artlocation['art_ordnum']?>.</div>
-<div class="artbox_filenameorg <?=$artlocation['locat_ready']==1 ? 'unactive' : ''?> truncateoverflowtext">Show Text</div>
+<div class="artbox_filenameorg truncateoverflowtext">Show Text</div>
+<?php //=$artlocation['locat_ready']==1 ? 'unactive' : ''?>
 <div class="artbox_iconfile">
     <img src="/img/leadorder/file-alt-grey.svg">
 </div>

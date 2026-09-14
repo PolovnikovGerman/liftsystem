@@ -66,7 +66,7 @@
 <div class="paymentsection_bottom">
     <div class="paymentblock">
         <div class="orddtls_subtitle">PAYMENT</div>
-        <?php if ($edit==0) : ?>
+        <?php if ($edit==1) : ?>
             <div class="orddtls_addmanual">+ add manual payment / refund</div>
         <?php endif; ?>
         <div class="paymentbox">
