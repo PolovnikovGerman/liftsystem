@@ -1142,8 +1142,17 @@ li.select2-results__option {
     line-height: 24px;
     color: #0A0AD4;
 }
+.artbox_locationtitle {
+    font-size: 12px;
+    width: 70px;
+    line-height: 24px;
+}
 .artbox_filenameorg.unactive {
     color: #cbcbd1;
+}
+.artbox_filenameorg input {
+    width: 50px;
+    height: 22px;
 }
 .artbox_iconfile {
     width: 16px;
