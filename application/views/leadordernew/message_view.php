@@ -1,7 +1,7 @@
 <div class="orddtls_notes">
     <div class="orddtls_notestitle">General Notes:</div>
     <div class="orddtls_notesbox">
-        <textarea class="orderdata" name="general_notes" <?=($edit==0 ? 'readonly="readonly"' : 'data-entity="message" data-field="general_notes"')?>><?=$general_notes?></textarea>
+        <textarea class="ordercommondata" name="general_notes" <?=($edit==0 ? 'readonly="readonly"' : 'data-entity="message" data-field="general_notes"')?>><?=$general_notes?></textarea>
     </div>
 </div>
 <div class="orddtls_update">

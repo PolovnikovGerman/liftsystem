@@ -1077,7 +1077,7 @@ class Template
         if ($edit==0) {
             $data['itemsview'] = $this->CI->load->view('leadordernew/items_data_view', ['items' => $items], TRUE);
         } else {
-            $data['itemsview'] = $this->CI->load->view('leadordernew/items_data_edit', ['items' => $items], TRUE);
+            $data['itemsview'] = $this->CI->load->view('leadordernew/items_data_edit', ['items' => $items, 'itemslist' => $res['itemslist']], TRUE);
         }
         // Art section
         if ($res['order']['brand']=='SR') {

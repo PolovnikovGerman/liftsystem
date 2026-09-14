@@ -2418,6 +2418,7 @@ Class Leadorder_model extends My_Model {
         $order=$leadorder['order'];
         $order_items=$leadorder['order_items'];
         $shipaddress = $leadorder['shipping_address'];
+        $delrecords = $leadorder['delrecords'];
         $order_item_id=$details['order_item_id'];
         $imprint_details=$details['imprint_details'];
         $order_blank=intval($details['order_blank']);
@@ -2455,9 +2456,17 @@ Class Leadorder_model extends My_Model {
         $imprints=$order_items[$idx]['imprints'];
 
         foreach ($imprints as $irow) {
-            $imprints[$impridx]['delflag']=1;
+            if ($irow['order_imprint_id'] > 0) {
+                $delrecords[] = [
+                    'entity' => 'imprints',
+                    'id' => $irow['order_imprint_id'],
+                ];
+            }
             $impridx++;
         }
+        // Made Imprints array empty
+        $order_items[$idx]['imprints'] = [];
+        $imprints = [];
         // Create Imprint
         $newidx=count($imprints)+1;
         $out['shiprebuild']=0;

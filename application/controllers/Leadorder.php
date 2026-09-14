@@ -137,6 +137,7 @@ class Leadorder extends MY_Controller
                             $head_options['unlocked']=$this->error_result;
                             // $head_options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
                         }
+                        $head_options['timeout'] = 0;
                         $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
                         $locking='';
                     } else {

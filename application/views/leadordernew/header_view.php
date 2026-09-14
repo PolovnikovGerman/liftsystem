@@ -3,6 +3,12 @@
 <input type="hidden" id="ordersession" value="<?=$leadsession?>"/>
 <input type="hidden" id="currentpage" value="<?=$callpage?>"/>
 <input type="hidden" id="leadorderbrand" value="<?=$brand?>"/>
+<?php if (isset($locrecid)) {?>
+    <input type="hidden" id="locrecid" value="<?=$locrecid?>"/>
+<?php } ?>
+<?php if ($order_id > 0) : ?>
+<input type="hidden" id="loctimeout" value="<?=$timeout?>"/>
+<?php endif; ?>
 <div class="neworder_header">
     <div class="neworder_close">
         <span aria-hidden="true">×</span>
@@ -12,7 +18,7 @@
         <?php if ($edit==0) : ?>
         <div class="namecustomer_box"><?=$customer?></div>
         <?php else: ?>
-        <input type="text" class="orderdata namecustomer" data-entity="order" data-field="customer_name" value="<?=$customer?>"/>
+        <input type="text" class="ordercommondata namecustomer" data-entity="order" data-field="customer_name" value="<?=$customer?>"/>
         <?php endif; ?>
     </div>
     <div class="whiteline_btns">

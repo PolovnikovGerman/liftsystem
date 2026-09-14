@@ -209,6 +209,21 @@ input.namecustomer {
     cursor: pointer;
 }
 
+.btnsbox-btnsave {
+    height: 24px;
+    width: 45px;
+    border: 1px solid #686868;
+    border-radius: 4px;
+    background: #074a21;
+    background: linear-gradient(to top, #074a21, #038136);
+    font-size: 12px;
+    line-height: 23px;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    margin-left: 8px;
+    cursor: pointer;
+}
 
 
 #modalLeadOrder .modal-body {
@@ -447,7 +462,9 @@ input.namecustomer {
     margin-left: 5px;
     cursor: pointer;
 }
-
+a.historydetailsview {
+    text-decoration: none;
+}
 
 
 .orddtls_contacts {
@@ -536,6 +553,10 @@ input.namecustomer {
     border-radius: 4px 4px 0 0;
     height: 136px;
 }
+.table_items input, .table_items select {
+    width: 100%;
+    height: 18px;
+}
 .tblitems_tr {
     width: 100%;
     line-height: 18px;
@@ -564,31 +585,85 @@ input.namecustomer {
     color: #fff;
 }
 .tblitems_item {
-    /*width: 59px;*/
     width: 66px;
     text-align: right;
 }
+.tblitems_additemdata {
+    width: 228px;
+}
+/*.tblitems_additemdata select {*/
+/*    width: 100%;*/
+/*}*/
 .tblitems_descript {
     width: 162px;
 }
-.tblitems_color {
+.tblitems_color, .adddata_color {
     width: 77px;
 }
 .tblitems_customdescript {
     width: 239px;
 }
-.tblitems_qty {
+.tblitems_qty, .adddata_qty  {
     width: 47px;
     text-align: right;
 }
-.tblitems_each {
+/*.tblitems_qty input, .adddata_qty input {*/
+/*    width: 100%;*/
+/*}*/
+.tblitems_each, .adddata_price {
     width: 50px;
     text-align: center;
 }
+/*.tblitems_each input, .adddata_price input {*/
+/*    width: 100%;*/
+/*}*/
 .tblitems_subtotal {
     width: 69px;
     text-align: right;
 }
+.tditems_trash {
+    width: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+span.addorderitemcolor {}
+.adddata_subtotal {
+    width: 60px;
+}
+.items_content_addprint {
+    color: #ffffff;
+    font-size: 10px;
+    cursor: pointer;
+    visibility: hidden;
+    background: #008000;
+    height: 18px;
+    border-radius: 4px;
+    padding: 0 5px;
+    line-height: 18px;
+    margin: 1px auto;
+    float: unset!important;
+    text-align: center;
+}
+.tblitems_cancel, .adddata_cancel {
+    text-align: center;
+    font-size: 14px;
+    width: 14px;
+    cursor: pointer;
+}
+/* SELECT 2 for item select */
+.tblitems_additemdata span.select2-selection--single {
+    height: 20px!important;
+}
+.tblitems_additemdata .select2-selection__rendered {
+    line-height: 19px!important;
+}
+.tblitems_additemdata .select2-selection__arrow {
+    height: 18px!important;
+}
+li.select2-results__option {
+    font-size: 12px;
+}
+/* SELECT 2 for item select */
 .tblitems_inforow {
     padding-left: 10px;
     /*width: 242px;*/
@@ -602,6 +677,7 @@ input.namecustomer {
 .orderitemsarea {
     width: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: none;
     max-height: 106px;
 }
@@ -694,7 +770,7 @@ input.namecustomer {
 
 .shiptax_info {
     float: right !important;
-    width: 265px;
+    width: 270px;
     margin-right: 5px;
 }
 .infoshiptax_row {
@@ -725,7 +801,7 @@ input.namecustomer {
 }
 .infoshiptax_infotext {
     float: right !important;
-    font-size: 10px;
+    font-size: 9px; /* 10px */
     line-height: 15px;
     color: #747474;
 }
@@ -2036,3 +2112,506 @@ textarea.aprovemail_message {
     font-size: 11px;
     text-align: center;
 }
+/* Invertory popup */
+.orderitem_inventoryview {
+    display: none;
+    position: absolute;
+    left: 289px;
+    top: 148px;
+    z-index: 1052;
+}
+.orderitem_inventoryview div {
+    float: left;
+}
+.orderitem_inventoryview_head {
+    background: #707070;
+    color: #FFFFFF;
+    height: 18px;
+    font-size: 11px;
+}
+.orderitem_inventoryview_head div {
+    line-height: 18px;
+    text-align: center;
+}
+.orderitem_inventoryview_head .inventorycolor {
+    width: 99px;
+    margin-right: 10px;
+}
+.orderitem_inventoryview_head .inventorypercent {
+    width: 36px;
+}
+.orderitem_inventoryview_head .inventoryinstock {
+    width: 52px; /* 44px; */
+}
+.orderitem_inventoryview_head .inventoryreserv {
+    width: 42px;
+}
+.orderitem_inventoryview_head .inventoryavailable {
+    width: 52px; /* 44px; */
+    margin-right: 10px;
+}
+.orderitem_inventoryview_head .inventoryonboat {
+    width: 66px;
+}
+.orderitem_inventoryview_body {
+    clear: both;
+    background: #707070;
+    /* color: #FFFFFF; */
+    font-size: 12px;
+    border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+.orderitem_inventoryview_body div {
+    line-height: 18px;
+    height: 18px;
+    text-align: center;
+    color: #000000;
+}
+.orderitem_inventoryview_body .datarow {
+    clear: both;
+    cursor: pointer;
+}
+.inventorydataempty {
+    width: 10px;
+    background: #707070;
+}
+.orderitem_inventoryview_body .inventorycolor {
+    width: 99px;
+    text-align: right;
+    font-size: 13px;
+    padding-right: 7px;
+}
+.orderitem_inventoryview_body .inventorycolor.selected {
+    background: #000000;
+    color: #FFFFFF;
+}
+.orderitem_inventoryview_body .inventorypercent {
+    width: 36px;
+    color: #7d7d7d;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventorypercent.severevalstock,
+.orderitem_inventoryview_body .inventoryinstock.severevalstock
+{
+    background: #f77777;
+    /* color: #ffffff; */
+}
+.orderitem_inventoryview_body .inventorypercent.lowinstock,
+.orderitem_inventoryview_body .inventoryinstock.lowinstock {
+    background: #ffcc7f;
+    /* color: #000000; */
+}
+.orderitem_inventoryview_body .inventorydatacell.selected {
+    border-top: 2px #000000 solid;
+    border-bottom: 2px #000000 solid;
+    line-height: 14px;
+}
+.orderitem_inventoryview_body .inventoryinstock {
+    width: 52px; /* 44px */
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventoryreserv {
+    width: 42px;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_body .inventoryavailable {
+    width: 52px; /* 44px */
+}
+.orderitem_inventoryview_body .inventoryonboat {
+    width: 66px;
+    border-right: 1px solid #000000;
+}
+.orderitem_inventoryview_close {
+    position: relative;
+    top: -13px;
+    left: -7px;
+    z-index: 1055;
+    font-size: 15px;
+    cursor: pointer;
+    height: 14px;
+}
+/* End Inventory Popup */
+/* Imprint details Popup */
+.imprintdetails_popup {
+    display: none;
+    position: absolute;
+    left: 104px;
+    top: 148px;
+    z-index: 1052;
+}
+/* Imprint details content */
+.imprintpopuptitle {
+    width: 1047px;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 28px;
+    height: 28px;
+    background: #f3f3f3;
+    border: 2px solid #000;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.imprintdetailsclose {
+    position: absolute;
+    top: -11px;
+    right: -9px;
+    width: 20px;
+    height: 20px;
+    border-radius: 12px;
+    border: 1px solid #000;
+    background: #ff0000;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    opacity: 1;
+    z-index: 1;
+    font-size: 16px;
+    line-height: 18px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+    font-weight: bold;
+}
+.imprintdetailsarea {
+    /*background: url('/img/leadorder/inprint_location_bg.png') no-repeat transparent;*/
+    clear: both;
+    height: 451px;
+    width: 1047px;
+    background: #f3f3f3;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.imprintdetailsdata {
+    float: left;
+    height: 409px;
+    margin-left: 13px;
+    width: 745px;
+}
+.imprintdetailstitle {
+    float: left;
+    margin-left: 184px;
+    height: 31px;
+    line-height: 31px;
+    width: 240px;
+}
+.imprintdetailstitle > .orderblank {
+    float: left;
+    width: 100%;
+}
+.imprintdetailstitle > .orderblank input {
+    float: left;
+    margin-top: 13px;
+}
+
+.imprintdetailstitle > .orderblank .labeltxt {
+    float: left;
+    font-size: 12px;
+    margin-left: 7px;
+    margin-top: 4px;
+}
+.imprintdetailsdata_left, .imprintdetailsdata_right {
+    width: 367px;
+    border-top: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    border-right: 2px solid #000000;
+    padding-bottom: 10px;
+}
+.imprintdetailsdata_left {
+    clear: both;
+    margin-left: -5px;
+}
+/*.imprintdetailsdata_right {*/
+/*    float: left;*/
+/*    margin-left: 16px;*/
+/*    !* margin-top: 27px; *!*/
+/*    width: 362px;*/
+/*    border-top: 1px solid #000000;*/
+/*    border-bottom: 1px solid #000000;*/
+/*    border-right: 1px solid #000000;*/
+/*}*/
+.imprintdetails_location_subltitle {
+    float: left;
+    width: 100%;
+    margin-top: 6px;
+}
+.imprintdetails_location_subltitle > div {
+    font-size: 12px;
+    color: #252525;
+    float: left;
+    height: 21px;
+    line-height: 21px;
+}
+.imprintdetails_location_subltitle > .locname_subtitle {
+    width: 68px;
+}
+.newrepeat_subtitle {
+    width: 95px;
+}
+.numcolors_subtitle {
+    width: 68px;
+}
+.printsetupcost_subtitle {
+
+}
+.imprintlocdata {
+    border-bottom: 1px solid #000000;
+    clear: both;
+    float: left;
+    opacity: 0.5;
+    width: 367px;
+}
+.imprintlocdata.active {
+    opacity: 1;
+}
+.imprintlocrow {
+    clear: both;
+    float: left;
+    height: 27px;
+    line-height: 27px;
+    width: 100%;
+}
+.imprintlocrow input, .imprintlocrow select {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #000000;
+    float: left;
+    height: 20px;
+}
+.imprintlocrow input:disabled, .imprintlocrow select:disabled {
+    background: #f5f5f5 none repeat scroll 0 0;
+    border: 1px solid #e2e2e2;
+    color: #e2e2e2;
+    float: left;
+    height: 20px;
+}
+input.locationactive {
+    height: 16px;
+    margin-top: 5px;
+}
+.imprintlocrow > .title {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 3px;
+    text-align: left;
+    width: 51px;
+}
+select.locationtype {
+    margin-right: 3px;
+    margin-top: 2px;
+    width: 54px;
+}
+.repeatdetail {
+    background: transparent url("/img/leadorder/icon_fileempty.png") no-repeat scroll 0 0;
+    float: left;
+    /* margin-left: 2px;*/
+    margin-top: 1px;
+    /* opacity: 0.5; */
+    /* width: 17px; */
+    width: 39px;
+}
+input.imprintrepeatnote {
+    width: 37px;
+    font-size: 12px;
+}
+.repeatdetail.active {
+    opacity: 1;
+    cursor: pointer;
+}
+.repeatdetail.full {
+    background: transparent url("/img/leadorder/icon_file.png") no-repeat scroll 0 0;
+}
+select.imprintcolorschoice {
+    margin-top: 2px;
+    width: 32px;
+}
+.imprintlocrow > .labeltxt {
+    float: left;
+    font-size: 12px;
+    width: 31px;
+    margin-left: 2px;
+    height: 22px;
+    line-height: 21px;
+}
+.imprintlocprices {
+    float: left;
+    /* width: 141px; */
+}
+input.imprintprice {
+    font-size: 11px;
+    margin-left: 3px;
+    text-align: right;
+    width: 27px;
+}
+select.imprintlocationchoice {
+    margin-left: 25px;
+    width: 94px;
+}
+.extracostlabel {
+    float: left;
+    text-align: right;
+    line-height: 10px;
+    height: 22px;
+    font-size: 10px;
+    margin-right: 7px;
+    width: 39px;
+}
+.imprintdetailssample {
+    float: left;
+    margin-left: 9px;
+    margin-top: 14px;
+    width: 268px;
+}
+.imprintdetailssample > .title {
+    clear: both;
+    float: left;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    width: 100%;
+    margin-bottom: 5px;
+    color: #1f1f1f;
+}
+.imprinttable_title {
+    clear: both;
+    float: left;
+    height: 17px;
+    line-height: 17px;
+    margin-left: 29px;
+    width: 228px;
+}
+.imprinttable_title > .label {
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: left;
+    width: 98px;
+}
+.imprinttable_title > .labelprice {
+    width: 87px;
+    float: left;
+    text-align: right;
+    margin-right: 5px;
+    font-size: 11px;
+}
+.imprinttable_title > select.imprintpricepiece {
+    height: 17px;
+    width: 34px;
+}
+.imprinttablelocations {
+    clear: both;
+    background: url('/img/leadorder/imprintsample_bg.png') no-repeat transparent;
+    float: left;
+    margin-left: 30px;
+    margin-top: 3px;
+    width: 226px;
+}
+.imprinttablelocations > .imprinttablehead {
+    color: #ffffee;
+    float: left;
+    font-size: 11px;
+    height: 23px;
+    line-height: 23px;
+    text-align: center;
+    width: 100%;
+}
+.imprinttablelocations > .imprinttablehead > .label_locationname {
+    float: left;
+    width: 143px;
+}
+.imprinttablelocations > .imprinttablehead > .label_locationsize {
+    float: left;
+    width: 54px;
+}
+.imprinttablelocations > .imprinttablehead > .label_locationtemplate {
+    float: left;
+    width: 28px;
+}
+.imprinttabledata {
+    float: left;
+    height: 265px;
+    width: 224px;
+}
+.imprinttabledata > .locationsamplerow {
+    clear: both;
+    color: #ffffee;
+    float: left;
+    font-size: 11px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    width: 100%;
+}
+.imprinttabledata > .locationsamplerow > .numpp {
+    float: left;
+    border-right: 1px solid #FFFFEE;
+    width: 19px;
+}
+.imprinttabledata > .locationsamplerow > .locatname {
+    float: left;
+    border-right: 1px solid #FFFFEE;
+    width: 117px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+.imprinttabledata > .locationsamplerow > .locatname.addnew {
+    color: #8a8a8a;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.imprinttabledata > .locationsamplerow > .locatsize {
+    float: left;
+    border-right: 1px solid #FFFFEE;
+    width: 62px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.imprinttabledata > .locationsamplerow > .locattempl {
+    float: left;
+    margin-left: 3px;
+    width: 18px;
+}
+.imprinttabledata > .locationsamplerow > .locattempl.active {
+    background: url('/img/leadorder/icon_glass.png') no-repeat transparent;
+}
+.saveimprintdetailsarea {
+    clear: both;
+    float: left;
+    margin-left: 626px;
+    width: 120px;
+}
+.saveimprintdetailsarea > .saveimprintdetailsdata {
+    background: transparent url("/img/leadorder/button_save.png") no-repeat scroll 0 0;
+    color: #fff;
+    cursor: pointer;
+    float: left;
+    font-size: 13px;
+    height: 31px;
+    line-height: 28px;
+    text-align: center;
+    width: 47px;
+}
+.saveimprintdetailsarea > .revertimprintdetailsdata {
+    background: transparent url("/img/leadorder/button_revert.png") no-repeat scroll 0 0;
+    color: #fff;
+    cursor: pointer;
+    float: left;
+    font-size: 12px;
+    height: 31px;
+    line-height: 28px;
+    margin-left: 7px;
+    text-align: center;
+    width: 58px;
+}
+.imprintdetail_repeat_note {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+/* End Imprint details content */
