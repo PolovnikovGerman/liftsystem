@@ -811,6 +811,11 @@ li.select2-results__option {
 .infoshiptax_infotext span.italictxt {
     font-style: italic;
 }
+.infoshiptax_infotext.taxdataview {
+    position: relative;
+    top: -22px;
+    left: -120px;
+}
 .shipdocs {
     width: 50px;
 }
@@ -1152,7 +1157,7 @@ li.select2-results__option {
 }
 .artbox_filenameorg input {
     width: 50px;
-    height: 22px;
+    height: 18px;
 }
 .artbox_iconfile {
     width: 16px;
