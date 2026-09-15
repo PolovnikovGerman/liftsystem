@@ -11,7 +11,8 @@
         </select>
     </div>
     <div class="shipaddress_box">
-        <div class="copyaddress"><i class="fa fa-clone" aria-hidden="true"></i></div>
+        <div class="copyaddress" data-addresstype="shipping" data-address="<?=$address['order_shipaddr_id'] ?>"><i class="fa fa-clone" aria-hidden="true"></i></div>
+        <textarea class="fulladdressview" data-addresstype="shipping" data-address="<?=$address['order_shipaddr_id'] ?>"><?=$shipaddress?></textarea>
         <input class="inpt_addressarea inptaddress_name" type="text" name="shipname" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="Contact Name" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="ship_contact"
                value="<?= $address['ship_contact'] ?>"/>

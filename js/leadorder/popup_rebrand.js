@@ -49,6 +49,7 @@ function navigation_init() {
     });
     // Clay Preview tabs
     init_claypreview_tabs();
+    init_copyaddresses(0);
     // Art Locations and proofs
     // init_showartlocs();
     // Edit order
@@ -242,6 +243,22 @@ function send_invoicemail() {
             show_error(response);
         }
     }, 'json');
+}
+
+function init_copyaddresses(editmode=0) {
+    $("div.copyaddress").unbind('click').click(function(){
+        var addresstype = $(this).data('addresstype');
+        var addresid = $(this).data('address');
+        var element = document.querySelector(".fulladdressview[data-addresstype='"+addresstype+"'][data-address='"+addresid+"']");
+        copyOrderToClipboard(element);
+        if (parseInt(editmode)==1) {
+            if (addresstype=='shipping') {
+                $(".inpt_addressarea[name='shipname'][data-address='"+addresid+"']").focus();
+            } else {
+                $(".inpt_addressarea[name='customer_name'][data-address='"+addresid+"']").focus();
+            }
+        }
+    });
 }
 
 // Init Lead Order Edit
@@ -918,4 +935,18 @@ function update_locperiod(response) {
     if ($("input#loctimeout").length > 0) {
         $("input#loctimeout").val(response.data.loctime);
     }
+}
+
+function copyOrderToClipboard(element) {
+    $(element).show();
+    $(element).focus();
+    $(element).select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Msg '+msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
+    $(element).hide();
 }

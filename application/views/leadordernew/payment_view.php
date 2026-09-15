@@ -17,12 +17,19 @@
             </select>
         </div>
         <div class="billaddress_box">
-            <div class="copyaddress"><i class="fa fa-clone" aria-hidden="true"></i></div>
-            <input class="inpt_addressarea inptaddress_name" <?=$edit==0 ? 'readonly' : ''?> type="text" name="" placeholder="Contact Name" value="<?=$billing['customer_name']?>"/>
-            <input class="inpt_addressarea inptaddress_company" <?=$edit==0 ? 'readonly' : ''?> type="text" name="" placeholder="Company" value="<?=$billing['company']?>"/>
-            <input class="inpt_addressarea inptaddress_addressline" <?=$edit==0 ? 'readonly' : ''?> type="text" name="" placeholder="Address Line 1" value="<?=$billing['address_1']?>"/>
-            <input class="inpt_addressarea inptaddress_addressline" <?=$edit==0 ? 'readonly' : ''?> type="text" name="" placeholder="Address Line 2" value="<?=$billing['address_2']?>"/>
-            <input class="inpt_addressarea inptaddress_city" <?=$edit==0 ? 'readonly' : ''?> type="text" name="" placeholder="City" value="<?=$billing['city']?>"/>
+            <div class="copyaddress" data-addresstype="billing" data-address="<?=$billing['order_billing_id'] ?>"><i class="fa fa-clone" aria-hidden="true"></i></div>
+            <textarea class="fulladdressview" data-addresstype="billing" data-address="<?=$billing['order_billing_id'] ?>"><?=$billingaddress?></textarea>
+            <input class="inpt_addressarea inptaddress_name" <?=$edit==0 ? 'readonly' : ''?> type="text" name="customer_name"
+                   placeholder="Contact Name" data-address="<?=$billing['order_billing_id'] ?>" data-fld="customer_name"
+            value="<?=$billing['customer_name']?>"/>
+            <input class="inpt_addressarea inptaddress_company" <?=$edit==0 ? 'readonly' : ''?> type="text" name="company" placeholder="Company"
+                   data-address="<?=$billing['order_billing_id'] ?>" data-fld="company" value="<?=$billing['company']?>"/>
+            <input class="inpt_addressarea inptaddress_addressline" <?=$edit==0 ? 'readonly' : ''?> type="text" name="address_1"
+                   placeholder="Address Line 1" data-address="<?=$billing['order_billing_id'] ?>" data-fld="address_1" value="<?=$billing['address_1']?>"/>
+            <input class="inpt_addressarea inptaddress_addressline" <?=$edit==0 ? 'readonly' : ''?> type="text" name="address_2"
+                   placeholder="Address Line 2" data-address="<?=$billing['order_billing_id'] ?>" data-fld="address_2" value="<?=$billing['address_2']?>"/>
+            <input class="inpt_addressarea inptaddress_city" <?=$edit==0 ? 'readonly' : ''?> type="text" name="city"
+                   placeholder="City" data-address="<?=$billing['order_billing_id'] ?>" data-fld="city" value="<?=$billing['city']?>"/>
             <?php if (count($states) > 0) : ?>
             <select class="select_addressarea" <?=$edit==0 ? 'disabled' : ''?> name="billing_state" id="billing_state">>
                 <option value="">State</option>
@@ -31,7 +38,8 @@
                 <?php endforeach; ?>
             </select>
             <?php endif; ?>
-            <input class="inpt_addressarea inptaddress_zipcode" <?=$edit==0 ? 'readonly' : ''?> type="text" name="" placeholder="City" value="<?=$billing['zip']?>"/>
+            <input class="inpt_addressarea inptaddress_zipcode" <?=$edit==0 ? 'readonly' : ''?> type="text" name="zip"
+                   placeholder="City" data-address="<?=$billing['order_billing_id'] ?>" data-fld="zip" value="<?=$billing['zip']?>"/>
         </div>
     </div>
 </div>
@@ -72,12 +80,12 @@
         <div class="paymentbox">
             <?php foreach ($charges as $charge): ?>
             <div class="paymentbox_card">
-                <input class="paymentcard_price" type="text" name="" placeholder="$0.00" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['amount']?>"/>
-                <input class="paymentcard_number" type="text" name="" placeholder="XXXX-XXXX-XXXX-XXXX" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['cardnum_view']?>"/>
-                <input class="paymentcard_date" type="text" name="" placeholder="DD" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['exp_month']?>"/>
+                <input class="paymentcard_price" type="text" name="amount" placeholder="$0.00" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['amount']?>"/>
+                <input class="paymentcard_number" type="text" name="cardnum_view" placeholder="XXXX-XXXX-XXXX-XXXX" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['cardnum_view']?>"/>
+                <input class="paymentcard_date" type="text" name="exp_month" placeholder="DD" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['exp_month']?>"/>
                 <div class="paymentcard_txt">/</div>
-                <input class="paymentcard_month" type="text" name="" placeholder="YY" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['exp_year']?>"/>
-                <input class="paymentcard_cvc" type="text" name="" placeholder="CVC" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['cardcode_view']?>"/>
+                <input class="paymentcard_month" type="text" name="exp_year" placeholder="YY" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['exp_year']?>"/>
+                <input class="paymentcard_cvc" type="text" name="cardcode_view" placeholder="CVC" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['cardcode_view']?>"/>
                 <div class="paymentcard_lock"><i class="fa fa-lock" aria-hidden="true"></i></div>
             </div>
             <?php endforeach; ?>

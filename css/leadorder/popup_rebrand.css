@@ -1146,6 +1146,7 @@ li.select2-results__option {
     font-size: 12px;
     line-height: 24px;
     color: #0A0AD4;
+    cursor: pointer;
 }
 .artbox_locationtitle {
     font-size: 12px;
@@ -1202,6 +1203,7 @@ li.select2-results__option {
     line-height: 25px;
     color: #0A0AD4;
     width: 84px;
+    cursor: pointer;
 }
 .artbox_filenamevect.redrawing {
     font-size: 12px;
@@ -1377,7 +1379,6 @@ li.select2-results__option {
 .fulflm_profit {
     float: right !important;
     width: 288px;
-    height: 28px;
     background: #001072;
     border: 1px solid #001072;
     border-radius: 7px;
@@ -1387,20 +1388,25 @@ li.select2-results__option {
     width: 85px;
     padding-right: 7px;
     text-align: right;
+    height: 28px;
     line-height: 28px;
     font-size: 14px;
     font-weight: bold;
-    /*color: #fff;*/
     border-right: 1px solid #fff;
+}
+.fulflm_profit.white .fulflmprofit_price, .fulflm_profit.white .fulflmprofit_interest,
+.fulflm_profit.green .fulflmprofit_price, .fulflm_profit.green .fulflmprofit_interest,
+.fulflm_profit.orange .fulflmprofit_price, .fulflm_profit.orange .fulflmprofit_interest
+ {
+    border-right: 1px solid #000000;
 }
 .fulflmprofit_interest {
     width: 86px;
-    /* padding-right: 5px; */
     text-align: center;
+    height: 28px;
     line-height: 28px;
     font-size: 14px;
     font-weight: bold;
-    /*color: #fff;*/
     border-right: 1px solid #fff;
     padding: 0 5px;
 }
@@ -1408,9 +1414,9 @@ li.select2-results__option {
     width: 103px;
     float: right !important;
     font-size: 12px;
-    /*color: #fff;*/
     text-align: center;
     line-height: 28px;
+    height: 28px;
 }
 .fulflm_claymodels {
     width: 100%;
@@ -1927,6 +1933,14 @@ li.select2-results__option {
     text-align: center;
     line-height: 13px;
     cursor: pointer;
+}
+textarea.fulladdressview {
+    display: none;
+    padding-left: 3px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    overflow-y: auto;
+    resize: none;
 }
 .billing_addressarea .inpt_addressarea {
     float: left;
