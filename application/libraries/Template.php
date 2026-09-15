@@ -1389,6 +1389,7 @@ class Template
             $states=$this->CI->shipping_model->get_country_states($country_id);
             $shipoptions = [
                 'address' => $shipaddres,
+                'shipaddress' => $this->CI->shipping_model->prepare_shipaddress($shipaddres),
                 'countries' => $res['countries'],
                 'states' => $states,
                 'shipping' => $res['shipping'],
@@ -1440,6 +1441,7 @@ class Template
             'payments' => $res['payments'],
             'order' => $res['order'],
             'edit' => $edit,
+            'billingaddress' => $this->CI->shipping_model->prepare_billaddress($billing),
         ];
         $data['paymentsview'] = $this->CI->load->view('leadordernew/payment_view', $payoptions, TRUE);
         // Fullfilment

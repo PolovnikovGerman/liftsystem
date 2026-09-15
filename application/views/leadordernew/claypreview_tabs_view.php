@@ -4,7 +4,7 @@
         <?php if ($clayhistory==1) : ?>
             Historical View
         <?php else: ?>
-            <?php if (count($claydocs['options']) > 0) : ?>
+            <?php if (count($claydocs) > 0) : ?>
             To Approve
             <?php else: ?>
             No Clay Models
