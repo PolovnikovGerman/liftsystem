@@ -1120,8 +1120,24 @@ class Template
             $data['profitview'] = $this->CI->load->view('leadordernew/profit_view', ['order' => $res['order']], TRUE);
         }
         $artwork = $res['artwork']['artwork_id'];
-        // Clay Models
-        $data['clayprevview'] = $this->CI->load->view('leadordernew/claypreview_tabs_view', ['claydocs' => $res['claydocs'], 'previews' => $res['previewdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+        // Clay Models && Preview
+        $clayoptions = [
+            'artwork' => $artwork,
+            'edit' => $edit,
+            'clayhistory' => $res['claydocs']['historical'],
+            'previewhistory' => $res['previewdocs']['historical'],
+        ];
+        if ($res['claydocs']['historical']==0) {
+            $clayoptions['claydocs'] = $res['claydocs']['options'];
+        } else {
+            $clayoptions['claydocs'] = $res['claydocs']['clays'];
+        }
+        if ($res['previewdocs']['historical']==0) {
+            $clayoptions['previews'] = $res['previewdocs']['options'];
+        } else {
+            $clayoptions['previews'] = $res['previewdocs']['previews'];
+        }
+        $data['clayprevview'] = $this->CI->load->view('leadordernew/claypreview_tabs_view', $clayoptions, TRUE);
 //        $data['claydocsview'] = $this->CI->load->view('leadordernew/claydocs_view', ['claydocs' => $res['claydocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
 //        // Previews
 //        $data['prevdocsview'] = $this->CI->load->view('leadordernew/previewdocs_view', ['previews' => $res['previewdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
