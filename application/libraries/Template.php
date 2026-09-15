@@ -1524,22 +1524,27 @@ class Template
             }
         } elseif ($numcolors > 1) {
             // Multi Items Track
-//            $totalitems = 0;
-//            $tracktotal = 0;
-//            foreach ($order_items as $order_item) {
-//                $totalitems+=$order_item['item_qty'];
-//                $itemcolors = $order_item['items'];
-//                foreach ($itemcolors as $itemcolor) {
-//                    foreach ($itemcolor['trackings'] as $tracking) {
-//                        $tracktotal+=$tracking['qty'];
-//                    }
-//                }
-//            }
-//            $remains = $totalitems - $tracktotal;
-//            $allcompleted = 1;
-//            if ($remains > 0) {
-//                $allcompleted = 0;
-//            }
+            $totalitems = 0;
+            $tracktotal = 0;
+            foreach ($order_items as $order_item) {
+                $totalitems+=$order_item['item_qty'];
+                $itemcolors = $order_item['items'];
+                foreach ($itemcolors as $itemcolor) {
+                    foreach ($itemcolor['trackings'] as $tracking) {
+                        $tracktotal+=$tracking['qty'];
+                    }
+                }
+            }
+            $remains = $totalitems - $tracktotal;
+            $allcompleted = 1;
+            if ($remains > 0) {
+                $allcompleted = 0;
+            }
+            $footeroptions = [
+                'completed' => $allcompleted,
+                'remind' => $remains,
+                'shipdate' => $shipstatus['order_status'],
+            ];
             $trackcontent = '';
             $numpp = 0;
             foreach ($order_items as $order_item) {
@@ -1586,11 +1591,13 @@ class Template
                         if ($numpp > 0) {
                             $trackcontent.='<div class="fulflmshipping_track_separator">&nbsp;</div>';
                         }
-                        $trackcontent.=$this->CI->load->view('leadordernew/tracking_view', $shipoptions, TRUE);
+                        $trackcontent.=$this->CI->load->view('leadordernew/multitracking_view', $shipoptions, TRUE);
                         $numpp++;
                     }
                 }
             }
+            // Add total footer
+            $trackcontent.=$this->CI->load->view('leadordernew/multitracking_footer_view', $footeroptions, TRUE);
         }
         return $trackcontent;
     }
