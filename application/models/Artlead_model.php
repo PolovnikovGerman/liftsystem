@@ -1886,14 +1886,16 @@ Class Artlead_model extends MY_Model
 
     public function get_claymodelsnew($artwork_id)
     {
+        $out = ['historical' => 0, 'options' => [], 'clays' => []];
         $this->db->select('clay_option, count(artwork_clay_id) as cnt')->from('ts_artwork_clays')->where('artwork_id', $artwork_id)->having('cnt > ', 0)->order_by('clay_option','desc');
         $options = $this->db->get()->result_array();
         $clayidx = 0;
-        foreach ($options as $option) {
+        if ($options[0]['clay_option']==null) {
+            $out['historical'] = 1;
+            // Get Clays
             $this->db->select('*');
             $this->db->from('ts_artwork_clays');
             $this->db->where('artwork_id', $artwork_id);
-            $this->db->where('clay_option', $option['clay_option']);
             $this->db->order_by('numpp');
             $rows = $this->db->get()->result_array();
             $claydocs = [];
@@ -1903,21 +1905,39 @@ Class Artlead_model extends MY_Model
                 $row['deleted'] = '';
                 $claydocs[] = $row;
             }
-            $options[$clayidx]['data'] = $claydocs;
-            $clayidx++;
+            $out['clays'] = $claydocs;
+        } else {
+            foreach ($options as $option) {
+                $this->db->select('*');
+                $this->db->from('ts_artwork_clays');
+                $this->db->where('artwork_id', $artwork_id);
+                $this->db->where('clay_option', $option['clay_option']);
+                $this->db->order_by('numpp');
+                $rows = $this->db->get()->result_array();
+                $claydocs = [];
+                foreach ($rows as $row) {
+                    $newname = 'clay_'.str_pad($row['numpp'],2,'0',STR_PAD_LEFT);
+                    $row['out_proofname'] = $newname;
+                    $row['deleted'] = '';
+                    $claydocs[] = $row;
+                }
+                $options[$clayidx]['data'] = $claydocs;
+                $clayidx++;
+            }
+            $out['options'] = $options;
         }
-        return $options;
+        return $out;
     }
 
     public function get_previewsnew($artwork_id) {
+        $out = ['historical' => 0, 'options' => [], 'previews' => []];
         $this->db->select('preview_option, count(artwork_preview_id) as cnt')->from('ts_artwork_previews')->where('artwork_id', $artwork_id)->having('cnt > ', 0)->order_by('preview_option','desc');
         $options = $this->db->get()->result_array();
-        $previdx = 0;
-        foreach ($options as $option) {
+        if ($options[0]['preview_option']==null) {
+            $out['historical'] = 1;
             $this->db->select('*');
             $this->db->from('ts_artwork_previews');
             $this->db->where('artwork_id', $artwork_id);
-            $this->db->where('preview_option', $option['preview_option']);
             $this->db->order_by('numpp');
             $rows = $this->db->get()->result_array();
             $previews = [];
@@ -1927,10 +1947,29 @@ Class Artlead_model extends MY_Model
                 $row['deleted'] = '';
                 $previews[] = $row;
             }
-            $options[$previdx]['data'] = $previews;
-            $previdx++;
+            $out['previews'] = $previews;
+        } else {
+            $previdx = 0;
+            foreach ($options as $option) {
+                $this->db->select('*');
+                $this->db->from('ts_artwork_previews');
+                $this->db->where('artwork_id', $artwork_id);
+                $this->db->where('preview_option', $option['preview_option']);
+                $this->db->order_by('numpp');
+                $rows = $this->db->get()->result_array();
+                $previews = [];
+                foreach ($rows as $row) {
+                    $newname = 'preview_'.str_pad($row['numpp'], 2, '0', STR_PAD_LEFT);
+                    $row['out_proofname'] = $newname;
+                    $row['deleted'] = '';
+                    $previews[] = $row;
+                }
+                $options[$previdx]['data'] = $previews;
+                $previdx++;
+            }
+            $out['options'] = $options;
         }
-        return $options;
+        return $out;
     }
 
 }

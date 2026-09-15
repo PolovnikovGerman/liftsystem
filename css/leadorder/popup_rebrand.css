@@ -2179,6 +2179,32 @@ textarea.aprovemail_message {
     font-size: 11px;
     text-align: center;
 }
+/* Clay Model history */
+.claymodelsdataarea, .previewpicsdataarea {
+    overflow-x: auto;
+    margin-top: 9px;
+    margin-left: 9px;
+}
+.claymodelsdatatable, .previewpicsdatatable {
+    width: 65px;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
+.previewpicsdatatable {
+    width: 80px;
+}
+.claymodeldatarow, .previewpicdatarow {
+    width: 100%;
+    padding-left: 5px;
+    border-bottom: 1px dotted #000000;
+}
+.claymodelname, .previewpicname {
+    height: 17px;
+    line-height: 17px;
+    color: #0000ff;
+    font-size: 11px;
+    cursor: pointer;
+}
 /* Invertory popup */
 .orderitem_inventoryview {
     display: none;
