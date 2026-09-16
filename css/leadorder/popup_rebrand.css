@@ -260,7 +260,7 @@ input.namecustomer {
 }
 .neworder_column3 {
     margin-right: 0;
-    /*width: 334px;*/
+    width: 100%;
 }
 .ord_block {
     width: 100%;
@@ -2754,9 +2754,8 @@ select.imprintlocationchoice {
 /* End Imprint details content */
 /* Fullfilment Historical */
 .fulfillmentblock {
-    width: 338px;
-    /*background: #7F7FFF;*/
-    /*padding: 10px;*/
+    width: 100%;
+    height: 383px;
 }
 .fulfillm_historical {
     position: relative;
