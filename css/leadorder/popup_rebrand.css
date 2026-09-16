@@ -57,6 +57,7 @@
     padding: 8px 10px 15px;
     border-top-left-radius: 7px;
     border-bottom-left-radius: 7px;
+    height: 753px;
 }
 .neworder_header {
     position: relative;
@@ -255,6 +256,7 @@ input.namecustomer {
     padding: 8px 2px 0;
     border-top-right-radius: 7px;
     border-bottom-right-radius: 7px;
+    height: 753px;
 }
 .neworder_column3 {
     margin-right: 0;
