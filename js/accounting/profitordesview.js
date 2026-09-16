@@ -488,7 +488,7 @@ function edit_order(order) {
     $.post(url, params, function(response){
         if (response.errors=='') {
             // $("#modalLeadOrderLabel").empty().html(response.data.header);
-            $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
+            // $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
             $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
             // $("#artModal").find('div.modal-dialog').css('width','1004px');
             // $("#modalLeadOrder").find('div.modal-footer').html('<input type="hidden" id="root_call_page" value="'+callpage+'"/><input type="hidden" id="root_brand" value="'+brand+'"/>');
