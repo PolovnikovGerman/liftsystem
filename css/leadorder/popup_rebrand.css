@@ -1408,11 +1408,11 @@ li.select2-results__option {
 .fulflm_profit {
     float: right !important;
     width: 288px;
-    /*background: #001072;*/
+    /* background: #001072; */
     border: 1px solid #001072;
     border-radius: 7px;
-    /*margin-top: 277px;*/
-    margin-top: 42px;
+    /* margin-top: 277px; */
+    margin-top: 10px;
 }
 .fulflmprofit_price {
     width: 85px;
@@ -2753,21 +2753,21 @@ select.imprintlocationchoice {
 }
 /* End Imprint details content */
 /* Fullfilment Historical */
-/*.fulfillmentblock {*/
-/*    width: 338px;*/
-/*    background: #7F7FFF;*/
-/*    padding: 10px;*/
-/*}*/
+.fulfillmentblock {
+    width: 338px;
+    /*background: #7F7FFF;*/
+    /*padding: 10px;*/
+}
 .fulfillm_historical {
     position: relative;
-    width: calc(100% - 14px);
+    width: 100%;
     border: 2px dashed #000;
     border-radius: 4px;
     padding: 8px 7px 4px;
 }
 .fulfillm_hist_title {
     position: absolute;
-    top: -7px;
+    top: -9px;
     left: 10px;
     font-size: 12px;
     font-weight: bold;
@@ -2779,7 +2779,7 @@ select.imprintlocationchoice {
 }
 .btbox {
     /*width: calc(100% - 14px);*/
-    width: calc(100% - 4px);
+    width: 100%;
     height: 18px;
     border: 1px solid #000;
     background: #fff;
@@ -2882,10 +2882,10 @@ select.imprintlocationchoice {
 }
 .btbox_messagevendor_box {
     float: right !important;
-    width: 212px;
+    width: 186px;
 }
 .btbox_messagevendor_box textarea {
-    width: calc(100% - 12px);
+    width: 100%;
     height: 30px;
     border: 1px solid #BDBDBD;
     background: #fff;
@@ -2935,7 +2935,7 @@ select.imprintlocationchoice {
     text-align: center;
 }
 .btboxtable_price {
-    width: 37px;
+    width: 34px;
     text-align: center;
 }
 .btboxtable_subtotal {
@@ -2958,7 +2958,7 @@ select.imprintlocationchoice {
 }
 .shipaddrs_body {
     position: relative;
-    width: calc(100% - 14px);
+    width: 100%;
     background: #E4E3E3;
     border: 1px solid #000;
     height: 73px;
@@ -2995,11 +2995,19 @@ select.imprintlocationchoice {
 }
 .shipaddrs_left {}
 .shipaddrs_right {
-    width: 145px;
+    width: 139px;
     float: right !important;
 }
+.shipaddrs_right label {
+    float: left;
+    font-size: 10px;
+    width: 44px;
+    margin-right: 3px;
+    text-align: right;
+    line-height: 15px;
+}
 .shipaddrs_addressbox {
-    width: 132px;
+    width: 122px;
     height: 62px;
     border: 1px solid #95939E;
     padding: 3px 5px;
