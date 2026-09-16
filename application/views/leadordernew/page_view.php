@@ -212,6 +212,7 @@
             <div class="ord_block ordblock_fulfillment">
                 <div class="ordblock_fullfilment_title">Fulfillment</div>
                 <div class="ordblock_body_fullfilment">
+                    <div class="fulflm_row"><?=$fullfilm_history?></div>
                     <div class="fulflm_row"><?=$profitview?></div>
                     <div class="fulflm_row"><?=$clayprevview?></div>
                     <div class="fulflm_row">

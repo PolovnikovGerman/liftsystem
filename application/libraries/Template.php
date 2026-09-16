@@ -1477,6 +1477,7 @@ class Template
         $data['trackingview'] = $this->_prepare_tracking_content($res['order_items'], $shipstatus, $edit);
         // Proofs
         $data['proofsview'] = $this->CI->load->view('leadordernew/proofs_view', ['proofs' => $res['proofdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+        $data['fullfilm_history'] = $this->CI->load->view('leadordernew/fullfilm_history_view', [], TRUE);
         return $data;
     }
 
