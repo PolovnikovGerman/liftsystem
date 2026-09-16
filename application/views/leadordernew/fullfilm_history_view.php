@@ -3,7 +3,7 @@
         <div class="fulfillm_hist_title">HISTORICAL</div>
         <div class="btbox_list">
             <div class="btbox btbox_open">
-                <div class="btbox_arrow"><i class="fa fa-caret-right" aria-hidden="true"></i></div>
+                <div class="btbox_arrow"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
                 <div class="btbox_title">BT 68485-A</div>
                 <div class="btbox_info">- 09/11/16 - $450.00 - Ariel</div>
                 <div class="btbox_icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></div>
