@@ -10,9 +10,6 @@
 <input type="hidden" id="loctimeout" value="<?=$timeout?>"/>
 <?php endif; ?>
 <div class="neworder_header">
-    <div class="neworder_close">
-        <span aria-hidden="true">×</span>
-    </div>
     <div class="namecustomer">
         <div class="namecustomer_title">Customer:</div>
         <?php if ($edit==0) : ?>

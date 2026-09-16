@@ -146,6 +146,7 @@ class Leadorder extends MY_Controller
                     $header = $this->load->view('leadordernew/header_view', $head_options, true);
                     $mdata['cancelorder'] = $orddata['is_canceled'];
                 }
+                $data['header'] = $header;
                 $content = $this->load->view('leadordernew/page_view', $data, true);
                 $mdata['content'] = $content;
                 $mdata['header'] = $header;
