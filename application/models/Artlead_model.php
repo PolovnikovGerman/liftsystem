@@ -1985,7 +1985,7 @@ Class Artlead_model extends MY_Model
             if (createPath($shrtpath)) {
                 // po_attach_path
                 $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $order['po_attach_path']);
-                $newfile = $fullpath.str_replace([' ','%','"'],'_', $order['po_attach_path']); // po_attach_name
+                $newfile = $fullpath.str_replace([' ','%','"'],'_', $order['po_attach_name']); // po_attach_name
                 echo 'PO ART '.$newfile.'!'.PHP_EOL;
                 echo 'PO Source '.$doc_link.'!'.PHP_EOL;
                 if ($this->_save_remotefile($doc_link, $newfile)) {
