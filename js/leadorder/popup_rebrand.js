@@ -277,6 +277,8 @@ function init_fulfillment_history() {
                 $(".btbox[data-btbox='"+order+"']").addClass('btbox_open');
                 $(".btbox_arrow[data-btbox='"+order+"']").empty().html('<i class="fa fa-caret-down" aria-hidden="true"></i>');
                 $(".btbox_body[data-btbox='"+order+"']").addClass('btbox_open');
+                $(".shipaddrs_tab").removeClass('active');
+                $(".shipaddrs_body").removeClass('active');
                 $(".btbox_body[data-btbox='"+order+"']").find('div.shipaddrs_tab:first').addClass('active');
                 $(".btbox_body[data-btbox='"+order+"']").find('div.shipaddrs_body:first').addClass('active');
             }
