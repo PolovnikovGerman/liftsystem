@@ -267,6 +267,9 @@ function init_fulfillment_history() {
         $(".btbox_arrow").unbind('click').click(function(){
             var order = $(this).data('btbox');
             if ($(this).parent().hasClass('btbox_open')) {
+                $(".btbox").removeClass('btbox_open');
+                $(".btbox_arrow").empty().html('<i class="fa fa-caret-right" aria-hidden="true"></i>');
+                $(".btbox_body").removeClass('btbox_open');
             } else {
                 $(".btbox").removeClass('btbox_open');
                 $(".btbox_arrow").empty().html('<i class="fa fa-caret-right" aria-hidden="true"></i>');
@@ -276,6 +279,16 @@ function init_fulfillment_history() {
                 $(".btbox_body[data-btbox='"+order+"']").addClass('btbox_open');
             }
         });
+        $(".shipaddrs_tab").unbind('click').click(function(){
+            if ($(this).hasClass('active')) {
+            } else {
+                var method = $(this).data('method');
+                $(".shipaddrs_tab").removeClass('active');
+                $(".shipaddrs_body").removeClass('active');
+                $(".shipaddrs_body[data-method='"+method+"']").addClass('active');
+                $(".shipaddrs_tab[data-method='"+method+"']").addClass('active');
+            }
+        })
     }
 }
 

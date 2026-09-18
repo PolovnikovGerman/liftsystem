@@ -2960,6 +2960,7 @@ select.imprintlocationchoice {
     z-index: 5;
 }
 .shipaddrs_body {
+    display: none;
     position: relative;
     width: 100%;
     background: #E4E3E3;
@@ -2968,6 +2969,9 @@ select.imprintlocationchoice {
     padding: 5px 7px;
     z-index: 1;
     margin-top: -1px;
+}
+.shipaddrs_body.active {
+    display: block;
 }
 .shipaddrs_tab {
     width: 57px;
@@ -2998,14 +3002,14 @@ select.imprintlocationchoice {
 }
 .shipaddrs_left {}
 .shipaddrs_right {
-    width: 139px;
+    width: 142px;
     float: right !important;
 }
 .shipaddrs_right label {
     float: left;
     font-size: 10px;
     width: 44px;
-    margin-right: 3px;
+    margin-right: 5px;
     text-align: right;
     line-height: 15px;
 }
