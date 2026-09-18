@@ -2821,9 +2821,13 @@ select.imprintlocationchoice {
     line-height: 17px;
 }
 .btbox_body {
+    display: none;
     width: 100%;
     margin-top: 3px;
     margin-bottom: 4px;
+}
+.btbox_body.btbox_open {
+    display: block;
 }
 .btbox_bodyrow {
     width: 100%;
@@ -3009,10 +3013,16 @@ select.imprintlocationchoice {
     width: 122px;
     height: 62px;
     border: 1px solid #95939E;
-    padding: 3px 5px;
+/*    padding: 3px 5px; */
     background: #fff;
     font-size: 10px;
     line-height: 12px;
+}
+.shipaddrs_addressbox textarea {
+    width: 100%;
+    resize: none;
+    height: 60px;
+    border: none;
 }
 .shipaddrs_method {
     width: 100%;
