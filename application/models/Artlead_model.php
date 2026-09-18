@@ -1903,11 +1903,21 @@ Class Artlead_model extends MY_Model
                         $vendid = null;
                         if ($order['vendor_name']=='btprint') {
                             $vendid = $this->config->item('inventory_vendor');
+                        } elseif ($order['vendor_name']=='pinnacl') {
+                            // Pinnacle
+                            $vendid = 5;
                         } else {
                             $venddat = $this->db->select('vendor_id')->from('vendors')->where('vendor_name', $order['vendor_name'])->get()->row_array();
                             if (isset ($venddat['vendor_id'])) {
                                 $vendid = $venddat['vendor_id'];
                             }
+                        }
+
+                        $chkres = $this->db->select('count(netdata_order_id) as cnt, max(netdata_order_id) as ordid')->from('ts_netdata_orders')->where(['order_num'=>$order['order_num'],'po_code'=> $order['po_code']])->get()->row_array();
+                        if ($chkres['cnt']>0) {
+                            // Delete old PO
+                            $this->db->where('netdata_order_id', $chkres['ordid']);
+                            $this->db->delete('ts_netdata_orders');
                         }
                         $this->db->set('order_id', $orddat['order_id']);
                         $this->db->set('order_num', $order['order_num']);
