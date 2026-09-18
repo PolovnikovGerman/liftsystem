@@ -50,6 +50,7 @@ function navigation_init() {
     // Clay Preview tabs
     init_claypreview_tabs();
     init_copyaddresses(0);
+    init_fulfillment_history();
     // Art Locations and proofs
     // init_showartlocs();
     // Edit order
@@ -259,6 +260,23 @@ function init_copyaddresses(editmode=0) {
             }
         }
     });
+}
+
+function init_fulfillment_history() {
+    if ($(".btbox").length > 0) {
+        $(".btbox_arrow").unbind('click').click(function(){
+            var order = $(this).data('btbox');
+            if ($(this).parent().hasClass('btbox_open')) {
+            } else {
+                $(".btbox").removeClass('btbox_open');
+                $(".btbox_arrow").empty().html('<i class="fa fa-caret-right" aria-hidden="true"></i>');
+                $(".btbox_body").removeClass('btbox_open');
+                $(".btbox[data-btbox='"+order+"']").addClass('btbox_open');
+                $(".btbox_arrow[data-btbox='"+order+"']").empty().html('<i class="fa fa-caret-down" aria-hidden="true"></i>');
+                $(".btbox_body[data-btbox='"+order+"']").addClass('btbox_open');
+            }
+        });
+    }
 }
 
 // Init Lead Order Edit

@@ -2103,4 +2103,24 @@ Class Artlead_model extends MY_Model
         return true;
     }
 
+    public function get_fulfillment_history($order_id)
+    {
+        $this->db->select('o.*, v.vendor_name as vendorname')->from('ts_netdata_orders o')->join('vendors v','v.vendor_id=o.vendor_id','left')->where('o.order_id', $order_id)->order_by('o.po_code');
+        $orders = $this->db->get()->result_array();
+        $ordidx = 0;
+        foreach ($orders as $order) {
+            if (empty($order['vendor_id'])) {
+                $orders[$ordidx]['vendorname'] = $order['vendor_name'];
+            }
+            // Get Methods
+            $methods = $this->db->select('*')->from('ts_netdata_methods')->where('netdata_order_id', $order['netdata_order_id'])->get()->result_array();
+            // Get Items
+            $items = $this->db->select('i.*, (i.item_qty*i.item_price) as subtotal')->from('ts_netdata_items i')->where('i.netdata_order_id', $order['netdata_order_id'])->get()->result_array();
+            $orders[$ordidx]['methods'] = $methods;
+            $orders[$ordidx]['items'] = $items;
+            $ordidx++;
+        }
+        return $orders;
+    }
+
 }

@@ -670,6 +670,9 @@ Class Leadorder_model extends My_Model {
         }
         // Get a Order Shipping status
         $res['shipstatus']=$this->_get_order_shipstatus($out['shipping_address']);
+        // Get history fulfillment
+        $this->load->model('artlead_model');
+        $out['nethistory'] = $this->artlead_model->get_fulfillment_history($order_id);
         $out['order']=$res;
         $this->load->model('shipping_model');
         $cnt_options=array(
