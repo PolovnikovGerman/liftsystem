@@ -71,6 +71,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <?php $numpp++; ?>
                             <?php endforeach; ?>
                         </div>
                     </div>
