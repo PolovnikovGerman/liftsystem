@@ -1872,4 +1872,121 @@ Class Artlead_model extends MY_Model
         }
     }
 
+    public function netpodata_export()
+    {
+        echo 'SECURE '.$this->config->item('netexportsecure').' URL '.$this->config->item('netpoexportdata').PHP_EOL;
+        $curl = curl_init(); //Init
+        if ($this->config->item('netexportsecure')==1) {
+            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+        }
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_URL, $this->config->item('netpoexportdata')); //POST URL
+        curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
+        curl_setopt($curl, CURLOPT_POST, 1); // Send data via POST
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); //curl return response
+        // curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata); // data for send via POST
+
+        $res = curl_exec($curl);
+        if(!$res) {
+            $error = curl_error($curl).'('.curl_errno($curl).')';
+            echo $error;
+        } else {
+            $array = json_decode($res, true);
+            if (ifset($array,'result','0')=='1') {
+                $orders = $array['orders'];
+                foreach ($orders as $order) {
+                    // Search order by number
+                    $orddat = $this->db->select('order_id')->from('ts_orders')->where('order_num', $order['order_num'])->where_in('brand',['SB', 'BT'])->get()->row_array();
+                    if (ifset($orddat,'order_id',0) > 0) {
+                        $vendid = null;
+                        if ($order['vendor_name']=='btprint') {
+                            $vendid = $this->config->item('inventory_vendor');
+                        } else {
+                            $venddat = $this->db->select('vendor_id')->from('vendors')->where('vendor_name', $order['vendor_name'])->get()->row_array();
+                            if (isset ($venddat['vendor_id'])) {
+                                $vendid = $venddat['vendor_id'];
+                            }
+                        }
+                        $this->db->set('order_id', $orddat['order_id']);
+                        $this->db->set('order_num', $order['order_num']);
+                        $this->db->set('po_code', $order['po_code']);
+                        if (!empty($order['po_date']) && $order['po_date'] != '0000-00-00') {
+                            $this->db->set('po_date', strtotime($order['po_date']));
+                        }
+                        if (!empty($vendid)) {
+                            $this->db->set('vendor_id', $vendid);
+                        }
+                        $this->db->set('vendor_name', $order['vendor_name']);
+                        $this->db->set('po_total', $order['po_total']);
+                        if (!empty($order['po_ship_date']) && $order['po_ship_date'] != '0000-00-00') {
+                            $this->db->set('po_ship_date', strtotime($order['po_ship_date']));
+                        }
+                        $this->db->set('po_ship_act', $order['po_ship_act']);
+                        $this->db->set('po_vendor_msg', $order['po_vendor_msg']);
+                        $this->db->insert('ts_netdata_orders');
+                        $netorder_id = $this->db->insert_id();
+                        if ($netorder_id > 0) {
+                            $this->_parse_netpoart($netorder_id, $order);
+                            $methods = $order['methods'];
+                            if (count($methods) > 0) {
+                                foreach ($methods as $method) {
+                                    $this->db->set('netdata_order_id', $netorder_id);
+                                    $this->db->set('ship_method', $method['ship_method']);
+                                    if (!empty($method['ship_date']) && $method['ship_date'] != '0000-00-00') {
+                                        $this->db->set('ship_date', strtotime($method['ship_date']));
+                                    }
+                                    $this->db->set('ship_address', $method['ship_address']);
+                                    $this->db->insert('ts_netdata_methods');
+                                }
+                            }
+                            $items = $order['items'];
+                            if (count($items) > 0) {
+                                foreach ($items as $item) {
+                                    $this->db->set('netdata_order_id', $netorder_id);
+                                    $this->db->set('item_number', $item['item_number']);
+                                    $this->db->set('item_name', $item['item_name']);
+                                    $this->db->set('item_qty', $item['item_qty']);
+                                    $this->db->set('item_price', $item['item_price']);
+                                    $this->db->insert('ts_netdata_items');
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                echo $array['error'].PHP_EOL;
+            }
+        }
+    }
+
+    private function _parse_netpoart($netorder_id, $order)
+    {
+//        if ($this->config->item('test_server')==1) {
+//            $this->db->where('netdata_order_id', $netorder_id);
+//            $this->db->set('po_attach_name', $order['po_attach_name']);
+//            $this->db->set('po_attach_path', $this->config->item('upload_netpoart_relative').$order['po_attach_name']);
+//            $this->db->update('ts_netdata_orders');
+//        } else {
+            ini_set("allow_url_fopen", 1);
+            $fullpath=$this->config->item('upload_netpoart');
+            $shrtpath=$this->config->item('upload_netpoart_relative');
+            $username = "stressballs";
+            $password = "07031";
+            if (createPath($shrtpath)) {
+                // po_attach_path
+                $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $order['po_attach_name']);
+                $newfile = $fullpath.str_replace([' ','%','"'],'_', $order['po_attach_path']); // po_attach_name
+                echo 'PO ART '.$newfile.'!'.PHP_EOL;
+                if ($this->_save_remotefile($doc_link, $newfile)) {
+                    // Select max numpp
+                    $this->db->where('netdata_order_id', $netorder_id);
+                    $this->db->set('po_attach_name', $order['po_attach_path']); // po_attach_name
+                    $this->db->set('po_attach_path', $shrtpath.$order['po_attach_path']); // po_attach_name
+                    $this->db->update('ts_netdata_orders');
+                }
+            }
+//        }
+        return true;
+    }
+
 }
