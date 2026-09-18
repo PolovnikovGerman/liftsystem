@@ -306,3 +306,8 @@ $config['project_url'] = getenv('PROJECT_URL');
 $config['srcheckoutlink'] = getenv('SRCHECKOUTLINK');
 $config['btcheckoutlink'] = getenv('BTCHECKOUTLINK');
 $config['fin_test_email'] = getenv('FINTESTEMAIL');
+// Export data
+$config['netpoexportdata'] = getenv('NETPOEXPORTDATA');
+$config['netdatadocpath'] = getenv('NETDATADOCPATH');
+$config['netdatauser'] = getenv('NETDATAUSER');
+$config['netdatapassword'] = getenv('NETDATAPASSWORD');
