@@ -5840,8 +5840,11 @@ Class Orders_model extends MY_Model
             $postdata['order_date']=$row['order_date'];
 
             $curl = curl_init(); //Init
+            $username = $this->config->item('netdatauser');
+            $password = $this->config->item('netdatapassword');
             if ($this->config->item('netexportsecure')==1) {
-                curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+                $secureopt = $username.':'.$password;
+                curl_setopt($curl, CURLOPT_USERPWD, $secureopt);
             }
             curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($curl, CURLOPT_URL, $this->config->item('netexportdata')); //POST URL
@@ -5926,7 +5929,12 @@ Class Orders_model extends MY_Model
             }
             if ($sendflag == 1) {
                 $curl = curl_init(); //Init
-                curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+                $username = $this->config->item('netdatauser');
+                $password = $this->config->item('netdatapassword');
+                if ($this->config->item('netexportsecure')==1) {
+                    $secureopt = $username.':'.$password;
+                    curl_setopt($curl, CURLOPT_USERPWD, $secureopt);
+                }
                 curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
                 curl_setopt($curl, CURLOPT_URL, $this->config->item('netexportdata')); //POST URL
                 curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
@@ -5971,7 +5979,7 @@ Class Orders_model extends MY_Model
 //                'source_lnk'=> 'http://'.$_SERVER['SERVER_NAME'].$drow['proof_name'],
 //            );
 //            $curl = curl_init(); //Init
-//            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+//            curl_setopt($curl, CURLOPT_USERPWD, '');
 //            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 //            curl_setopt($curl, CURLOPT_URL, $this->config->item('netexportdata')); //POST URL
 //            curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers
@@ -6007,7 +6015,7 @@ Class Orders_model extends MY_Model
 //                'source_name'=>$drow['proofdoc_link'],
 //            );
 //            $curl = curl_init(); //Init
-//            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+//            curl_setopt($curl, CURLOPT_USERPWD, '');
 //            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 //            curl_setopt($curl, CURLOPT_URL, $this->config->item('netexportdata')); //POST URL
 //            curl_setopt($curl, CURLOPT_HEADER, 0); // Show Headers

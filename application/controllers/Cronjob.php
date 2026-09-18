@@ -1107,4 +1107,9 @@ Class Cronjob extends CI_Controller
         $this->load->model('seo_model');
         $this->seo_model->fix_emptygeodata();
     }
+
+    public function exportnetpodata() {
+        $this->load->model('artlead_model');
+        $this->artlead_model->netpodata_export();
+    }
 }

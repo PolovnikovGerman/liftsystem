@@ -93,5 +93,8 @@ $config['preview_pics_relative'] = '/uploads/previews/';
 // Mailbox Attachments
 $config['mailbox_attachments'] = BASEPATH.'../uploads/mailboxattachments/';
 $config['mailbox_attachments_relative'] = '/uploads/mailboxattachments/';
+// NET PO Art files
+$config['upload_netpoart'] = BASEPATH.'../uploads/netpoart/';
+$config['upload_netpoart_relative'] = '/uploads/netpoart/';
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */
