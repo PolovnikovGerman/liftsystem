@@ -1737,8 +1737,6 @@ Class Artlead_model extends MY_Model
         ini_set("allow_url_fopen", 1);
         $fullpath=$this->config->item('clay_models');
         $shrtpath=$this->config->item('clay_models_relative');
-        $username = "stressballs";
-        $password = "07031";
         if (createPath($shrtpath)) {
             $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
             $newfile = $fullpath.str_replace([' ','%','"'],'_',$export['doc_name']);
@@ -1782,8 +1780,6 @@ Class Artlead_model extends MY_Model
         ini_set("allow_url_fopen", 1);
         $fullpath=$this->config->item('preview_pics');
         $shrtpath=$this->config->item('preview_pics_relative');
-        $username = "stressballs";
-        $password = "07031";
         if (createPath($shrtpath)) {
             $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $export['doc_link']);
             $newfile = $fullpath.str_replace([' ','%','"'],'_',$export['doc_name']);
@@ -1815,8 +1811,8 @@ Class Artlead_model extends MY_Model
     }
 
     private function _save_remotefile($remote_url, $localfile) {
-        $username = "stressballs";
-        $password = "07031";
+        $username = $this->config->item('netdatauser');
+        $password = $this->config->item('netdatapassword');
         $authtoken = base64_encode($username.':'.$password);
         $headers = array(
             'Authorization: Basic '.$authtoken,
@@ -1841,8 +1837,11 @@ Class Artlead_model extends MY_Model
 
     public function artclay_export() {
         $curl = curl_init(); //Init
+        $username = $this->config->item('netdatauser');
+        $password = $this->config->item('netdatapassword');
         if ($this->config->item('netexportsecure')==1) {
-            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+            $secureopt = $username.':'.$password;
+            curl_setopt($curl, CURLOPT_USERPWD, $secureopt);
         }
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_URL, $this->config->item('clayexportdata')); //POST URL
@@ -1876,8 +1875,11 @@ Class Artlead_model extends MY_Model
     {
         echo 'SECURE '.$this->config->item('netexportsecure').' URL '.$this->config->item('netpoexportdata').PHP_EOL;
         $curl = curl_init(); //Init
+        $username = $this->config->item('netdatauser');
+        $password = $this->config->item('netdatapassword');
         if ($this->config->item('netexportsecure')==1) {
-            curl_setopt($curl, CURLOPT_USERPWD, 'stressballs:07031');
+            $secureopt = $username.':'.$password;
+            curl_setopt($curl, CURLOPT_USERPWD, $secureopt);
         }
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_URL, $this->config->item('netpoexportdata')); //POST URL
@@ -1970,8 +1972,6 @@ Class Artlead_model extends MY_Model
             ini_set("allow_url_fopen", 1);
             $fullpath=$this->config->item('upload_netpoart');
             $shrtpath=$this->config->item('upload_netpoart_relative');
-            $username = "stressballs";
-            $password = "07031";
             if (createPath($shrtpath)) {
                 // po_attach_path
                 $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $order['po_attach_name']);

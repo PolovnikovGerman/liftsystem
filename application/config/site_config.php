@@ -309,3 +309,5 @@ $config['fin_test_email'] = getenv('FINTESTEMAIL');
 // Export data
 $config['netpoexportdata'] = getenv('NETPOEXPORTDATA');
 $config['netdatadocpath'] = getenv('NETDATADOCPATH');
+$config['netdatauser'] = getenv('NETDATAUSER');
+$config['netdatapassword'] = getenv('NETDATAPASSWORD');
