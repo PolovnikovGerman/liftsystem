@@ -1987,6 +1987,7 @@ Class Artlead_model extends MY_Model
                 $doc_link = str_replace(['../docs/','../../system/docs/'],'http://bluetrack.net/system/docs/', $order['po_attach_name']);
                 $newfile = $fullpath.str_replace([' ','%','"'],'_', $order['po_attach_path']); // po_attach_name
                 echo 'PO ART '.$newfile.'!'.PHP_EOL;
+                echo 'PO Source '.$doc_link.'!'.PHP_EOL;
                 if ($this->_save_remotefile($doc_link, $newfile)) {
                     // Select max numpp
                     $this->db->where('netdata_order_id', $netorder_id);
