@@ -1,32 +1,30 @@
 <div class="leadorderclaytab active">
     <div class="claypreviewtab_title">Clay Models:</div>
     <div class="claypreviewtab_subtitle">
-        <?php if ($clayhistory==1) : ?>
-            Historical View
+        <?php if (count($claydocs) > 0) : ?>
+        To Approve
         <?php else: ?>
-            <?php if (count($claydocs) > 0) : ?>
-            To Approve
-            <?php else: ?>
-            No Clay Models
-            <?php endif; ?>
+        No Clay Models
         <?php endif; ?>
     </div>
 </div>
 <div class="leadorderpreviewtab">
     <div class="claypreviewtab_title">Preview Pictures</div>
     <div class="claypreviewtab_subtitle">
-        <?php if ($previewhistory==1) : ?>
-            Historical View
+        <?php if (count($previews) > 0) : ?>
+            To Approve
         <?php else: ?>
-            <?php if (count($previews) > 0) : ?>
-                To Approve
-            <?php else: ?>
-                No Preview Pictures
-            <?php endif; ?>
+            No Preview Pictures
         <?php endif; ?>
     </div>
 </div>
 <div class="leadorderclaycontent active">
+    <?php if ($clayhistory==1 && count($claydocs) > 0) : ?>
+    <div class="datarow">
+        <div class="historical_label">Historical:</div>
+        <div class="clayhistory_openall">[open all]</div>
+    </div>
+    <?php endif; ?>
     <?php if ($edit==1 && $clayhistory==0) : ?>
         <div class="claymodels_addoptn">+Add<br>Option</div>
     <?php endif; ?>
@@ -37,6 +35,12 @@
     <?php endif; ?>
 </div>
 <div class="leadorderpreviewcontent">
+    <?php if ($previewhistory==1) : ?>
+        <div class="datarow">
+            <div class="historical_label">Historical:</div>
+            <div class="previewhistory_openall">[open all]</div>
+        </div>
+    <?php endif; ?>
     <?php if ($edit==1 && $previewhistory==0) : ?>
         <div class="previewpict_addoptn">+Add<br>Option</div>
     <?php endif; ?>
