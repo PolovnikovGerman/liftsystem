@@ -292,7 +292,12 @@ function init_fulfillment_history() {
                 $(".shipaddrs_body[data-method='"+method+"']").addClass('active');
                 $(".shipaddrs_tab[data-method='"+method+"']").addClass('active');
             }
-        })
+        });
+        $(".btbox_icon").unbind('click').click(function(){
+            var docurl = $(this).data('url');
+            var docname = $(this).data('file');
+            var newWin = window.open(docurl,docname,"width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+        });
     }
 }
 
