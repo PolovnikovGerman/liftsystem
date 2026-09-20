@@ -1473,6 +1473,24 @@ li.select2-results__option {
     padding: 4px 5px;
     scrollbar-width: none;
 }
+.historical_label {
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-left: 12px;
+}
+.clayhistory_openall, .previewhistory_openall {
+    height: 24px;
+    line-height: 24px;
+    float: right !important;
+    color: #0A0AFF;
+    font-size: 12px;
+    font-weight: normal;
+    cursor: pointer;
+    margin-right: 12px;
+}
 .claymodels_addoptn {
     width: 47px;
     height: auto;
@@ -2233,7 +2251,7 @@ textarea.aprovemail_message {
 .claymodelsdatatable, .previewpicsdatatable {
     width: 65px;
     border-right: 1px solid #000000;
-    border-top: 1px solid #000000;
+    /*border-top: 1px solid #000000;*/
 }
 .previewpicsdatatable {
     width: 80px;
