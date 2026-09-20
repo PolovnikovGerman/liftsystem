@@ -2978,7 +2978,7 @@ select.imprintlocationchoice {
     height: 14px;
     line-height: 15px;
     border: 1px solid #000;
-    border-bottom: none;
+    /*border-bottom: none;*/
     font-size: 10px;
     text-align: center;
     margin-right: 4px;
