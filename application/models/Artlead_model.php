@@ -2123,4 +2123,30 @@ Class Artlead_model extends MY_Model
         return $orders;
     }
 
+    public function update_podata()
+    {
+        $fullpath=$this->config->item('upload_netpoart');
+        $shrtpath=$this->config->item('upload_netpoart_relative');
+        $this->db->select('*')->from('ts_netdata_orders')->where('order_num > ', 60000);
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            if (!empty($order['po_attach_path'])) {
+                // Check that file exist
+                if (!file_exists(str_replace($shrtpath, $fullpath, $order['po_attach_path']))) {
+                    $this->db->where('netdata_order_id', $order['netdata_order_id']);
+                    $this->db->set('po_attach_name', null);
+                    $this->db->set('po_attach_path', null);
+                    $this->db->update('ts_netdata_orders');
+                }
+            } else {
+                $newfilename = 'BLUETRACK_PO_BT'.$order['order_num'].$order['po_code'].'.pdf';
+                if (file_exists($fullpath.$newfilename)) {
+                    $this->db->where('netdata_order_id', $order['netdata_order_id']);
+                    $this->db->set('po_attach_name', $newfilename);
+                    $this->db->set('po_attach_path', $shrtpath.$newfilename);
+                    $this->db->update('ts_netdata_orders');
+                }
+            }
+        }
+    }
 }

@@ -5339,4 +5339,10 @@ class Test extends CI_Controller
         $this->load->model('artwork_model');
         $res = $this->artwork_model->update_proof_options();
     }
+
+    public function update_pofiles()
+    {
+        $this->load->model('artlead_model');
+        $this->artlead_model->update_podata();
+    }
 }
