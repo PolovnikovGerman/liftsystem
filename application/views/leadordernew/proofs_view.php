@@ -38,7 +38,7 @@
             <div class="optn_box" id="artproof_<?=$artwork?>_<?=$option['option']?>">
                 <ul>
                     <?php foreach ($option['data'] as $proof) : ?>
-                    <li class="uploadproofs" data-proofdoc="<?=$proof['artwork_proof_id']?>" data-event="hover" data-css="itemdetailsballonbox"
+                    <li class="uploadproofs" data-proofdoc="<?=$proof['artwork_proof_id']?>" data-event="hover" data-css="proofdetailsballonbox"
                         data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="left" data-textcolor="#000"
                         data-balloon="<?=$proof['source_name']?>" data-timer="4000" data-delay="1000">
                         proof_<?=str_pad($proof['proof_ordnum'],2,0,STR_PAD_LEFT)?>

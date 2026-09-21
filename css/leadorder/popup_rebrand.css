@@ -1313,6 +1313,10 @@ li.select2-results__option {
     margin-bottom: 2px;
     cursor: pointer;
 }
+.proofdetailsballonbox {
+    font-size: 13px;
+    max-width: 400px;
+}
 .optn_checkbox {
     margin-right: 3px;
 }

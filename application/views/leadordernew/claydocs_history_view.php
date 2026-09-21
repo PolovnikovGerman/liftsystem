@@ -5,7 +5,7 @@
             <div class="claymodelsdatatable">
         <?php endif; ?>
         <div class="datarow claymodeldatarow">
-            <div class="claymodelname" data-link="<?=$claydoc['clay_link']?>"><?=$claydoc['out_proofname']?></div>
+            <div class="claymodelname" data-link="<?=$claydoc['clay_link']?>" data-title="<?=$claydoc['out_proofname']?>"><?=$claydoc['out_proofname']?></div>
         </div>
         <?php $nrow++; ?>
         <?php if ($nrow%5 == 0) : ?>

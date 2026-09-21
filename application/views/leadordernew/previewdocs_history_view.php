@@ -5,7 +5,7 @@
             <div class="previewpicsdatatable">
         <?php endif; ?>
         <div class="datarow previewpicdatarow">
-            <div class="previewpicname" data-link="<?=$preview['preview_link']?>"><?=$preview['out_proofname']?></div>
+            <div class="previewpicname" data-link="<?=$preview['preview_link']?>" data-title="<?=$preview['out_proofname']?>"><?=$preview['out_proofname']?></div>
         </div>
         <?php $nrow++; ?>
         <?php if ($nrow%5 == 0) : ?>
