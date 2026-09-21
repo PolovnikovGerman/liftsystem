@@ -146,7 +146,7 @@
                         <div class="artapprvl_templates">
                             <div class="templates_title">Templates:</div>
                             <div class="templatebox">
-                                <div class="templatebox_icon" data-url="<?=$empty_url?>" data-title="<?=$empty_title?>">
+                                <div class="templatebox_icon master" data-url="<?=$empty_url?>" data-title="<?=$empty_title?>">
                                     <img src="/img/leadorder/file-alt-green.svg">
                                 </div>
                                 <div class="templatebox_text">Master</div>
@@ -165,16 +165,12 @@
                             <textarea <?=$edit==0 ? 'readonly' : ''?>><?=$artwork['artwork_note']?></textarea>
                         </div>
                     </div>
-                    <div class="artapprvl_row">
-                        <div class="artapprvl_colors">Colors: <?=$artwork['item_color']?></div>
-                        <div class="artapprvl_font">
-                            <label>Font:</label>
-                            <!--                        <select>-->
-                            <!--                            <option></option>-->
-                            <!--                            <option>Arial</option>-->
-                            <!--                        </select>-->
+                    <?php if ($artwork['weborder']) : ?>
+                        <div class="artapprvl_row">
+                            <div class="artapprvl_colors">Colors: <?=$artwork['artcolors']?></div>
+                            <div class="artapprvl_font">Font: <?=$artwork['artfonts']?></div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                     <div class="artapprvl_row">
                         <div class="artapprvl_subtitle">Art:</div>
                         <div class="artapprvl_art">
@@ -236,3 +232,4 @@
 </div>
 <div class="orderitem_inventoryview"></div>
 <div class="imprintdetails_popup"></div>
+<div class="historydataview"></div>

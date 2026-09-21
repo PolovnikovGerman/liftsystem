@@ -24,7 +24,7 @@
         <div class="artproofs_optn <?=$option['aprt']==0 ? '' : 'approved'?>">
             <div class="optn_header">
                 <div class="optn_checkbox">
-                    <input type="checkbox" class="" <?=$edit==0 ? 'disabled="disabled"' : ''?>>
+                    <input type="checkbox" class="proofdocoption" data-proofopt="<?=$option['option']?>" <?=$edit==0 ? 'disabled="disabled"' : ''?>>
                 </div>
                 <div class="optn_title">Opt <?=$option['option']?></div>
                 <div class="optn_star">
@@ -38,7 +38,11 @@
             <div class="optn_box" id="artproof_<?=$artwork?>_<?=$option['option']?>">
                 <ul>
                     <?php foreach ($option['data'] as $proof) : ?>
-                    <li>proof_<?=str_pad($proof['proof_ordnum'],2,0,STR_PAD_LEFT)?></li>
+                    <li class="uploadproofs" data-proofdoc="<?=$proof['artwork_proof_id']?>" data-event="hover" data-css="itemdetailsballonbox"
+                        data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="left" data-textcolor="#000"
+                        data-balloon="<?=$proof['source_name']?>" data-timer="4000" data-delay="1000">
+                        proof_<?=str_pad($proof['proof_ordnum'],2,0,STR_PAD_LEFT)?>
+                    </li>
                     <?php endforeach; ?>
                 </ul>
             </div>

@@ -51,8 +51,10 @@ function navigation_init() {
     init_claypreview_tabs();
     init_copyaddresses(0);
     init_fulfillment_history();
-    // Art Locations and proofs
-    // init_showartlocs();
+    // Art Locations , proofs, history
+    init_artdata_show();
+    // Payment init
+    init_payment_links();
     // Edit order
     $(".btnsbox-btnedit").unbind('click').click(function () {
         // edit_currentorder();
@@ -299,6 +301,180 @@ function init_fulfillment_history() {
             var newWin = window.open(docurl,docname,"width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
         });
     }
+}
+
+function init_artdata_show() {
+    // Link in Update History View
+    $(".historydetailsview").unbind('click').click(function(){
+        var history = $(this).data('history');
+        var params=new Array();
+        params.push({name: 'artwork_history_id', value: history});
+        var url="/leadordernew/show_update_details";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".historydataview").empty().html(response.data.content).show();
+                $(".closehistory").unbind('click').click(function (){
+                    $(".historydataview").empty().hide();
+                });
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Proofs docs source
+    $(".uploadproofs").unbind('click').click(function(){
+        var profdoc = $(this).data('proofdoc');
+        var params=new Array();
+        params.push({name: 'proofdoc', value : profdoc});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url = "/leadordernew/showproofdoc";
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                openai(response.data.proofdocurl, response.data.proofdocname);
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    })
+    // Art location - source
+    $("div.artbox_filenameorg").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'artloc', value: $(this).data('artloc')});
+        params.push({name: 'doctype', value: 'source'});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url='/leadorder/artlocation_view';
+        $.post(url, params, function(response){
+            if (response.errors == '') {
+                if (response.data.arttype=='logo') {
+                    openai(response.data.artlocurl, 'Source');
+                } else {
+                    var a=response.data.viewurls;
+                    var numpp=1;
+                    var label='';
+                    a.forEach(function(entry) {
+                        label='AI '+numpp;
+                        openai(entry, label);
+                        numpp++;
+                    });
+                }
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    // Art location - Result file
+    $(".artbox_filenamevect.readyfile").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'artloc', value: $(this).data('artloc')});
+        params.push({name: 'doctype', value: 'redrawn'});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url='/leadorder/artlocation_view';
+        $.post(url, params, function(response){
+            if (response.errors == '') {
+                if (response.data.arttype=='logo') {
+                    openai(response.data.artlocurl, 'AI Redrawn');
+                } else {
+                    var a=response.data.viewurls;
+                    var numpp=1;
+                    var label='';
+                    a.forEach(function(entry) {
+                        label='AI Redrawn '+numpp;
+                        openai(entry, label);
+                        numpp++;
+                    });
+                }
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Templates
+    // Master
+    $(".templatebox_icon").unbind('click').click(function(){
+        if ($(this).hasClass('master')) {
+            var docurl = $(this).data('url');
+            var doclabel = $(this).data('label');
+            openai(docurl, doclabel);
+        } else {
+            var params={'ordersession': $("input#ordersession").val()}
+            var url="/leadorder/art_showtemplates";
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    if (parseInt(response.data.custom)==1) {
+                        $("#artNextModal").find('div.modal-dialog').css('width','665px');
+                        $("#artNextModal").find('.modal-title').empty().html('Item Template');
+                        $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                        $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                        $("#artNextModal").on('hidden.bs.modal', function (e) {
+                            $(document.body).addClass('modal-open');
+                        })
+                    } else {
+                        for (index = 0; index < response.data.templates.length; ++index) {
+                            openai(response.data.templates[index]['fileurl'], response.data.templates[index]['filename']);
+                        }
+                    }
+                } else {
+                    show_error(response);
+                }
+            }, 'json');
+        }
+    })
+}
+
+function init_payment_links() {
+    $(".balancedue_linkicon").unbind('click').click(function (){
+        var element = document.querySelector("#checkoutlink");
+        copyOrderToClipboard(element);
+        $(element).hide();
+        var url = $("#checkoutlink").val();
+        var newWindow = window.open(url, 'paymentview');
+    });
+    $(".balancedue_send").unbind('click').click(function (){
+        var url="/leadorder/prepare_checkout_invite";
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".sendcheckoutnotificationcontent").empty().html(response.data.content);
+                $(".sendcheckoutnotificationarea").show();
+                $(".sendcheckoutnotificationclosewin").unbind('click').click(function(){
+                    $(".sendcheckoutnotificationarea").hide();
+                });
+                $(".invitecheckout_send").unbind('click').click(function (){
+                    send_checkout_invite();
+                })
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function send_checkout_invite() {
+    var url="/leadordernew/send_checkout_invite";
+    var params=new Array();
+    params.push({name: 'ordersession', value: $("input#ordersession").val()});
+    params.push({name: 'invite_name', value: $("#invitecheckoutname_to").val()});
+    params.push({name: 'invite_email', value: $("#invitecheckoutemail_to").val()});
+    if ($("#invitecheckoutemail_cc").length > 0) {
+        // params.push({name: 'cc_name', value: $("#invitecheckoutname_cc").val()});
+        params.push({name: 'cc_email', value: $("#invitecheckoutemail_cc").val()});
+    }
+    if ($("#invitecheckoutemail_bcc").length > 0) {
+        // params.push({name: 'bcc_name', value: $("#invitecheckoutname_bcc").val()});
+        params.push({name: 'bcc_email', value: $("#invitecheckoutemail_bcc").val()});
+    }
+    params.push({name: 'subject', value: $("#invitecheckoutsubject").val()})
+    $.post(url, params, function (response){
+        if (response.errors=='') {
+            $(".sendcheckoutnotificationarea").hide();
+            $(".orddtls_historybox").empty().html(response.data.histoyview);
+            init_leadorderparts_scrolls();
+            init_artdata_show();
+        } else {
+            show_error(response);
+        }
+    },'json');
 }
 
 // Init Lead Order Edit

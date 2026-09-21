@@ -2149,4 +2149,32 @@ Class Artlead_model extends MY_Model
             }
         }
     }
+
+    public function show_atproofdocnew($leadorder, $artwork_proof_id, $ordersession)
+    {
+        $out = ['result'=>$this->error_result, 'msg'=>$this->init_msg];
+        $options = $leadorder['artproofs']['options'];
+        $found=0;
+        $pidx=0;
+        foreach ($options as $option) {
+            $docs = $option['data'];
+            foreach ($docs as $doc) {
+                if ($doc['artwork_proof_id']==$artwork_proof_id) {
+                    $out['result'] = $this->success_result;
+                    $found = 1;
+                    $out['outproof'] = $doc;
+                    break;
+                }
+            }
+            if ($found>0) {
+                break;
+            }
+        }
+        if ($found==0) {
+            $out['msg']='Proof Doc Not Found';
+        } else {
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
 }
