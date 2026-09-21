@@ -1311,6 +1311,7 @@ li.select2-results__option {
     color: #0000D2;
     font-weight: bold;
     margin-bottom: 2px;
+    cursor: pointer;
 }
 .optn_checkbox {
     margin-right: 3px;
@@ -3170,8 +3171,8 @@ select.imprintlocationchoice {
 /* Invite Checkout Email */
 .sendcheckoutnotificationarea {
     position: absolute;
-    left: 15px;
-    bottom: 20px;
+    left: 575px;
+    bottom: 33px;
     display: none;
     background-color: #ffffff;
     border: 2px solid #000000;
