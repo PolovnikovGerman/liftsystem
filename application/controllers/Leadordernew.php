@@ -281,4 +281,106 @@ class Leadordernew extends MY_Controller
         return $timeout;
     }
 
+    public function show_update_details()
+    {
+        if ($this->isAjax()) {
+            $artwork_history_id=$this->input->post('artwork_history_id');
+            $mdata=array();
+            $error='Empty History Content';
+            if ($artwork_history_id) {
+                $this->load->model('artwork_model');
+                $res=$this->artwork_model->get_updatehistory_details($artwork_history_id);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $options=array(
+                        'head'=>$res['head'],
+                        'details'=>$res['details'],
+                    );
+                    $mdata['content']=$this->load->view('leadordernew/history_update_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function showproofdoc()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+
+                $artwork_proof_id=$this->input->post('proofdoc');
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->show_atproofdocnew($leadorder, $artwork_proof_id, $ordersession);
+                if ($res['result'] == $this->error_result) {
+                    $error = $res['msg'];
+                } else {
+                    $proofdoc=$res['outproof'];
+                    if ($proofdoc['artwork_proof_id']>0) {
+                        $mdata['proofdocurl']=$proofdoc['proof_name'];
+                    } else {
+                        $fullpreload=$this->config->item('upload_path_preload');
+                        $shpreload=$this->config->item('pathpreload');
+                        $mdata['proofdocurl']=  str_replace($fullpreload,$shpreload, $proofdoc['proof_name']);
+                    }
+                    $mdata['proofdocname']=$proofdoc['source_name'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function send_checkout_invite()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $invite_name = ifset($postdata, 'invite_name','');
+                $invite_email = ifset($postdata, 'invite_email','');
+                $subject = ifset($postdata, 'subject', '');
+                $msgoptions = [
+                    'invite_name' => $invite_name,
+                    'invite_email' => $invite_email,
+                    'subject' => $subject,
+                ];
+                if (isset($postdata['cc_email']) && !empty($postdata['cc_email'])) {
+                    $msgoptions['cc_email'] = $postdata['cc_email'];
+//                    $msgoptions['cc_name'] = ifset($postdata, 'cc_name', '');
+                }
+                if (isset($postdata['bcc_email']) && !empty($postdata['bcc_email'])) {
+                    $msgoptions['bcc_email'] = $postdata['bcc_email'];
+//                    $msgoptions['bcc_name'] = ifset($postdata, 'bcc_name','');
+                }
+                $res=$this->leadorder_model->send_checkout_invite($leadorder, $msgoptions, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $history = $res['history'];
+                    $mdata['histoyview'] = $this->load->view('leadordernew/update_history_view', ['history' => $history], TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
 }

@@ -1119,6 +1119,8 @@ li.select2-results__option {
 }
 .artapprvl_font {
     float: right !important;
+    font-size: 11px;
+    line-height: 18px;
     /* margin-top: 3px; */
 }
 .artapprvl_font label {
@@ -1854,6 +1856,7 @@ li.select2-results__option {
     line-height: 24px;
     color: #838583;
     font-size: 16px;
+    cursor: pointer;
 }
 .balancedue {
     float: right !important;
@@ -1883,6 +1886,7 @@ li.select2-results__option {
 .balancedue_linkicon {
     margin-top: 1px;
     margin-left: 5px;
+    cursor: pointer;
 }
 .balancedue_linkicon img {
     height: 15px;
@@ -3072,3 +3076,210 @@ select.imprintlocationchoice {
     border: 1px solid #BDBDBD;
     font-size: 10px;
 }
+/* History view */
+.historydataview {
+    display: none;
+    position: absolute;
+    left: 289px;
+    top: 148px;
+    z-index: 1052;
+}
+.updatehistorydetailsarea {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px dotted #000;
+    /*height: 417px;*/
+    width: 710px;
+}
+.updatehistorydetailsarea .closehistory {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    border: 1px solid #000;
+    background: #ff0000;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    opacity: 1;
+    z-index: 1;
+    font-size: 16px;
+    line-height: 24px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+    font-weight: bold;
+}
+.updatehistorydetailsarea div {
+    font-size: 12px;
+    float: left;
+}
+.updatehistorydetailsarea > .title {
+    width: 100%;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+.updatehistorydetailsarea > .detailstablehead {
+    width: 686px;
+}
+.updatehistorydetailsarea > .detailstablehead div {
+    height: 24px;
+    line-height: 24px;
+    background-color: #aeaeae;
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+}
+.updatehistorydetailsarea > .detailstablehead > .parameterlabel {
+    width: 320px;
+}
+.updatehistorydetailsarea > .detailstablehead > .parametervalue {
+    width: 183px;
+}
+.updatehistorydetailsarea > .detailstablebody {
+    border: 1px solid #000000;
+    /*height: 339px;*/
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 684px;
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow div {
+    min-height: 22px;
+    float: left;
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow .border_r {
+    border-right: 1px solid #000000;
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow > .parameterlabel {
+    width: 319px;
+    padding-left: 7px;
+}
+.updatehistorydetailsarea > .detailstablebody > .detailstablerow > .parametervalue {
+    width: 181px;
+    text-align: center;
+}
+/* Invite Checkout Email */
+.sendcheckoutnotificationarea {
+    position: absolute;
+    left: 15px;
+    bottom: 20px;
+    display: none;
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    z-index: 15;
+}
+.sendcheckoutnotificationclosewin {
+    position: absolute;
+    right: -10px;
+    top: -12px;
+    border: 1px solid #2a2a2a;
+    background: #e20000;
+    background: linear-gradient(to top, #c60000, #ff0000);
+    color: #fff;
+    font-weight: 900;
+    width: 29px;
+    height: 29px;
+    line-height: 25px;
+    font-size: 17px;
+    text-align: center;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.sendcheckoutnotificationclosewin svg {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    top: 2.5px;
+    fill: #fff;
+}
+.invitecheckout_content {
+    clear: both;
+    float: left;
+    margin: 10px 20px 10px 20px;
+    width: 488px;
+}
+.invitecheckout_content div {
+    float: left;
+}
+.invitecheckout_header {
+    width: 100%;
+}
+.lined-heading {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #000;
+}
+.lined-heading::before,
+.lined-heading::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background-color: #000000;
+}
+.lined-heading::before {
+    margin-right: 15px;
+}
+.lined-heading::after {
+    margin-left: 15px;
+}
+.securepaymenttitle {
+    position: relative;
+    top: -1px;
+}
+.invitecheckout_row {
+    text-align: left;
+    margin-bottom: 11px;
+    width: 100%;
+}
+.invitecheckout_label {
+    color: #000000;
+    float: left;
+    font-size: 15px;
+    padding-top: 4px;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 5px;
+}
+.invitecheckout_data {
+    float: left;
+    width: 100%;
+}
+input.invitecheckout_input {
+    float: left;
+    border: 1px solid #dadce5;
+    border-radius: 4px;
+    color: #000;
+    font-size: 16px !important;
+    padding: 10px 5px 10px 10px;
+    width: 100%;
+}
+.invitecheckout_send {
+    border-radius: 4px;
+    border: 1px solid #15801c;
+    background: #1dac21;
+    background: linear-gradient(to top, #1b9424, #1fc11e);
+    width: 95px;
+    text-align: center;
+    float: right!important;
+    color: #ffffff;
+    font-size: 22px;
+    height: 35px;
+    line-height: 33px;
+    cursor: pointer;
+    font-weight: 600;
+}
+/* END Invite Checkout Email */

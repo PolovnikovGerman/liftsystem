@@ -1097,13 +1097,32 @@ class Template
             $data['empty_url'] = $this->CI->config->item('sb_empty_template');
             $data['empty_title'] = $this->CI->config->item('sb_empty_title');
         }
-        $data['artwork'] = $res['artwork'];
         // Art locations
         $data['artlocatview'] = $this->CI->load->view('leadordernew/artlocations_view', ['artlocations' => $res['artlocations'], 'edit' => $edit], TRUE);
+        $res['artwork']['weborder'] = $res['order']['weborder'];
+        $artcolors = $artfonts = '';
+        if ($res['order']['weborder']) {
+            foreach ($res['artlocations'] as $location) {
+                if (!empty($location['art_color1'])) {
+                    $artcolors.=($location['art_color1']=='Choose for me' ? '' : $location['art_color1'].' ');
+                }
+                if (!empty($location['art_color2'])) {
+                    $artcolors.=($location['art_color2']=='Choose for me' ? '' : $location['art_color2'].' ');
+                    // $artcolors.=$location['art_color2'].' ';
+                }
+                if (!empty($location['font'])) {
+                    $artfonts.=$location['font'].' ';
+                }
+            }
+        }
+        $res['artwork']['artcolors'] = $artcolors;
+        $res['artwork']['artfonts'] = $artfonts;
+        $data['artwork'] = $res['artwork'];
         // Billing, Payments, CC
         $billing = $res['order_billing'];
         $country_id = $billing['country_id'];
         $states=$this->CI->shipping_model->get_country_states($country_id);
+        $checkoutlink = ($res['order']['brand']=='SR' ? $this->CI->config->item('srcheckoutlink') : $this->CI->config->item('btcheckoutlink')).$res['order']['checkout_link'];
         $payoptions = [
             'billing' => $billing,
             'countries' => $res['countries'],
@@ -1113,6 +1132,7 @@ class Template
             'order' => $res['order'],
             'edit' => $edit,
             'billingaddress' => $this->CI->shipping_model->prepare_billaddress($billing),
+            'checkoutlink' => $checkoutlink,
         ];
         $data['paymentsview'] = $this->CI->load->view('leadordernew/payment_view', $payoptions, TRUE);
         // Fullfilment
