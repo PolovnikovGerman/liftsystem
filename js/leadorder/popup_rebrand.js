@@ -131,6 +131,7 @@ function init_leadorderparts_scrolls() {
 
 // Switch Clay / Preview Tabs
 function init_claypreview_tabs() {
+    // Change tab
     $(".leadorderclaytab").unbind('click').click(function () {
         if ($(this).hasClass("active")) {
         } else {
@@ -148,6 +149,18 @@ function init_claypreview_tabs() {
             $(".leadorderpreviewtab").addClass("active");
             $(".leadorderpreviewcontent").addClass("active");
         }
+    })
+    // Click claymodel
+    $(".claymodelname").unbind('click').click(function () {
+        var link = $(this).data('link');
+        var title = $(this).data('title');
+        openai(link, title);
+    });
+    // Click preview
+    $(".previewpicname").unbind('click').click(function () {
+        var link = $(this).data('link');
+        var title = $(this).data('title');
+        openai(link, title);
     })
 }
 
