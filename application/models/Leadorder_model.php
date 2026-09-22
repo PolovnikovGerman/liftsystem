@@ -946,6 +946,7 @@ Class Leadorder_model extends My_Model {
         // Empty items
         $out['order_items'] = $this->_create_empty_orderitems();
         $out['shipdocs'] = [];
+        $out['nethistory'] = [];
         return $out;
     }
 

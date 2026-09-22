@@ -107,10 +107,13 @@ function init_closebutton() {
 }
 
 function init_leadorderparts_scrolls() {
-    new SimpleBar(document.getElementById('orddtls_historybox'), {autoHide: false});
+    if ($("#orddtls_historybox").length>0) {
+        new SimpleBar(document.getElementById('orddtls_historybox'), {autoHide: false});
+    }
     new SimpleBar(document.getElementById('ordercontacts_table'), {autoHide: false});
-    new SimpleBar(document.getElementById('orderitemsarea'), {autoHide: false});
-    new SimpleBar(document.getElementById('order_art_boxes'), {autoHide: false});
+    if ($("#order_art_boxes").length>0) {
+        new SimpleBar(document.getElementById('order_art_boxes'), {autoHide: false});
+    }
     new SimpleBar(document.getElementById('trackcodesarea'), {autoHide: false});
     $('div.claymodels_optn_box').each(function () {
         boxid = $(this).attr('id');
@@ -496,6 +499,10 @@ function init_onlineleadorder_edit() {
     init_closebutton();
     init_leadorderparts_scrolls();
     init_claypreview_tabs();
+    init_copyaddresses(1);
+    init_fulfillment_history();
+    init_artdata_show();
+    // Edit
     init_orderdata_change();
     init_contacts_change();
     init_addneworderitem();
@@ -713,17 +720,11 @@ function init_addneworderitem() {
         var params = Array();
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
         params.push({name: 'orderitem_id', value: orderitem_id});
+        params.push({name: 'edit', value: 1});
         var url = "/leadordernew/neworderitemimprints";
         $.post(url, params, function (response){
             if (response.errors=='') {
                 // Print details
-                // $("#artNextModal").find('div.modal-dialog').css('width','1077px');
-                // $("#artNextModal").find('.modal-title').empty().html('Order Item Imprint');
-                // $("#artNextModal").find('div.modal-body').empty().html(response.data.imprintview);
-                // $("#artNextModal").modal({keyboard: false, show: true}); // backdrop: 'static',
-                // $("#artNextModal").on('hidden.bs.modal', function (e) {
-                //     $(document.body).addClass('modal-open');
-                // })
                 $(".imprintdetails_popup").empty().html(response.data.imprintview).show();
                 init_imprint_details();
             } else {
@@ -900,27 +901,27 @@ function init_imprint_details() {
         },'json');
     });
     // View Location
-    $("div.locattempl.active").qtip({
-        content: {
-            text: function(event, api) {
-                $.ajax({
-                    url: api.elements.target.data('content') // Use href attribute as URL
-                }).then(function(content) {
-                    // Set the tooltip content upon successful retrieval
-                    api.set('content.text', content);
-                }, function(xhr, status, error) {
-                    // Upon failure... set the tooltip content to error
-                    api.set('content.text', status + ': ' + error);
-                });
-                return 'Loading...'; // Set some initial text
-            }
-        },
-        position: {
-            my: 'bottom right',
-            at: 'top left',
-        },
-        style: 'qtip-light'
-    });
+    // $("div.locattempl.active").qtip({
+    //     content: {
+    //         text: function(event, api) {
+    //             $.ajax({
+    //                 url: api.elements.target.data('content') // Use href attribute as URL
+    //             }).then(function(content) {
+    //                 // Set the tooltip content upon successful retrieval
+    //                 api.set('content.text', content);
+    //             }, function(xhr, status, error) {
+    //                 // Upon failure... set the tooltip content to error
+    //                 api.set('content.text', status + ': ' + error);
+    //             });
+    //             return 'Loading...'; // Set some initial text
+    //         }
+    //     },
+    //     position: {
+    //         my: 'bottom right',
+    //         at: 'top left',
+    //     },
+    //     style: 'qtip-light'
+    // });
 
     $("div.revertimprintdetailsdata").unbind('click').click(function(){
         $(".imprintdetails_popup").empty().hide();

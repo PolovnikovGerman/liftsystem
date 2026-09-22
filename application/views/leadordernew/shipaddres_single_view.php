@@ -81,10 +81,11 @@
             <div class="infoshiptax_row">
                 <div class="infoshiptax_pricebox">
                     <?php if ($edit==0) : ?>
-                        <?=MoneyOutput($order['shipping'])?></div>
+                        <?=MoneyOutput($order['shipping'])?>
                     <?php else : ?>
-                    <input type="text" class="inptpaymentdata" data-fld="rush_price" value="<?=$order['shipping']?>"/>
+                        <input type="text" class="inptpaymentdata" data-fld="rush_price" value="<?=$order['shipping']?>"/>
                     <?php endif; ?>
+                </div>
                 <div class="infoshiptax_title">Shipping:</div>
                 <?php foreach ($address['shipping_costs'] as $shipping_cost) : ?>
                     <?php if ($shipping_cost['current'] == 1) : ?>

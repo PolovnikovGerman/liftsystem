@@ -238,6 +238,7 @@ class Leadordernew extends MY_Controller
                 'imprintsession' => $imptintid,
                 'custom' => ($res['item_id'] == $this->config->item('custom_id') || $res['item_id'] == $this->config->item('other_id')) ? 1 : 0,
                 'brand' => $res['brand'],
+                'edit' => 1,
             );
             $out['content'] = $this->load->view('leadordernew/imprint_details_edit', $options, TRUE);
 
