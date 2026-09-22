@@ -4958,4 +4958,48 @@ class Leadquote_model extends MY_Model
         return $response;
     }
 
+    public function check_quoteitem_color()
+    {
+        $this->db->select('q.quote_number, q.brand, qi.inventory_item_id, qic.quote_itemcolor_id, qic.inventory_color_id, qic.item_description, qic.item_color, inv.color');
+        $this->db->from('ts_quote_itemcolors qic');
+        $this->db->join('ts_inventory_colors inv', 'inv.inventory_color_id=qic.inventory_color_id');
+        $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qic.quote_item_id');
+        $this->db->join('ts_quotes q', 'q.quote_id = qi.quote_id');
+        $this->db->where('qic.inventory_color_id is not null');
+        $this->db->where('inv.color != qic.item_color');
+        $colors = $this->db->get()->result_array();
+        foreach ($colors as $color) {
+            $invcolor = $this->db->select('max(inventory_color_id) as inventory_color_id, count(inventory_color_id) as cnt')->from('ts_inventory_colors')->where('inventory_item_id', $color['inventory_item_id'])->where('color', $color['item_color'])->get()->row_array();
+            if ($invcolor['cnt']==1) {
+                // Found
+                $this->db->where('quote_itemcolor_id', $color['quote_itemcolor_id']);
+                $this->db->set('inventory_color_id', $invcolor['inventory_color_id']);
+                $this->db->update('ts_quote_itemcolors');
+            } else {
+                $invcolor = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $color['inventory_color_id'])->get()->row_array();
+                $this->db->where('quote_itemcolor_id', $color['quote_itemcolor_id']);
+                $this->db->set('item_color', $invcolor['color']);
+                $this->db->update('ts_quote_itemcolors');
+            }
+        }
+        echo 'Quotes updated successfully'.PHP_EOL;
+        // Orders
+        $this->db->select('o.order_num, o.brand , oi.inventory_item_id , oic.order_itemcolor_id , oic.inventory_color_id ,oic.item_description , oic.item_color , inv.color');
+        $this->db->from('ts_order_itemcolors oic');
+        $this->db->join('ts_inventory_colors inv', 'inv.inventory_color_id=oic.inventory_color_id');
+        $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
+        $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
+        $this->db->where('oic.inventory_color_id is not null');
+        $this->db->where('inv.color != oic.item_color');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $invcolor = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $order['inventory_color_id'])->get()->row_array();
+            $this->db->where('order_itemcolor_id', $order['order_itemcolor_id']);
+            $this->db->set('item_color', $invcolor['color']);
+            $this->db->update('ts_order_itemcolors');
+        }
+        echo 'Orders updated successfully'.PHP_EOL;
+    }
+
+
 }

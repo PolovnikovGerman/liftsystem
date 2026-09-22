@@ -5334,4 +5334,10 @@ class Test extends CI_Controller
         $res = $this->exportexcell_model->payments_report($payments);
         echo 'Report '.$res.' ready'.PHP_EOL;
     }
+
+    public function checkquotecolor()
+    {
+        $this->load->model('leadquote_model');
+        $res = $this->leadquote_model->check_quoteitem_color();
+    }
 }
