@@ -434,6 +434,24 @@ function init_artdata_show() {
                 }
             }, 'json');
         }
+    });
+    // Print details
+    $(".orderitemimprint").unbind('click').click(function(){
+        var orderitem_id = $(this).data('orderitem');
+        var params = Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'orderitem_id', value: orderitem_id});
+        params.push({name: 'edit', value: 0});
+        var url = "/leadordernew/neworderitemimprints";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Print details
+                $(".imprintdetails_popup").empty().html(response.data.imprintview).show();
+                init_imprint_details();
+            } else {
+                show_error(response);
+            }
+        },'json');
     })
 }
 
@@ -506,6 +524,7 @@ function init_onlineleadorder_edit() {
     init_orderdata_change();
     init_contacts_change();
     init_addneworderitem();
+    init_orderitem_manage();
 }
 
 function init_orderdata_change() {
@@ -526,6 +545,7 @@ function init_orderdata_change() {
                 $("#loader").hide();
             } else {
                 show_error(response);
+                $("#loader").hide();
             }
         },'json');
     });
@@ -543,6 +563,28 @@ function init_orderdata_change() {
                 show_error(response);
             }
         },'json');
+    });
+    $(".orderfindata").unbind('change').change(function() {
+        var fldname=$(this).data('field');
+        var params=new Array();
+        params.push({name: 'entity', value: $(this).data('entity')});
+        params.push({name: 'fldname', value: fldname});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/change_order_findata";
+        $("#loader").show();
+        $.post(url, params, function(response) {
+            if (response.errors=='') {
+                $(".itemsubtotal_price").empty().html(response.data.item_cost);
+                $(".ordtotal_price").empty().html(response.data.revenue);
+                $("#ordertotalprofit").empty().html(response.data.profitview);
+                update_locperiod(response);
+                $("#loader").hide();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        }, 'json');
     });
 }
 
@@ -609,7 +651,7 @@ function init_contacts_change() {
 
 function init_addneworderitem() {
     // Add color
-    $("span.addnewcolor").unbind('click').click(function () {
+    $(".adddata_color").find("span.addnewcolor").unbind('click').click(function () {
         var orderitem_id = $(this).data('orderitem');
         var params = new Array();
         params.push({name: 'item_id', value: $(this).val()});
@@ -900,28 +942,6 @@ function init_imprint_details() {
             }
         },'json');
     });
-    // View Location
-    // $("div.locattempl.active").qtip({
-    //     content: {
-    //         text: function(event, api) {
-    //             $.ajax({
-    //                 url: api.elements.target.data('content') // Use href attribute as URL
-    //             }).then(function(content) {
-    //                 // Set the tooltip content upon successful retrieval
-    //                 api.set('content.text', content);
-    //             }, function(xhr, status, error) {
-    //                 // Upon failure... set the tooltip content to error
-    //                 api.set('content.text', status + ': ' + error);
-    //             });
-    //             return 'Loading...'; // Set some initial text
-    //         }
-    //     },
-    //     position: {
-    //         my: 'bottom right',
-    //         at: 'top left',
-    //     },
-    //     style: 'qtip-light'
-    // });
 
     $("div.revertimprintdetailsdata").unbind('click').click(function(){
         $(".imprintdetails_popup").empty().hide();
@@ -1081,7 +1101,7 @@ function save_imprint_details() {
             $(".ordtotal_price").empty().html(response.data.order_revenue);
             $(".itemsubtotal_price").empty().html(response.data.item_subtotal);
             $(".balancedueblock").empty().html(response.data.total_due);
-
+            $("#ordertotalprofit").empty().html(response.data.profitview);
             init_leadorderparts_scrolls();
             update_locperiod(response);
             init_onlineleadorder_edit();
@@ -1102,6 +1122,56 @@ function leadordernewitem() {
         $("input.select2-search__field").focus();
     });
 }
+
+// Edit order items
+function init_orderitem_manage() {
+    $(".tblitems_color").find("span.addnewcolor").unbind('click').click(function () {
+        var orderitem_id = $(this).data('orderitem');
+        var params = new Array();
+        params.push({name: 'item_id', value: $(this).val()});
+        params.push({name: 'orderitem_id', value: orderitem_id});
+        params.push({name: 'itemstatus', value: 1});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url = "/leadorder/inventoryitem";
+        $.post(url, params, function (response) {
+            if (response.errors == '') {
+                $(".orderitem_inventoryview").empty().html(response.data.content);
+                $(".orderitem_inventoryview").show();
+                init_inventory_select(orderitem_id);
+            } else {
+                show_error(response);
+            }
+        }, 'json');
+    });
+    $("input.orderitemdata").unbind('change').change(function () {
+        var orderitem_id = $(this).data('orderitem');
+        var item_id = $(this).data('item');
+        var params = new Array();
+        params.push({name: 'orderitem_id', value: orderitem_id});
+        params.push({name: 'items_id', value: item_id});
+        params.push({name: 'field', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+
+    });
+    $('.orderitemimprint').unbind('click').click(function () {
+        var orderitem_id = $(this).data('orderitem');
+        var params = Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'orderitem_id', value: orderitem_id});
+        params.push({name: 'edit', value: 1});
+        var url = "/leadordernew/neworderitemimprints";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Print details
+                $(".imprintdetails_popup").empty().html(response.data.imprintview).show();
+                init_imprint_details();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
+}
+
 function init_rushpast() {
     // Edit Rush date in past
     // $("#rushpast").datepicker({

@@ -617,6 +617,9 @@ a.historydetailsview {
     width: 66px;
     text-align: right;
 }
+.orderitemimprint {
+    cursor: pointer;
+}
 .tblitems_additemdata {
     width: 228px;
 }
@@ -628,6 +631,9 @@ a.historydetailsview {
 }
 .tblitems_color, .adddata_color {
     width: 77px;
+}
+span.addnewcolor {
+    cursor: pointer;
 }
 .tblitems_customdescript {
     width: 239px;
@@ -733,10 +739,15 @@ li.select2-results__option {
 .itemsfooter_message textarea {
     width: 174px;
     height: 34px;
-    background: #DADADA;
     border: 1px solid #ACACAC;
     resize: none;
     padding: 3px 5px;
+}
+.itemsfooter_message textarea:read-only {
+    background: #DADADA;
+}
+.itemsfooter_discounts {
+    width: 262px;
 }
 .itemsfooter_inpts {
     width: 197px;
@@ -749,11 +760,13 @@ li.select2-results__option {
 .itemsfooter_inpts input {
     width: 187px;
     height: 15px;
-    background: #DADADA;
     border: 1px solid #ACACAC;
     padding: 0 5px;
     line-height: 15px;
     font-size: 11px;
+}
+.itemsfooter_inpts input:read-only {
+    background: #DADADA;
 }
 .itemsfooter_inpts input::placeholder {
     color: #BFBFC2;
@@ -769,13 +782,23 @@ li.select2-results__option {
 .inptsprice_box {
     width: 65px;
     height: 15px;
-    background: #DADADA;
-    border: 1px solid #ACACAC;
     line-height: 15px;
     text-align: right;
     padding: 0 5px;
     font-size: 11px;
     margin-top: 2px;
+}
+.inptsprice_box.viewdata {
+    background: #DADADA;
+    border: 1px solid #ACACAC;
+}
+.inptsprice_box input {
+    width: 100%;
+    height: 15px;
+    border: 1px solid #ACACAC;
+    padding: 0 5px;
+    line-height: 15px;
+    font-size: 11px;
 }
 .item_subtotal {
     width: 100%;

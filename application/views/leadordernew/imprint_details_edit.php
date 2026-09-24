@@ -166,9 +166,11 @@
             </div>
         </div>
     </div>
+    <?php if ($edit==1) : ?>
     <div class="saveimprintdetailsarea">
         <div class="saveimprintdetailsdata">save</div>
         <div class="revertimprintdetailsdata">revert</div>
     </div>
+    <?php endif; ?>
 </div>
 <div class="imprintdetail_repeat_note"></div>
