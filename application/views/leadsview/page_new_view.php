@@ -142,6 +142,7 @@
     <div class="leads_content_right">
         <div class="myleads_header">
             <div class="myleads_label">MY Leads</div>
+            <div class="leads_add">New Lead</div>
             <div class="leads_selectreplarea">
                 <label for="leads_replica">Leads of:</label>
                 <select class="leads_sortselect leads_replica"  id="leads_replica">
@@ -167,7 +168,6 @@
                 <div class="leadgreybtn leadsearchusr" data-user="<?=$user_id?>"><?=$user_name?>&apos;s</div>
                 <div class="leadgreybtn leadsearchclear">Clear</div>
             </div>
-            <div class="leads_add">New Lead</div>
         </div>
         <div class="leads_section_area">
             <div class="leaddata_header leads">

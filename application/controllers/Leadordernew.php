@@ -26,7 +26,6 @@ class Leadordernew extends MY_Controller
     {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $postdata=$this->input->post();
             $ordersession = ifset($postdata, 'ordersession', 0);
 
@@ -47,7 +46,6 @@ class Leadordernew extends MY_Controller
                     $entity=$postdata['entity'];
                     $fldname=$postdata['fldname'];
                     $newval=$postdata['newval'];
-                    $oldshipcost=$leadorder['order']['shipping'];
 
                     if ($entity=='order' && $fldname=='shipdate' && $newval!='') {
                         $newval=strtotime($newval);
@@ -89,6 +87,55 @@ class Leadordernew extends MY_Controller
         show_404();
     }
 
+    public function change_order_findata()
+    {
+        $mdata=array();
+        $postdata=$this->input->post();
+        $ordersession = ifset($postdata, 'ordersession', 0);
+
+        $leadorder=usersession($ordersession);
+        if (empty($leadorder)) {
+            $error=$this->restore_orderdata_error;
+        } else {
+            // Lock Edit Record
+            $locres=$this->_lockorder($leadorder);
+            if ($locres['result']==$this->error_result) {
+                $leadorder=usersession($ordersession, NULL);
+                $error=$locres['msg'];
+                $this->ajaxResponse($mdata, $error);
+            }
+            if (!isset($postdata['entity']) || !isset($postdata['fldname']) || !isset($postdata['newval'])) {
+                $error='Changes parameter is not full';
+            } else {
+                $entity = $postdata['entity'];
+                $fldname = $postdata['fldname'];
+                $newval = floatval(str_replace('$', '', $postdata['newval']));
+
+                $res=$this->leadorder_model->change_order_input($leadorder, $entity, $fldname, $newval, $ordersession);
+                $error=$res['msg'];
+                if (isset($res['old_value'])) {
+                    $mdata['old_value']=$res['old_value'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $leadorder = usersession($ordersession);
+                    $order = $leadorder['order'];
+                    $subtotal=$order['item_cost']+$order['item_imprint']+floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
+                    $mdata['item_cost']=MoneyOutput($subtotal);
+                    $mdata['revenue'] = MoneyOutput($order['revenue']);
+                    if (empty($order['order_cog'])) {
+                        $mdata['profitview'] = $this->load->view('leadordernew/profit_project_view', ['order' => $order], TRUE);
+                    } else {
+                        $mdata['profitview'] = $this->load->view('leadordernew/profit_view', ['order' => $order], TRUE);
+                    }
+                }
+            }
+        }
+        // Calc new period for lock
+        $mdata['loctime']=$this->_leadorder_locktime();
+        $this->ajaxResponse($mdata, $error);
+    }
+
     // Imprints for new item
     public function neworderitemimprints()
     {
@@ -97,6 +144,7 @@ class Leadordernew extends MY_Controller
             $postdata = $this->input->post();
             $ordersession= ifset($postdata, 'ordersession','unkn');
             $leadorder = usersession($ordersession);
+            $edit = ifset($postdata, 'edit',1);
             if (empty($leadorder)) {
                 $error=$this->restore_orderdata_error;
             } else {
@@ -108,7 +156,7 @@ class Leadordernew extends MY_Controller
                     $this->ajaxResponse($mdata, $error);
                 }
                 $orderitem_id = ifset($postdata, 'orderitem_id', 0);
-                $imprdata = $this->_prepare_imprint_details($leadorder, $orderitem_id, $ordersession, 'new');
+                $imprdata = $this->_prepare_imprint_details($leadorder, $orderitem_id, $ordersession, $edit, 'new');
                 $error = $imprdata['msg'];
                 if ($imprdata['result']==$this->success_result) {
                     $error = '';
@@ -163,12 +211,8 @@ class Leadordernew extends MY_Controller
                     $mdata['itemsview'] = $this->load->view('leadordernew/items_data_edit', ['items' => $items, 'itemslist' => $itemslist], TRUE);
                     // New revenue
                     $mdata['order_revenue']=MoneyOutput($order['revenue']);
-                    // $mdata['shipdate']=$shipping['shipdate'];
-                    // $mdata['rush_price']=$shipping['rush_price'];
-                    // $mdata['is_shipping']=$order['is_shipping'];
                     // ???
                     $mdata['shipping']=$order['shipping'];
-                    // $mdata['cntshipadrr']=count($shipping_address);
                     // New Item subtotal
                     $subtotal=$order['item_cost']+$order['item_imprint']+floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
                     $mdata['item_subtotal']=MoneyOutput($subtotal);
@@ -193,6 +237,11 @@ class Leadordernew extends MY_Controller
                     $mdata['total_due']=$this->load->view('leadordernew/balancedue_data_view', $dueoptions, TRUE);
                     // Tax
                     $mdata['tax']=MoneyOutput($order['tax']);
+                    if (empty($order['order_cog'])) {
+                        $mdata['profitview'] = $this->load->view('leadordernew/profit_project_view', ['order' => $order], TRUE);
+                    } else {
+                        $mdata['profitview'] = $this->load->view('leadordernew/profit_view', ['order' => $order], TRUE);
+                    }
 
                 }
             }
@@ -204,7 +253,7 @@ class Leadordernew extends MY_Controller
     }
 
     // Prepare Item Imprints
-    private function _prepare_imprint_details($leadorder, $newitem, $ordersession, $itemstatus='old') {
+    private function _prepare_imprint_details($leadorder, $newitem, $ordersession, $edit, $itemstatus='old') {
         $out = ['result' => $this->error_result, 'msg' => 'Unknown Error'];
         $res=$this->leadorder_model->prepare_imprint_details($leadorder, $newitem, $ordersession);
         if ($res['result']==$this->error_result) {
@@ -238,18 +287,20 @@ class Leadordernew extends MY_Controller
                 'imprintsession' => $imptintid,
                 'custom' => ($res['item_id'] == $this->config->item('custom_id') || $res['item_id'] == $this->config->item('other_id')) ? 1 : 0,
                 'brand' => $res['brand'],
+                'edit' => $edit,
             );
             $out['content'] = $this->load->view('leadordernew/imprint_details_edit', $options, TRUE);
-
-            $imprintdetails = array(
-                'imprint_details' => $details,
-                'order_blank' => $order_blank,
-                'order_item_id' => $newitem,
-                'item_id' => $item_id,
-                'brand' => $res['brand'],
-                'itemstatus' => $itemstatus,
-            );
-            usersession($imptintid, $imprintdetails);
+            if ($edit == 1) {
+                $imprintdetails = array(
+                    'imprint_details' => $details,
+                    'order_blank' => $order_blank,
+                    'order_item_id' => $newitem,
+                    'item_id' => $item_id,
+                    'brand' => $res['brand'],
+                    'itemstatus' => $itemstatus,
+                );
+                usersession($imptintid, $imprintdetails);
+            }
         }
         return $out;
     }

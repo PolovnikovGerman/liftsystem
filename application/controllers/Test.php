@@ -5569,4 +5569,10 @@ class Test extends CI_Controller
         $this->load->model('artlead_model');
         $this->artlead_model->update_podata();
     }
+
+    public function checkquotecolor()
+    {
+        $this->load->model('leadquote_model');
+        $res = $this->leadquote_model->check_quoteitem_color();
+    }
 }

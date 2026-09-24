@@ -1,6 +1,6 @@
 <?php if (count($imprints)==0) : ?>
     <div class="tblitems_tr doprow whitedatarow">
-        <div class="tblitems_td tblitems_item textgreen" data-orderitem="<?=$order_item_id?>">
+        <div class="tblitems_td tblitems_item textgreen orderitemimprint" data-orderitem="<?=$order_item_id?>">
             Print Details:
         </div>
         <div class="tblitems_td tblitems_inforow">blank, no imprinting</div>
@@ -13,7 +13,7 @@
     <?php foreach ($imprints as $imprint) : ?>
         <div class="tblitems_tr doprow <?=$nrow%2==0 ? 'whitedatarow' : 'greydatarow'?>">
             <?php if ($nrow==0) : ?>
-                <div class="tblitems_td tblitems_item textgreen" data-orderitem="<?=$order_item_id?>">Print Details:</div>
+                <div class="tblitems_td tblitems_item textgreen orderitemimprint" data-orderitem="<?=$order_item_id?>">Print Details:</div>
             <?php else : ?>
                 <div class="tblitems_td tblitems_item">&nbsp;</div>
             <?php endif; ?>

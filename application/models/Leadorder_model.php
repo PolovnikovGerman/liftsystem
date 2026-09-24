@@ -652,6 +652,7 @@ Class Leadorder_model extends My_Model {
             }
             $res['item_cost']=$item_cost;
             $res['item_imprint']=$item_imprint;
+            $res['item_subtotal'] = $item_cost + $item_imprint + $res['mischrg_val1'] + $res['mischrg_val2'] - $res['discount_val'];
             // Get Shippings
             $out['shipping']=$this->get_order_shipping($order_id);
 
@@ -946,6 +947,7 @@ Class Leadorder_model extends My_Model {
         // Empty items
         $out['order_items'] = $this->_create_empty_orderitems();
         $out['shipdocs'] = [];
+        $out['nethistory'] = [];
         return $out;
     }
 
@@ -12925,6 +12927,11 @@ Class Leadorder_model extends My_Model {
     {
         $this->db->select('*')->from('ts_order_shipdocs')->where('order_id', $order_id);
         return $this->db->get()->result_array();
+    }
+
+    public function change_order_fininput($leadorder, $entity, $fldname, $newval, $ordersession)
+    {
+
     }
 }
 /* End of file leadorder_model.php */

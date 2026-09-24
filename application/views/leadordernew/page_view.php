@@ -58,34 +58,56 @@
                             </div>
                             <div class="items_footer">
                                 <div class="itemsfooter_message">
-                                    <label>Add’l message to appear on invoice:</label>
-                                    <textarea class="ordercommondata" name="invoice_message" data-fld="invoice_message" readonly><?=$order['invoice_message']?></textarea>
+                                    <label for="invoice_message">Add’l message to appear on invoice:</label>
+                                    <textarea class="ordercommondata" name="invoice_message" data-fld="invoice_message" <?=$edit==0 ? 'readonly' : ''?>><?=$order['invoice_message']?></textarea>
                                 </div>
-                                <div class="itemsfooter_inpts">
+                                <div class="itemsfooter_discounts">
                                     <div class="inpts_row">
-                                        <input type="text" name="misc_charge1" class="ordercommondata" data-fld="mischrg_label1" readonly="readonly" placeholder="Misc Charge" value="<?=$order['mischrg_label1']?>"/>
+                                        <div class="itemsfooter_inpts">
+                                            <input type="text" name="misc_charge1" class="ordercommondata" data-entity="order" data-field="mischrg_label1" <?=$edit==0 ? 'readonly="readonly"' : ''?> placeholder="Misc Charge" value="<?=$order['mischrg_label1']?>"/>
+                                        </div>
+                                        <div class="itemsfooter_inptsprice">
+                                            <div class="inptsprice_box <?=$edit==0 ? 'viewdata' : ''?>">
+                                                <?php if ($edit==0) : ?>
+                                                    <?=MoneyOutput($order['mischrg_val1'])?>
+                                                <?php else: ?>
+                                                    <input type="text" name="mischrg_val1" class="orderfindata" data-entity="order" data-field="mischrg_val1" placeholder="Misc Charge" value="<?=$order['mischrg_val1']?>"/>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="inpts_row">
-                                        <input type="text" name="misc_charge2" class="ordercommondata" data-fld="mischrg_label2" readonly="readonly" placeholder="Misc Charge" value="<?=$order['mischrg_label2']?>">
+                                        <div class="itemsfooter_inpts">
+                                            <input type="text" name="misc_charge2" class="ordercommondata" data-entity="order" data-field="mischrg_label2" <?=$edit==0 ? 'readonly="readonly"' : ''?> placeholder="Misc Charge" value="<?=$order['mischrg_label2']?>">
+                                        </div>
+                                        <div class="itemsfooter_inptsprice">
+                                            <div class="inptsprice_box <?=$edit==0 ? 'viewdata' : ''?>">
+                                                <?php if ($edit==0) : ?>
+                                                    <?=MoneyOutput($order['mischrg_val2'])?>
+                                                <?php else: ?>
+                                                    <input type="text" name="mischrg_val2" class="orderfindata" data-entity="order" data-field="mischrg_val2" placeholder="Misc Charge" value="<?=$order['mischrg_val2']?>"/>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="inpts_row">
-                                        <input type="text" name="discount_label" class="ordercommondata" data-fld="discount_label" readonly="readonly" placeholder="Courtesy Discount" value="<?=$order['discount_label']?>">
-                                    </div>
-                                </div>
-                                <div class="itemsfooter_inptsprice">
-                                    <div class="inpts_row">
-                                        <div class="inptsprice_box"><?=MoneyOutput($order['mischrg_val1'])?></div>
-                                    </div>
-                                    <div class="inpts_row">
-                                        <div class="inptsprice_box"><?=MoneyOutput($order['mischrg_val2'])?></div>
-                                    </div>
-                                    <div class="inpts_row">
-                                        <div class="inptsprice_box"><?=MoneyOutput($order['discount_val'])?></div>
+                                        <div class="itemsfooter_inpts">
+                                            <input type="text" name="discount_label" class="ordercommondata" data-entity="order" data-field="discount_label" <?=$edit==0 ? 'readonly="readonly"' : ''?> placeholder="Courtesy Discount" value="<?=$order['discount_label']?>">
+                                        </div>
+                                        <div class="itemsfooter_inptsprice">
+                                            <div class="inptsprice_box <?=$edit==0 ? 'viewdata' : ''?>">
+                                                <?php if ($edit==0) : ?>
+                                                    <?=MoneyOutput($order['discount_val'])?>
+                                                <?php else : ?>
+                                                    <input type="text" name="discount_val" class="orderfindata" data-entity="order" data-field="discount_val" placeholder="Discount" value="<?=$order['discount_val']?>"/>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="item_subtotal">
-                                <div class="itemsubtotal_price"><?=MoneyOutput($order['item_cost'])?></div>
+                                <div class="itemsubtotal_price"><?=empty($order['item_subtotal']) ? '&nbsp;' : MoneyOutput($order['item_subtotal'])?></div>
                                 <div class="itemsubtotal_txt">Item Sub-total:</div>
                             </div>
                         </div>
@@ -211,7 +233,7 @@
                     <div class="fulflm_row">
                         <div class="fulfillmentblock"><?=$fullfilm_history?></div>
                     </div>
-                    <div class="fulflm_row"><?=$profitview?></div>
+                    <div class="fulflm_row" id="ordertotalprofit"><?=$profitview?></div>
                     <div class="fulflm_row"><?=$clayprevview?></div>
                     <div class="fulflm_row">
                         <div class="fulflm_shipping" id="trackcodesarea">

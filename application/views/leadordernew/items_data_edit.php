@@ -32,11 +32,11 @@
                     <?=MoneyOutput($item['item_subtotal'])?>
                 </div>
                 <div class="tblitems_td tditems_trash">
-                    <?php if ($item['item_row']==1) { ?>
+                    <?php if ($item['item_row']==1) : ?>
                         <i class="fa fa-trash" data-orderitem="<?=$orderitem['order_item_id']?>" data-item="<?=$item['item_description']?>"></i>
-                    <?php } else { ?>
+                    <?php  else : ?>
                         &nbsp;
-                    <?php } ?>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php $nrow++;?>
@@ -49,7 +49,7 @@
             </div>
         <?php endif; ?>
         <?php if (count($orderitem['imprints']) > 0) : ?>
-            <?php $this->load->view('leadordernew/imprint_data_view', array('order_item_id' =>$orderitem['order_item_id'], 'imprints'=>$orderitem['imprints'])); ?>
+            <?php $this->load->view('leadordernew/imprint_data_view', ['order_item_id' =>$orderitem['order_item_id'], 'imprints'=>$orderitem['imprints']]); ?>
         <?php endif; ?>
     <?php endforeach; ?>
     <div class="tblitems_tr" data-orderitem="<?=$orderitem['order_item_id']?>">
