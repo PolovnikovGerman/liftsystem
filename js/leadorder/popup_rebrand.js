@@ -1147,11 +1147,21 @@ function init_orderitem_manage() {
         var orderitem_id = $(this).data('orderitem');
         var item_id = $(this).data('item');
         var params = new Array();
-        params.push({name: 'orderitem_id', value: orderitem_id});
-        params.push({name: 'items_id', value: item_id});
-        params.push({name: 'field', value: $(this).data('fld')});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'entity', value: 'item'});
+        params.push({name: 'order_item', value: orderitem_id});
+        params.push({name: 'item', value: item_id});
+        params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
-
+        var url = '/leadordernew/change_itemparams';
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                // Change Price
+                // $("input.orderitemdata[data-orderitem='"+orderitem_id+"'][data-fld='item_price']").val(response.data.newprice)
+            } else {
+                show_error(response);
+            }
+        },'json');
     });
     $('.orderitemimprint').unbind('click').click(function () {
         var orderitem_id = $(this).data('orderitem');
