@@ -5730,13 +5730,14 @@ Class Leadorder_model extends My_Model {
         $targpathsh = $this->config->item('orderattach_path');
         $targpathfull = $this->config->item('orderattach');
         createPath($targpathsh);
+        $numpp = 1;
         foreach ($shipdocs as $shipdoc) {
             if ($shipdoc['order_shipdoc_id']<0) {
                 // New file
                 $filesrc = str_replace($srcpathsh,'', $shipdoc['shipdoc_link']);
                 $srcfile = $srcpathfull.$filesrc;
                 $filedet = extract_filename($filesrc);
-                $newfile = 'shipdoc_'.$order_id.'_'.time().'.'.$filedet['ext'];
+                $newfile = 'shipdoc_'.$order_id.'_'.time().'_'.str_pad($numpp,2,'0',STR_PAD_LEFT).'.'.$filedet['ext'];
                 $targfile = $targpathfull.$newfile;
                 $cpres = @copy($srcfile, $targfile);
                 if ($cpres) {
@@ -5746,6 +5747,7 @@ Class Leadorder_model extends My_Model {
                     $this->db->insert('ts_order_shipdocs');
                 }
             }
+            $numpp++;
         }
         $res['result']=$this->success_result;
         return $res;
