@@ -2092,21 +2092,21 @@ Class Leadorder_model extends My_Model {
             // Recalc Shipping Rates
             $out['shipcalc']=1;
         } elseif ($fldname=='item_color') {
-            $options=array(
-                'order_item_id'=>$items[$itmidx]['order_item_id'],
-                'item_id'=>$items[$itmidx]['item_id'],
-                'colors'=>$items[$itmidx]['colors'],
-                'item_color'=>$items[$itmidx]['item_color'],
-                'brand' => $order['brand'],
-            );
-            // if ($order['brand']=='SR') {
-            if (!empty($order_items[$idx]['inventory_item_id'])) {
-                $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
-                $items[$itmidx]['inventory_color_id'] = $this->_inventory_color($order_items[$idx]['inventory_item_id'], $items[$itmidx]['item_color']);
-            } else {
-                $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
-                $items[$itmidx]['inventory_color_id'] =  '';
-            }
+//            $options=array(
+//                'order_item_id'=>$items[$itmidx]['order_item_id'],
+//                'item_id'=>$items[$itmidx]['item_id'],
+//                'colors'=>$items[$itmidx]['colors'],
+//                'item_color'=>$items[$itmidx]['item_color'],
+//                'brand' => $order['brand'],
+//            );
+//            // if ($order['brand']=='SR') {
+//            if (!empty($order_items[$idx]['inventory_item_id'])) {
+//                $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/sradditem_color_view', $options, TRUE);
+//                $items[$itmidx]['inventory_color_id'] = $this->_inventory_color($order_items[$idx]['inventory_item_id'], $items[$itmidx]['item_color']);
+//            } else {
+//                $items[$itmidx]['out_colors']=$this->load->view('leadorderdetails/item_color_choice', $options, TRUE);
+//                $items[$itmidx]['inventory_color_id'] =  '';
+//            }
         } elseif ($fldname=='item_price') {
             // Get  Item price
             if($order_items[$idx]['item_id']>0) {
@@ -5746,13 +5746,14 @@ Class Leadorder_model extends My_Model {
         $targpathsh = $this->config->item('orderattach_path');
         $targpathfull = $this->config->item('orderattach');
         createPath($targpathsh);
+        $numpp = 1;
         foreach ($shipdocs as $shipdoc) {
             if ($shipdoc['order_shipdoc_id']<0) {
                 // New file
                 $filesrc = str_replace($srcpathsh,'', $shipdoc['shipdoc_link']);
                 $srcfile = $srcpathfull.$filesrc;
                 $filedet = extract_filename($filesrc);
-                $newfile = 'shipdoc_'.$order_id.'_'.time().'.'.$filedet['ext'];
+                $newfile = 'shipdoc_'.$order_id.'_'.time().'_'.str_pad($numpp,2,'0',STR_PAD_LEFT).'.'.$filedet['ext'];
                 $targfile = $targpathfull.$newfile;
                 $cpres = @copy($srcfile, $targfile);
                 if ($cpres) {
@@ -5762,6 +5763,7 @@ Class Leadorder_model extends My_Model {
                     $this->db->insert('ts_order_shipdocs');
                 }
             }
+            $numpp++;
         }
         $res['result']=$this->success_result;
         return $res;

@@ -305,6 +305,56 @@ class Leadordernew extends MY_Controller
         return $out;
     }
 
+    public function change_itemparams()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres = $this->_lockorder($leadorder);
+                if ($locres['result'] == $this->error_result) {
+                    $leadorder = usersession($ordersession, NULL);
+                    $error = $locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $entity = ifset($postdata, 'entity', '');
+                if (empty($entity)) {
+                    $error = 'Empty Needed Parameter';
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $oldshipcost = $leadorder['order']['shipping'];
+                $mdata['fldtype'] = $entity;
+                if ($entity == 'item') {
+                    if (!isset($postdata['fldname']) || !isset($postdata['item']) || !isset($postdata['newval']) || !isset($postdata['order_item'])) {
+                        $error = 'Empty Needed Parameter';
+                        $this->ajaxResponse($mdata, $error);
+                    }
+                    $fldname = $postdata['fldname'];
+                    $item_id = $postdata['item'];
+                    $newval = $postdata['newval'];
+                    $order_item_id = $postdata['order_item'];
+                    $mdata['item'] = $item_id;
+                    $mdata['order_item'] = $order_item_id;
+                    $res = $this->leadorder_model->change_items($leadorder, $order_item_id, $item_id, $fldname, $newval, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result'] == $this->success_result) {
+                        $error = '';
+                    }
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Function update lock order
     private function _lockorder($leadorder) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->locktimeout);
@@ -433,5 +483,11 @@ class Leadordernew extends MY_Controller
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
+    }
+
+    private function _shipwarning_confirm_view($options)
+    {
+        $content=$this->load->view('leadordernew/shipcost_warning_view', $options, TRUE);
+        return $content;
     }
 }
