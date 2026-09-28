@@ -130,6 +130,7 @@ function init_leadorderparts_scrolls() {
     if ($("#shiptax_bodyleftmultiple").length > 0) {
         new SimpleBar(document.getElementById('shiptax_bodyleftmultiple'), {autoHide: false});
     }
+    new SimpleBar(document.getElementById('orderitemsarea'), {autoHide: false});
 }
 
 // Switch Clay / Preview Tabs
@@ -521,6 +522,7 @@ function init_onlineleadorder_edit() {
     init_fulfillment_history();
     init_artdata_show();
     // Edit
+    // create_editorder_timer();
     init_orderdata_change();
     init_contacts_change();
     init_addneworderitem();
@@ -662,7 +664,7 @@ function init_addneworderitem() {
             if (response.errors == '') {
                 $(".orderitem_inventoryview").empty().html(response.data.content);
                 $(".orderitem_inventoryview").show();
-                init_inventory_select(orderitem_id);
+                init_inventory_select(orderitem_id, 'new');
             } else {
                 show_error(response);
             }
@@ -801,7 +803,7 @@ function init_addneworderitem() {
 }
 
 // Color for Inventory items
-function init_inventory_select(orderitem_id) {
+function init_inventory_select(orderitem_id, item_id) {
     $(".orderitem_inventoryview_body").find('div.datarow').hover(
         function () {
             $(this).find('div.inventorycolor').addClass('selected');
@@ -813,23 +815,44 @@ function init_inventory_select(orderitem_id) {
         }
     );
     $(".orderitem_inventoryview_body").find('div.datarow').unbind('click').click(function(){
+        var url="/leadorder/saveneworderitemparam";
         var params = Array();
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
-        params.push({name: 'orderitem_id', value: orderitem_id});
-        params.push({name: 'paramname', value: 'color'})
+        if (item_id!='new') {
+            var colorname = $(this).data('itemcolor');
+            params.push({name: 'order_item', value: orderitem_id})
+            params.push({name: 'item', value: item_id});
+            params.push({name: 'entity', value: 'item'});
+            params.push({name: 'fldname', value: 'item_color'})
+            url = "/leadordernew/change_itemparams";
+        } else {
+            params.push({name: 'orderitem_id', value: orderitem_id});
+            params.push({name: 'paramname', value: 'color'})
+        }
         params.push({name: 'newval', value: $(this).data('itemcolor')});
-        var url="/leadorder/saveneworderitemparam";
         $.post(url, params, function (response){
             if (response.errors=='') {
-                $(".adddata_color").empty().html(response.data.outcolors);
                 $(".orderitem_inventoryview").hide();
-                $(".adddata_qty").css('visibility','visible');
-                $(".adddata_qty").find('input.orderitem_qty').focus();
-                init_addneworderitem();
+                if (item_id=='new') {
+                    $(".adddata_color").empty().html(response.data.outcolors);
+                    $(".adddata_qty").css('visibility','visible');
+                    $(".adddata_qty").find('input.orderitem_qty').focus();
+                    init_addneworderitem();
+                } else {
+                    $(".addnewcolor[data-orderitem='"+orderitem_id+"'][data-item='"+item_id+"']").empty().html(colorname);
+                    $("input[data-orderitem='"+orderitem_id+"'][data-item='"+item_id+"'][data-fld='item_qty']").focus();
+                    if ($(".orderitem_inventoryview_close").length==0) {
+                    }
+                    init_onlineleadorder_edit();
+                }
             } else {
                 show_error(response);
             }
         },'json');
+    });
+    $(".orderitem_inventoryview_close").unbind('click').click(function () {
+        $(".orderitem_inventoryview").hide();
+        init_onlineleadorder_edit();
     });
 }
 
@@ -945,6 +968,7 @@ function init_imprint_details() {
 
     $("div.revertimprintdetailsdata").unbind('click').click(function(){
         $(".imprintdetails_popup").empty().hide();
+        init_onlineleadorder_edit();
     });
 
     $(".saveimprintdetailsdata").unbind('click').click(function(){
@@ -1102,6 +1126,7 @@ function save_imprint_details() {
             $(".itemsubtotal_price").empty().html(response.data.item_subtotal);
             $(".balancedueblock").empty().html(response.data.total_due);
             $("#ordertotalprofit").empty().html(response.data.profitview);
+            $("#trackcodesarea").empty().html(response.data.tracking);
             init_leadorderparts_scrolls();
             update_locperiod(response);
             init_onlineleadorder_edit();
@@ -1125,10 +1150,12 @@ function leadordernewitem() {
 
 // Edit order items
 function init_orderitem_manage() {
+    // Inventory color change
     $(".tblitems_color").find("span.addnewcolor").unbind('click').click(function () {
         var orderitem_id = $(this).data('orderitem');
+        var item_id = $(this).data('item');
         var params = new Array();
-        params.push({name: 'item_id', value: $(this).val()});
+        params.push({name: 'item_id', value: item_id});
         params.push({name: 'orderitem_id', value: orderitem_id});
         params.push({name: 'itemstatus', value: 1});
         params.push({name: 'ordersession', value: $("input#ordersession").val()});
@@ -1137,13 +1164,14 @@ function init_orderitem_manage() {
             if (response.errors == '') {
                 $(".orderitem_inventoryview").empty().html(response.data.content);
                 $(".orderitem_inventoryview").show();
-                init_inventory_select(orderitem_id);
+                init_inventory_select(orderitem_id, item_id);
             } else {
                 show_error(response);
             }
         }, 'json');
     });
-    $("input.orderitemdata").unbind('change').change(function () {
+    // Item params change (color, qty, price)
+    $(".orderitemdata").unbind('change').change(function () {
         var orderitem_id = $(this).data('orderitem');
         var item_id = $(this).data('item');
         var params = new Array();
@@ -1154,15 +1182,45 @@ function init_orderitem_manage() {
         params.push({name: 'fldname', value: $(this).data('fld')});
         params.push({name: 'newval', value: $(this).val()});
         var url = '/leadordernew/change_itemparams';
+        $("#loader").show();
         $.post(url, params, function (response){
             if (response.errors=='') {
+                // Revenue
+                $(".ordtotal_price").empty().html(response.data.order_revenue);
+                $(".itemsubtotal_price").empty().html(response.data.item_subtotal);
                 // Change Price
-                // $("input.orderitemdata[data-orderitem='"+orderitem_id+"'][data-fld='item_price']").val(response.data.newprice)
+                a=response.data.item_price;
+                for (index = 0; index < a.length; ++index) {
+                    var price=a[index].split('|');
+                    $("input.orderitemdata[data-orderitem='"+orderitem_id+"'][data-item='"+price[0]+"'][data-fld='item_price']").val(price[1]);
+                }
+                var a =response.data.subtotals;
+                for (index = 0; index < a.length; ++index) {
+                    var price=a[index].split('|');
+                    $("div.tblitems_subtotal[data-orderitem='"+orderitem_id+"'][data-item='"+price[0]+"']").empty().html(price[1]);
+                }
+                // Total due
+                $(".balancedueblock").empty().html(response.data.total_due);
+                // Profit
+                $("#ordertotalprofit").empty().html(response.data.profit_content);
+                if (parseInt(response.data.warning)==1) {
+                    // Init warning message
+                    // init_confirmshipcost(response.data.shipwarn);
+                }
+                $(".itemimprintdetailsarea[data-orderitem='"+orderitem_id+"']").empty().html(response.data.imprint_content);
+                // Track codes
+                if (parseInt(response.data.trackcode)==1) {
+                    $("#trackcodesarea").empty().html(response.data.tracking);
+                }
+                init_onlineleadorder_edit();
+                $("#loader").hide();
             } else {
                 show_error(response);
+                $("#loader").hide();
             }
         },'json');
     });
+    // Click Print details
     $('.orderitemimprint').unbind('click').click(function () {
         var orderitem_id = $(this).data('orderitem');
         var params = Array();
@@ -1179,7 +1237,45 @@ function init_orderitem_manage() {
                 show_error(response);
             }
         },'json');
+    });
+    //
+    $(".tditems_trash").unbind('click').click(function () {
+        // Delete item
+    });
+    // Add color
+    $("span.addorderitemcolor").unbind('click').click(function () {
+        var orderitem_id = $(this).data('orderitem');
+        var params = Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item', value: orderitem_id});
+        params.push({name: 'edit', value: 1});
+        var url = "/leadordernew/add_itemcolor";
+        $("#loader").show();
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                $("#orderitemsarea").empty().html(response.data.itemsview);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
     })
+    // Add Item
+    $(".addnewitem").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/preparenewitem";
+        $.post(url,params,function(response) {
+            if (response.errors=='') {
+                $(".lastitemrow").empty().html(response.data.content);
+                init_addneworderitem();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
 }
 
 function init_rushpast() {
@@ -1259,4 +1355,83 @@ function copyOrderToClipboard(element) {
         console.log('Oops, unable to copy');
     }
     $(element).hide();
+}
+
+function create_editorder_timer() {
+    if (parseInt($("input#orderdataid").val())>0) {
+        clearTimeout(timerId);
+        timerId = setTimeout('timershow()', 1000);
+    }
+}
+function timershow() {
+    if ($("input#loctimeout").length>0) {
+        var today = new Date();
+        var timeend=$("input#loctimeout").val();
+        today = Math.floor((timeend-today)/1000);
+        if (today<=0) {
+            clearTimeout(timerId);
+            $("#artNextModal").modal('hide');
+            var order=$("input#orderdataid").val();
+            var locrecid=$("input#locrecid").val();
+            var url="/leadorder/leadorder_change";
+            var params=new Array();
+            params.push({name: 'order', value: order});
+            params.push({name: 'locrecid', value: locrecid});
+            params.push({name: 'edit', value: 0});
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $("#artModalLabel").empty().html(response.data.header);
+                    $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                    navigation_init();
+                    alert('Your Edit Time has expired prior to saving.  Please re-do any work you meant to do.');
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+        if (today==15) {
+            // Call colorbox
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            var url='/leadorder/extend_edittime';
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#artNextModal").modal('hide');
+                    $("#artNextModal").find('div.modal-dialog').css('width','440px');
+                    $("#artNextModal").find('.modal-title').empty().html('Extend Edit Time');
+                    $("#artNextModal").find('div.modal-body').empty().html(response.data.content);
+                    $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
+                    $("#artNextModal").on('hidden.bs.modal', function (e) {
+                        $(document.body).addClass('modal-open');
+                    })
+                    init_extendtime();
+                } else {
+                    show_error(response);
+                }
+            },'json')
+        }
+        var tsec=today%60; today=Math.floor(today/60); if(tsec<10)tsec='0'+tsec;
+        var tmin=today%60; today=Math.floor(today/60); if(tmin<10)tmin='0'+tmin;
+        var timestr=tmin+":"+tsec;
+        $("div.timeroutarea").empty().html(timestr);
+        clearTimeout(timerId);
+        timerId = setTimeout('timershow()', 1000);
+    } else {
+        clearTimeout(timerId);
+    }
+}
+
+function init_extendtime() {
+    $("div.extendtime_button").unbind('click').click(function(){
+        var url="/leadorder/extendtime_order";
+        $.post(url, {ordersession: $("input#ordersession").val()}, function(response){
+            if (response.errors=='') {
+                $("#artNextModal").modal('hide');
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }
