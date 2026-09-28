@@ -844,6 +844,11 @@ li.select2-results__option {
     padding-right: 4px;
     margin-left: 5px;
 }
+.infoshiptax_pricebox input {
+    width: 100%;
+    height: 13px;
+    border: none;
+}
 .infoshiptax_title {
     float: right !important;
     font-size: 11px;

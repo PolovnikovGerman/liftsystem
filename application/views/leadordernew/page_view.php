@@ -54,7 +54,7 @@
                                     <div class="tblitems_td tblitems_each">Each</div>
                                     <div class="tblitems_td tblitems_subtotal">Sub-total</div>
                                 </div>
-                                <?=$itemsview?>
+                                <div class="orderitemsarea" id="orderitemsarea"><?=$itemsview?></div>
                             </div>
                             <div class="items_footer">
                                 <div class="itemsfooter_message">
