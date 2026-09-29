@@ -35,11 +35,11 @@
                 <div class="tblitems_td tblitems_subtotal" data-orderitem="<?=$orderitem['order_item_id']?>" data-item="<?=$item['item_id']?>">
                     <?=MoneyOutput($item['item_subtotal'])?>
                 </div>
-                <?php if ($item['item_row']==1) : ?>
-                    <div class="tblitems_td tditems_trash">
-                        <i class="fa fa-trash" data-orderitem="<?=$orderitem['order_item_id']?>" data-item="<?=$item['item_description']?>"></i>
+<!--                --><?php //if ($item['item_row']==1) : ?>
+                    <div class="tblitems_td tditems_trash" data-orderitem="<?=$orderitem['order_item_id']?>" data-item="<?=$item['item_id']?>" data-itemname="<?=$item['item_description']?>">
+                        [&mdash;]
                     </div>
-                <?php endif; ?>
+<!--                --><?php //endif; ?>
             </div>
             <?php $nrow++;?>
         <?php endif; ?>

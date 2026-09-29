@@ -1915,7 +1915,165 @@ Class Leadorder_model extends My_Model {
         return $out;
     }
 
+    // Remove item color
+    public function remove_orderitem_color($leadorder, $order_item_id, $item_id, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Order Item Not Found'];
+        $order = $leadorder['order'];
+        $order_items = $leadorder['order_items'];
+        $shipping=$leadorder['shipping'];
+        $shipping_address=$leadorder['shipping_address'];
+        $artlocations=$leadorder['artlocations'];
 
+        $deleted = $leadorder['delrecords'];
+        $found = 0;
+        $idx = 0;
+        foreach ($order_items as $order_item) {
+            if ($order_item['order_item_id']==$order_item_id) {
+                $found = 1;
+                break;
+            } else {
+                $idx++;
+            }
+        }
+        if ($found==1) {
+            $items = $order_items[$idx]['items'];
+            $found = 0;
+            $newitems = [];
+            $out['msg']='Item Color Not Found';
+            $item_qty = 0;
+            $item_row = 1;
+            foreach ($items as $item) {
+                if ($item['item_id']==$item_id) {
+                    $found = 1;
+                } else {
+                    $item['item_row'] = $item_row;
+                    $item_row++;
+                    $newitems[] = $item;
+                    $item_qty+=$item['item_qty'];
+                }
+            }
+            $order_items[$idx]['item_qty'] = $item_qty;
+            if ($found==1) {
+                $delitem = 0;
+                $neworditems = [];
+                if (count($newitems)==0) {
+                    $delitem = 1;
+                } else {
+                    $neworditems = $order_items;
+                }
+                if ($delitem==1) {
+                    foreach ($order_items as $order_item) {
+                        if ($order_item['order_item_id']!=$order_item_id) {
+                            $neworditems[] = $order_item;
+                        }
+                    }
+                    if ($order_item_id > 0) {
+                        $deleted[] = [
+                            'entity' => 'order_items',
+                            'id' => $order_item_id,
+                        ];
+                    }
+                } else {
+                    // Recalc price, imprints
+                    $newprice=$this->_get_item_priceqty($neworditems[$idx]['item_id'], $neworditems[$idx]['item_template'] , $neworditems[$idx]['item_qty']);
+                    $order_items[$idx]['base_price']=$newprice;
+                    $ridx=0;
+                    $total_items = 0;
+                    foreach ($newitems as $newitem) {
+                        $newitems[$ridx]['item_price'] = $newprice;
+                        $newitems[$ridx]['item_subtotal'] = $newitem['item_qty']*$newprice;
+                        $total_items+=$newitems[$ridx]['item_subtotal'];
+                        $ridx++;
+                    }
+                    $neworditems[$idx]['items'] = $newitems;
+                    $neworditems[$idx]['item_subtotal'] = round($total_items,2);
+                    $imprints = $neworditems[$idx]['imprints'];
+                    $ridx = 0;
+                    $total_impr = 0;
+                    foreach ($imprints as $imprint) {
+                        if ($imprint['imprint_item']==1) {
+                            $imprints[$ridx]['imprint_qty'] = $item_qty;
+                            $imprints[$ridx]['imprint_subtotal'] = MoneyOutput($item_qty * $imprint['imprint_price']);
+                        }
+                        $total_impr+=floatval($imprints[$ridx]['imprint_qty']*$imprints[$ridx]['imprint_price']);
+                        $ridx++;
+                    }
+                    $neworditems[$idx]['imprints'] = $imprints;
+                    $neworditems[$idx]['imprint_subtotal'] = round($total_impr,2);
+                    if ($item_id > 0) {
+                        $deleted = [
+                            'entity' => 'item_color',
+                            'id' => $item_id,
+                        ];
+                    }
+                }
+                if (count($neworditems)==0) {
+                    // Remove item
+                    $neworditems = $this->_create_empty_orderitems();
+                    // Clear shipping;
+                    $shipping['rush_idx']='';
+                    $shipping['rush_list']='';
+                    $shipping['rush_price']=0.00;
+                    $shipping['shipdate']='';
+                    $shipping['shipdate_orig']='';
+                    $shipping['shipdate_class'] = '';
+                    $shipping['out_rushlist'] =array(
+                        'rush'=>array(),
+                        'current_rush' =>0,
+                    );
+                    $shipping['arrive_date'] = $shipping['arrive_date_orig'] = $shipping['arrivedate_class'] = '';
+                    $shipping['out_arrivedate'] = $shipping['out_shipdate'] = '';
+                    $order['order_qty']=0;
+                } else {
+                    $order_qty = 0;
+                    foreach ($neworditems as $neworditem) {
+                        $order_qty+=intval($neworditem['item_qty']);
+                    }
+                    $order['order_qty'] = $order_qty;
+                    $item_id = $neworditems[0]['item_id'];
+                    $this->load->model('shipping_model');
+                    if ($order['order_blank']==1 && $item_id > 0) {
+                        $rush=$this->shipping_model->get_rushlist_blank($item_id, $order['order_date']);
+                    } else {
+                        $rush=$this->shipping_model->get_rushlist($item_id, $order['order_date']);
+                    }
+                    // $out['rushlist']=$rush;
+                    $shipping['rush_list']=serialize($rush);
+                    $shipping['out_rushlist']=$rush;
+                    foreach ($rush['rush'] as $row) {
+                        if ($row['current']==1) {
+                            $shipping['shipdate']=$row['date'];
+                            $shipping['shipdate_orig'] = $row['date'];
+                            $shipping['shipdate_class'] = '';
+                            $shipping['rush_price']=$row['price'];
+                            $shipping['rush_idx']=$row['id'];
+                            $order['shipdate']=$row['date'];
+//                            $out['current']=$row['id'];
+                        }
+                    }
+//                    $out['shipdate']=$shipping['shipdate'];
+//                    $out['rush_price']=$shipping['rush_price'];
+                    $shpres=$this->_recalc_shipping($neworditems, $shipping, $shipping_address, $order['brand']);
+                    if ($shpres['result']==$this->success_result) {
+                        $shipping=$shpres['shipping'];
+                        $shipping_address=$shpres['shipping_address'];
+                    }
+                }
+                $leadorder['shipping']=$shipping;
+                $leadorder['artlocations']=$artlocations;
+                $leadorder['order']=$order;
+                $leadorder['delrecords']=$deleted;
+                $leadorder['shipping_address']=$shipping_address;
+                $leadorder['order_items']=$neworditems;
+                usersession($ordersession, $leadorder);
+                $out['result']=$this->success_result;
+                $this->_leadorder_totals($leadorder, $ordersession);
+                return $out;
+            }
+        }
+
+    }
     // Add Item color
     public function add_itemcolor($leadorder, $order_item_id, $item_id, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
@@ -1940,17 +2098,22 @@ Class Leadorder_model extends My_Model {
         $items=$order_items[$idx]['items'];
         // Remove Add color flag
         $itmidx=0;
+        $newid = -1;
+        $newrow = 0;
         foreach ($items as $row) {
             $items[$itmidx]['item_color_add']=0;
+            if ($row['item_id']<$newid) {
+                $newid=$row['item_id'];
+            }
             $itmidx++;
         }
-        $newid=count($items)+1;
+        $newid = $newid - 1;
         $colors=$order_items[$idx]['colors'];
         $itemcolor=$colors[0];
         $newitem=array(
             'order_item_id'=>$order_items[$idx]['order_item_id'],
-            'item_id'=>$newid*(-1),
-            'item_row'=>$newid,
+            'item_id'=>$newid,
+            'item_row'=> count($items)+1,
             'item_number'=>$order_items[$idx]['item_number'],
             'item_color'=>$itemcolor,
             'colors'=>$colors,
