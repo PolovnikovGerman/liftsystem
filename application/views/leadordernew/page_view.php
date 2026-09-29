@@ -125,15 +125,15 @@
                         <div class="orddtls_dates">
                             <div class="ord_shipdate">
                                 <div class="ord_datetitle">Ship Date:</div>
-                                <div class="ord_datebox"><?=$shipping['out_shipdate']?></div>
+                                <div class="ord_datebox" data-fld="out_shipdate"><?=$shipping['out_shipdate']?></div>
                             </div>
                             <div class="ord_arrivaldate">
                                 <div class="ord_datetitle">Arrival Date:</div>
-                                <div class="ord_datebox"><?=$shipping['out_arrivedate']?></div>
+                                <div class="ord_datebox" data-fld="out_arrivedate"><?=$shipping['out_arrivedate']?></div>
                             </div>
                             <div class="ord_eventdate">
                                 <div class="ord_datetitle">Event Date:</div>
-                                <div class="ord_datebox"><?=$shipping['out_eventdate']?></div>
+                                <div class="ord_datebox" data-fld="out_eventdate"><?=$shipping['out_eventdate']?></div>
                             </div>
                         </div>
                     </div>

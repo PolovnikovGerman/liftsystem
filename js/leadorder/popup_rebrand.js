@@ -527,6 +527,7 @@ function init_onlineleadorder_edit() {
     init_contacts_change();
     init_addneworderitem();
     init_orderitem_manage();
+    init_shipbill_manage();
 }
 
 function init_orderdata_change() {
@@ -1127,6 +1128,9 @@ function save_imprint_details() {
             $(".balancedueblock").empty().html(response.data.total_due);
             $("#ordertotalprofit").empty().html(response.data.profitview);
             $("#trackcodesarea").empty().html(response.data.tracking);
+            // ship date
+            $(".ord_datebox[data-fld='out_shipdate']").empty().html(response.data.shipdata);
+            $(".ord_datebox[data-fld='out_arrivedate']").empty().html(response.data.arrivedate);
             init_leadorderparts_scrolls();
             update_locperiod(response);
             init_onlineleadorder_edit();
@@ -1241,6 +1245,34 @@ function init_orderitem_manage() {
     //
     $(".tditems_trash").unbind('click').click(function () {
         // Delete item
+        var orderitem_id = $(this).data('orderitem');
+        var item = $(this).data('item');
+        var itemname = $(this).data('itemname');
+        var rowqty = $("input[data-orderitem='"+orderitem_id+"'][data-item='"+item+"'][data-fld='item_qty']").val();
+        var msg = 'Delete '+itemname+' (QTY - '+rowqty+')?';
+        if (confirm(msg)==true) {
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'orderitem_id', value: orderitem_id});
+            params.push({name: 'item', value: item});
+            var url = '/leadordernew/remove_item_color';
+            $("#loader").show();
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $("#loader").hide();
+                    $("#orderitemsarea").empty().html(response.data.itemsview);
+                    $(".ordtotal_price").empty().html(response.data.order_revenue);
+                    $(".itemsubtotal_price").empty().html(response.data.item_subtotal);
+                    $(".balancedueblock").empty().html(response.data.total_due);
+                    $("#ordertotalprofit").empty().html(response.data.profitview);
+                    $("#trackcodesarea").empty().html(response.data.tracking);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                    $("#loader").hide();
+                }
+            },'json');
+        }
     });
     // Add color
     $("span.addorderitemcolor").unbind('click').click(function () {
@@ -1270,11 +1302,129 @@ function init_orderitem_manage() {
         $.post(url,params,function(response) {
             if (response.errors=='') {
                 $(".lastitemrow").empty().html(response.data.content);
+                leadordernewitem();
                 init_addneworderitem();
             } else {
                 show_error(response);
             }
         },'json');
+    });
+}
+
+function init_shipbill_manage() {
+    // Shipping Docs
+    $(".shipdocs_link").unbind('click').click(function () {
+        $(".shipdocview").show();
+        init_shipdoc_manage();
+        init_shipdocupload();
+    });
+    $("select[name='shipadrcntr']").unbind('change').change(function (){
+        var params=Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'shipadr', value: $(this).data('address')});
+        params.push({name: 'fldname', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/leadordernew/change_shipadrress";
+        $("#loader").show();
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                // States
+                $("div[data-content='shipstateshow'][data-address='"+response.data.shipaddress+"']").empty().html(response.data.stateview);
+                // Balance Due
+                $(".balanceduebox").empty().html(response.data.total_due);
+                // Order Total
+                $(".ordtotal_price").empty().html(response.data.order_revenue);
+                // $("input.salestaxcost").val(response.data.tax);
+                // if (response.data.taxview.length>0) {
+                //     $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
+                // }
+                // $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
+                // Item Subtotal
+                $(".itemsubtotal_price").empty().html(response.data.item_subtotal);
+                $("#ordertotalprofit").empty().html(response.data.profit_content);
+
+                $("#loader").hide();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
+}
+
+function init_shipdoc_manage() {
+    $(".shipdocscloseview").unbind('click').click(function () {
+        $(".shipdocview").hide();
+        init_onlineleadorder_edit();
+    });
+    $(".removeshipdoc").unbind('click').click(function () {
+        if (confirm('Remove Shipping Document?')==true) {
+            var shipdoc = $(this).data('shipdoc');
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'shipdoc', value: shipdoc});
+            var url="/leadorder/shipdocremove";
+            $.post(url, params, function (response){
+                if (response.errors=='') {
+                    $(".shipdocviewarea").empty().html(response.data.content);
+                    $(".shipdocviewtitle").empty().html(response.data.numdocs+' ship docs');
+                    $(".shipdocs_link").find('span').empty().html(response.data.numdocs+' files');
+                    init_shipdocview();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // View doc
+    $(".shipdocviewdoc").unbind('click').click(function (){
+        var lnkurl = $(this).data('link');
+        var srcname = $(this).data('source');
+        openai(lnkurl, srcname);
+    });
+}
+
+function init_shipdocupload() {
+
+    var upload_templ= '<div class="qq-uploader"><div class="shipdocupload qq-upload-button"><span><em>+ add file</em></span></div>' +
+        '<ul class="qq-upload-list"></ul>' +
+        '<ul class="qq-upload-drop-area"></ul>' +
+        '<div class="clear"></div></div>';
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('shipdocviewadd'),
+        action: '/utils/save_shipdoc',
+        uploadButtonText: '',
+        multiple: true,
+        debug: false,
+        template: upload_templ,
+        // allowedExtensions: ['pdf','PDF', 'doc', 'DOC', 'docx','DOCX',''],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url='/leadorder/saveshipdocload';
+                var params=new Array();
+                params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                params.push({name: 'doclink', value: responseJSON.filename});
+                params.push({name: 'docsource', value: responseJSON.srcname});
+                // params.push({name: 'filetype', value: responseJSON.filetype});
+                // params.push({name: 'shipdoc', value: shipdoc})
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $(".shipdocviewarea").empty().html(response.data.content);
+                        $(".shipdocviewtitle").empty().html(response.data.numdocs+' ship docs');
+                        $(".shipdocs_link").find('span').empty().html(response.data.numdocs+' files');
+                        init_shipdocview();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
     });
 }
 

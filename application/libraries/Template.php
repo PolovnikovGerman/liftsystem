@@ -1387,13 +1387,14 @@ class Template
             $country_id = $shipaddres['country_id'];
             // States
             $states=$this->CI->shipping_model->get_country_states($country_id);
+            $shipdocview = $this->CI->load->view('leadordernew/shipdocs_data_view', ['shipdocs' => $res['shipdocs'], 'edit' => $edit], TRUE);
             $shipoptions = [
                 'address' => $shipaddres,
                 'shipaddress' => $this->CI->shipping_model->prepare_shipaddress($shipaddres),
                 'countries' => $res['countries'],
                 'states' => $states,
                 'shipping' => $res['shipping'],
-                'shipdocs' => $res['shipdocs'],
+                'shipdocs' => $shipdocview,
                 'order' => $res['order'],
                 'edit' => $edit,
             ];

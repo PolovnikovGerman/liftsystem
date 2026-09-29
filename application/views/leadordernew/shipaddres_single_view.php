@@ -28,14 +28,16 @@
         <input class="inpt_addressarea inptaddress_city" type="text" name="shipcity" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="City" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="city"
                value="<?= $address['city'] ?>"/>
-        <?php if (count($states) > 0) : ?>
-            <select class="select_addressarea" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="state_id" <?=$edit==0 ? 'disabled' : ''?>>
-                <option value="">State</option>
-                <?php foreach ($states as $state) : ?>
-                    <option value="<?= $state['state_id'] ?>" <?= $state['state_id'] == $address['state_id'] ? 'selected="selected"' : '' ?>><?= $state['state_code'] ?></option>
-                <?php endforeach; ?>
-            </select>
-        <?php endif; ?>
+        <div data-content='shipstateshow' data-address="<?= $address['order_shipaddr_id'] ?>">
+            <?php if (count($states) > 0) : ?>
+                <select class="select_addressarea" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="state_id" <?=$edit==0 ? 'disabled' : ''?>>
+                    <option value="">State</option>
+                    <?php foreach ($states as $state) : ?>
+                        <option value="<?= $state['state_id'] ?>" <?= $state['state_id'] == $address['state_id'] ? 'selected="selected"' : '' ?>><?= $state['state_code'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
+        </div>
         <input class="inpt_addressarea inptaddress_zipcode" type="text" name="shipzip" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="Zip Code" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="zip"
                value="<?= $address['zip'] ?>"/>
@@ -59,14 +61,7 @@
         </div>
     </div>
     <div class="shiptax_bottomright">
-        <div class="shipdocs">
-            <div class="shipdocs_txt">Ship Docs:</div>
-            <?php foreach ($shipdocs as $shipdoc) : ?>
-            <div class="shipdocs_icons">
-                <div class="shipdocs_file"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></div>
-            </div>
-            <?php endforeach; ?>
-        </div>
+        <div class="shipdocs"><?=$shipdocs?></div>
         <div class="shiptax_info">
             <div class="infoshiptax_row">
                 <div class="infoshiptax_pricebox">

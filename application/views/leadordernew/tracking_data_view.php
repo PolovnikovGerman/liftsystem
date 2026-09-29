@@ -1,5 +1,7 @@
 <?php foreach ($trackings as $tracking): ?>
-    <?php if (intval($tracking['qty'])>0) : ?>
+    <?php $viewrow = 1; ?>
+    <?php if (intval($tracking['qty'])==0 && $edit==0) $viewrow = 0; ?>
+    <?php if ($viewrow==1) : ?>
         <div class="fulflmshipping_box">
             <input class="fulflmship_inptqty" type="text" name="" value="<?=$tracking['qty']?>" <?=$edit==0 ? 'readonly="readonly"' : ''?>/>
             <input class="fulflmship_inptdate" type="text" name="" placeholder="09/17/2026" value="<?=date('m/d/y', $tracking['trackdate'])?>" <?=$edit==0 ? 'readonly="readonly"' : ''?>/>
