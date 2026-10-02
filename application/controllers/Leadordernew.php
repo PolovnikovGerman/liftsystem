@@ -574,7 +574,6 @@ class Leadordernew extends MY_Controller
     {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $postdata=$this->input->post();
             $ordersession = ifset($postdata, 'ordersession', 'unkn');
             $leadorder = usersession($ordersession);
@@ -636,27 +635,18 @@ class Leadordernew extends MY_Controller
                         $mdata['rush_price']=$shipping['rush_price'];
                         $mdata['is_shipping']=$order['is_shipping'];
                         $mdata['shipping']=$order['shipping'];
+                        $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['cntshipadrr']=count($shipping_address);
                         $subtotal = $order['item_cost']+$order['item_imprint']+floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
                         $mdata['item_subtotal']=MoneyOutput($subtotal);
-                        $total_due=$order['revenue']-$order['payment_total'];
                         $mdata['ordersystem']=$leadorder['order_system'];
                         $mdata['balanceopen']=1;
-                        $dueoptions=array(
-                            'totaldue'=>$total_due,
-                        );
-                        if ($order['brand']=='SR') {
-                            $checkoutlink = $this->config->item('srcheckoutlink').$order['checkout_link'];
-                        } else {
-                            $checkoutlink = $this->config->item('btcheckoutlink').$order['checkout_link'];;
-                        }
                         if ($order['brand']=='SR') {
                             $checkoutlink = $this->config->item('srcheckoutlink').$order['checkout_link'];
                         } else {
                             $checkoutlink = $this->config->item('btcheckoutlink').$order['checkout_link'];;
                         }
                         $mdata['total_due']=$this->load->view('leadordernew/balancedue_view', ['order' => $order, 'checkoutlink' => $checkoutlink], TRUE);
-                        $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['profit_content'] = $this->_profit_data_view($order);
                         $order_items = $leadorder['order_items'];
                         $mdata['trackcount'] = 0;
@@ -665,17 +655,26 @@ class Leadordernew extends MY_Controller
                             $shipstatus = $this->leadorder_model->_leadorderview_shipping_status($leadorder);
                             $mdata['tracking'] = $this->_prepare_tracking_content($leadorder['order_items'], $shipstatus, 1);
                         }
+                        $mdata['statenew'] = $mdata['taxnew'] = $mdata['city_refresh'] = 0;
                         if ($fldname=='country_id') {
+                            $mdata['statenew'] = 1;
+                            $mdata['taxnew'] = 1;
                             if (count($res['states'])==0) {
                                 $mdata['stateview']='&nbsp;';
                             } else {
                                 $stateoptions=array(
-                                    'shipadr'=>$res['shipadr'],
-                                    'states'=>$res['states'],
+                                    'address' => $res['shipadr'],
+                                    'states' => $res['states'],
+                                    'edit' => 1,
                                 );
-                                $mdata['stateview']=$this->load->view('leadorderdetails/shipping_state_select', $stateoptions, TRUE);
+                                $mdata['stateview']=$this->load->view('leadordernew/shipaddres_states_view', $stateoptions, TRUE);
+                            }
+                            if (count($shipping_address)==1) {
+                                $mdata['countrycode'] = $shipping_address[0]['out_country'];
                             }
                         } elseif ($fldname=='zip') {
+                            $mdata['statenew'] = 2;
+                            $mdata['taxnew'] = 1;
                             if ($mdata['cntshipadrr']==1) {
                                 $shipcost=$res['shipadr']['shipping_costs'];
                                 $costoptions=array(
@@ -685,23 +684,27 @@ class Leadordernew extends MY_Controller
                                 $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
                                 $mdata['city']=$res['shipadr']['city'];
                                 $mdata['state_id']=$res['shipadr']['state_id'];
+                                $mdata['city_refresh'] = 1;
                             } else {
                                 //
                             }
+                        } elseif ($fldname=='state_id') {
+                            $mdata['taxnew'] = 1;
                         }
                         if ($mdata['cntshipadrr']==1) {
                             $shipaddr=$shipping_address[0];
-                            if ($shipaddr['taxview']==0) {
-                                $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
-                            } else {
-                                $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                            if ($mdata['taxnew']==1) {
+                                $taxoptions = [
+                                    'address' => $shipaddr,
+                                    'edit' => 1,
+                                ];
+                                $mdata['taxview'] = $this->load->view('leadordernew/tax_data_view', $taxoptions, TRUE);
                             }
-                            $mdata['taxview']=$taxview;
                             $mdata['addresscopy'] = $this->shipping_model->prepare_shipaddress($shipaddr);
                             $mdata['cntcode'] = $shipaddr['out_country'];
-                            if ($fldname=='country_id') {
-                                $mdata['addressline'] = $this->load->view('leadorderdetails/shipaddresline_view', ['shipadr' => $shipaddr], true);
-                            }
+//                            if ($fldname=='country_id') {
+//                                $mdata['addressline'] = $this->load->view('leadorderdetails/shipaddresline_view', ['shipadr' => $shipaddr], true);
+//                            }
                         }
                         $dateoptions=array(
                             'edit'=>1,
@@ -714,6 +717,113 @@ class Leadordernew extends MY_Controller
             }
             // Calc new period for lock
             $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function update_autoaddress()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->update_autoaddress($postdata, $leadorder, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $this->load->model('shipping_model');
+                    $error = '';
+                    $address = $res['address'];
+                    $address_full = $res['address_full'];
+                    $mdata['address_1'] = $address['address_1'];
+                    $mdata['country'] = $address['country'];
+                    $mdata['city'] = $address['city'];
+                    $mdata['zip'] = $address['zip'];
+                    if (!empty($address['state'])) {
+                        $states = $res['states'];
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 1;
+                            $options = [
+                                'states' => $states,
+                                'curstate' => $address['state'],
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadorderdetails/billing_state_select', $options, TRUE);
+                        } else {
+                            $mdata['shipstate'] = 1;
+                            $options = [
+                                'states' => $states,
+                                'address' => $res['shipping_address'],
+                                'edit' => 1,
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadordernew/shipaddres_states_view', $options, TRUE);
+                        }
+                    } else {
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 0;
+                        } else {
+                            $mdata['shipstate'] = 0;
+                        }
+                    }
+                    if ($postdata['address_type']=='billing') {
+                        $mdata['addresscopy'] = $this->shipping_model->prepare_billaddress($address_full);
+                    } else {
+                        $mdata['addresscopy'] = $this->shipping_model->prepare_shipaddress($address_full);
+                    }
+                    $mdata['shipcount'] = $res['shipcount'];
+                    if ($res['shipcount']==$this->success_result) {
+                        // Change Shipping cost, total, tax
+                        $leadorder = usersession($ordersession);
+                        $order = $leadorder['order'];
+                        $shipping = $leadorder['shipping'];
+                        $shipping_address = $leadorder['shipping_address'];
+                        $mdata['order_revenue'] = MoneyOutput($order['revenue']);
+                        $mdata['shipdate'] = $shipping['shipdate'];
+                        $mdata['rush_price'] = $shipping['rush_price'];
+                        $mdata['is_shipping'] = $order['is_shipping'];
+                        $mdata['shipping'] = $order['shipping'];
+                        $mdata['cntshipadrr'] = count($shipping_address);
+                        $subtotal = $order['item_cost'] + $order['item_imprint'] + floatval($order['mischrg_val1']) + floatval($order['mischrg_val2']) - floatval($order['discount_val']);
+                        $mdata['item_subtotal'] = MoneyOutput($subtotal);
+                        $mdata['ordersystem'] = $leadorder['order_system'];
+                        $mdata['balanceopen'] = 1;
+                        if ($order['brand']=='SR') {
+                            $checkoutlink = $this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $checkoutlink = $this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
+                        $mdata['total_due']=$this->load->view('leadordernew/balancedue_view', ['order' => $order, 'checkoutlink' => $checkoutlink], TRUE);
+                        $mdata['tax'] = MoneyOutput($order['tax']);
+                        $mdata['profit_content'] = $this->_profit_data_view($order);
+                        // shipdates_content
+                        if ($mdata['cntshipadrr'] == 1) {
+                            $shipcost = $shipping_address[0]['shipping_costs'];
+                            $costoptions = array(
+                                'shipadr' => $postdata['shipadr'],
+                                'shipcost' => $shipcost,
+                            );
+                            $mdata['shipcost'] = $this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
+                            // Tax View
+                            $shipaddr = $shipping_address[0];
+                            $taxoptions = [
+                                'address' => $shipaddr,
+                                'edit' => 1,
+                            ];
+                            $mdata['taxview'] = $this->load->view('leadordernew/tax_data_view', $taxoptions, TRUE);
+                        }
+                        $dateoptions = array(
+                            'edit' => 1,
+                            'shipping' => $shipping,
+                            'user_role' => $this->USR_ROLE,
+                        );
+                        $mdata['shipdates_content'] = $this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

@@ -19,16 +19,16 @@
         <div class="billaddress_box">
             <div class="copyaddress" data-addresstype="billing" data-address="<?=$billing['order_billing_id'] ?>"><i class="fa fa-clone" aria-hidden="true"></i></div>
             <textarea class="fulladdressview" data-addresstype="billing" data-address="<?=$billing['order_billing_id'] ?>"><?=$billingaddress?></textarea>
-            <input class="inpt_addressarea inptaddress_name" <?=$edit==0 ? 'readonly' : ''?> type="text" name="customer_name"
+            <input class="inpt_billaddressarea inptaddress_name" <?=$edit==0 ? 'readonly' : ''?> type="text" name="customer_name"
                    placeholder="Contact Name" data-address="<?=$billing['order_billing_id'] ?>" data-fld="customer_name"
             value="<?=$billing['customer_name']?>"/>
-            <input class="inpt_addressarea inptaddress_company" <?=$edit==0 ? 'readonly' : ''?> type="text" name="company" placeholder="Company"
+            <input class="inpt_billaddressarea inptaddress_company" <?=$edit==0 ? 'readonly' : ''?> type="text" name="company" placeholder="Company"
                    data-address="<?=$billing['order_billing_id'] ?>" data-fld="company" value="<?=$billing['company']?>"/>
-            <input class="inpt_addressarea inptaddress_addressline" <?=$edit==0 ? 'readonly' : ''?> type="text" name="address_1"
+            <input class="inpt_billaddressarea inptaddress_addressline" <?=$edit==0 ? 'readonly' : ''?> type="text" name="address_1"
                    placeholder="Address Line 1" data-address="<?=$billing['order_billing_id'] ?>" data-fld="address_1" value="<?=$billing['address_1']?>"/>
-            <input class="inpt_addressarea inptaddress_addressline" <?=$edit==0 ? 'readonly' : ''?> type="text" name="address_2"
+            <input class="inpt_billaddressarea inptaddress_addressline" <?=$edit==0 ? 'readonly' : ''?> type="text" name="address_2"
                    placeholder="Address Line 2" data-address="<?=$billing['order_billing_id'] ?>" data-fld="address_2" value="<?=$billing['address_2']?>"/>
-            <input class="inpt_addressarea inptaddress_city" <?=$edit==0 ? 'readonly' : ''?> type="text" name="city"
+            <input class="inpt_billaddressarea inptaddress_city" <?=$edit==0 ? 'readonly' : ''?> type="text" name="city"
                    placeholder="City" data-address="<?=$billing['order_billing_id'] ?>" data-fld="city" value="<?=$billing['city']?>"/>
             <?php if (count($states) > 0) : ?>
             <select class="select_addressarea" <?=$edit==0 ? 'disabled' : ''?> name="billing_state" id="billing_state">>
@@ -38,7 +38,7 @@
                 <?php endforeach; ?>
             </select>
             <?php endif; ?>
-            <input class="inpt_addressarea inptaddress_zipcode" <?=$edit==0 ? 'readonly' : ''?> type="text" name="zip"
+            <input class="inpt_billaddressarea inptaddress_zipcode" <?=$edit==0 ? 'readonly' : ''?> type="text" name="zip"
                    placeholder="City" data-address="<?=$billing['order_billing_id'] ?>" data-fld="zip" value="<?=$billing['zip']?>"/>
         </div>
     </div>

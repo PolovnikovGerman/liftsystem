@@ -6168,6 +6168,10 @@ Class Leadorder_model extends My_Model {
                     $this->db->where('order_shipdoc_id', $row['id']);
                     $this->db->delete('ts_order_shipdocs');
                     break;
+                case 'item_color':
+                    $this->db->where('order_itemcolor_id', $row['id']);
+                    $this->db->delete('ts_order_itemcolors');
+                    break;
             }
         }
         return TRUE;

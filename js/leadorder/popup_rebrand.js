@@ -1334,19 +1334,103 @@ function init_shipbill_manage() {
                 $(".balanceduebox").empty().html(response.data.total_due);
                 // Order Total
                 $(".ordtotal_price").empty().html(response.data.order_revenue);
-                // $("input.salestaxcost").val(response.data.tax);
-                // if (response.data.taxview.length>0) {
-                //     $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
-                // }
-                // $(".ship_tax_cont_bl3").empty().html(response.data.taxview);
                 // Item Subtotal
                 $(".itemsubtotal_price").empty().html(response.data.item_subtotal);
+                // Tax, shipping, rush
+                $("input[data-address='"+shipadr+"'][data-fld='shipping']").val(response.data.shipping);
+                $("input[data-fld='rush_price']").val(response.data.rush_price);
+                $("input[data-address='"+shipadr+"'][data-fld='sales_tax']").val(response.data.tax);
+                if (parseInt(response.data.taxnew)==1) {
+                    $(".infoshiptax_area[data-address='"+response.data.shipaddress+"']").empty().html(response.data.taxview);
+                }
+                // Profit
                 $("#ordertotalprofit").empty().html(response.data.profit_content);
-
+                // Country code
+                if (parseInt(response.data.cntshipadrr)==1) {
+                    $("#shipordercntcode").val(response.data.countrycode);
+                }
+                $("#loader").hide();
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
+    $("input.inpt_addressarea").unbind('change').change(function (){
+        var params=Array();
+        var shipaddr = $(this).data('address');
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'shipadr', value: shipaddr});
+        params.push({name: 'fldname', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url="/leadordernew/change_shipadrress";
+        $("#loader").show();
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                // Balance Due
+                $(".balanceduebox").empty().html(response.data.total_due);
+                // Order Total
+                $(".ordtotal_price").empty().html(response.data.order_revenue);
+                // Item Subtotal
+                $(".itemsubtotal_price").empty().html(response.data.item_subtotal);
+                // Profit
+                $("#ordertotalprofit").empty().html(response.data.profit_content);
+                if (parseInt(response.data.statenew)==1) {
+                    $("div[data-content='shipstateshow'][data-address='"+shipaddr+"']").empty().html(response.data.stateview);
+                }
+                if (parseInt(response.data.statenew)==2) {
+                    $("select[data-address='"+shipaddr+"'][data-fld='state_id']").val(response.data.state_id);
+                }
+                if (parseInt(response.data.taxnew)==1) {
+                    $(".infoshiptax_area[data-address='"+shipaddr+"']").empty().html(response.data.taxview);
+                }
+                $("input[data-address='"+shipaddr+"'][data-fld='shipping']").val(response.data.shipping);
+                $("input[data-fld='rush_price']").val(response.data.rush_price);
+                $("input[data-address='"+shipaddr+"'][data-fld='sales_tax']").val(response.data.tax);
+                if (parseInt(response.data.city_refresh)==1) {
+                    $("input.inpt_addressarea[data-address='"+shipaddr+"'][data-fld='city']").val(response.data.city);
+                }
+                init_onlineleadorder_edit();
                 $("#loader").hide();
             } else {
                 show_error(response);
                 $("#loader").hide();
+            }
+        },'json');
+    });
+    $(".shipstateselect").unbind('change').change(function (){
+        var params=new Array();
+        var shipaddr = $(this).data('address');
+        params.push({name: 'shipadr', value: shipaddr});
+        params.push({name: 'fldname', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/change_shipadrress";
+        $("#loader").hide();
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                // Balance Due
+                $(".balanceduebox").empty().html(response.data.total_due);
+                // Order Total
+                $(".ordtotal_price").empty().html(response.data.order_revenue);
+                // Item Subtotal
+                $(".itemsubtotal_price").empty().html(response.data.item_subtotal);
+                // Profit
+                $("#ordertotalprofit").empty().html(response.data.profit_content);
+                if (parseInt(response.data.taxnew)==1) {
+                    $(".infoshiptax_area[data-address='"+shipaddr+"']").empty().html(response.data.taxview);
+                }
+                $("input[data-address='"+shipaddr+"'][data-fld='shipping']").val(response.data.shipping);
+                $("input[data-fld='rush_price']").val(response.data.rush_price);
+                $("input[data-address='"+shipaddr+"'][data-fld='sales_tax']").val(response.data.tax);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                $("#loader").hide();
+                show_error(response);
             }
         },'json');
     });

@@ -1059,6 +1059,11 @@ class Template
             // States
             $states=$this->CI->shipping_model->get_country_states($country_id);
             $shipdocview = $this->CI->load->view('leadordernew/shipdocs_data_view', ['shipdocs' => $res['shipdocs'], 'edit' => $edit], TRUE);
+            $taxoptions = [
+                'address' => $shipaddres,
+                'edit' => $edit,
+            ];
+            $taxview = $this->CI->load->view('leadordernew/tax_data_view', $taxoptions, TRUE);
             $shipoptions = [
                 'address' => $shipaddres,
                 'shipaddress' => $this->CI->shipping_model->prepare_shipaddress($shipaddres),
@@ -1068,6 +1073,7 @@ class Template
                 'shipdocs' => $shipdocview,
                 'order' => $res['order'],
                 'edit' => $edit,
+                'taxview' => $taxview,
             ];
             $shiptaxview = $this->CI->load->view('leadordernew/shipaddres_single_view', $shipoptions, TRUE);
         } else {

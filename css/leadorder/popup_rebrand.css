@@ -858,8 +858,10 @@ li.select2-results__option {
     font-weight: bold;
     margin-left: 4px;
 }
-.infoshiptax_infotext {
+.infoshiptax_area {
     float: right !important;
+}
+.infoshiptax_infotext {
     font-size: 9px; /* 10px */
     line-height: 15px;
     color: #747474;
@@ -1054,7 +1056,7 @@ li.select2-results__option {
     border: 2px solid #95939E;
     background: #fff;
 }
-.inpt_addressarea {
+.inpt_addressarea, .inpt_billaddressarea {
     float: left;
     width: calc(100% - 4px);
     border-left: none !important;
@@ -1069,8 +1071,8 @@ li.select2-results__option {
 }
 .inpt_addressarea::placeholder {
     font-size: 9px;
-    color: #ebebeb;
-    font-style: italic;
+    /*color: #ebebeb;*/
+    /*font-style: italic;*/
 }
 .inptaddress_city {
     width: 69px !important;
@@ -1092,7 +1094,7 @@ li.select2-results__option {
     color: #5C5C5C;
 }
 .inptaddress_zipcode {
-    width: 31px !important;
+    width: 41px !important;
     border-bottom: none !important;
 }
 .inptaddress_country {
@@ -3413,3 +3415,14 @@ input.invitecheckout_input {
     font-weight: 600;
 }
 /* END Invite Checkout Email */
+/* Address Autocomplete */
+.pac-container {
+    z-index: 1500!important;
+    width: 325px!important;
+}
+.autocompleter,
+.autocompleter-closed {
+    top: 37px;
+    max-width: 244px;
+    margin-left: 66px;
+}
