@@ -116,19 +116,20 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
     $.post(url, params, function (response) {
         if (response.errors=='') {
             if (address_type=='billing') {
-                $("select[data-field='billing_country']").val(response.data.country);
-                $("input[data-field='address_1']").val(response.data.address_1);
-                $("input.billinginput[data-field='city']").val(response.data.city);
-                $("input.billinginput[data-field='zip']").val(response.data.zip);
+                $("select[data-fld='billing_country']").val(response.data.country);
+                $("input.inpt_billaddressarea[data-fld='address_1']").val(response.data.address_1);
+                $("input.inpt_billaddressarea[data-fld='city']").val(response.data.city);
+                $("input.inpt_billaddressarea[data-fld='zip']").val(response.data.zip);
+                $("div[data-content='bilstateshow']").empty();
                 if (parseInt(response.data.bilstate)==1) {
-                    $("#billingstateselectarea").empty().html(response.data.stateview);
-                } else {
-                    $("#billingstateselectarea").empty().html('&nbsp;');
+                    if (parseInt(response.data.bilstate)==1) {
+                        $("div[data-content='bilstateshow']").html(response.data.stateview);
+                    }
                 }
-                $("#billingcompileaddress").val(response.data.addresscopy);
-                $("input.billinginput[data-field='address_2']").focus().addClass('flashed');
+                $(".fulladdressview[data-addresstype='billing']").val(response.data.addresscopy);
+                $("input.inpt_billaddressarea[data-fld='address_2']").focus().addClass('flashed');
                 setTimeout(function() {
-                    $("input.billinginput[data-field='address_2']").removeClass('flashed');
+                    $("input.inpt_billaddressarea[data-fld='address_2']").removeClass('flashed');
                 },5000);
             } else {
                 $("input.inpt_addressarea[data-address='"+shipadr+"'][data-fld='ship_address1']").val(response.data.address_1);

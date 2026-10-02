@@ -749,9 +749,10 @@ class Leadordernew extends MY_Controller
                             $mdata['bilstate'] = 1;
                             $options = [
                                 'states' => $states,
-                                'curstate' => $address['state'],
+                                'billing' => $address_full,
+                                'edit' => 1,
                             ];
-                            $mdata['stateview'] = $this->load->view('leadorderdetails/billing_state_select', $options, TRUE);
+                            $mdata['stateview'] = $this->load->view('leadordernew/billing_states_view', $options, TRUE);
                         } else {
                             $mdata['shipstate'] = 1;
                             $options = [
@@ -828,6 +829,58 @@ class Leadordernew extends MY_Controller
         }
         show_404();
     }
+
+    // Billing address
+    public function change_billing_address()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $fldname = $postdata['fldname'];
+                $newval = $postdata['newval'];
+                $res=$this->leadorder_model->change_billing_address($leadorder, $fldname, $newval, $ordersession);
+                $error = $res['msg'];
+                if (isset($res['old_value'])) {
+                    $mdata['old_value']=$res['old_value'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['statesnew'] = 0;
+                    $this->load->model('shipping_model');
+                    if ($fldname=='country_id') {
+                        $states = $res['states'];
+                        $mdata['statesnew'] = 1;
+                        $mdata['out_country'] = $res['out_country'];
+                        if (empty($states)) {
+                            $mdata['stateview'] = '&nbsp;';
+                        } else {
+                            $stateopt = array(
+                                'states' => $states,
+                                'billing' => $res['addressfull'],
+                                'edit' => 1,
+                            );
+                            $mdata['stateview'] = $this->load->view('leadordernew/billing_states_view', $stateopt, TRUE);
+                        }
+                    }
+                    $mdata['addresscopy'] = $this->shipping_model->prepare_billaddress($res['addressfull']);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Function update lock order
     private function _lockorder($leadorder) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->locktimeout);

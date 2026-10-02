@@ -933,7 +933,7 @@ Class Leadorder_model extends My_Model {
         $billing['state_id']=$defstate;
         $defcountry=$countries[0]['country_id'];
         $billing['country_id']=$defcountry;
-
+        $billing['out_country'] = $countries[0]['country_iso_code_2'];
         $out['order_billing']=$billing;
         // Payments
         $payfld=$this->db->list_fields('ts_order_payments');
@@ -7094,8 +7094,9 @@ Class Leadorder_model extends My_Model {
 
     // Get Bill Infor
     public function get_order_billing($order_id) {
-        $this->db->select('*');
-        $this->db->from('ts_order_billings');
+        $this->db->select('b.*, c.country_iso_code_2 as out_country');
+        $this->db->from('ts_order_billings b');
+        $this->db->join('ts_countries c', 'c.country_id = b.country_id', 'left');
         $this->db->where('order_id', $order_id);
         $res=$this->db->get()->row_array();
         if (empty($res)) {
@@ -12496,6 +12497,25 @@ Class Leadorder_model extends My_Model {
     public function change_order_fininput($leadorder, $entity, $fldname, $newval, $ordersession)
     {
 
+    }
+
+    public function change_billing_address($leadorder, $fldname, $newval, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Field Not Found'];
+        $billing = $leadorder['billing'];
+        if (array_key_exists($fldname, $billing)) {
+            $billing[$fldname] = $newval;
+            $out['result'] = $this->success_result;
+            if ($fldname=='country_id') {
+                $out['states'] = $this->db->select('*')->from('ts_states')->where('country_id', $newval)->get()->result_array();
+                $code = $this->db->select('country_iso_code_2')->from('ts_countries')->where('country_id', $newval)->get()->row_array();
+                $out['out_country'] = $code['country_iso_code_2'];
+            }
+            $leadorder['billing'] = $billing;
+            usersession($ordersession, $leadorder);
+            $out['addressfull'] = $billing;
+        }
+        return $out;
     }
 }
 /* End of file leadorder_model.php */

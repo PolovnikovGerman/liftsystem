@@ -11,3 +11,16 @@
     <?php endif; ?>
 </div>
 <?php endforeach; ?>
+<?php if ($edit == 1): ?>
+    <div class="art_line1" id="newartbuttonareaview">
+        <div class="button_newart">
+            <div class="button_newart_text">+ New Art</div>
+            <select class="art_select input_border_gray" id="arttypechoice">
+                <option value="Logo">Logo</option>
+                <option value="Text">Text</option>
+                <option value="Repeat">Repeat</option>
+                <option value="Reference">Reference</option>
+            </select>
+        </div>
+    </div>
+<?php endif; ?>

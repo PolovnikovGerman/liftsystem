@@ -1348,6 +1348,7 @@ function init_shipbill_manage() {
                 // Country code
                 if (parseInt(response.data.cntshipadrr)==1) {
                     $("#shipordercntcode").val(response.data.countrycode);
+                    initShipOrderAutocomplete();
                 }
                 $("#loader").hide();
                 init_onlineleadorder_edit();
@@ -1431,6 +1432,66 @@ function init_shipbill_manage() {
             } else {
                 $("#loader").hide();
                 show_error(response);
+            }
+        },'json');
+    });
+    // Billing info
+    $("#billing_country").unbind('change').change(function (){
+        var params=new Array();
+        params.push({name: 'fldname', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/change_billing_address";
+        $("#loader").show();
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                if (parseInt(response.data.statesnew)==1) {
+                    $("#billordercntcode").val(response.data.out_country);
+                    $("div[data-content='bilstateshow']").empty().html(response.data.stateview);
+                    initBillOrderAutocomplete();
+                }
+                $(".fulladdressview[data-addresstype='billing']").val(response.data.addresscopy);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
+    $(".inpt_billaddressarea").unbind('change').change(function (){
+        var params=new Array();
+        params.push({name: 'fldname', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/change_billing_address";
+        $("#loader").show();
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".fulladdressview[data-addresstype='billing']").val(response.data.addresscopy);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
+    $("#billing_state").unbind('change').change(function (){
+        var params=new Array();
+        params.push({name: 'fldname', value: 'state_id'});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/change_billing_address";
+        $("#loader").show();
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".fulladdressview[data-addresstype='billing']").val(response.data.addresscopy);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+            } else {
+                show_error(response);
+                $("#loader").hide();
             }
         },'json');
     });
