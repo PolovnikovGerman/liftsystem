@@ -128,7 +128,14 @@ Class Artlead_model extends MY_Model
             return $out;
         }
         $locations=$leadorder['artlocations'];
-        $numrec=count($locations)+1;
+        $numrec = 0;
+        foreach ($locations as $location) {
+            if ($location['artwork_art_id']<$numrec) {
+                $numrec = $location['artwork_art_id'];
+            }
+        }
+        $numrec = $numrec - 1;
+        // $numrec=count($locations)+1;
         $artwork=$leadorder['artwork'];
         $fields = $this->db->list_fields('ts_artwork_arts');
         $newlocation=array();
@@ -136,10 +143,10 @@ Class Artlead_model extends MY_Model
             $newlocation[$field]='';
         }
         $newlocation['artwork_id']=$artwork['artwork_id'];
-        $newlocation['artwork_art_id']=$numrec*(-1);
+        $newlocation['artwork_art_id']=$numrec; // *(-1);
         $newlocation['art_type']=$loctype;
         $newlocation['locat_ready']=0;
-        $newlocation['art_ordnum']=$numrec;
+        $newlocation['art_ordnum']=count($locations)+1; // $numrec;
         $newlocation['artlabel']=$this->empty_out_content;
         $newlocation['redrawchk']=$newlocation['rushchk']=$newlocation['redochk']='&nbsp;';
         if ($loctype=='Logo' || $loctype=='Reference') {
@@ -173,6 +180,12 @@ Class Artlead_model extends MY_Model
                 'title'=>'Rush',
             );
             $newlocation['rushchk']=$this->load->view('leadorderdetails/artlocs/artlocation_check_view', $rushopt, TRUE);
+            if (isset($data['logosource'])) {
+                $newlocation['source_title'] = $data['logosource'];
+            } else {
+                $newlocation['source_title'] = $logopath;
+            }
+
         } elseif ($loctype=='Text') {
             $newlocation['artlabel']='Text';
         } else {
@@ -202,16 +215,28 @@ Class Artlead_model extends MY_Model
     public function remove_location($leadorder, $artwork_art_id, $ordersession) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
         $locations=$leadorder['artlocations'];
+        $deleted = $leadorder['delrecords'];
         // Find locat
         $found=0;
         $locid=0;
+        $locnum = 1;
+        $newlocations = [];
         foreach ($locations as $row) {
             if ($row['artwork_art_id']==$artwork_art_id) {
                 $found=1;
-                $locations[$locid]['deleted']='del';
+//                $locations[$locid]['deleted']='del';
                 $this->load->model('artwork_model');
                 $this->artwork_model->_artlocation_log($row['artwork_id'], $row['artwork_art_id'], 'Delete Location');
-                break;
+                if ($artwork_art_id > 0) {
+                    $deleted[] = [
+                        'entity' => 'artlocation',
+                        'id' => $artwork_art_id,
+                    ];
+                }
+            } else {
+                $row['art_ordnum'] = $locnum;
+                $newlocations[]=$row;
+                $locnum++;
             }
             $locid++;
         }
@@ -219,16 +244,11 @@ Class Artlead_model extends MY_Model
             $out['msg']='Art Location Not Found';
             return $out;
         }
-        $leadorder['artlocations']=$locations;
+        $leadorder['artlocations']=$newlocations;
+        $leadorder['delrecords']=$deleted;
         usersession($ordersession, $leadorder);
         $out['result']=$this->success_result;
-        $outloc=array();
-        foreach ($locations as $row) {
-            if ($row['deleted']=='') {
-                $outloc[]=$row;
-            }
-        }
-        $out['artlocations']=$outloc;
+        $out['artlocations']=$newlocations;
         return $out;
     }
 

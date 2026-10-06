@@ -838,7 +838,11 @@ Class Leadorder_model extends My_Model {
         $artfld=$this->db->list_fields('ts_artworks');
         $art=array();
         foreach ($artfld as $fld) {
-            $art[$fld]='';
+            if ($fld=='artwork_id') {
+                $art[$fld] = -1;
+            } else {
+                $art[$fld]='';
+            }
         }
         $art['artwork_blank']=0;
         $art['artwork_rush'] =0;

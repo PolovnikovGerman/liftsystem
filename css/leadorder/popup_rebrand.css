@@ -1270,8 +1270,11 @@ li.select2-results__option {
 }
 .art_boxes {
     width: 100%;
-    height: 85px;
     border: 1px solid #858585;
+}
+.artlocationsarea {
+    width: 100%;
+    height: 85px;
     overflow-y: auto;
     scrollbar-width: none;
 }
@@ -1293,18 +1296,24 @@ li.select2-results__option {
     margin-bottom: 2px;
     padding: 0 4px;
 }
+.artapprvl_artbox.edit {
+    width: 312px;
+}
 .artbox_number {
     width: 16px;
     font-size: 12px;
     line-height: 25px;
     margin-right: 3px;
 }
-.artbox_filenameorg {
+.artbox_filenameorg, .artbox_filenameinput, .artbox_filenametext {
     width: 87px;
     font-size: 12px;
     line-height: 24px;
     color: #0A0AD4;
     cursor: pointer;
+}
+.artbox_filenameinput {
+    cursor: default;
 }
 .artbox_locationtitle {
     font-size: 12px;
@@ -1314,7 +1323,7 @@ li.select2-results__option {
 .artbox_filenameorg.unactive {
     color: #cbcbd1;
 }
-.artbox_filenameorg input {
+.artbox_filenameinput input {
     width: 50px;
     height: 18px;
 }
@@ -1376,6 +1385,17 @@ li.select2-results__option {
 .artbox_step.tick img {
     width: 18px;
     height: auto;
+}
+.artbox_emptyspace {
+    width: 100px;
+}
+.artbox_remove {
+    width: 16px;
+    text-align: center;
+    font-size: 11px;
+    line-height: 25px;
+    color: #ff0000;
+    cursor: pointer;
 }
 .artapprvl_proofs {
     width: 100%;
@@ -3428,26 +3448,149 @@ input.invitecheckout_input {
 }
 /* Art Locations - add new art*/
 .button_newart {
-    float: left;
-    background-image: url(/img/leadorder/button_newart.png);
-    background-repeat: no-repeat;
-    width: 125px;
-    height: 29px;
-    margin: 2px 0 0;
-    padding-top: 2px;
+    /*background-image: url(/img/leadorder/button_newart.png);*/
+    /*background-repeat: no-repeat;*/
+    background: #c4c4c4;
+    border: 1px solid #000000;
+    border-radius: 6px;
+    /* width: 125px; */
+    height: 17px;
+    /*margin: 2px 0 0;*/
+    /*padding-top: 2px;*/
+    padding-right: 5px;
 }
 .button_newart_text {
     cursor: pointer;
-    float: left;
-    font-size: 12px;
-    line-height: 19px;
+    font-size: 10px;
+    line-height: 15px;
+    height: 15px;
     padding-left: 5px;
 }
 .art_select {
     float: left;
-    width: 54px;
-    height: 18px;
-    font-size: 11px;
+    width: 50px;
+    height: 15px;
+    font-size: 10px;
     margin: 0 0 0 3px;
 }
 /* Art Locations - END */
+/* ART Locations POPUPS */
+.artlogouploadarea, .artrepeatdataarea, .artmessagesdataarea {
+    display: none;
+    position: absolute;
+    top: 7px;
+    left: -32px;
+    z-index: 20;
+    background: #c4c4c4;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    color: #000000;
+}
+.artlogouploadarea {
+    width: 330px;
+    min-height: 107px;
+}
+.artpopupclosewin {
+    position: absolute;
+    right: -10px;
+    top: -12px;
+    border: 1px solid #2a2a2a;
+    background: #e20000;
+    background: linear-gradient(to top, #c60000, #ff0000);
+    color: #fff;
+    font-weight: 900;
+    width: 29px;
+    height: 29px;
+    line-height: 25px;
+    font-size: 17px;
+    text-align: center;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.artpopupclosewin svg {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    top: 2.5px;
+    fill: #fff;
+}
+.artlogoupload_container {
+    padding: 7px;
+    width: 100%;
+}
+.artlogoupload_title {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+.artlogoupload_container .qq-uploader {
+    left: 110px;
+    top: 15px;
+}
+.artlogoupload_container .qq-upload-button {
+    background: #0000ff;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 7px;
+    text-align: center;
+}
+.artrepeat_container {
+    margin-top: 10px;
+    padding-left: 12px;
+    width: 256px;
+}
+.orderarchive_title {
+    margin-right: 10px;
+}
+.orderarchive_data input {
+    width: 89px;
+    margin-top: -2px;
+}
+.orderarchive_save {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    float: right!important;
+    margin-right: 8px;
+    cursor: pointer;
+}
+/* ART Messages */
+.artmessages_container {
+    padding: 15px;
+    width: 450px;
+}
+.artmessagecontent_title {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 10px;
+}
+textarea.artworkusertext {
+    height: 165px;
+    /* width: 100%; */
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 14px;
+    resize: none;
+    width: 413px;
+}
+.artmessage-bluebtn {
+    width: auto;
+    height: 30px;
+    line-height: 28px;
+    background: #5b5afe;
+    background: linear-gradient(to top, #4c4bfe, #6664fe);
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #1a1b70;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+    padding: 0 15px;
+    float: right !important;
+    margin-right: 9px;
+    margin-top: 5px;
+}

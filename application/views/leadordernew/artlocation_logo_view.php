@@ -22,3 +22,6 @@
     </div>
     <div class="artbox_filenamevect redrawing">Redrawing...</div>
 <?php endif; ?>
+<?php if ($edit==1) : ?>
+    <div class="artbox_remove" data-artloc="<?=$artlocation['artwork_art_id']?>" data-arttype="<?=$artlocation['art_type']?>">[&mdash;]</div>
+<?php endif; ?>
