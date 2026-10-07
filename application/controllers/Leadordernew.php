@@ -1239,6 +1239,7 @@ class Leadordernew extends MY_Controller
                     $mdata['content'] = $this->load->view('leadordernew/proofdocs_list_view', $options, TRUE);
                 }
             }
+            $mdata['loctime'] = $this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1281,6 +1282,126 @@ class Leadordernew extends MY_Controller
                     }
                 }
             }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function profdocsopen()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->profdocsopen($leadorder, $postdata, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['docs'] = $res['docs'];
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function prepare_profdocemail()
+    {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $template = $this->ART_PROOF;
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres = $this->_lockorder($leadorder);
+                if ($locres['result'] == $this->error_result) {
+                    $leadorder = usersession($ordersession, NULL);
+                    $error = $locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $brand = $leadorder['order']['brand'];
+                if ($brand == 'SR') {
+                    $template = 'SR ' . $template;
+                } else {
+                    $template = 'SB ' . $template;
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->prepare_newproofdocapproveemail($leadorder, $template, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    $error = '';
+                    $order = $leadorder['order'];
+                    if ($order['brand'] == 'SR') {
+                        $artemail = $this->config->item('art_srdept_email');
+                    } else {
+                        $artemail = $this->config->item('art_dept_email');
+                    }
+                    $options = array(
+                        'artwork_id' => $res['artwork_id'],
+                        'from' => $artemail,
+                        'tomail' => $res['customer_email'],
+                        'subject' => $res['subject'],
+                        'message' => $res['message'],
+                    );
+                    $mdata['content'] = $this->load->view('artpage/approve_email_view', $options, TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Send email
+    public function sendproofs()
+    {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $data = $this->input->post();
+            $mdata['post'] = $data;
+            $ordersession= ifset($data, 'ordersession', 'unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->send_newartproofmail($data, $leadorder, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    /* Build new content for proofs */
+                    $error = '';
+                    $proofs= $res['outproof'];
+                    $mdata['content'] = $this->load->view('leadordernew/proofdocs_list_view', ['proofs' => $proofs, 'artwork' => $res['artwork'], 'edit' => 1], TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
