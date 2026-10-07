@@ -100,6 +100,7 @@ class Leadorder extends MY_Controller
                         'order_date' => $orddata['order_date'],
                         'order_confirm' => $orddata['order_confirmation'],
                         'edit' => $edit,
+                        'mapuse' => empty($this->config->item('google_map_key')) ? 0 : 1,
                     ];
                     $head_options['unlocked']=0;
                     $header = $this->load->view('leadordernew/header_view', $head_options, true);
@@ -143,6 +144,7 @@ class Leadorder extends MY_Controller
                     } else {
                         $head_options['prvorder'] = $head_options['nxtorder'] = 0;
                     }
+                    $head_options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                     $header = $this->load->view('leadordernew/header_view', $head_options, true);
                     $mdata['cancelorder'] = $orddata['is_canceled'];
                 }

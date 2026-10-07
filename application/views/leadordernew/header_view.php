@@ -9,6 +9,7 @@
 <?php if ($order_id > 0) : ?>
 <input type="hidden" id="loctimeout" value="<?=$timeout?>"/>
 <?php endif; ?>
+<input type="hidden" id="ordermapuse" value="<?=$mapuse?>"/>
 <div class="neworder_header">
     <div class="namecustomer">
         <div class="namecustomer_title">Customer:</div>

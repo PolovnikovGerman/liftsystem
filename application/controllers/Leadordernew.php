@@ -574,7 +574,6 @@ class Leadordernew extends MY_Controller
     {
         if ($this->isAjax()) {
             $mdata=array();
-            $error='';
             $postdata=$this->input->post();
             $ordersession = ifset($postdata, 'ordersession', 'unkn');
             $leadorder = usersession($ordersession);
@@ -636,27 +635,18 @@ class Leadordernew extends MY_Controller
                         $mdata['rush_price']=$shipping['rush_price'];
                         $mdata['is_shipping']=$order['is_shipping'];
                         $mdata['shipping']=$order['shipping'];
+                        $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['cntshipadrr']=count($shipping_address);
                         $subtotal = $order['item_cost']+$order['item_imprint']+floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
                         $mdata['item_subtotal']=MoneyOutput($subtotal);
-                        $total_due=$order['revenue']-$order['payment_total'];
                         $mdata['ordersystem']=$leadorder['order_system'];
                         $mdata['balanceopen']=1;
-                        $dueoptions=array(
-                            'totaldue'=>$total_due,
-                        );
-                        if ($order['brand']=='SR') {
-                            $checkoutlink = $this->config->item('srcheckoutlink').$order['checkout_link'];
-                        } else {
-                            $checkoutlink = $this->config->item('btcheckoutlink').$order['checkout_link'];;
-                        }
                         if ($order['brand']=='SR') {
                             $checkoutlink = $this->config->item('srcheckoutlink').$order['checkout_link'];
                         } else {
                             $checkoutlink = $this->config->item('btcheckoutlink').$order['checkout_link'];;
                         }
                         $mdata['total_due']=$this->load->view('leadordernew/balancedue_view', ['order' => $order, 'checkoutlink' => $checkoutlink], TRUE);
-                        $mdata['tax']=MoneyOutput($order['tax']);
                         $mdata['profit_content'] = $this->_profit_data_view($order);
                         $order_items = $leadorder['order_items'];
                         $mdata['trackcount'] = 0;
@@ -665,17 +655,26 @@ class Leadordernew extends MY_Controller
                             $shipstatus = $this->leadorder_model->_leadorderview_shipping_status($leadorder);
                             $mdata['tracking'] = $this->_prepare_tracking_content($leadorder['order_items'], $shipstatus, 1);
                         }
+                        $mdata['statenew'] = $mdata['taxnew'] = $mdata['city_refresh'] = 0;
                         if ($fldname=='country_id') {
+                            $mdata['statenew'] = 1;
+                            $mdata['taxnew'] = 1;
                             if (count($res['states'])==0) {
                                 $mdata['stateview']='&nbsp;';
                             } else {
                                 $stateoptions=array(
-                                    'shipadr'=>$res['shipadr'],
-                                    'states'=>$res['states'],
+                                    'address' => $res['shipadr'],
+                                    'states' => $res['states'],
+                                    'edit' => 1,
                                 );
-                                $mdata['stateview']=$this->load->view('leadorderdetails/shipping_state_select', $stateoptions, TRUE);
+                                $mdata['stateview']=$this->load->view('leadordernew/shipaddres_states_view', $stateoptions, TRUE);
+                            }
+                            if (count($shipping_address)==1) {
+                                $mdata['countrycode'] = $shipping_address[0]['out_country'];
                             }
                         } elseif ($fldname=='zip') {
+                            $mdata['statenew'] = 2;
+                            $mdata['taxnew'] = 1;
                             if ($mdata['cntshipadrr']==1) {
                                 $shipcost=$res['shipadr']['shipping_costs'];
                                 $costoptions=array(
@@ -685,23 +684,27 @@ class Leadordernew extends MY_Controller
                                 $mdata['shipcost']=$this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
                                 $mdata['city']=$res['shipadr']['city'];
                                 $mdata['state_id']=$res['shipadr']['state_id'];
+                                $mdata['city_refresh'] = 1;
                             } else {
                                 //
                             }
+                        } elseif ($fldname=='state_id') {
+                            $mdata['taxnew'] = 1;
                         }
                         if ($mdata['cntshipadrr']==1) {
                             $shipaddr=$shipping_address[0];
-                            if ($shipaddr['taxview']==0) {
-                                $taxview=$this->load->view('leadorderdetails/tax_empty_view', array(), TRUE);
-                            } else {
-                                $taxview=$this->load->view('leadorderdetails/tax_data_edit', $shipaddr, TRUE);
+                            if ($mdata['taxnew']==1) {
+                                $taxoptions = [
+                                    'address' => $shipaddr,
+                                    'edit' => 1,
+                                ];
+                                $mdata['taxview'] = $this->load->view('leadordernew/tax_data_view', $taxoptions, TRUE);
                             }
-                            $mdata['taxview']=$taxview;
                             $mdata['addresscopy'] = $this->shipping_model->prepare_shipaddress($shipaddr);
                             $mdata['cntcode'] = $shipaddr['out_country'];
-                            if ($fldname=='country_id') {
-                                $mdata['addressline'] = $this->load->view('leadorderdetails/shipaddresline_view', ['shipadr' => $shipaddr], true);
-                            }
+//                            if ($fldname=='country_id') {
+//                                $mdata['addressline'] = $this->load->view('leadorderdetails/shipaddresline_view', ['shipadr' => $shipaddr], true);
+//                            }
                         }
                         $dateoptions=array(
                             'edit'=>1,
@@ -718,6 +721,692 @@ class Leadordernew extends MY_Controller
         }
         show_404();
     }
+
+    public function update_autoaddress()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->update_autoaddress($postdata, $leadorder, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $this->load->model('shipping_model');
+                    $error = '';
+                    $address = $res['address'];
+                    $address_full = $res['address_full'];
+                    $mdata['address_1'] = $address['address_1'];
+                    $mdata['country'] = $address['country'];
+                    $mdata['city'] = $address['city'];
+                    $mdata['zip'] = $address['zip'];
+                    if (!empty($address['state'])) {
+                        $states = $res['states'];
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 1;
+                            $options = [
+                                'states' => $states,
+                                'billing' => $address_full,
+                                'edit' => 1,
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadordernew/billing_states_view', $options, TRUE);
+                        } else {
+                            $mdata['shipstate'] = 1;
+                            $options = [
+                                'states' => $states,
+                                'address' => $res['shipping_address'],
+                                'edit' => 1,
+                            ];
+                            $mdata['stateview'] = $this->load->view('leadordernew/shipaddres_states_view', $options, TRUE);
+                        }
+                    } else {
+                        if ($postdata['address_type']=='billing') {
+                            $mdata['bilstate'] = 0;
+                        } else {
+                            $mdata['shipstate'] = 0;
+                        }
+                    }
+                    if ($postdata['address_type']=='billing') {
+                        $mdata['addresscopy'] = $this->shipping_model->prepare_billaddress($address_full);
+                    } else {
+                        $mdata['addresscopy'] = $this->shipping_model->prepare_shipaddress($address_full);
+                    }
+                    $mdata['shipcount'] = $res['shipcount'];
+                    if ($res['shipcount']==$this->success_result) {
+                        // Change Shipping cost, total, tax
+                        $leadorder = usersession($ordersession);
+                        $order = $leadorder['order'];
+                        $shipping = $leadorder['shipping'];
+                        $shipping_address = $leadorder['shipping_address'];
+                        $mdata['order_revenue'] = MoneyOutput($order['revenue']);
+                        $mdata['shipdate'] = $shipping['shipdate'];
+                        $mdata['rush_price'] = $shipping['rush_price'];
+                        $mdata['is_shipping'] = $order['is_shipping'];
+                        $mdata['shipping'] = $order['shipping'];
+                        $mdata['cntshipadrr'] = count($shipping_address);
+                        $subtotal = $order['item_cost'] + $order['item_imprint'] + floatval($order['mischrg_val1']) + floatval($order['mischrg_val2']) - floatval($order['discount_val']);
+                        $mdata['item_subtotal'] = MoneyOutput($subtotal);
+                        $mdata['ordersystem'] = $leadorder['order_system'];
+                        $mdata['balanceopen'] = 1;
+                        if ($order['brand']=='SR') {
+                            $checkoutlink = $this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $checkoutlink = $this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
+                        $mdata['total_due']=$this->load->view('leadordernew/balancedue_view', ['order' => $order, 'checkoutlink' => $checkoutlink], TRUE);
+                        $mdata['tax'] = MoneyOutput($order['tax']);
+                        $mdata['profit_content'] = $this->_profit_data_view($order);
+                        // shipdates_content
+                        if ($mdata['cntshipadrr'] == 1) {
+                            $shipcost = $shipping_address[0]['shipping_costs'];
+                            $costoptions = array(
+                                'shipadr' => $postdata['shipadr'],
+                                'shipcost' => $shipcost,
+                            );
+                            $mdata['shipcost'] = $this->load->view('leadorderdetails/ship_cost_edit', $costoptions, TRUE);
+                            // Tax View
+                            $shipaddr = $shipping_address[0];
+                            $taxoptions = [
+                                'address' => $shipaddr,
+                                'edit' => 1,
+                            ];
+                            $mdata['taxview'] = $this->load->view('leadordernew/tax_data_view', $taxoptions, TRUE);
+                        }
+                        $dateoptions = array(
+                            'edit' => 1,
+                            'shipping' => $shipping,
+                            'user_role' => $this->USR_ROLE,
+                        );
+                        $mdata['shipdates_content'] = $this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Billing address
+    public function change_billing_address()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $fldname = $postdata['fldname'];
+                $newval = $postdata['newval'];
+                $res=$this->leadorder_model->change_billing_address($leadorder, $fldname, $newval, $ordersession);
+                $error = $res['msg'];
+                if (isset($res['old_value'])) {
+                    $mdata['old_value']=$res['old_value'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['statesnew'] = 0;
+                    $this->load->model('shipping_model');
+                    if ($fldname=='country_id') {
+                        $states = $res['states'];
+                        $mdata['statesnew'] = 1;
+                        $mdata['out_country'] = $res['out_country'];
+                        if (empty($states)) {
+                            $mdata['stateview'] = '&nbsp;';
+                        } else {
+                            $stateopt = array(
+                                'states' => $states,
+                                'billing' => $res['addressfull'],
+                                'edit' => 1,
+                            );
+                            $mdata['stateview'] = $this->load->view('leadordernew/billing_states_view', $stateopt, TRUE);
+                        }
+                    }
+                    $mdata['addresscopy'] = $this->shipping_model->prepare_billaddress($res['addressfull']);
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artlocation_add()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $art_type = $postdata['loctype'];
+                $artwork=$leadorder['artwork'];
+                $mdata['artwork'] = $artwork;
+                if ($art_type=='Logo' || $art_type=='Reference') {
+                    $error = '';
+                    $title = ($art_type=='Logo') ? 'New Logo Location' : 'New Reference Location';
+                    $mdata['content'] = $this->load->view('leadordernew/upload_artlogo_view', ['artwork_id'=>$artwork['artwork_id'], 'title' => $title] ,TRUE);
+                } elseif ($art_type=='Text') {
+                    $data=array(
+                        'usertext'=>'',
+                        'art_type'=>'Text',
+                    );
+                    $this->load->model('artlead_model');
+                    $res=$this->artlead_model->add_location($leadorder, $data, $art_type, $ordersession);
+                    $error=$res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $artlocations = $res['artlocations'];
+                        $locat_view = '';
+                        foreach ($artlocations as $artlocation) {
+                            $locat_view.='<div class="artapprvl_artbox edit">';
+                            if ($artlocation['art_type']=='Logo') {
+                                $locat_view.=$this->load->view('leadordernew/artlocation_logo_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                            } elseif ($artlocation['art_type']=='Text') {
+                                $locat_view.=$this->load->view('leadordernew/artlocation_text_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                            } elseif ($artlocation['art_type']=='Repeat') {
+                                $locat_view.=$this->load->view('leadordernew/artlocation_repeat_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                            } else {
+                                $locat_view.=$this->load->view('leadordernew/artlocation_reference_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                            }
+                            $locat_view.='</div>';
+                        }
+                        $mdata['content'] = $locat_view;
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artlocation_customtextview()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $artwork_art_id=$postdata['artloc'];
+                $fldanme = $postdata['fldname'];
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->show_artlocation($leadorder, $artwork_art_id, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $location=$res['location'];
+                    if ($fldanme=='customer_text') {
+                        $mdata['content']=$this->load->view('leadordernew/newarttext_view', ['artwork_id'=>$artwork_art_id,'usrtxt'=>$location['customer_text'],'title'=>'Enter Customer Text'],TRUE);
+                    } elseif ($fldanme=='redraw_message') {
+                        $mdata['content']=$this->load->view('leadordernew/newarttext_view', ['artwork_id'=>$artwork_art_id,'usrtxt'=>$location['redraw_message'],'title'=>'Enter Redraw Message'],TRUE);
+                    }
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artlocation_rdnotesave()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+
+                $postdata=$this->input->post();
+                $artwork_art_id=$postdata['artloc'];
+                if (isset($postdata['fldname'])) {
+                    $field=$postdata['fldname'];
+                    $newval=$postdata['message'];
+                } else {
+                    $field='redraw_message';
+                    $newval=$this->input->post('redraw_message');
+                }
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->change_location($leadorder, $artwork_art_id, $field, $newval, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $leadorder = usersession($ordersession);
+                    $artlocations = $leadorder['artlocations'];
+                    $locat_view = '';
+                    foreach ($artlocations as $artlocation) {
+                        $locat_view.='<div class="artapprvl_artbox edit">';
+                        if ($artlocation['art_type']=='Logo') {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_logo_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        } elseif ($artlocation['art_type']=='Text') {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_text_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        } elseif ($artlocation['art_type']=='Repeat') {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_repeat_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        } else {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_reference_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        }
+                        $locat_view.='</div>';
+                    }
+                    $mdata['content'] = $locat_view;
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artnewlocation_save()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $data=$this->input->post();
+                $loctype=$data['loctype'];
+                $this->load->model('artlead_model');
+
+                $res=$this->artlead_model->add_location($leadorder, $data, $loctype, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $artlocations = $res['artlocations'];
+                    $locat_view='';
+                    foreach ($artlocations as $artlocation) {
+                        $locat_view.='<div class="artapprvl_artbox edit">';
+                        if ($artlocation['art_type']=='Logo') {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_logo_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        } elseif ($artlocation['art_type']=='Text') {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_text_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        } elseif ($artlocation['art_type']=='Repeat') {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_repeat_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        } else {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_reference_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        }
+                        $locat_view.='</div>';
+                    }
+                    $mdata['content']=$locat_view;
+                }
+                $mdata['loctime']=$this->_leadorder_locktime();
+                $this->ajaxResponse($mdata, $error);
+            }
+        }
+        show_404();
+    }
+
+    public function artlocation_remove()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $artwork_art_id = $postdata['artloc'];
+                $res = $this->artlead_model->remove_location($leadorder, $artwork_art_id, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $artlocations = $res['artlocations'];
+                    $locat_view='';
+                    foreach ($artlocations as $artlocation) {
+                        $locat_view.='<div class="artapprvl_artbox edit">';
+                        if ($artlocation['art_type']=='Logo') {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_logo_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        } elseif ($artlocation['art_type']=='Text') {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_text_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        } elseif ($artlocation['art_type']=='Repeat') {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_repeat_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        } else {
+                            $locat_view.=$this->load->view('leadordernew/artlocation_reference_view', ['artlocation' => $artlocation, 'edit' => 1],TRUE);
+                        }
+                        $locat_view.='</div>';
+                    }
+                    $mdata['content']=$locat_view;
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Prepare Proof docs uploader
+    public function artdocsupload_prepare()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $artwork = $leadorder['artwork'];
+                usersession($ordersession, $leadorder);
+                $error='';
+                if ($postdata['arttype']=='proofdocs') {
+                    $title = 'Add New Proof Document';
+                }
+                $mdata['content'] = $this->load->view('leadordernew/artdocs_upload_view',['title' => $title, 'artwork' => $artwork['artwork_id']], TRUE);
+
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Save Proof docs
+    public function saveproofdocload()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->save_newartproofdocs($leadorder, $postdata, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $artproofs = $leadorder['artproofs'];
+                    $artwork = $leadorder['artwork'];
+                    $options = [
+                        'proofs' => $artproofs,
+                        'artwork' => $artwork['artwork_id'],
+                        'edit' => 1,
+                    ];
+                    $mdata['content'] = $this->load->view('leadordernew/proofdocs_list_view', $options, TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function removeprofdoc()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->remove_newproofdocs($leadorder, $postdata, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $artproofs = $leadorder['artproofs'];
+                    $artwork = $leadorder['artwork'];
+                    $options = [
+                        'proofs' => $artproofs,
+                        'artwork' => $artwork['artwork_id'],
+                        'edit' => 1,
+                    ];
+                    $mdata['content'] = $this->load->view('leadordernew/proofdocs_list_view', $options, TRUE);
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Approve / redo section
+    public function profdocapprove()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->newproofdocs_approve($leadorder, $postdata, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['approved'] = $postdata['newapprov'];
+                    $mdata['section'] = $postdata['section'];
+                    $heads = $res['heads'];
+                    $mdata['headclass'] = $heads['class'];
+                    if (empty($heads['apprtime'])) {
+                        $mdata['content'] = '<span>'.$heads['status'].'</span>';
+                    } else {
+                        $content = '<span class="artproofapprvl_icon"><img src="/img/leadorder/tick-black.svg"></span>';
+                        $content.='<span>'.$heads['status'].'</span>';
+                        $content.='<div class="artproofapprvl_days">'.$heads['apprtime'].'</div>';
+                        $mdata['content'] = $content;
+                    }
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function profdocsopen()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->profdocsopen($leadorder, $postdata, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['docs'] = $res['docs'];
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function prepare_profdocemail()
+    {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $template = $this->ART_PROOF;
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres = $this->_lockorder($leadorder);
+                if ($locres['result'] == $this->error_result) {
+                    $leadorder = usersession($ordersession, NULL);
+                    $error = $locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $brand = $leadorder['order']['brand'];
+                if ($brand == 'SR') {
+                    $template = 'SR ' . $template;
+                } else {
+                    $template = 'SB ' . $template;
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->prepare_newproofdocapproveemail($leadorder, $template, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    $error = '';
+                    $order = $leadorder['order'];
+                    if ($order['brand'] == 'SR') {
+                        $artemail = $this->config->item('art_srdept_email');
+                    } else {
+                        $artemail = $this->config->item('art_dept_email');
+                    }
+                    $options = array(
+                        'artwork_id' => $res['artwork_id'],
+                        'from' => $artemail,
+                        'tomail' => $res['customer_email'],
+                        'subject' => $res['subject'],
+                        'message' => $res['message'],
+                    );
+                    $mdata['content'] = $this->load->view('artpage/approve_email_view', $options, TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Send email
+    public function sendproofs()
+    {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $data = $this->input->post();
+            $mdata['post'] = $data;
+            $ordersession= ifset($data, 'ordersession', 'unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->send_newartproofmail($data, $leadorder, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result'] == $this->success_result) {
+                    /* Build new content for proofs */
+                    $error = '';
+                    $proofs= $res['outproof'];
+                    $mdata['content'] = $this->load->view('leadordernew/proofdocs_list_view', ['proofs' => $proofs, 'artwork' => $res['artwork'], 'edit' => 1], TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Function update lock order
     private function _lockorder($leadorder) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->locktimeout);

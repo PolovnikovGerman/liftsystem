@@ -1,22 +1,27 @@
-<div class="artlocationarea <?=$artlocation['locat_ready']==1 ? 'locatready' : ''?>" data-artloc="<?=$artlocation['artwork_art_id']?>">
-    <div class="artbox_number"><?=$artlocation['art_ordnum']?>.</div>
-    <div class="art_block1 <?=$artlocation['locat_ready']==1 ? 'text_blue' : 'text_white'?> openlocation" data-artloc="<?=$artlocation['artwork_art_id']?>" data-arttype="<?=$artlocation['art_type']?>">
-        <?=$artlocation['artlabel']?>
-    </div>
-    <div class="art_block2">
-        <?=$artlocation['redrawchk']?>
-    </div>
-    <div class="art_block2">
-        <?=$artlocation['rushchk']?>
-    </div>
-    <div class="art_block3 <?=$artlocation['locat_ready']==1 ? 'text_blue' : 'text_white'?> <?=(empty($artlocation['logo_vectorized']) ? '' : 'viewreadyloc')?>" data-artloc="<?=$artlocation['artwork_art_id']?>">
-        <?=(empty($logo_vectorized) ? '&nbsp;' : 'Open AI')?>
-    </div>
-    <div class="art_block4">
-        <div class="redrawmsgarea <?=($artlocation['redraw_message']) ? 'active' : ''?>" data-artloc="<?=$artlocation['artwork_art_id']?>">&nbsp;</div>
-        <div class="art_block2" style="padding-top: 0"><?=$artlocation['redochk']?></div>
-        <?php if ($edit==1) : ?>
-        <div class="icon_1 removeartlocation" data-artloc="<?=$artlocation['artwork_art_id']?>" data-artloctype="<?=$artlocation['art_type']?>">&nbsp;</div>
-        <?php endif; ?>
-    </div>
+<div class="artbox_number"><?=$artlocation['art_ordnum']?>.</div>
+<div class="artbox_filenameorg <?=$artlocation['locat_ready']==1 ? 'unactive' : ''?> truncateoverflowtext" data-artloc="<?=$artlocation['artwork_art_id']?>">
+    <?=$artlocation['source_title']?>
 </div>
+<div class="artbox_iconfile <?=$artlocation['locat_ready']==1 ? 'unactive' : ''?>">
+    <img src="/img/leadorder/file-alt-grey.svg">
+</div>
+<div class="artbox_rush unactive">
+    <input type="checkbox" class="artlockdata" <?=$artlocation['rush']==1 ? 'checked' : ''?> <?=$edit==0 ? 'disabled' : ''?>/>
+    <label>RUSH</label>
+</div>
+<?php if ($artlocation['locat_ready'] == 1): ?>
+    <div class="artbox_step tick">
+        <img src="/img/leadorder/tick-blue.svg">
+    </div>
+    <div class="artbox_filenamevect readyfile truncateoverflowtext" data-artloc="<?=$artlocation['artwork_art_id']?>">
+        <?=$artlocation['vector_title']?>
+    </div>
+<?php else : ?>
+    <div class="artbox_step arrow">
+        <img src="/img/leadorder/artbox-arrow.svg">
+    </div>
+    <div class="artbox_filenamevect redrawing">Redrawing...</div>
+<?php endif; ?>
+<?php if ($edit==1) : ?>
+    <div class="artbox_remove" data-artloc="<?=$artlocation['artwork_art_id']?>" data-arttype="<?=$artlocation['art_type']?>">[&mdash;]</div>
+<?php endif; ?>

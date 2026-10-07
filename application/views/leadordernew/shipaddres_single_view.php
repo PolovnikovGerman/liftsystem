@@ -9,6 +9,7 @@
                 <option value="<?= $country['country_id'] ?>" <?= $country['country_id'] == $address['country_id'] ? 'selected' : '' ?>><?= $country['country_name'] ?></option>
             <?php endforeach; ?>
         </select>
+        <input type="hidden" id="shipordercntcode" name="shipordercntcode" value="<?=$address['out_country']?>"/>
     </div>
     <div class="shipaddress_box">
         <div class="copyaddress" data-addresstype="shipping" data-address="<?=$address['order_shipaddr_id'] ?>"><i class="fa fa-clone" aria-hidden="true"></i></div>
@@ -20,7 +21,7 @@
                placeholder="Company" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="ship_company"
                value="<?= $address['ship_company'] ?>"/>
         <input class="inpt_addressarea inptaddress_addressline" type="text" name="shipaddr1" <?=$edit==0 ? 'readonly="readonly"' : ''?>
-               placeholder="Address Line 1" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="ship_address1"
+               placeholder="Address Line 1" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="ship_address1" id="shiporder_line1"
                value="<?= $address['ship_address1'] ?>"/>
         <input class="inpt_addressarea inptaddress_addressline" type="text" name="shipaddr2" <?=$edit==0 ? 'readonly="readonly"' : ''?>
                placeholder="Address Line 2" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="ship_address2"
@@ -30,7 +31,7 @@
                value="<?= $address['city'] ?>"/>
         <div data-content='shipstateshow' data-address="<?= $address['order_shipaddr_id'] ?>">
             <?php if (count($states) > 0) : ?>
-                <select class="select_addressarea" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="state_id" <?=$edit==0 ? 'disabled' : ''?>>
+                <select class="select_addressarea shipstateselect" data-address="<?= $address['order_shipaddr_id'] ?>" data-fld="state_id" <?=$edit==0 ? 'disabled' : ''?>>
                     <option value="">State</option>
                     <?php foreach ($states as $state) : ?>
                         <option value="<?= $state['state_id'] ?>" <?= $state['state_id'] == $address['state_id'] ? 'selected="selected"' : '' ?>><?= $state['state_code'] ?></option>
@@ -78,7 +79,7 @@
                     <?php if ($edit==0) : ?>
                         <?=MoneyOutput($order['shipping'])?>
                     <?php else : ?>
-                        <input type="text" class="inptpaymentdata" data-fld="rush_price" value="<?=$order['shipping']?>"/>
+                        <input type="text" class="inptpaymentdata" data-address="<?=$address['order_shipaddr_id']?>" data-fld="shipping" value="<?=$address['shipping']?>"/>
                     <?php endif; ?>
                 </div>
                 <div class="infoshiptax_title">Shipping:</div>
@@ -94,29 +95,11 @@
                     <?php if ($edit==0) : ?>
                         <?=MoneyOutput($address['sales_tax'])?>
                     <?php else: ?>
-                        <input type="text" class="inptpaymentdata" data-fld="rush_price" value="<?=$address['sales_tax']?>"/>
+                        <input type="text" class="inptpaymentdata" data-address="<?=$address['order_shipaddr_id']?>" data-fld="sales_tax" value="<?=$address['sales_tax']?>"/>
                     <?php endif; ?>
                 </div>
                 <div class="infoshiptax_title">Sale Tax:</div>
-                <?php if ($address['taxview']==0) : ?>
-                    <div class="infoshiptax_infotext">[ Out of State - <span class="italictxt">No sales tax</span> ] -</div>
-                <?php else : ?>
-                    <div class="infoshiptax_infotext taxdataview">[ <span class="bluetxt">NJ <?=$this->config->item('outsalestax')?>% Tax </span>
-                        <input type="checkbox" class="excepttax" <?=$edit==0 ? 'disabled="disabled"' : ''?> <?=($address['tax_exempt']==1 ? 'checked="checked"' : '')?> />
-                        Exempt
-                        <select class="taxexcept_select input_border_black" <?=$edit==0 ? 'disabled="disabled"' : ''?>>
-                            <option value="" <?=$address['tax_reason']=='' ? 'selected="selected"' : ''?>>....</option>
-                            <option value="Non-profit" <?=$address['tax_reason']=='Non-profit' ? 'selected="selected"' : ''?>>Non-profit</option>
-                            <option value="School" <?=$address['tax_reason']=='School' ? 'selected="selected"' : ''?>>School</option>
-                            <option value="Government" <?=$address['tax_reason']=='Government' ? 'selected="selected"' : ''?>>Government</option>
-                            <option value="Reseller" <?=$address['tax_reason']=='Reseller' ? 'selected="selected"' : ''?>>Reseller</option>
-                        </select>
-                        <span class="icon_file">
-                            <i class="fa fa-file-text" aria-hidden="true"></i>
-                        </span>
-                        ] -
-                    </div>
-                <?php endif; ?>
+                <div class="infoshiptax_area" data-address="<?=$address['order_shipaddr_id']?>"><?=$taxview?></div>
             </div>
         </div>
     </div>

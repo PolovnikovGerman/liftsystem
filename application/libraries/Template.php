@@ -1388,6 +1388,11 @@ class Template
             // States
             $states=$this->CI->shipping_model->get_country_states($country_id);
             $shipdocview = $this->CI->load->view('leadordernew/shipdocs_data_view', ['shipdocs' => $res['shipdocs'], 'edit' => $edit], TRUE);
+            $taxoptions = [
+                'address' => $shipaddres,
+                'edit' => $edit,
+            ];
+            $taxview = $this->CI->load->view('leadordernew/tax_data_view', $taxoptions, TRUE);
             $shipoptions = [
                 'address' => $shipaddres,
                 'shipaddress' => $this->CI->shipping_model->prepare_shipaddress($shipaddres),
@@ -1397,6 +1402,7 @@ class Template
                 'shipdocs' => $shipdocview,
                 'order' => $res['order'],
                 'edit' => $edit,
+                'taxview' => $taxview,
             ];
             $shiptaxview = $this->CI->load->view('leadordernew/shipaddres_single_view', $shipoptions, TRUE);
         } else {
@@ -1494,7 +1500,8 @@ class Template
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
         $data['trackingview'] = $this->_prepare_tracking_content($res['order_items'], $shipstatus, $edit);
         // Proofs
-        $data['proofsview'] = $this->CI->load->view('leadordernew/proofs_view', ['proofs' => $res['proofdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+        $proofdocs_view  = $this->CI->load->view('leadordernew/proofdocs_list_view', ['proofs' => $res['proofdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+        $data['proofsview'] = $this->CI->load->view('leadordernew/proofs_view', ['prooflist' => $proofdocs_view, 'artwork' => $artwork, 'edit' => $edit], TRUE);
         $nethistory = '&nbsp;';
         if (count($res['nethistory']) > 0) {
             $nethistory = $this->CI->load->view('leadordernew/fullfilm_history_view', ['orders' => $res['nethistory']], TRUE);
