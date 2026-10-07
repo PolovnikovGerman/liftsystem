@@ -1,5 +1,4 @@
 <?php $proofhead = $proofs['head'];?>
-<?php $options = $proofs['options'];?>
 <div class="artproofs_header">
     <div class="artproofheader_title">Proofs:</div>
     <div class="artproofheader_apprvl <?=$proofhead['class']?>">
@@ -12,40 +11,12 @@
         <?php endif; ?>
     </div>
     <div class="artproofheader_open"><span>Open</span><span><img src="/img/leadorder/icon-link.svg"></span></div>
-    <div class="artproofheader_send">Send<span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></div>
+    <div class="artproofheader_send <?=$edit==0 ? '' : 'active'?>">Send<span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></div>
 </div>
-<div class="artproofs_body">
-    <?php if ($edit==1) : ?>
-        <div class="artproofs_optn">
-            <div class="artproofs_addoptn">+Add<br>Option</div>
-        </div>
-    <?php endif; ?>
-    <?php foreach ($options as $option) : ?>
-        <div class="artproofs_optn <?=$option['aprt']==0 ? '' : 'approved'?>">
-            <div class="optn_header">
-                <div class="optn_checkbox">
-                    <input type="checkbox" class="proofdocoption" data-proofopt="<?=$option['option']?>" <?=$edit==0 ? 'disabled="disabled"' : ''?>>
-                </div>
-                <div class="optn_title">Opt <?=$option['option']?></div>
-                <div class="optn_star">
-                    <?php if ($option['aprt']==0) : ?>
-                        <img src="/img/leadorder/star.svg">
-                    <?php else: ?>
-                        <img src="/img/leadorder/star-yellow.svg">
-                    <?php endif; ?>
-                </div>
-            </div>
-            <div class="optn_box" id="artproof_<?=$artwork?>_<?=$option['option']?>">
-                <ul>
-                    <?php foreach ($option['data'] as $proof) : ?>
-                    <li class="uploadproofs" data-proofdoc="<?=$proof['artwork_proof_id']?>" data-event="hover" data-css="proofdetailsballonbox"
-                        data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="left" data-textcolor="#000"
-                        data-balloon="<?=$proof['source_name']?>" data-timer="4000" data-delay="1000">
-                        proof_<?=str_pad($proof['proof_ordnum'],2,0,STR_PAD_LEFT)?>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        </div>
-    <?php endforeach; ?>
+<div class="artproofs_body"><?=$prooflist?></div>
+<div class="proofdocsuploads">
+    <div class="artpopupclosewin" id="proofdocsclosewin">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 847 847" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd"><g><path class="btn-closemodal-svg" d="M423 592l-196 196c-110,111 -279,-58 -169,-169l196 -196 -196 -196c-110,-110 59,-279 169,-169l196 196 196 -196c111,-110 280,59 169,169l-196 196 196 196c111,111 -58,280 -169,169l-196 -196z"></path></g></svg>
+    </div>
+    <div class="proofdocsupload_container">&nbsp;</div>
 </div>

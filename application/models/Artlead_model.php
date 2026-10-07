@@ -2198,4 +2198,191 @@ Class Artlead_model extends MY_Model
         }
         return $out;
     }
+
+    public function save_newartproofdocs($leadorder, $data, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
+        $artproofs = $leadorder['artproofs'];
+        $options = $artproofs['options'];
+        $found = 0;
+        $sectidx=0;
+        foreach ($options as $option) {
+            if ($option['option']==$data['section']) {
+                $found = 1;
+                break;
+            } else {
+                $sectidx++;
+            }
+        }
+        if ($found==0) {
+            $options[] = [
+                'option' => $data['section'],
+                'cnt' => 0,
+                'aprt' => 0,
+                'sendt' => 0,
+                'data' => [],
+            ];
+            $sectidx=count($options)-1;
+        }
+        // Change option
+        $options[$sectidx]['cnt']+=1;
+        // Add Data
+        $docs = $options[$sectidx]['data'];
+        $newidx = count($docs) + 1;
+        $newid = 0;
+        foreach ($docs as $doc) {
+            if ($doc['artwork_proof_id'] < $newid) {
+                $newid = $doc['artwork_proof_id'];
+            }
+        }
+        $newid=$newid-1;
+        $newdoc = [
+            'artwork_proof_id' => $newid,
+            'created_time' => date('Y-m-d H:i:s'),
+            'proof_ordnum' => $newidx,
+            'sended' => 0,
+            'sended_time' => 0,
+            'approved' => 0,
+            'approved_time' => 0,
+            'source_name' => $data['sourcename'],
+            'proofdoc_link' => '',
+            'src' => $this->config->item('pathpreload').$data['proofdoc'],
+            'option' => $data['section'],
+        ];
+        $docs[] = $newdoc;
+        $options[$sectidx]['data'] = $docs;
+        $artproofs['options'] = $options;
+        $leadorder['artproofs'] = $artproofs;
+        // Save result
+        usersession($ordersession, $leadorder);
+        $out['result'] = $this->success_result;
+        return $out;
+    }
+
+    public function remove_newproofdocs($leadorder, $data, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
+        $artproofs = $leadorder['artproofs'];
+        $deleted = $leadorder['delrecords'];
+        $options = $artproofs['options'];
+        $found = 0;
+        $sectidx=0;
+        foreach ($options as $option) {
+            if ($option['option']==$data['section']) {
+                $found = 1;
+                break;
+            } else {
+                $sectidx++;
+            }
+        }
+        if ($found==1) {
+            $docs = $options[$sectidx]['data'];
+            $found = 0;
+            $newdocs = [];
+            $docnum = 1;
+            foreach ($docs as $doc) {
+                if ($doc['artwork_proof_id'] == $data['artproof']) {
+                    $found = 1;
+                    if ($data['artproof'] > 0) {
+                        $deleted[] = [
+                            'entity' => 'proofdocs',
+                            'id' => $doc['artwork_proof_id'],
+                        ];
+                    }
+                } else {
+                    $doc['proof_ordnum'] = $docnum;
+                    $newdocs[] = $doc;
+                    $docnum++;
+                }
+            }
+            if ($found==1) {
+                $options[$sectidx]['data'] = $newdocs;
+                if (count($newdocs)==0) {
+                    // Rebuild options
+                    $newoptions = [];
+                    foreach ($options as $option) {
+                        if ($option['option']!=$data['section']) {
+                            $newoptions[] = $option;
+                        }
+                    }
+                    $options = $newoptions;
+                }
+                $artproofs['options'] = $options;
+                $leadorder['artproofs'] = $artproofs;
+                $leadorder['delrecords'] = $deleted;
+                // Save result
+                usersession($ordersession, $leadorder);
+                $out['result'] = $this->success_result;
+            }
+        }
+        return $out;
+    }
+
+    public function newproofdocs_approve($leadorder, $data, $ordersession) {
+        $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
+        $artproofs = $leadorder['artproofs'];
+        $options = $artproofs['options'];
+        $found = 0;
+        $sectidx=0;
+        foreach ($options as $option) {
+            if ($option['option']==$data['section']) {
+                $found = 1;
+                break;
+            } else {
+                $sectidx++;
+            }
+        }
+        if ($found==1) {
+            $docs = $options[$sectidx]['data'];
+            $docidx = 0;
+            foreach ($docs as $doc) {
+                if ($data['newapprov']==1) {
+                    $docs[$docidx]['approved'] = 1;
+                    $docs[$docidx]['approved_time'] = time();
+                } else {
+                    $docs[$docidx]['approved'] = 0;
+                    $docs[$docidx]['approved_time'] = 0;
+                }
+                $docidx++;
+            }
+            $options[$sectidx]['data'] = $docs;
+            if ($data['newapprov']==1) {
+                $options[$sectidx]['aprt'] = time();
+            } else {
+                $options[$sectidx]['aprt'] = 0;
+            }
+            $artproofs['options'] = $options;
+            $heads = $artproofs['head'];
+            $docsappr = 0;
+            $mintime = 0;
+            foreach ($options as $option) {
+                if ($option['aprt'] > 0) {
+                    $docsappr = 1;
+                    if ($mintime==0) {
+                        $mintime = $option['aprt'];
+                    } else {
+                        if ($mintime > $option['aprt']) {
+                            $mintime = $option['aprt'];
+                        }
+                    }
+                }
+            }
+            if ($docsappr==1) {
+                $heads['status'] = 'Approved';
+                $heads['class'] = 'approval';
+                $dtime = (time() - $mintime) / (24*60*60);
+                $heads['apprtime'] = round($dtime, 0, PHP_ROUND_HALF_DOWN).'d';
+            } else {
+                $heads['status'] = 'Not Approved';
+                $heads['class'] = 'notapproval';
+                $heads['apprtime'] = '';
+            }
+            $artproofs['head'] = $heads;
+            $leadorder['artproofs'] = $artproofs;
+            $out['result'] = $this->success_result;
+            $out['heads'] = $heads;
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
 }

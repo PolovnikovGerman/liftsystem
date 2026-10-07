@@ -1171,7 +1171,8 @@ class Template
         $shipstatus=$this->CI->leadorder_model->_leadorderview_shipping_status($res);
         $data['trackingview'] = $this->_prepare_tracking_content($res['order_items'], $shipstatus, $edit);
         // Proofs
-        $data['proofsview'] = $this->CI->load->view('leadordernew/proofs_view', ['proofs' => $res['proofdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+        $proofdocs_view  = $this->CI->load->view('leadordernew/proofdocs_list_view', ['proofs' => $res['proofdocs'], 'artwork' => $artwork, 'edit' => $edit], TRUE);
+        $data['proofsview'] = $this->CI->load->view('leadordernew/proofs_view', ['prooflist' => $proofdocs_view, 'artwork' => $artwork, 'edit' => $edit], TRUE);
         $nethistory = '&nbsp;';
         if (count($res['nethistory']) > 0) {
             $nethistory = $this->CI->load->view('leadordernew/fullfilm_history_view', ['orders' => $res['nethistory']], TRUE);

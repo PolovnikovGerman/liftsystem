@@ -1436,6 +1436,9 @@ li.select2-results__option {
     margin: 0 7px;
     flex: 0 0 auto;
 }
+.artproofs_optn.edit {
+    width: 75px;
+}
 .optn_header {
     width: 100%;
 }
@@ -1460,6 +1463,9 @@ li.select2-results__option {
     margin-bottom: 2px;
     cursor: pointer;
 }
+span.artproofs_remove {
+    color: #ff0000;
+}
 .proofdetailsballonbox {
     font-size: 13px;
     max-width: 400px;
@@ -1480,6 +1486,7 @@ li.select2-results__option {
     height: 14px;
     position: relative;
     top: -3px;
+    cursor: pointer;
 }
 .optn_star img {
     height: 14px;
@@ -1533,6 +1540,7 @@ li.select2-results__option {
     border-right: 1px solid #000;
     font-size: 12px;
     line-height: 21px;
+    cursor: pointer;
 }
 .artproofheader_open span {
     position: relative;
@@ -1552,9 +1560,30 @@ li.select2-results__option {
     font-size: 12px;
     line-height: 21px;
 }
+.artproofheader_send.active {
+    color: #05059D;
+    cursor: pointer;
+}
 .artproofheader_send span {
     margin-left: 4px;
     font-size: 16px;
+}
+.proofdocsuploads {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    width: 420px;
+    padding: 15px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background: #c4c4c4;
+    color: #000000;
+}
+.proofdocsupload_container {
+    width: 100%;
+    min-height: 107px;
 }
 .fulflm_row {
     width: 100%;

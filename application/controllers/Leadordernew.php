@@ -1133,6 +1133,159 @@ class Leadordernew extends MY_Controller
         show_404();
     }
 
+    // Prepare Proof docs uploader
+    public function artdocsupload_prepare()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $artwork = $leadorder['artwork'];
+                usersession($ordersession, $leadorder);
+                $error='';
+                if ($postdata['arttype']=='proofdocs') {
+                    $title = 'Add New Proof Document';
+                }
+                $mdata['content'] = $this->load->view('leadordernew/artdocs_upload_view',['title' => $title, 'artwork' => $artwork['artwork_id']], TRUE);
+
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Save Proof docs
+    public function saveproofdocload()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->save_newartproofdocs($leadorder, $postdata, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $artproofs = $leadorder['artproofs'];
+                    $artwork = $leadorder['artwork'];
+                    $options = [
+                        'proofs' => $artproofs,
+                        'artwork' => $artwork['artwork_id'],
+                        'edit' => 1,
+                    ];
+                    $mdata['content'] = $this->load->view('leadordernew/proofdocs_list_view', $options, TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function removeprofdoc()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->remove_newproofdocs($leadorder, $postdata, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $artproofs = $leadorder['artproofs'];
+                    $artwork = $leadorder['artwork'];
+                    $options = [
+                        'proofs' => $artproofs,
+                        'artwork' => $artwork['artwork_id'],
+                        'edit' => 1,
+                    ];
+                    $mdata['content'] = $this->load->view('leadordernew/proofdocs_list_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Approve / redo section
+    public function profdocapprove()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->newproofdocs_approve($leadorder, $postdata, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['approved'] = $postdata['newapprov'];
+                    $mdata['section'] = $postdata['section'];
+                    $heads = $res['heads'];
+                    $mdata['headclass'] = $heads['class'];
+                    if (empty($heads['apprtime'])) {
+                        $mdata['content'] = '<span>'.$heads['status'].'</span>';
+                    } else {
+                        $content = '<span class="artproofapprvl_icon"><img src="/img/leadorder/tick-black.svg"></span>';
+                        $content.='<span>'.$heads['status'].'</span>';
+                        $content.='<div class="artproofapprvl_days">'.$heads['apprtime'].'</div>';
+                        $mdata['content'] = $content;
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Function update lock order
     private function _lockorder($leadorder) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->locktimeout);

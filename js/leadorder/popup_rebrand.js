@@ -546,9 +546,118 @@ function init_artdata_show() {
                 }
             },'json');
         }
-    })
+    });
+    // Proof docs add
+    $(".artproofs_addoptn").unbind('click').click(function (){
+        var url="/leadordernew/artdocsupload_prepare";
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'arttype', value: 'proofdocs'});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".proofdocsupload_container").empty().html(response.data.content);
+                $(".proofdocsuploads").show();
+                init_proofdocs_upload();
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Proof docs remove
+    $(".artproofs_remove").unbind('click').click(function (){
+        var msg = 'Remove Proof '+$(this).data('proofname')+'?';
+        if (confirm(msg)==true) {
+            var url="/leadordernew/removeprofdoc";
+            var params=new Array();
+            params.push({name: 'artproof', value: $(this).data('proofdoc')});
+            params.push({name: 'section', value: $(this).data('section')});
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $(".artproofs_body").empty().html(response.data.content);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // Approved
+    $(".optn_star").unbind('click').click(function(){
+        var section = $(this).data('section');
+        var newapprov = 1;
+        var msg = 'Approve Opt '+section+'?';
+        if ($(".artproofs_optn[data-section='"+section+"']").hasClass('approved')) {
+            newapprov = 0;
+            msg = 'Redo Approving Opt '+section+'?';
+        }
+        if (confirm(msg)==true) {
+            var url="/leadordernew/profdocapprove";
+            var params=new Array();
+            params.push({name: 'section', value: $(this).data('section')});
+            params.push({name: 'newapprov', value: newapprov});
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $(".artproofheader_apprvl").removeClass('approval').removeClass('notapproval').addClass(response.data.headclass);
+                    $(".artproofheader_apprvl").empty().html(response.data.content);
+                    if (parseInt(response.data.approved)==1) {
+                        $(".artproofs_optn[data-section='"+response.data.section+"']").addClass('approved');
+                    } else {
+                        $(".artproofs_optn[data-section='"+response.data.section+"']").removeClass('approved');
+                    }
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
 }
 
+function init_proofdocs_upload() {
+    $("#proofdocsclosewin").unbind('click').click(function(){
+        $(".proofdocsuploads").hide();
+    });
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('artdoc-uploader'),
+        action: '/artproofrequest/proofattach',
+        uploadButtonText: '',
+        multiple: true,
+        debug: false,
+        // template: upload_templ,
+        params: {
+            'artwork_id': $("#artdoc-uploader").data("artwork")
+        },
+        allowedExtensions: ['pdf','PDF'],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url='/leadordernew/saveproofdocload';
+                var params=new Array();
+                params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                params.push({name: 'proofdoc', value: responseJSON.filename});
+                params.push({name: 'sourcename', value: responseJSON.srcname});
+                params.push({name: 'section', value: $(".uploaddocsection").val()});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $(".artproofs_body").empty().html(response.data.content);
+                        $(".proofdocsuploads").hide();
+                        init_onlineleadorder_edit();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
+}
 function save_leadordercustomtext(artloc, fldname) {
     var params=new Array();
     params.push({name: 'artloc', value: artloc});
