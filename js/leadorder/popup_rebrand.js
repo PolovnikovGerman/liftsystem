@@ -718,7 +718,7 @@ function init_proofdocs_upload() {
     var uploader = new qq.FileUploader({
         element: document.getElementById('artdoc-uploader'),
         action: '/artproofrequest/proofattach',
-        uploadButtonText: '',
+        uploadButtonText: 'Upload',
         multiple: true,
         debug: false,
         // template: upload_templ,

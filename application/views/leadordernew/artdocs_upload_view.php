@@ -12,6 +12,6 @@
     </div>
 </div>
 <div class="datarow">
-    <div id="orderattachlists" class="artlogouploads">&nbsp;</div>
-    <div id="artdoc-uploader" data-artwork="<?=$artwork?>"></div>
+    <div id="orderattachlists" class="artdocsuploadarea">&nbsp;</div>
+    <div id="artdoc-uploader" class="artdoc-uploader" data-artwork="<?=$artwork?>"></div>
 </div>
