@@ -1734,6 +1734,9 @@ span.artproofs_remove {
     overflow-y: auto;
     scrollbar-width: none;
 }
+.claymodels_optn_box.edit {
+    width: 71px;
+}
 .claymodels_optn_box ul {
     list-style: none;
     margin: 0;
@@ -1744,6 +1747,11 @@ span.artproofs_remove {
     color: #0000D2;
     font-weight: bold;
     margin-bottom: 2px;
+}
+.claydoc_remove {
+    font-weight: 500;
+    color: #ff0000;
+    cursor: pointer;
 }
 .claymodels_optn_checkbox {
     margin-right: 3px;
@@ -1761,6 +1769,7 @@ span.artproofs_remove {
     height: 14px;
     position: relative;
     top: -3px;
+    cursor: pointer;
 }
 .claymodels_optn_star img {
     height: 14px;

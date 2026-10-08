@@ -31,7 +31,9 @@
     <?php if ($clayhistory==1) : ?>
         <?php $this->load->view('leadordernew/claydocs_history_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
     <?php else : ?>
-        <?php $this->load->view('leadordernew/claydocs_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
+        <div id="claydocsviewarea">
+            <?php $this->load->view('leadordernew/claydocs_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
+        </div>
     <?php endif; ?>
 </div>
 <div class="leadorderpreviewcontent">
