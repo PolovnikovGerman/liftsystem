@@ -165,7 +165,219 @@ function init_claypreview_tabs() {
         var link = $(this).data('link');
         var title = $(this).data('title');
         openai(link, title);
-    })
+    });
+    // Add Clay model
+    $(".claymodels_addoptn").unbind('click').click(function (){
+        var url="/leadordernew/artdocsupload_prepare";
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'arttype', value: 'claymodels'});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".proofdocsupload_container").empty().html(response.data.content);
+                $(".proofdocsuploads").show();
+                init_claymodel_upload();
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".claydoc_remove").unbind('click').click(function (){
+        var msg = 'Remove Clay Model '+$(this).data('clayname')+'?';
+        if (confirm(msg)==true) {
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'section', value: $(this).data('section')});
+            params.push({name: 'claydoc', value: $(this).data('claydoc')});
+            var url='/leadordernew/artclay_remove';
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $("#claydocsviewarea").empty().html(response.data.content);
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // Approve / Redo
+    $(".claymodels_optn_star").unbind('click').click(function (){
+        var newappr = 1;
+        if ($(this).hasClass("approved")) {
+            newappr = 0;
+        }
+        var section = $(this).data('section');
+        var msg = 'Approve Clay Option '+section+'?';
+        if (newappr == 0) {
+            msg = 'Redo Approving Clay Option '+section+'?';
+        }
+        if (confirm(msg)==true) {
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'section', value: $(this).data('section')});
+            params.push({name: 'newappr', value: newappr});
+            var url='/leadordernew/artclay_approve';
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    if (newappr == 1) {
+                        $(".claymodels_optn_star[data-section='"+section+"']").removeClass('unapproved').addClass('approved').empty().html('<img src="/img/leadorder/star-yellow.svg">');
+                    } else {
+                        $(".claymodels_optn_star[data-section='"+section+"']").removeClass('approved').addClass('unapproved').empty().html('<img src="/img/leadorder/star.svg">');
+                    }
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                }
+            },'json');
+        }
+    });
+    // Preview pics - add
+    $(".previewpict_addoptn").unbind('click').click(function (){
+        var url="/leadordernew/artdocsupload_prepare";
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'arttype', value: 'previewpics'});
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".proofdocsupload_container").empty().html(response.data.content);
+                $(".proofdocsuploads").show();
+                init_previewpics_upload();
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    // Preview pic - remove
+    $(".previewpic_remove").unbind('click').click(function (){
+        var msg = 'Remove '+$(this).data('previewname')+'?';
+        if (confirm(msg)==true) {
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'section', value: $(this).data('section')});
+            params.push({name: 'previewdoc', value: $(this).data('previewdoc')});
+            var url='/leadordernew/artpreview_remove';
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $("#previewdocsviewarea").empty().html(response.data.content);
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                }
+            },'json');
+        }
+    });
+    $(".previewpict_optn_star").unbind('click').click(function (){
+        var newappr = 1;
+        if ($(this).hasClass("approved")) {
+            newappr = 0;
+        }
+        var msg = 'Approve Option '+$(this).data('section')+'?';
+        if (newappr==0) {
+            msg = 'Redo Approving Option '+$(this).data('section')+'?';
+        }
+        if (confirm(msg)==true) {
+            var section = $(this).data('section');
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'section', value: section});
+            params.push({name: 'newapprove', value: newappr });
+            var url='/leadordernew/artpreview_approve';
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    if (newappr == 1) {
+                        $(".previewpict_optn_star[data-section='"+section+"']").removeClass('unapproved').addClass('approved').empty().html('<img src="/img/leadorder/star-yellow.svg">');
+                    } else {
+                        $(".previewpict_optn_star[data-section='"+section+"']").removeClass('approved').addClass('unapproved').empty().html('<img src="/img/leadorder/star.svg">');
+                    }
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+}
+
+function init_previewpics_upload() {
+    $("#proofdocsclosewin").unbind('click').click(function(){
+        $(".proofdocsuploads").hide();
+    });
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('artdoc-uploader'),
+        action: '/utils/vendorcenterattach',
+        uploadButtonText: 'Upload',
+        multiple: true,
+        debug: false,
+        // template: upload_templ,
+        // allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url='/leadordernew/savepreviewupload';
+                var params=new Array();
+                params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                params.push({name: 'previewdoc', value: responseJSON.filename});
+                params.push({name: 'sourcename', value: fileName}); // responseJSON.srcname
+                params.push({name: 'section', value: $(".uploaddocsection").val()});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("#previewdocsviewarea").empty().html(response.data.content);
+                        $(".proofdocsuploads").hide();
+                        $("input#loctimeout").val(response.data.loctime);
+                        init_onlineleadorder_edit();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
+}
+function init_claymodel_upload() {
+    $("#proofdocsclosewin").unbind('click').click(function(){
+        $(".proofdocsuploads").hide();
+    });
+
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('artdoc-uploader'),
+        action: '/utils/vendorcenterattach',
+        uploadButtonText: 'Upload',
+        multiple: true,
+        debug: false,
+        // template: upload_templ,
+        // allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'],
+        onComplete: function(id, fileName, responseJSON){
+            if (responseJSON.success==true) {
+                $(".qq-upload-list").hide();
+                var url='/leadordernew/saveclaydocupload';
+                var params=new Array();
+                params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                params.push({name: 'claydoc', value: responseJSON.filename});
+                params.push({name: 'sourcename', value: fileName}); // responseJSON.srcname
+                params.push({name: 'section', value: $(".uploaddocsection").val()});
+                $.post(url, params, function (response) {
+                    if (response.errors=='') {
+                        $("#claydocsviewarea").empty().html(response.data.content);
+                        $(".proofdocsuploads").hide();
+                        $("input#loctimeout").val(response.data.loctime);
+                        init_onlineleadorder_edit();
+                    } else {
+                        show_error(response);
+                    }
+                },'json');
+            } else {
+                alert(responseJSON.error);
+                $("div#loader").hide();
+                $("div.qq-upload-button").css('visibility','visible');
+            }
+        }
+    });
 }
 
 // Change order view by click on prev / next

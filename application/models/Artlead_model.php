@@ -2739,7 +2739,294 @@ Class Artlead_model extends MY_Model
             $out['artwork_proof_id']=$retval;
         }
         return $out;
-
-
     }
+
+    public function save_newartclaydocs($leadorder, $data, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
+        $claydocs = $leadorder['claydocs'];
+        $options = $claydocs['options'];
+        $found = 0;
+        $sectidx=0;
+        foreach ($options as $option) {
+            if ($option['clay_option']==$data['section']) {
+                $found = 1;
+                break;
+            } else {
+                $sectidx++;
+            }
+        }
+        if ($found==0) {
+            $options[] = [
+                'clay_option' => $data['section'],
+                'cnt' => 0,
+                'approved' => 0,
+                'send' => 0,
+                'data' => [],
+            ];
+            $sectidx=count($options)-1;
+        }
+        // Change option
+        $options[$sectidx]['cnt']+=1;
+        // Add Data
+        $docs = $options[$sectidx]['data'];
+        $newidx = count($docs) + 1;
+        $newid = 0;
+        foreach ($docs as $doc) {
+            if ($doc['artwork_clay_id'] < $newid) {
+                $newid = $doc['artwork_clay_id'];
+            }
+        }
+        $newid=$newid-1;
+        $newdoc = [
+            'artwork_clay_id' => $newid,
+            'created_time' => date('Y-m-d H:i:s'),
+            'numpp' => $newidx,
+            'clay_send' => 0,
+            'clay_sendtime' => 0,
+            'clay_approved' => 0,
+            'clay_approvetime' => 0,
+            'clay_source' => $data['sourcename'],
+            'clay_link' => $this->config->item('pathpreload').$data['claydoc'],
+            'clay_option' => $data['section'],
+        ];
+        $docs[] = $newdoc;
+        $options[$sectidx]['data'] = $docs;
+        $claydocs['options'] = $options;
+        $leadorder['claydocs'] = $claydocs;
+        // Save result
+        usersession($ordersession, $leadorder);
+        $out['result'] = $this->success_result;
+        return $out;
+    }
+
+    public function remove_newclaydocs($leadorder, $data, $ordersession) {
+        $out = ['result' => $this->error_result, 'msg' => 'Clay Model Not Found'];
+        $claydocs = $leadorder['claydocs'];
+        $claydatas = $claydocs['options'];
+        $deleted = $leadorder['delrecords'];
+        $optidx = 0;
+        $find = 0;
+        foreach ($claydatas as $claydoc) {
+            if ($claydoc['clay_option']==$data['section']) {
+                $find = 1;
+                break;
+            } else {
+                $optidx++;
+            }
+        }
+        if ($find==1) {
+            $docs = $claydatas[$optidx]['data'];
+            $newdocs = [];
+            $numpp = 1;
+            $found = 0;
+            foreach ($docs as $doc) {
+                if ($doc['artwork_clay_id'] == $data['claydoc']) {
+                    $found = 1;
+                    if ($data['claydoc'] > 0) {
+                        $deleted[] = [
+                            'entity' => 'claydocs',
+                            'id' => $data['claydoc'],
+                        ];
+                    }
+                } else {
+                    $doc['numpp'] = $numpp;
+                    $newdocs[] = $doc;
+                    $numpp++;
+                }
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $claydatas[$optidx]['data'] = $newdocs;
+                if (count($newdocs)==0) {
+                    // Hide option
+                    $newoptions = [];
+                    foreach ($claydatas as $claydoc) {
+                        if ($claydoc['clay_option']!=$data['section']) {
+                            $newoptions[] = $claydoc;
+                        }
+                    }
+                    $claydatas = $newoptions;
+                }
+                $claydocs['options'] = $claydatas;
+                $leadorder['claydocs'] = $claydocs;
+                $leadorder['delrecords'] = $deleted;
+                usersession($ordersession, $leadorder);
+            }
+        }
+        return $out;
+    }
+
+    public function approve_newclaydocs($leadorder, $data, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Clay Model Not Found'];
+        $claydata = $leadorder['claydocs'];
+        $claydocs = $claydata['options'];
+        $found = 0;
+        $optidx = 0;
+        foreach ($claydocs as $claydoc) {
+            if ($claydoc['clay_option']==$data['section']) {
+                $found = 1;
+                $claydocs[$optidx]['approved'] = ($data['newappr']==1 ? 1 : 0);
+                $docidx = 0;
+                $docs = $claydocs[$optidx]['data'];
+                foreach ($docs as $doc) {
+                    $docs[$docidx]['clay_approved'] = ($data['newappr']==1 ? 1 : 0);
+                    $docs[$docidx]['clay_approvetime'] = ($data['newappr']==1 ? time() : 0);
+                    $docidx++;
+                }
+                $claydocs[$optidx]['data'] = $docs;
+            }
+            $optidx++;
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $claydata['options'] = $claydocs;
+            $leadorder['claydocs'] = $claydata;
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
+    public function save_newpreviewdocs($leadorder, $data , $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Option Not Found'];
+        $previedat = $leadorder['previewdocs'];
+        $previews = $previedat['options'];
+        $found = 0;
+        $optidx = 0;
+        foreach ($previews as $preview) {
+            if ($preview['preview_option']==$data['section']) {
+                $found = 1;
+                break;
+            } else {
+                $optidx++;
+            }
+        }
+        if ($found==0) {
+            $previews[] = [
+                'preview_option' => $data['section'],
+                'cnt' => 0,
+                'approved' => 0,
+                'data' => [],
+            ];
+            $optidx = count($previews)-1;
+        }
+        $out['result'] = $this->success_result;
+        $newid = 0;
+        $docs = $previews[$optidx]['data'];
+        foreach ($docs as $doc) {
+            if ($doc['artwork_preview_id'] < $newid ) {
+                $newid = $doc['artwork_preview_id'];
+            }
+        }
+        $newid-=1;
+        $docs[] = [
+            'artwork_preview_id' => $newid,
+            'numpp' => count($docs)+1,
+            'preview_link' => $this->config->item('pathpreload').$data['previewdoc'],
+            'preview_source' => $data['sourcename'],
+            'preview_send' => 0,
+            'preview_sendtime' => 0,
+            'preview_approved' => 0,
+            'preview_approvetime' => 0,
+            'preview_option' => $data['section'],
+        ];
+        $previews[$optidx]['data'] = $docs;
+        $previedat['options'] = $previews;
+        $leadorder['previewdocs'] = $previedat;
+        usersession($ordersession, $leadorder);
+        return $out;
+    }
+
+    public function remove_newpreviewdocs($leadorder, $data, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Option Not Found'];
+        $previedat = $leadorder['previewdocs'];
+        $previews = $previedat['options'];
+        $deleted = $leadorder['delrecords'];
+        $found = 0;
+        $optidx = 0;
+        foreach ($previews as $preview) {
+            if ($preview['preview_option']==$data['section']) {
+                $found = 1;
+                break;
+            } else {
+                $optidx++;
+            }
+        }
+        if ($found==1) {
+            $out['msg'] = 'Priveiew Picture Not found';
+            $docs = $previews[$optidx]['data'];
+            $found = 0;
+            $newdocs = [];
+            $numpp = 1;
+            foreach ($docs as $doc) {
+                if ($doc['artwork_preview_id']==$data['previewdoc']) {
+                    $found = 1;
+                    if ($data['previewdoc'] > 0) {
+                        $deleted[] = [
+                            'entity' => 'previews',
+                            'id' => $data['claydoc'],
+                        ];
+                    }
+                } else {
+                    $doc['numpp'] = $numpp;
+                    $newdocs[] = $doc;
+                    $numpp++;
+                }
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $previews[$optidx]['data']=$newdocs;
+                if (count($newdocs)==0) {
+                    // Remove option
+                    $newoptions = [];
+                    foreach ($previews as $preview) {
+                        if ($preview['preview_option']!=$data['section']) {
+                            $newoptions[] = $preview;
+                        }
+                    }
+                    $previews = $newoptions;
+                }
+                $previedat['options'] = $previews;
+                $leadorder['previewdocs'] = $previedat;
+                $leadorder['delrecords'] = $deleted;
+                usersession($ordersession, $leadorder);
+            }
+        }
+        return $out;
+    }
+
+    public function approve_newpreviews($leadorder, $data, $ordersession)
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'Clay Model Not Found'];
+        $previedat = $leadorder['previewdocs'];
+        $previews = $previedat['options'];
+        $found = 0;
+        $optidx = 0;
+        foreach ($previews as $preview) {
+            if ($preview['preview_option']==$data['section']) {
+                $found = 1;
+                $previews[$optidx]['approved'] = ($data['newapprove']==1 ? 1 : 0);
+                $docidx = 0;
+                $docs = $previews[$optidx]['data'];
+                foreach ($docs as $doc) {
+                    $docs[$docidx]['preview_approved'] = ($data['newapprove']==1 ? 1 : 0);
+                    $docs[$docidx]['preview_approvetime'] = ($data['newapprove']==1 ? time() : 0);
+                    $docidx++;
+                }
+                $previews[$optidx]['data'] = $docs;
+            }
+            $optidx++;
+        }
+        if ($found==1) {
+            $out['result'] = $this->success_result;
+            $previedat['options'] = $previews;
+            $leadorder['previewdocs'] = $previedat;
+            usersession($ordersession, $leadorder);
+        }
+        return $out;
+    }
+
 }

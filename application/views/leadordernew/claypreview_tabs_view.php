@@ -31,7 +31,9 @@
     <?php if ($clayhistory==1) : ?>
         <?php $this->load->view('leadordernew/claydocs_history_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
     <?php else : ?>
-        <?php $this->load->view('leadordernew/claydocs_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
+        <div id="claydocsviewarea">
+            <?php $this->load->view('leadordernew/claydocs_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
+        </div>
     <?php endif; ?>
 </div>
 <div class="leadorderpreviewcontent">
@@ -47,6 +49,8 @@
     <?php if ($previewhistory==1) : ?>
         <?php $this->load->view('leadordernew/previewdocs_history_view', ['previews' => $previews, 'artwork' => $artwork, 'edit' => $edit]);?>
     <?php else: ?>
-        <?php $this->load->view('leadordernew/previewdocs_view', ['previews' => $previews, 'artwork' => $artwork, 'edit' => $edit]);?>
+        <div id="previewdocsviewarea">
+            <?php $this->load->view('leadordernew/previewdocs_view', ['previews' => $previews, 'artwork' => $artwork, 'edit' => $edit]);?>
+        </div>
     <?php endif; ?>
 </div>
