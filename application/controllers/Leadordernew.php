@@ -1153,10 +1153,13 @@ class Leadordernew extends MY_Controller
                 $artwork = $leadorder['artwork'];
                 usersession($ordersession, $leadorder);
                 $error='';
+                $title = '';
                 if ($postdata['arttype']=='proofdocs') {
                     $title = 'Add New Proof Document';
                 } elseif ($postdata['arttype']=='claymodels') {
                     $title = 'Add New Clay Model';
+                } elseif ($postdata['arttype']=='previewpics') {
+                    $title = 'Add New Preview Pictures';
                 }
                 $mdata['content'] = $this->load->view('leadordernew/artdocs_upload_view',['title' => $title, 'artwork' => $artwork['artwork_id']], TRUE);
             }
@@ -1484,6 +1487,100 @@ class Leadordernew extends MY_Controller
             } else {
                 $this->load->model('artlead_model');
                 $res=$this->artlead_model->approve_newclaydocs($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function savepreviewupload()
+    {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata=$this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->save_newpreviewdocs($leadorder, $postdata , $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $previews=$leadorder['previewdocs'];
+                    $artwork = $leadorder['artwork'];
+                    $artwork_id = $artwork['artwork_id'];
+                    $mdata['content'] = $this->load->view('leadordernew/previewdocs_view', ['previews' => $previews['options'], 'artwork' => $artwork_id, 'edit' => 1], TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artpreview_remove()
+    {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata=$this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->remove_newpreviewdocs($leadorder, $postdata, $ordersession);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $previews=$leadorder['previewdocs'];
+                    $artwork = $leadorder['artwork'];
+                    $artwork_id = $artwork['artwork_id'];
+                    $mdata['content'] = $this->load->view('leadordernew/previewdocs_view', ['previews' => $previews['options'], 'artwork' => $artwork_id, 'edit' => 1], TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function artpreview_approve()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $this->load->model('artlead_model');
+                $res=$this->artlead_model->approve_newpreviews($leadorder, $postdata, $ordersession);
                 $error = $res['msg'];
                 if ($res['result']==$this->success_result) {
                     $error = '';

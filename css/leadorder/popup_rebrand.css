@@ -1817,6 +1817,9 @@ span.artproofs_remove {
     margin: 0 7px;
     flex: 0 0 auto;
 }
+.previewpict_optn.edit {
+    width: 92px;
+}
 .previewpict_optn_header {
     width: 100%;
     margin-top: 3px;
@@ -1829,6 +1832,9 @@ span.artproofs_remove {
     overflow-y: auto;
     scrollbar-width: none;
 }
+.previewpict_optn_box.edit {
+    width: 92px;
+}
 .previewpict_optn_box ul {
     list-style: none;
     margin: 0;
@@ -1839,6 +1845,10 @@ span.artproofs_remove {
     color: #0000D2;
     font-weight: bold;
     margin-bottom: 2px;
+}
+.previewpic_remove {
+    color: #ff0000;
+    cursor: pointer;
 }
 .previewpict_optn_checkbox {
     margin-right: 3px;
@@ -1856,6 +1866,7 @@ span.artproofs_remove {
     height: 14px;
     position: relative;
     top: -3px;
+    cursor: pointer;
 }
 .previewpict_optn_star img {
     height: 14px;

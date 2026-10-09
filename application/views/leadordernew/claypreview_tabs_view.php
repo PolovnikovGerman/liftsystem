@@ -49,6 +49,8 @@
     <?php if ($previewhistory==1) : ?>
         <?php $this->load->view('leadordernew/previewdocs_history_view', ['previews' => $previews, 'artwork' => $artwork, 'edit' => $edit]);?>
     <?php else: ?>
-        <?php $this->load->view('leadordernew/previewdocs_view', ['previews' => $previews, 'artwork' => $artwork, 'edit' => $edit]);?>
+        <div id="previewdocsviewarea">
+            <?php $this->load->view('leadordernew/previewdocs_view', ['previews' => $previews, 'artwork' => $artwork, 'edit' => $edit]);?>
+        </div>
     <?php endif; ?>
 </div>
