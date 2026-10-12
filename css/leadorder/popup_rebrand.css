@@ -2003,7 +2003,7 @@ span.artproofs_remove {
     cursor: pointer;
 }
 .paymentbox {
-    position: relative;
+    /*position: relative;*/
     width: 100%;
     /*height: 60px;*/
     height: 44px;
@@ -2040,7 +2040,8 @@ span.artproofs_remove {
     width: 22px;
 }
 .paymentcard_cvc {
-    width: 24px;
+    /*width: 24px;*/
+    width: 32px;
 }
 .paymentcard_cvc::placeholder {
     font-size: 9px;
@@ -2050,14 +2051,17 @@ span.artproofs_remove {
 .paymentcard_lock {
     font-size: 14px;
     height: 17px;
-    position: relative;
-    top: -1px;
+    /*position: relative;*/
+    /*top: -1px;*/
     margin-left: 2px;
+    margin-top: -1px;
+    cursor: pointer;
 }
 .btn_addcard {
     font-size: 11px;
     color: #ACACAC;
     margin-top: 4px;
+    cursor: pointer;
 }
 .balancedueblock {
     width: 100%;
@@ -2306,7 +2310,8 @@ textarea.fulladdressview {
     line-height: 14px;
     font-size: 12px;
     background: #DADADA;
-    border: 1px solid #858585;
+    border: 1px solid #858585!important;
+    color: #333333!important;
     padding: 0 4px;
 }
 .po_inputgroup input::placeholder {
@@ -3671,4 +3676,236 @@ textarea.artworkusertext {
     float: right !important;
     margin-right: 9px;
     margin-top: 5px;
+}
+/* Payment section - attempt popup */
+.paymentsattemptsview {
+    width: 808px;
+    padding: 10px;
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: -143px;
+    background: #e4e4e4;
+    border: 1px solid #000000;
+    border-radius: 5px;
+}
+.paymentattempts_container {
+    width: 100%;;
+}
+.paymentattempts_title {
+    font-size: 14px;
+    height: 21px;
+    line-height: 21px;
+    width: 100%;
+    text-align: center;
+}
+.paymentattempts_table {
+    width: 100%;
+}
+.paymentattempts_table_head {
+    background-color: #e7e7e7;
+    color: #000000;
+    font-size: 12px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+}
+.paymentattempts_table_head .date {
+    width: 63px;
+}
+.paymentattempts_table_head .user {
+    width: 97px;
+}
+.paymentattempts_table_head .paysum {
+    width: 65px;
+}
+.paymentattempts_table_head .cardnum {
+    width: 136px;
+}
+.paymentattempts_table_head .cardsys {
+    width: 68px;
+}
+.paymentattempts_table_head .cvv {
+    width: 27px;
+}
+.paymentattempts_table_head .response {
+    width: 330px;
+}
+.paymentattempts_table_body {
+    width: 100%;
+    max-height: 163px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.paymentattempts_table_body .tabledatarow {
+    width: 100%;
+}
+.paymentattempts_table_body .tabledatarow > div {
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 32px;
+    height: 32px;
+}
+.paymentattempts_table_body .date {
+    width: 63px;
+    line-height: 16px!important;
+}
+.paymentattempts_table_body .user {
+    width: 97px;
+}
+.paymentattempts_table_body .paysum {
+    width: 65px;
+}
+.paymentattempts_table_body .cardnum {
+    width: 136px;
+}
+.paymentattempts_table_body .cardsys {
+    width: 68px;
+}
+.paymentattempts_table_body .cvv {
+    width: 27px;
+}
+.paymentattempts_table_body .response {
+    width: 330px;
+}
+.paymentattempts_table_body .response.error {
+    color: #FF0000;
+}
+.paymentattempts_table_body .response.success {
+    color: #008000;
+    font-weight: 600;
+}
+/* Manual payment */
+.paymentmanualarea {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: -38px;
+    width: 392px;
+    background-color: #bcbfff;
+    border-radius: 7px;
+    border: 2px solid #000;
+    box-shadow: rgba(0, 0, 0, 0.19) 0 10px 20px, rgba(0, 0, 0, 0.23) 0 6px 6px;
+    padding: 10px;
+    z-index: 20;
+}
+.paymentmanualarea_container {
+    width: 100%;
+    font-size: 11px;
+    color: #000000;
+}
+.manualpaymenthead {
+    font-size: 14px!important;
+    font-weight: 600;
+    height: 21px;
+    line-height: 21px;
+    width: 100%;
+    text-align: center;
+}
+.manualpayment > .paymentdata {
+    /*height: 85px;*/
+    margin: 7px 16px 0 15px;
+    width: calc(100% - 31px);
+}
+.manualpayment > .paymentdata > .paytype {
+    background-color: #f3f3f3;
+    font-weight: bold;
+    height: 23px;
+    line-height: 23px;
+    margin-left: 101px;
+    /*width: 150px;*/
+}
+.manualpayment > .paymentdata > .paytype > .paytypevalue {
+    margin-top: -2px;
+    width: 24px;
+    text-align: center;
+}
+.manualpayment > .paymentdata > .paytype > .paytypelabel {
+    /*width: 48px;*/
+    width: 61px;
+}
+.manualpayment > .paymentdata > .paymentdetails {
+    height: 21px;
+    line-height: 21px;
+}
+.manualpayment > .paymentdata > .paymentdetails.head {
+    text-align: center;
+}
+.manualpayment > .paymentdata > .paymentdetails > .replica {
+    width: 45px;
+}
+.manualpayment > .paymentdata > .paymentdetails > .date {
+    width: 71px;
+}
+.manualpayment > .paymentdata > .paymentdetails > .paytipe {
+    width: 83px;
+}
+.manualpayment > .paymentdata > .paymentdetails > .paynum {
+    width: 78px;
+}
+.manualpayment > .paymentdata > .paymentdetails > .payamnt {
+    width: 59px;
+}
+.manualpayment > .paymentdata > .paymentdatasave {
+    background: transparent url("/img/leadorder/save_payment_btn.png") no-repeat scroll 0 0;
+    cursor: pointer;
+    height: 27px;
+    margin: 6px 0 0 243px;
+    width: 60px;
+}
+input.paydatadetails {
+    height: 19px;
+    line-height: 19px;
+    font-size: 11px;
+    color: #000000;
+}
+input.paydatadetails.payrepl {
+    text-align: center;
+    width: 42px;
+}
+input.paydatadetails.paydate {
+    text-align: center;
+    width: 68px;
+}
+select.paydatadetails.paymenttype {
+    color: #000000;
+    font-size: 11px;
+    height: 18px;
+    width: 80px
+}
+input.paydatadetails.paynum {
+    width: 72px;
+}
+input.paydatadetails.payamount {
+    width: 52px;
+}
+
+/* Unlock payment details */
+#unlockContentModal {
+    z-index: 1100;
+}
+#unlockContentModal .modal-dialog {
+    width: 300px;
+    margin-left: 381px;
+    margin-top: 223px;
+}
+#unlockContentModal .modal-header {
+    background: #000066;
+    color: #ffffff;
+}
+#unlockContentModal .modal-header .close {
+    color: #ffffff!important;
+    opacity: 1!important;
+}
+#unlockContentModal .modal-title {
+    font-weight: 600;
+}
+
+.autocompleter,
+.autocompleter-closed {
+    top: 37px;
+    max-width: 244px;
+    margin-left: 66px;
 }

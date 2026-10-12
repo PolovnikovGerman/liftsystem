@@ -1,7 +1,7 @@
 <div class="paymentsection_left">
     <div class="po_inputgroup">
         <label for="ordercustomerpo">PO#:</label>
-        <input id="ordercustomerpo" type="text" name="" placeholder="CuPo" value="<?=$billing['customer_ponum']?>" <?=$edit==0 ? "readonly" : ""?>/>
+        <input id="ordercustomerpo" class="inpt_billaddressarea" type="text" name="" data-address="<?=$billing['order_billing_id'] ?>" data-fld="customer_ponum" placeholder="CuPo" value="<?=$billing['customer_ponum']?>" <?=$edit==0 ? "readonly" : ""?>/>
     </div>
     <div class="billing_addressarea">
         <div class="sameaddress">
@@ -50,7 +50,7 @@
 <div class="paymentsection_right">
     <div class="paymenthistory">
         <div class="orddtls_subtitle">Payment History</div>
-        <div class="paymnt_viewdeclined">View Declined</div>
+        <div class="paymnt_viewdeclined" data-order="<?=$order['order_id']?>">View Declined</div>
         <div class="paymenthistory_box">
             <div class="paymhist_tbl">
                 <div class="paymhist_tr paymhist_header">
@@ -58,14 +58,21 @@
                     <div class="paymhist_td paymhist_payment">Payment</div>
                     <div class="paymhist_td paymhist_amount">Amount</div>
                 </div>
-                <?php foreach ($payments as $payment): ?>
-                    <div class="paymhist_tr <?=$numpp%2==0 ? 'whitedatarow' : 'greydatarow'?>">
-                        <div class="paymhist_td paymhist_date"><?=$payment['out_date']?></div>
-                        <div class="paymhist_td paymhist_payment"><?=$payment['out_name']?></div>
-                        <div class="paymhist_td paymhist_amount"><?=$payment['paysum']?></div>
-                    </div>
-                    <?php $numpp++; ?>
-                <?php endforeach; ?>
+                <div class="paymhist_tbl_body" id="paymhist_tbl_body">
+                    <?php $this->load->view('leadordernew/payments_history_view',['payments' => $payments])?>
+                </div>
+            </div>
+            <div class="paymentsattemptsview">
+                <div class="artpopupclosewin" id="paymentattemptsclosewin">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 847 847" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd"><g><path class="btn-closemodal-svg" d="M423 592l-196 196c-110,111 -279,-58 -169,-169l196 -196 -196 -196c-110,-110 59,-279 169,-169l196 196 196 -196c111,-110 280,59 169,169l-196 196 196 196c111,111 -58,280 -169,169l-196 -196z"></path></g></svg>
+                </div>
+                <div class="paymentattempts_container">&nbsp;</div>
+            </div>
+            <div class="paymentmanualarea">
+                <div class="artpopupclosewin" id="paymentmanualclosewin">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 847 847" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd"><g><path class="btn-closemodal-svg" d="M423 592l-196 196c-110,111 -279,-58 -169,-169l196 -196 -196 -196c-110,-110 59,-279 169,-169l196 196 196 -196c111,-110 280,59 169,169l-196 196 196 196c111,111 -58,280 -169,169l-196 -196z"></path></g></svg>
+                </div>
+                <div class="paymentmanual_container">&nbsp;</div>
             </div>
         </div>
     </div>
@@ -81,20 +88,7 @@
             <div class="orddtls_addmanual">+ add manual payment / refund</div>
         <?php endif; ?>
         <div class="paymentbox">
-            <?php foreach ($charges as $charge): ?>
-            <div class="paymentbox_card">
-                <input class="paymentcard_price" type="text" name="amount" placeholder="$0.00" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['amount']?>"/>
-                <input class="paymentcard_number" type="text" name="cardnum_view" placeholder="XXXX-XXXX-XXXX-XXXX" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['cardnum_view']?>"/>
-                <input class="paymentcard_date" type="text" name="exp_month" placeholder="DD" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['exp_month']?>"/>
-                <div class="paymentcard_txt">/</div>
-                <input class="paymentcard_month" type="text" name="exp_year" placeholder="YY" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['exp_year']?>"/>
-                <input class="paymentcard_cvc" type="text" name="cardcode_view" placeholder="CVC" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['cardcode_view']?>"/>
-                <div class="paymentcard_lock"><i class="fa fa-lock" aria-hidden="true"></i></div>
-            </div>
-            <?php endforeach; ?>
-            <?php if ($edit==1) : ?>
-                <div class="btn_addcard">+add credit card</div>
-            <?php endif; ?>
+            <?php $this->load->view('leadordernew/payment_charges_view', ['charges' => $charges, 'payment_user' => $payment_user,  'edit' => $edit]); ?>
         </div>
     </div>
     <div class="balancedueblock"><?=$this->load->view('leadordernew/balancedue_view', ['order' => $order, 'checkoutlink' => $checkoutlink], TRUE)?></div>
