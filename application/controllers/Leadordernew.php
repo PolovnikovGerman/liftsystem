@@ -1591,6 +1591,281 @@ class Leadordernew extends MY_Controller
         show_404();
     }
 
+    public function show_charge_attempts()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='Empty Order #';
+            $order_id=$this->input->post('order_id');
+            if (!empty($order_id)) {
+                $this->load->model('leadorder_model');
+                $res=$this->leadorder_model->get_charges_attempts($order_id);
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $options=array(
+                        'data'=>$res['data'],
+                    );
+                    $mdata['content']=$this->load->view('leadordernew/charge_attempts_log', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function add_leadorder_charge()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+
+                $res=$this->leadorder_model->add_chargedata($leadorder, $ordersession);
+                if ($res['result']==$this->error_result) {
+                    $error=$res['msg'];
+                } else {
+                    $leadorder = usersession($ordersession);
+                    $order = $leadorder['order'];
+                    $order_id=$order['order_id'];
+                    $charges=$leadorder['charges'];
+                    $user = usersession('usr_data');
+                    $options=array(
+                        'charges'=>$charges,
+                        'order_id'=>$order_id,
+                        'payment_user' => $this->USER_PAYMENT,
+                        'financeview' => $user['finuser'],
+                        'edit' => 1,
+                    );
+                    $mdata['content']=$this->load->view('leadordernew/payment_charges_view',$options,TRUE);
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function change_leadorder_charges()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                if (!isset($postdata['fldname']) || !isset($postdata['newval']) || !isset($postdata['charge'])) {
+                    $error='Changes parameter is not full';
+                } else {
+                    $order_payment_id=$postdata['charge'];
+                    $fldname=$postdata['fldname'];
+                    $newval=$postdata['newval'];
+                    $mdata['fldname']=$fldname;
+                    $mdata['charge']=$order_payment_id;
+                    $res=$this->leadorder_model->change_chargedata($leadorder, $order_payment_id, $fldname, $newval,$ordersession);
+                    $error=$res['msg'];
+                    if (isset($res['oldval'])) {
+                        $mdata['oldval']=$res['oldval'];
+                    }
+                    if ($res['result']==$this->success_result) {
+                        $error='';
+                        $leadorder=usersession($ordersession);
+                        if ($fldname=='cardnum') {
+                            $mdata['cardnum']=$res['charge']['cardnum'];
+                        }
+                        $mdata['hidelock'] = 0;
+                        if ($fldname=='cardnum' || $fldname=='cardcode') {
+                            $mdata['hidelock'] = 1;
+                        }
+                        $order=$leadorder['order'];
+                        $shipping=$leadorder['shipping'];
+                        $shipping_address=$leadorder['shipping_address'];
+                        $mdata['shipdate']=$shipping['shipdate'];
+                        $mdata['rush_price']=$shipping['rush_price'];
+                        $mdata['is_shipping']=$order['is_shipping'];
+                        $mdata['shipping']=$order['shipping'];
+                        $mdata['cntshipadrr']=count($shipping_address);
+                        $subtotal=$order['item_cost']+$order['item_imprint']+floatval($order['mischrg_val1'])+floatval($order['mischrg_val2'])-floatval($order['discount_val']);
+                        $mdata['item_subtotal']=MoneyOutput($subtotal);
+                        $total_due=$order['revenue']-$order['payment_total'];
+                        $dueoptions=array(
+                            'totaldue'=>$total_due,
+                        );
+                        if ($order['brand']=='SR') {
+                            $dueoptions['checkoutlink']=$this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $dueoptions['checkoutlink']=$this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
+                        if ($total_due==0 && $order['payment_total']>0) {
+                            $dueoptions['class']='closed';
+                        } else {
+                            $dueoptions['class']='open';
+                            if ($total_due<0) {
+                                $dueoptions['class']='overflow';
+                            }
+                        }
+                        $mdata['total_due']=$this->load->view('leadorderdetails/totaldue_data_view', $dueoptions, TRUE);
+                        $mdata['tax']=MoneyOutput($order['tax']);
+                    }
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function paymentadd()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $newpay=array(
+                    'type'=>'payment',
+                    'replica'=>$this->USER_REPLICA,
+                    'date'=> time(),
+                    'paytype'=>'',
+                    'paynum'=>'',
+                    'amount'=>0,
+                );
+                usersession('newpayment', $newpay);
+                $mdata['content']=$this->load->view('leadordernew/newpayment_view', $newpay, TRUE);
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function payment_edit()
+    {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $payment=usersession('newpayment');
+                if (empty($payment)) {
+                    $error = $this->restore_orderdata_error;
+                } else {
+                    $postdata=$this->input->post();
+                    $res=$this->leadorder_model->payment_edit($payment, $postdata);
+                    if ($res['result']==$this->error_result) {
+                        $error=$res['msg'];
+                    }
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function payment_save()
+    {
+        if ($this->isAjax()) {
+            $mdata = array();
+            $postdata=$this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder = usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+
+                $payment = usersession('newpayment');
+                if (empty($payment)) {
+                    $error = $this->restore_orderdata_error;
+                } else {
+                    $postdata = $this->input->post();
+                    $payment['type'] = $postdata['paytype'];
+                    $res = $this->leadorder_model->payment_save($leadorder, $payment, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result'] == $this->success_result) {
+                        $error = '';
+                        $leadorder = usersession($ordersession);
+                        $payments = $leadorder['payments'];
+                        $order = $leadorder['order'];
+                        // Build view
+                        $mdata['content'] = $this->load->view('leadordernew/payments_history_view', ['payments' => $payments], TRUE);
+                        // Total
+                        $subtotal = $order['item_cost'] + $order['item_imprint'] + floatval($order['mischrg_val1']) + floatval($order['mischrg_val2']) - floatval($order['discount_val']);
+                        $mdata['item_subtotal'] = MoneyOutput($subtotal);
+                        $mdata['ordersystem'] = $leadorder['order_system'];
+                        $mdata['balanceopen'] = 1;
+                        if ($order['brand']=='SR') {
+                            $checkoutlink = $this->config->item('srcheckoutlink').$order['checkout_link'];
+                        } else {
+                            $checkoutlink = $this->config->item('btcheckoutlink').$order['checkout_link'];;
+                        }
+                        $mdata['total_due']=$this->load->view('leadordernew/balancedue_view', ['order' => $order, 'checkoutlink' => $checkoutlink], TRUE);
+                        $mdata['payment_total'] = MoneyOutput($order['payment_total']);
+                    }
+                }
+            }
+
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Function update lock order
     private function _lockorder($leadorder) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->locktimeout);

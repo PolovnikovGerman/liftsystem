@@ -1061,6 +1061,199 @@ function init_payment_links() {
             }
         },'json');
     });
+    // Unlock Payment
+    $(".paymentcard_lock").unbind('click').click(function (){
+        var paymentid = $(this).data('payid');
+        var url = '/welcome/unlockcontent';
+        $.post(url, [], function(response){
+            if (response.errors=='') {
+                $("#unlockContentModal").find('div.modal-body').empty().html(response.data.content);
+                $("#unlockContentModal").modal({backdrop: 'static', keyboard: false, show: true});
+                $("#unlockContentModal").on('hidden.bs.modal', function (e) {
+                    $(document.body).addClass('modal-open');
+                });
+                $('#unlockContentModal').on('shown.bs.modal', function () {
+                    $('#contentunlock').focus();
+                })
+                $("#unlockContentModal").find('input.unlockcode').focus();
+                init_unlockcontent(paymentid);
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".paymnt_viewdeclined").unbind('click').click(function (){
+        var params=new Array();
+        params.push({name: 'order_id', value: $(this).data('order')});
+        var url='/leadordernew/show_charge_attempts';
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".paymentattempts_container").empty().html(response.data.content);
+                $(".paymentsattemptsview").show();
+                new SimpleBar(document.getElementById('paymentattempts_table_body'), {autoHide: false});
+                $("#paymentattemptsclosewin").unbind('click').click(function (){
+                    $(".paymentsattemptsview").hide();
+                })
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".btn_addcard").unbind('click').click(function(){
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/add_leadorder_charge";
+        $.post(url,params, function(response){
+            $(".paymentbox").empty().html(response.data.content);
+            $("input#loctimeout").val(response.data.loctime);
+            init_onlineleadorder_edit();
+        },'json');
+    });
+    $(".chargeinput").unbind('change').change(function (){
+        var params=new Array();
+        var fldname=$(this).data('fld');
+        var chargeid=$(this).data('charge');
+        params.push({name:'charge', value: chargeid});
+        params.push({name:'fldname', value: fldname});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/change_leadorder_charges";
+        $.post(url, params, function (response){
+            if (response.errors=='') {
+                if (fldname=='cardnum') {
+                    $("input.paymentcard_number[data-charge='"+chargeid+"']").val(response.data.cardnum);
+                }
+                if (parseInt(response.data.hidelock)==1) {
+                    $(".paymentcard_lock[data-payid='"+chargeid+"']").hide();
+                    // $(".pay_method_buttonsend[data-charge='"+chargeid+"']").show();
+                }
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+                if (typeof response.data.oldval !== 'undefined') {
+                    $("input.chargeinput[data-charge='"+response.mdata.charge+"'][data-fld='"+response.data.fldname+"']").val(response.data.oldval);
+                }
+            }
+        },'json');
+    });
+    $(".orddtls_addmanual").unbind('click').click(function (){
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/paymentadd";
+        $.post(url, params, function(response){
+            if (response.errors=='') {
+                $(".paymentmanual_container").empty().html(response.data.content);
+                $(".paymentmanualarea").show();
+                $("#paymentmanualclosewin").unbind('click').click(function (){
+                    $(".paymentmanualarea").hide();
+                })
+                $("input.paydatadetails.paydate").datepicker({
+                    autoclose: true,
+                    todayHighlight: true
+                });
+                $("div.paymentdatasave").unbind('click').click(function(){
+                    var params=$("form#paymentdataform").serializeArray();
+                    params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                    var url="/leadordernew/payment_save";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $(".paymentmanualarea").hide();
+                            $("#paymhist_tbl_body").empty().html(response.data.content);
+                            $(".totalpaymnt_price").empty().html(response.data.payment_total);// payment_total
+                            // $(".totalduedataviewarea").empty().html(response.data.total_due);
+                            // if (response.data.ordersystem=='new') {
+                            //     openbalancemanage(response.data.balanceopen);
+                            // }
+                            $("input#loctimeout").val(response.data.loctime);
+                            init_onlineleadorder_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                })
+                $("input.paydatadetails").unbind('change').change(function(response){
+                    var params=new Array();
+                    params.push({name: 'fldname', value: $(this).data('fldname')});
+                    params.push({name: 'newval', value: $(this).val()});
+                    params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                    var url="/leadordernew/payment_edit";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $("input#loctimeout").val(response.data.loctime);
+                            init_onlineleadorder_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                });
+                $("select.paydatadetails").unbind('change').change(function(response){
+                    var params=new Array();
+                    params.push({name: 'fldname', value: 'paytype'});
+                    params.push({name: 'newval', value: $(this).val()});
+                    params.push({name: 'ordersession', value: $("input#ordersession").val()});
+                    var url="/leadorder/payment_edit";
+                    $.post(url, params, function(response){
+                        if (response.errors=='') {
+                            $("input#loctimeout").val(response.data.loctime);
+                            init_onlineleadorder_edit();
+                        } else {
+                            show_error(response);
+                        }
+                    },'json');
+                });
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+}
+
+function init_unlockcontent(paymentid) {
+    $("input#contentunlock").keypress(function(event) {
+        if (event.which == 13) {
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'code', value: $("input#contentunlock").val()});
+            params.push({name: 'order_payment_id', value: paymentid});
+            var url = '/leadorder/unlockpayparams';
+            $.post(url, params, function (resposne) {
+                if (resposne.errors=='') {
+                    $("input.paymentcard_number[data-charge='"+paymentid+"']").val(resposne.data.cardnum);
+                    $("input.paymentcard_cvc[data-charge='"+paymentid+"']").val(resposne.data.cardcode);
+                    $("#unlockContentModal").modal('hide');
+                    $(".paymentcard_lock[data-payid='"+paymentid+"']").hide();
+                    // $(".pay_method_buttonsend[data-charge='"+paymentid+"']").show();
+                    // $(".pay_method_button[data-charge='"+paymentid+"']").find('input.autopaycharge').prop('checked',true);
+                    // $(".pay_method_button[data-charge='"+paymentid+"']").show();
+                } else {
+                    show_error(resposne);
+                }
+            },'json');
+        }
+    });
+    $(".unlockpaymentbtn").unbind('click').click(function () {
+        var params = new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'code', value: $("input#contentunlock").val()});
+        params.push({name: 'order_payment_id', value: paymentid});
+        var url = '/leadorder/unlockpayparams';
+        $.post(url, params, function (resposne) {
+            if (resposne.errors=='') {
+                $("input.paymentcard_number[data-charge='"+paymentid+"']").val(resposne.data.cardnum);
+                $("input.paymentcard_cvc[data-charge='"+paymentid+"']").val(resposne.data.cardcode);
+                $("#unlockContentModal").modal('hide');
+                $(".paymentcard_lock[data-payid='"+paymentid+"']").hide();
+                // $(".pay_method_buttonsend[data-charge='"+paymentid+"']").show();
+                // $(".pay_method_button[data-charge='"+paymentid+"']").find('input.autopaycharge').prop('checked',true);
+                // $(".pay_method_button[data-charge='"+paymentid+"']").show();
+            } else {
+                show_error(resposne);
+            }
+        },'json');
+    });
 }
 
 function send_checkout_invite() {
@@ -1106,6 +1299,7 @@ function init_onlineleadorder_edit() {
     init_addneworderitem();
     init_orderitem_manage();
     init_shipbill_manage();
+    init_payment_links();
 }
 
 function init_orderdata_change() {
@@ -2148,6 +2342,9 @@ function init_shipdocupload() {
             }
         }
     });
+}
+
+function init_payment_manage() {
 }
 
 function init_rushpast() {

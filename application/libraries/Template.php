@@ -1130,6 +1130,9 @@ class Template
         $country_id = $billing['country_id'];
         $states=$this->CI->shipping_model->get_country_states($country_id);
         $checkoutlink = ($res['order']['brand']=='SR' ? $this->CI->config->item('srcheckoutlink') : $this->CI->config->item('btcheckoutlink')).$res['order']['checkout_link'];
+        $user = usersession('usr_data');
+        $payusr = intval(ifset($user, 'user_payuser',0));
+
         $payoptions = [
             'billing' => $billing,
             'countries' => $res['countries'],
@@ -1140,6 +1143,8 @@ class Template
             'edit' => $edit,
             'billingaddress' => $this->CI->shipping_model->prepare_billaddress($billing),
             'checkoutlink' => $checkoutlink,
+            'finuser' => $user['finuser'],
+            'payment_user' => $payusr,
         ];
         $data['paymentsview'] = $this->CI->load->view('leadordernew/payment_view', $payoptions, TRUE);
         // Fullfilment
