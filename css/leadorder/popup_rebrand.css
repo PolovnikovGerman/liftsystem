@@ -356,24 +356,28 @@ input.namecustomer {
     font-size: 12px;
     font-weight: bold;
     color: #fff;
-    line-height: 20px;
+    width: 100%;
+    text-align: center;
+    line-height: 16px;
 }
 .ord_datebox {
     height: 20px;
-    width: 57px;
     background: #fff;
     border: 1px solid #C7C7FF;
-    margin-left: 7px;
     font-size: 12px;
     line-height: 19px;
     font-weight: bold;
     text-align: center;
+    width: 100%;
 }
 .ord_shipdate {
-    margin-left: 40px;
+    margin-left: 15px;
+    width: 75px;
+    margin-right: 15px;
 }
 .ord_arrivaldate {
-    margin-left: 15px;
+    width: 75px;
+    margin-right: 15px;
 }
 .ord_eventdate {
     margin-left: 15px;
@@ -641,17 +645,17 @@ a.historydetailsview {
 .itemmainimageshow {
     width: 13px;
     height: 13px;
-    /*float: left;*/
-    /*margin-top: 2px;*/
-    /*margin-left: -19px;*/
-    /*position: absolute;*/
+    float: left;
 }
 .tblitems_item {
-    width: 66px;
     text-align: right;
+    width: 88px;
+    position: relative;
+}
+.itemnumber {
 }
 .inventorycolorshow {
-    width: 16px;
+    width: 14px;
     font-size: 14px;
     cursor: pointer;
     color: #a5a0a0;
