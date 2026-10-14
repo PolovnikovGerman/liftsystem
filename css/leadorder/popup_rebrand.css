@@ -641,10 +641,10 @@ a.historydetailsview {
 .itemmainimageshow {
     width: 13px;
     height: 13px;
-    float: left;
-    margin-top: 2px;
-    margin-left: -19px;
-    position: absolute;
+    /*float: left;*/
+    /*margin-top: 2px;*/
+    /*margin-left: -19px;*/
+    /*position: absolute;*/
 }
 .tblitems_item {
     width: 66px;
@@ -2006,7 +2006,7 @@ span.artproofs_remove {
 }
 .copytrackcode {
     position: relative;
-    top: 0px;
+    top: 0;
     left: -13px;
     width: 13px;
     height: 14px;
