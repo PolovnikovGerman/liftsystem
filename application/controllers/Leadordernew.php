@@ -1866,6 +1866,60 @@ class Leadordernew extends MY_Controller
         show_404();
     }
 
+    public function updatetrackqtyinfo()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->updatetrackinfo($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if (isset($res['oldval'])) {
+                    $mdata['oldval'] = $res['oldval'];
+                }
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $leadorder = usersession($ordersession);
+                    $order_items = $leadorder['order_items'];
+                    $shipstatus = $this->leadorder_model->_leadorderview_shipping_status($leadorder);
+                    $mdata['content'] = $this->_prepare_tracking_content($order_items, $shipstatus, 1);
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function newtrackcode()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->newtrackcode($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['tracking'] = $res['tracking'];
+                    $leadorder = usersession($ordersession);
+                    $order_items = $leadorder['order_items'];
+                    $shipstatus = $this->leadorder_model->_leadorderview_shipping_status($leadorder);
+                    $mdata['content'] = $this->_prepare_tracking_content($order_items, $shipstatus, 1);
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Function update lock order
     private function _lockorder($leadorder) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->locktimeout);

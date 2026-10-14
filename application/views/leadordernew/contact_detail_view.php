@@ -17,12 +17,13 @@
             <?php endif; ?>
         </div>
         <div class="tblconts_td tblconts_email">
-            <?php if ($edit==0) : ?>
-            <div class="tblconts_inptbox truncateoverflowtext"><?=$contact['contact_emal']?></div>
-            <?php else: ?>
+<!--            --><?php //if ($edit==0) : ?>
+<!--            <div class="tblconts_inptbox truncateoverflowtext">--><?php //=$contact['contact_emal']?><!--</div>-->
+<!--            --><?php //else: ?>
             <input type="text" name="contact_emal" class="contactdata" data-contact="<?=$contact['order_contact_id']?>"
-            data-fld="contact_emal" value="<?=$contact['contact_emal']?>"/>
-            <?php endif; ?>
+            data-fld="contact_emal" value="<?=$contact['contact_emal']?>" <?=$edit==0 ? 'readonly' : ''?>/>
+<!--            --><?php //endif; ?>
+            <div class="copyemail" data-contact="<?=$contact['order_contact_id']?>"><i class="fa fa-clone" aria-hidden="true"></i></div>
         </div>
         <div class="tblconts_td tblconts_boxes">
             <div class="tblconts_checkbox">

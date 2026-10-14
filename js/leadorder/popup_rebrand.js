@@ -110,7 +110,7 @@ function init_leadorderparts_scrolls() {
     if ($("#orddtls_historybox").length>0) {
         new SimpleBar(document.getElementById('orddtls_historybox'), {autoHide: false});
     }
-    new SimpleBar(document.getElementById('ordercontacts_table'), {autoHide: false});
+    // new SimpleBar(document.getElementById('ordercontacts_table'), {autoHide: false});
     if ($("#artlocationsarea").length>0) {
         new SimpleBar(document.getElementById('artlocationsarea'), {autoHide: false});
     }
@@ -491,6 +491,25 @@ function init_copyaddresses(editmode=0) {
             }
         }
     });
+    $("div.copyemail").unbind('click').click(function(){
+        var contactid = $(this).data('contact');
+        var element = document.querySelector("input.contactdata[data-contact='"+contactid+"'][data-fld='contact_emal']");
+        copyOrderInputToClipboard(element);
+        // if (parseInt(editmode)==1) {
+        //     if (addresstype=='shipping') {
+        //         $(".inpt_addressarea[name='shipname'][data-address='"+addresid+"']").focus();
+        //     } else {
+        //         $(".inpt_addressarea[name='customer_name'][data-address='"+addresid+"']").focus();
+        //     }
+        // }
+    });
+    $("div.copytrackcode").unbind('click').click(function(){
+        var tracking = $(this).data('track');
+        var item = $(this).data('item');
+        var color = $(this).data('color');
+        var element = document.querySelector("input.fulflmship_inpttrack[data-item='"+item+"'][data-color='"+color+"'][data-track='"+tracking+"'][data-fld='trackcode']");
+        copyOrderInputToClipboard(element);
+    })
 }
 
 function init_fulfillment_history() {
@@ -1903,6 +1922,12 @@ function save_imprint_details() {
             // ship date
             $(".ord_datebox[data-fld='out_shipdate']").empty().html(response.data.shipdata);
             $(".ord_datebox[data-fld='out_arrivedate']").empty().html(response.data.arrivedate);
+            // dates
+            $(".fulflmship_inptdate").datepicker({
+                autoclose: true,
+                todayHighlight: true
+            });
+
             init_leadorderparts_scrolls();
             update_locperiod(response);
             init_onlineleadorder_edit();
@@ -1987,7 +2012,12 @@ function init_orderitem_manage() {
                 // Track codes
                 if (parseInt(response.data.trackcode)==1) {
                     $("#trackcodesarea").empty().html(response.data.tracking);
+                    $(".fulflmship_inptdate").datepicker({
+                        autoclose: true,
+                        todayHighlight: true
+                    });
                 }
+                $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 $("#loader").hide();
             } else {
@@ -2038,6 +2068,12 @@ function init_orderitem_manage() {
                     $(".balancedueblock").empty().html(response.data.total_due);
                     $("#ordertotalprofit").empty().html(response.data.profitview);
                     $("#trackcodesarea").empty().html(response.data.tracking);
+                    // Date track
+                    $(".fulflmship_inptdate").datepicker({
+                        autoclose: true,
+                        todayHighlight: true
+                    });
+                    $("input#loctimeout").val(response.data.loctime);
                     init_onlineleadorder_edit();
                 } else {
                     show_error(response);
@@ -2058,6 +2094,7 @@ function init_orderitem_manage() {
         $.post(url, params, function (response){
             if (response.errors=='') {
                 $("#orderitemsarea").empty().html(response.data.itemsview);
+                $("input#loctimeout").val(response.data.loctime);
                 init_onlineleadorder_edit();
                 $("#loader").hide();
             } else {
@@ -2081,6 +2118,71 @@ function init_orderitem_manage() {
             }
         },'json');
     });
+    // Change tracking
+    $(".trackdatainpt").unbind('change').change(function (){
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'tracking', value: $(this).data('track')});
+        params.push({name: 'order_item_id', value: $(this).data('item')});
+        params.push({name: 'item_color', value: $(this).data('color')});
+        params.push({name: 'fldname', value: $(this).data('fld')});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = "/leadordernew/updatetrackqtyinfo";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#trackcodesarea").empty().html(response.data.content);
+                // Date track
+                $(".fulflmship_inptdate").datepicker({
+                    autoclose: true,
+                    todayHighlight: true
+                });
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".fulflmship_inptcarrier").unbind('change').change(function(){
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'tracking', value: $(this).data('track')});
+        params.push({name: 'order_item_id', value: $(this).data('item')});
+        params.push({name: 'item_color', value: $(this).data('color')});
+        params.push({name: 'fldname', value: 'trackservice'});
+        params.push({name: 'newval', value: $(this).val()});
+        var url = "/leadordernew/updatetrackqtyinfo";
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    });
+    $(".fulflmshipping_addnew").unbind('click').click(function () {
+        var params=new Array();
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        params.push({name: 'order_item_id', value: $(this).data('item')});
+        params.push({name: 'item_color', value: $(this).data('color')});
+        var url = '/leadordernew/newtrackcode';
+        $.post(url, params, function (response) {
+            if (response.errors=='') {
+                $("#trackcodesarea").empty().html(response.data.content);
+                // Date track
+                $(".fulflmship_inptdate").datepicker({
+                    autoclose: true,
+                    todayHighlight: true
+                });
+                // $(".trackqtyinpt[data-orderitem='"+orderitem+"'][data-track='"+response.data.tracking+"'][data-color='"+itemcolor+"']").focus();
+                $("input#loctimeout").val(response.data.loctime);
+                init_onlineleadorder_edit();
+            } else {
+                show_error(response);
+            }
+        },'json');
+    })
 }
 
 function init_shipbill_manage() {
@@ -2424,6 +2526,18 @@ function copyOrderToClipboard(element) {
         console.log('Oops, unable to copy');
     }
     $(element).hide();
+}
+
+function copyOrderInputToClipboard(element) {
+    $(element).focus();
+    $(element).select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Msg '+msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
 }
 
 function create_editorder_timer() {
