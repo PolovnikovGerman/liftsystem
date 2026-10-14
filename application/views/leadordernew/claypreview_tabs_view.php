@@ -1,22 +1,26 @@
 <div class="leadorderclaytab active">
-    <div class="claypreviewtab_title">Clay Models:</div>
-    <div class="claypreviewtab_subtitle">
+    <div class="claypreviewtab_title">Clay Models: <span>
         <?php if (count($claydocs) > 0) : ?>
-        To Approve
+            To Approve
         <?php else: ?>
-        No Clay Models
+            No Clay Models
         <?php endif; ?>
+        </span>
     </div>
+<!--    <div class="claypreviewtab_subtitle">-->
+<!--    </div>-->
 </div>
 <div class="leadorderpreviewtab">
-    <div class="claypreviewtab_title">Preview Pictures</div>
-    <div class="claypreviewtab_subtitle">
+    <div class="claypreviewtab_title">Prev Pics: <span>
         <?php if (count($previews) > 0) : ?>
             To Approve
         <?php else: ?>
-            No Preview Pictures
+            No Preview Pics
         <?php endif; ?>
+        </span>
     </div>
+<!--    <div class="claypreviewtab_subtitle">-->
+<!--    </div>-->
 </div>
 <div class="leadorderclaycontent active">
     <?php if ($clayhistory==1 && count($claydocs) > 0) : ?>

@@ -1,5 +1,5 @@
 #modalLeadOrder .modal-dialog {
-    width: 1244px;
+    width: 1228px;
     height: 755px;
     border: 1px solid #000;
     border-radius: 7px;
@@ -58,6 +58,7 @@
     border-top-left-radius: 7px;
     border-bottom-left-radius: 7px;
     height: 753px;
+    width: 890px;
 }
 .neworder_header {
     position: relative;
@@ -84,7 +85,7 @@
     font-weight: bold;
 }
 .namecustomer {
-    margin: 4px 10px;
+    margin: 4px 10px 4px 0;
 }
 .namecustomer_title {
     font-size: 12px;
@@ -94,7 +95,7 @@
     margin-right: 7px;
 }
 .namecustomer_box {
-    /*width: 220px;*/
+    /* width: 220px; */
     height: 24px;
     border: 1px solid #fff;
     border-radius: 4px;
@@ -103,7 +104,8 @@
     line-height: 24px;
     padding-left: 10px;
     padding-right: 15px;
-    color: #fff;
+    color: #000;
+    background: #fff;
 }
 input.namecustomer {
     height: 24px;
@@ -121,7 +123,7 @@ input.namecustomer {
     margin-bottom: 10px;
 }
 .whiteline_title {
-    font-size: 20px;
+    font-size: 19px;
     line-height: 26px;
     font-weight: bold;
     margin-right: 10px;
@@ -129,7 +131,7 @@ input.namecustomer {
 .whiteline_datebox {
     width: 100px;
     height: 24px;
-    line-height: 25px;
+    line-height: 24px;
     border: 1px solid #686868;
     border-radius: 4px;
     font-size: 11px;
@@ -167,9 +169,9 @@ input.namecustomer {
     color: #000;
 }
 .whiteline_btns {
-    /*margin-left: 218px;*/
+    /* margin-left: 218px; */
     float: right !important;
-    margin-right: 22px;
+    margin-right: 0;
     margin-top: 4px;
 }
 .btnsbox {
@@ -247,16 +249,16 @@ input.namecustomer {
     width: 525px;
 }
 .neworder_column2 {
-    margin-right: 10px;
+    margin-right: 0;
     width: 334px;
 }
 .neworder_right {
     width: 336px;
-    background: #8080FF;
     padding: 8px 2px 0;
     border-top-right-radius: 7px;
     border-bottom-right-radius: 7px;
     height: 753px;
+    background: #a0a0fc;
 }
 .neworder_column3 {
     margin-right: 0;
@@ -293,8 +295,8 @@ input.namecustomer {
     margin-top: 12px;
 }
 .ordblock_payment .ordblock_tab {
-    background: #8080FF;
-    border-bottom: 1px solid #8080FF;
+    background: #a0a0fc;
+    border-bottom: 1px solid #a0a0fc;
 }
 .ordblock_payment .ordblock_body {
     background: #8080FF;
@@ -306,6 +308,7 @@ input.namecustomer {
     line-height: 22px;
     height: 22px;
     margin-left: 8px;
+    color: #000;
 }
 .ordblock_body_fullfilment {
     width: 100%;
@@ -532,6 +535,9 @@ a.historydetailsview {
     border: 1px solid #858585;
     padding: 0 5px;
 }
+.tblconts_td input:read-only {
+    background: #DADADA;
+}
 .tblconts_td {
     margin-right: 5px;
 }
@@ -539,10 +545,24 @@ a.historydetailsview {
     width: 110px;
 }
 .tblconts_phone {
-    width: 111px;
+    /* width: 111px; */
+    width: 106px;
 }
 .tblconts_email {
-    width: 190px;
+    width: 200px;
+}
+.copyemail {
+    position: relative;
+    top: -13px;
+    left: 186px;
+    width: 13px;
+    height: 13px;
+    background: #000;
+    color: #fff;
+    font-size: 8px;
+    text-align: center;
+    line-height: 13px;
+    cursor: pointer;
 }
 .tblconts_inptbox {
     width: 100%;
@@ -613,9 +633,23 @@ a.historydetailsview {
     border-right: 1px solid transparent;
     color: #fff;
 }
+.itemmainimageshow {
+    width: 13px;
+    height: 13px;
+    float: left;
+    margin-top: 2px;
+    margin-left: -19px;
+    position: absolute;
+}
 .tblitems_item {
     width: 66px;
     text-align: right;
+}
+.inventorycolorshow {
+    width: 16px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #a5a0a0;
 }
 .orderitemimprint {
     cursor: pointer;
@@ -729,18 +763,22 @@ li.select2-results__option {
 }
 .items_footer {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 .itemsfooter_message {
     width: 184px;
     margin-right: 20px;
+    margin-top: -4px;
 }
-.itemsfooter_message label  {
-    font-size: 10px;
+.itemsfooter_message label {
+    font-size: 11px;
+    font-weight: 400;
+    margin-bottom: 3px;
+    line-height: 12px;
 }
 .itemsfooter_message textarea {
     width: 174px;
-    height: 34px;
+    height: 39px;
     border: 1px solid #ACACAC;
     resize: none;
     padding: 3px 5px;
@@ -750,6 +788,7 @@ li.select2-results__option {
 }
 .itemsfooter_discounts {
     width: 262px;
+    float: right !important;
 }
 .itemsfooter_inpts {
     width: 197px;
@@ -1042,7 +1081,7 @@ li.select2-results__option {
     height: 13px;
     background: #fff;
     border: 1px solid #1A1AD5;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: bold;
     text-align: center;
     line-height: 13px;
@@ -1195,7 +1234,7 @@ li.select2-results__option {
     margin-right: 4px;
 }
 .artapprvl_blankrush label {
-    font-size: 11px;
+    font-size: 12px;
     position: relative;
     top: -2px;
 }
@@ -1622,16 +1661,17 @@ span.artproofs_remove {
     width: 288px;
     /* background: #001072; */
     border: 1px solid #001072;
-    border-radius: 7px;
+    border-radius: 5px;
     /* margin-top: 277px; */
     margin-top: 10px;
+    margin-bottom: 7px;
 }
 .fulflmprofit_price {
     width: 85px;
     padding-right: 7px;
     text-align: right;
-    height: 28px;
-    line-height: 28px;
+    height: 24px;
+    line-height: 24px;
     font-size: 14px;
     font-weight: bold;
     border-right: 1px solid #fff;
@@ -1645,8 +1685,8 @@ span.artproofs_remove {
 .fulflmprofit_interest {
     width: 86px;
     text-align: center;
-    height: 28px;
-    line-height: 28px;
+    height: 24px;
+    line-height: 24px;
     font-size: 14px;
     font-weight: bold;
     border-right: 1px solid #fff;
@@ -1657,8 +1697,8 @@ span.artproofs_remove {
     float: right !important;
     font-size: 12px;
     text-align: center;
-    line-height: 28px;
-    height: 28px;
+    line-height: 24px;
+    height: 24px;
 }
 .fulflm_claymodels {
     width: 100%;
@@ -1958,6 +1998,19 @@ span.artproofs_remove {
 }
 .fulflmship_inpttrack {
     width: 112px;
+}
+.copytrackcode {
+    position: relative;
+    top: 0px;
+    left: -13px;
+    width: 13px;
+    height: 14px;
+    background: #000;
+    color: #fff;
+    font-size: 8px;
+    text-align: center;
+    line-height: 13px;
+    cursor: pointer;
 }
 .fulflmship_inptcarrier {
     width: 58px;
@@ -2320,11 +2373,12 @@ textarea.fulladdressview {
     font-style: italic;
 }
 .paymnt_viewdeclined {
-    font-size: 9px;
-    color: #6C6C6C;
+    font-size: 10px;
+    /* color: #6C6C6C; */
     float: right !important;
     cursor: pointer;
     line-height: 15px;
+    color: #4c4c4c;
 }
 .paymenthistory .orddtls_subtitle {
     width: auto !important;
@@ -2475,6 +2529,10 @@ textarea.aprovemail_message {
     font-size: 13px;
     font-weight: 600;
     text-align: center;
+}
+.claypreviewtab_title span {
+    font-size: 11px;
+    font-weight: normal;
 }
 .claypreviewtab_subtitle {
     width: 100%;
@@ -3013,7 +3071,8 @@ select.imprintlocationchoice {
 /* Fullfilment Historical */
 .fulfillmentblock {
     width: 100%;
-    height: 383px;
+    height: 368px;
+    margin-top: 5px;
 }
 .fulfillm_historical {
     position: relative;
@@ -3028,8 +3087,13 @@ select.imprintlocationchoice {
     left: 10px;
     font-size: 12px;
     font-weight: bold;
-    background: #7F7FFF;
-    padding: 0 3px;
+    background: #ececec;
+    padding: 0 5px;
+    color: #000;
+    border: 2px dashed #000;
+    border-bottom: none;
+    height: 9px;
+    border-radius: 4px;
 }
 .btbox_list {
     width: 100%;

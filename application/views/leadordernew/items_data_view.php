@@ -3,7 +3,22 @@
 <?php $itemrow = 0;?>
 <?php foreach ($orderitem['items'] as $item) : ?>
     <div class="tblitems_tr <?=($nrow%2==0 ? 'whitedatarow' : 'greydatarow')?>">
-        <div class="tblitems_td tblitems_item"><?=$itemrow==0 ? $item['item_number'] : '&nbsp;'?></div>
+        <?php if ($itemrow==0) : ?>
+            <?php if ($orderitem['item_id']>0) : ?>
+                <div class="itemmainimageshow" data-event="click" data-css="weekbrandtotals" data-bgcolor="#FFFFFF" data-bordercolor="#adadad"
+                     data-textcolor="#FFFFFF" data-position="right" data-balloon="{ajax} /leadorder/viewitemimage?id=<?=$orderitem['item_id']?>" data-timer="4000" data-delay="1000">
+                    <img src="/img/leadorder/icon_glass.png" alt="Item Image"/>
+                </div>
+            <?php endif; ?>
+            <div class="tblitems_td tblitems_item">
+                <?=$item['item_number'] ?>
+                <?php if (!empty($orderitem['inventory_item_id'])) : ?>
+                    <div class="inventorycolorshow" data-item="<?=$orderitem['item_id']?>"><i class="fa fa-info-circle" aria-hidden="true"></i></div>
+                <?php endif; ?>
+            </div>
+        <?php else: ?>
+            <div class="tblitems_td tblitems_item">&nbsp;</div>
+        <?php endif; ?>
         <?php if ($orderitem['item_id']>0) : ?>
             <div class="tblitems_td tblitems_descript"><?=$itemrow==0 ? $item['item_description'] : '&nbsp;'?></div>
             <div class="tblitems_td tblitems_color"><?=$item['item_color']?></div>
