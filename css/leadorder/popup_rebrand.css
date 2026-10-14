@@ -14,6 +14,7 @@
     background-clip: padding-box;
     border: none;
     height: 754px;
+    width: 100%;
 }
 #modalLeadOrder .modal-header {
     display: none;
@@ -52,13 +53,15 @@
     resize: none;
 }
 .neworder_left {
-    width: 906px;
     background: #0000FF;
     padding: 8px 10px 15px;
     border-top-left-radius: 7px;
     border-bottom-left-radius: 7px;
     height: 753px;
     width: 890px;
+}
+.neworder_page_header {
+    width: 100%;
 }
 .neworder_header {
     position: relative;
@@ -67,8 +70,8 @@
 }
 .neworder_close {
     position: absolute;
-    top: -9px;
-    right: -9px;
+    top: -12px;
+    right: 5px;
     width: 24px;
     height: 24px;
     border-radius: 12px;
@@ -299,7 +302,7 @@ input.namecustomer {
     border-bottom: 1px solid #a0a0fc;
 }
 .ordblock_payment .ordblock_body {
-    background: #8080FF;
+    background: #a0a0fc;
     height: 242px;
 }
 .ordblock_fullfilment_title {
@@ -546,15 +549,16 @@ a.historydetailsview {
 }
 .tblconts_phone {
     /* width: 111px; */
-    width: 106px;
+    width: 96px;
 }
 .tblconts_email {
-    width: 200px;
+    width: 210px;
+    position: relative;
 }
 .copyemail {
-    position: relative;
-    top: -13px;
-    left: 186px;
+    position: absolute;
+    top: 0;
+    right: 0;
     width: 13px;
     height: 13px;
     background: #000;
@@ -3071,7 +3075,7 @@ select.imprintlocationchoice {
 /* Fullfilment Historical */
 .fulfillmentblock {
     width: 100%;
-    height: 368px;
+    height: 364px;
     margin-top: 5px;
 }
 .fulfillm_historical {
@@ -3080,6 +3084,7 @@ select.imprintlocationchoice {
     border: 2px dashed #000;
     border-radius: 4px;
     padding: 8px 7px 4px;
+    background: #ececec;
 }
 .fulfillm_hist_title {
     position: absolute;

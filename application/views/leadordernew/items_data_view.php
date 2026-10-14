@@ -4,13 +4,13 @@
 <?php foreach ($orderitem['items'] as $item) : ?>
     <div class="tblitems_tr <?=($nrow%2==0 ? 'whitedatarow' : 'greydatarow')?>">
         <?php if ($itemrow==0) : ?>
-            <?php if ($orderitem['item_id']>0) : ?>
-                <div class="itemmainimageshow" data-event="click" data-css="weekbrandtotals" data-bgcolor="#FFFFFF" data-bordercolor="#adadad"
-                     data-textcolor="#FFFFFF" data-position="right" data-balloon="{ajax} /leadorder/viewitemimage?id=<?=$orderitem['item_id']?>" data-timer="4000" data-delay="1000">
-                    <img src="/img/leadorder/icon_glass.png" alt="Item Image"/>
-                </div>
-            <?php endif; ?>
             <div class="tblitems_td tblitems_item">
+                <?php if ($orderitem['item_id']>0) : ?>
+                    <div class="itemmainimageshow" data-event="click" data-css="weekbrandtotals" data-bgcolor="#FFFFFF" data-bordercolor="#adadad"
+                         data-textcolor="#FFFFFF" data-position="right" data-balloon="{ajax} /leadorder/viewitemimage?id=<?=$orderitem['item_id']?>" data-timer="4000" data-delay="1000">
+                        <img src="/img/leadorder/icon_glass.png" alt="Item Image"/>
+                    </div>
+                <?php endif; ?>
                 <?=$item['item_number'] ?>
                 <?php if (!empty($orderitem['inventory_item_id'])) : ?>
                     <div class="inventorycolorshow" data-item="<?=$orderitem['item_id']?>"><i class="fa fa-info-circle" aria-hidden="true"></i></div>

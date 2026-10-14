@@ -1,6 +1,6 @@
 <div class="neworder_body">
     <div class="neworder_left">
-        <div id="neworder_header">
+        <div id="neworder_header" class="neworder_page_header">
             <?=$header?>
         </div>
         <div class="neworder_column1">
@@ -136,13 +136,13 @@
                                 <div class="ord_datebox" data-fld="out_eventdate"><?=$shipping['out_eventdate']?></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="orddetails_row">
                         <div class="orddtls_ordtotal">
                             <div class="ordtotal_title">ORDER TOTAL:</div>
                             <div class="ordtotal_price"><?=MoneyOutput($order['revenue'])?></div>
                         </div>
                     </div>
+<!--                    <div class="orddetails_row">-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
