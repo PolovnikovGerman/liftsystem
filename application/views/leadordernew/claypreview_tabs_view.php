@@ -2,8 +2,8 @@
     <div class="claypreviewtab_title">Clay Models: <span>
         <?php if (count($claydocs) > 0) : ?>
             To Approve
-        <?php else: ?>
-            No Clay Models
+<!--        --><?php //else: ?>
+<!--            No Clay Models-->
         <?php endif; ?>
         </span>
     </div>
@@ -14,8 +14,8 @@
     <div class="claypreviewtab_title">Prev Pics: <span>
         <?php if (count($previews) > 0) : ?>
             To Approve
-        <?php else: ?>
-            No Preview Pics
+<!--        --><?php //else: ?>
+<!--            No Preview Pics-->
         <?php endif; ?>
         </span>
     </div>
