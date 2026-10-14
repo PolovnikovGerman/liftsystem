@@ -71,7 +71,8 @@
 .neworder_close {
     position: absolute;
     top: -12px;
-    right: 5px;
+    /*right: 5px;*/
+    right: -12px;
     width: 24px;
     height: 24px;
     border-radius: 12px;
@@ -132,7 +133,6 @@ input.namecustomer {
     margin-right: 10px;
 }
 .whiteline_datebox {
-    width: 100px;
     height: 24px;
     line-height: 24px;
     border: 1px solid #686868;
@@ -141,6 +141,8 @@ input.namecustomer {
     font-weight: 400;
     color: #000;
     text-align: center;
+    margin-left: 7px;
+    padding: 0 6px;
 }
 .whiteline_ordnumberbox {
     /*width: 157px;*/
@@ -2498,8 +2500,7 @@ textarea.aprovemail_message {
 }
 /* Clay preview tabs */
 .leadorderclaytab, .leadorderpreviewtab {
-    width: 124px;
-    height: 35px;
+    height: 22px;
     background: #C2C4C3;
     color: #000000;
     border-top: 1px solid #333333;
@@ -2510,6 +2511,7 @@ textarea.aprovemail_message {
     cursor: pointer;
     margin-top: 6px;
     position: relative;
+    padding: 0 9px;
 }
 .leadorderpreviewtab {
     float: right!important;
@@ -2517,7 +2519,7 @@ textarea.aprovemail_message {
 }
 .leadorderpreviewtab.active, .leadorderclaytab.active {
     background: #FFFFFF;
-    height: 37px;
+    height: 24px;
     z-index: 10;
 }
 .leadorderclaycontent, .leadorderpreviewcontent {
@@ -2536,6 +2538,7 @@ textarea.aprovemail_message {
     font-size: 13px;
     font-weight: 600;
     text-align: center;
+    line-height: 23px;
 }
 .claypreviewtab_title span {
     font-size: 11px;
@@ -3082,7 +3085,7 @@ select.imprintlocationchoice {
 /* Fullfilment Historical */
 .fulfillmentblock {
     width: 100%;
-    height: 364px;
+    height: 376px;
     margin-top: 5px;
 }
 .fulfillm_historical {
