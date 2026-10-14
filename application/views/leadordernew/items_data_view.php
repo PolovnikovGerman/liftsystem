@@ -11,7 +11,7 @@
                         <img src="/img/leadorder/icon_glass.png" alt="Item Image"/>
                     </div>
                 <?php endif; ?>
-                <div class="itemnumber">
+                <div class="tblitems_itemnumber">
                     <?=$item['item_number'] ?>
                 </div>
                 <?php if (!empty($orderitem['inventory_item_id'])) : ?>

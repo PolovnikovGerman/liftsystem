@@ -380,7 +380,7 @@ input.namecustomer {
     margin-right: 15px;
 }
 .ord_eventdate {
-    margin-left: 15px;
+    width: 75px;
 }
 .orddtls_ordtotal {
     float: right !important;
@@ -651,8 +651,6 @@ a.historydetailsview {
     text-align: right;
     width: 88px;
     position: relative;
-}
-.itemnumber {
 }
 .inventorycolorshow {
     width: 14px;
