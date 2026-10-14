@@ -131,6 +131,12 @@ function init_leadorderparts_scrolls() {
         new SimpleBar(document.getElementById('shiptax_bodyleftmultiple'), {autoHide: false});
     }
     new SimpleBar(document.getElementById('orderitemsarea'), {autoHide: false});
+    if ($(".btboxtable_body").length > 0) {
+        $(".btboxtable_body").each(function () {
+            boxid = $(this).attr('id');
+            new SimpleBar(document.getElementById(boxid), {autoHide: false});
+        })
+    }
 }
 
 // Switch Clay / Preview Tabs

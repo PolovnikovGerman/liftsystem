@@ -3244,6 +3244,9 @@ select.imprintlocationchoice {
     width: 100%;
     border: 1px solid #95939E;
     height: 60px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
 }
 .btboxtable_tr {
     width: 100%;

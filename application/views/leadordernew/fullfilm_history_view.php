@@ -83,7 +83,7 @@
                             <div class="btboxtable_td btboxtable_price">Price</div>
                             <div class="btboxtable_td btboxtable_subtotal">Subtotal</div>
                         </div>
-                        <div class="btboxtable_body">
+                        <div class="btboxtable_body" id="btboxtabble<?=$order['netdata_order_id']?>">
                             <?$numpp=1; ?>
                             <?php $items = $order['items'];?>
                             <?php foreach ($items as $item) : ?>
