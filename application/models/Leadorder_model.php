@@ -7371,10 +7371,11 @@ Class Leadorder_model extends My_Model {
             $payment_details = [
                 'card_number' => $options['cardnum'],
                 'card_exp' => $options['exp_month'].$options['exp_year'],
+                'card_cvv' => $options['cardcode'],
             ];
-            if (intval($this->config->item('test_server'))==0) {
-                $payment_details['card_cvv'] = $options['cardcode'];
-            }
+//            if (intval($this->config->item('test_server'))==0) {
+//                $payment_details['card_cvv'] = $options['cardcode'];
+//            }
             $params = [
                 'amount' => $options['amount'],
                 'currency' => 'USD',

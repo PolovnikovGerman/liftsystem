@@ -342,6 +342,7 @@ class Nmigw
         log_message('error', 'Secure Key '.$authkey);
         log_message('error', 'Params '.json_encode($params));
         log_message('error', 'Brand '.$brand);
+        log_message('error', 'URL '.$this->_posturl);
         $curl = curl_init();
 
         curl_setopt_array($curl, [
