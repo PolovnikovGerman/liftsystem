@@ -361,6 +361,7 @@ class Nmigw
             ],
         ]);
         $body = curl_exec($curl);
+        log_message('error', 'Body '.$body);
         $err = curl_error($curl);
         curl_close($curl);
         if ($err) {
