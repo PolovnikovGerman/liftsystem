@@ -339,6 +339,9 @@ class Nmigw
         } else {
             $authkey = $this->login['security_key_sb'];
         }
+        log_message('error', 'Secure Key '.$authkey);
+        log_message('error', 'Params '.json_encode($params));
+        log_message('error', 'Brand '.$brand);
         $curl = curl_init();
 
         curl_setopt_array($curl, [
@@ -356,14 +359,25 @@ class Nmigw
                 "content-type: application/json"
             ],
         ]);
-        $response = curl_exec($curl);
+        $body = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
         if ($err) {
             return ['error'=> 1, 'message' => $err];
         } else {
-            log_message('error', 'NMI Response'.$response);
-            return ['error'=> 0, 'response' => json_decode($response,true)];
+            $response = json_decode($body);
+            if (!is_array($response)) {
+                $params = explode('&', $body);
+                foreach ($params as $param) {
+                    $item = explode('=', $param);
+                    if ($item[0]=='responsetext') {
+                        return ['error'=> 1, 'message' => $item[1]];
+                    }
+                }
+                return ['error'=> 1, 'message' => 'Invalid response'];
+            } else {
+                return ['error'=> 0, 'response' => $response];
+            }
         }
     }
 
