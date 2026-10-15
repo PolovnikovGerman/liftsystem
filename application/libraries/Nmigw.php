@@ -362,6 +362,7 @@ class Nmigw
         if ($err) {
             return ['error'=> 1, 'message' => $err];
         } else {
+            log_message('error', 'NMI Response'.$response);
             return ['error'=> 0, 'response' => json_decode($response,true)];
         }
     }
