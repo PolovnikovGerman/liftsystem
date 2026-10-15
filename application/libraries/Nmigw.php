@@ -367,7 +367,7 @@ class Nmigw
         if ($err) {
             return ['error'=> 1, 'message' => $err];
         } else {
-            $response = json_decode($body);
+            $response = json_decode($body, true);
             if (!is_array($response)) {
                 $params = explode('&', $body);
                 foreach ($params as $param) {
