@@ -378,7 +378,19 @@ class Nmigw
                 }
                 return ['error'=> 1, 'message' => 'Invalid response'];
             } else {
-                return ['error'=> 0, 'response' => $response];
+                $errmsg = '';
+                foreach ($response as $key=>$value) {
+                    if ($key=='error_code') {
+                        $errmsg.= 'Error code: '.$value;
+                    } elseif ($key=='message') {
+                        $errmsg.= ' Message: '.$value;
+                    }
+                }
+                if (!empty($errmsg)) {
+                    return ['error'=> 1, 'message' => $errmsg];
+                } else {
+                    return ['error'=> 0, 'response' => $response];
+                }
             }
         }
     }
