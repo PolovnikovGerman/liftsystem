@@ -7398,7 +7398,12 @@ Class Leadorder_model extends My_Model {
         if (isset($options['cardnum'])) {
             $options['cardnum']=str_replace('-', '',$options['cardnum']);
         }
-        if ($this->config->item('default_paysystem')=='paypal') {
+        if ($options['brand']=='SR') {
+            $paysystem = $this->config->item('default_paysystem_sr');
+        } else {
+            $paysystem = $this->config->item('default_paysystem_sb');
+        }
+        if ($paysystem=='paypal') {
             $realconfig = 1;
             if (intval($this->config->item('test_server'))==1) {
                 $realconfig = 0;
@@ -7536,35 +7541,70 @@ Class Leadorder_model extends My_Model {
                 // Successful call.  Load view or whatever you need to do here.
                 return array('result' => $this->success_result , 'transaction_id' => $PayPalResult['TRANSACTIONID']);
             }
-        } elseif ($this->config->item('default_paysystem')=='nmi') {
+        } elseif ($paysystem=='nmi') {
             $out = array('result'=> $this->error_result, 'error_msg' => 'Payment Attempt Finished unsuccessfully');
             $this->load->library('Nmigw');
             $gw = new Nmigw();
-            $gw->setBilling($options['firstname'],$options['lastname'],($options['company']=='' ? 'na' : $options['company']),$options['address1'],$options['address2'], $options['city'],
-                $options['state'],$options['zip'],$cntcode,$options['phone'],"",$options['email'],
-                "");
-            $gw->setShipping($options['firstname'], $options['lastname'], ($options['company']=='' ? 'na' : $options['company']),$options['address1'],$options['address2'], $options['city'],
-                $options['state'],$options['zip'],$cntcode, $options['email']);
-            $order_descr = 'Custom printed stress balls';
-            $gw->setOrder($options['order_id'],$order_descr,0, 0, $options['brand'].$options['order_num'],$this->input->server('REMOTE_ADDR'));
-            $r = $gw->doSale($options['amount'],$options['cardnum'],$options['exp_month'].$options['exp_year'], $options['cardcode']);
-            $payres = $gw->responses;
-            if (is_array($payres)) {
-                if (isset($payres['response'])) {
-                    if ($payres['response'] == 1) {
-                        $out['result'] = $this->success_result;
-                        $out['transaction_id'] = (isset($payres['transactionid']) ? $payres['transactionid'] : 'n/a');
-                    } else {
-                        $errmsg = isset($payres['response_code']) ? 'Err Code '.$payres['response_code'].' ' : '';
-                        if (isset($payres['responsetext'])) {
-                            $errmsg.=$payres['responsetext'];
-                        }
-                        if (!empty($errmsg)) {
-                            $out['error_msg'] = $errmsg;
-                        }
-                    }
-                }
+//            $gw->setBilling($options['firstname'],$options['lastname'],($options['company']=='' ? 'na' : $options['company']),$options['address1'],($options['address2']=='' ? 'na' : $options['address2']), $options['city'],
+//                $options['state'],$options['zip'],$cntcode,$options['phone'],"",$options['email'],
+//                "");
+//            $gw->setShipping($options['firstname'], $options['lastname'], ($options['company']=='' ? 'na' : $options['company']),$options['address1'],($options['address2']=='' ? 'na' : $options['address2']), $options['city'],
+//                $options['state'],$options['zip'],$cntcode, $options['email']);
+//            $order_descr = 'Custom printed stress balls';
+//            $gw->setOrder($options['order_id'],$order_descr,0, 0, $options['brand'].$options['order_num'],$this->input->server('REMOTE_ADDR'));
+//            $r = $gw->doSale($options['amount'],$options['cardnum'],$options['exp_month'].$options['exp_year'], $options['cardcode']);
+            $billing_address = [
+                'first_name' => $options['firstname'],
+                'last_name' => $options['lastname'],
+                'address1' => $options['address1'],
+                'city' => $options['city'],
+                'zip' => $options['zip'],
+                'country' => $cntcode,
+                'payment_details' => [],
+            ];
+            if (isset($options['state']) & !empty($options['state'])) {
+                $billing_address['state'] = $options['state'];
             }
+            if (isset($options['company']) && !empty($options['company'])) {
+                $billing_address['company'] = $options['company'];
+            }
+            $payment_details = [
+                'card_number' => $options['cardnum'],
+                'card_exp' => $options['exp_month'].$options['exp_year'],
+            ];
+            if (intval($this->config->item('test_server'))==0) {
+                $payment_details['card_cvv'] = $options['cardcode'];
+            }
+            $params = [
+                'amount' => $options['amount'],
+                'currency' => 'USD',
+                'billing_address' => $billing_address,
+                'payment_details' => $payment_details,
+            ];
+
+            $payres = $gw->payment($params, $options['brand']);
+            if ($payres['error']==1) {
+                $out['error_msg'] = $payres['message'];
+            } else {
+                $out['result'] = $this->success_result;
+                $out['transaction_id'] = $payres['response']['id'];
+            }
+//            if (is_array($payres)) {
+//                if (isset($payres['response'])) {
+//                    if ($payres['response'] == 1) {
+//                        $out['result'] = $this->success_result;
+//                        $out['transaction_id'] = (isset($payres['transactionid']) ? $payres['transactionid'] : 'n/a');
+//                    } else {
+//                        $errmsg = isset($payres['response_code']) ? 'Err Code '.$payres['response_code'].' ' : '';
+//                        if (isset($payres['responsetext'])) {
+//                            $errmsg.=$payres['responsetext'];
+//                        }
+//                        if (!empty($errmsg)) {
+//                            $out['error_msg'] = $errmsg;
+//                        }
+//                    }
+//                }
+//            }
             return $out;
         } else {
 //            $this->load->library('authorizenet');

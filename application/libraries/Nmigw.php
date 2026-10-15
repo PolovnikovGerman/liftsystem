@@ -14,7 +14,8 @@ class Nmigw
     {
         $this->_CI =& get_instance();
         $this->_CI->config->load('nmigw_config');
-        $this->login['security_key'] = $this->_CI->config->item('gw_apikey');
+        $this->login['security_key_sb'] = $this->_CI->config->item('gw_apikey_sb');
+        $this->login['security_key_sr'] = $this->_CI->config->item('gw_apikey_sr');
         $this->_posturl = $this->_CI->config->item('gw_url');
         $this->sandboxmode = $this->_CI->config->item('sandboxmode');
         if (intval($this->sandboxmode)==1) {
@@ -96,7 +97,6 @@ class Nmigw
     // Transaction Functions
 
     function doSale($amount, $ccnumber, $ccexp, $cvv="") {
-
         $query  = "";
         // Login Information
         $query .= "security_key=" . urlencode($this->login['security_key']) . "&";
@@ -330,6 +330,40 @@ class Nmigw
             $this->responses[$rdata[0]] = $rdata[1];
         }
         return $this->responses['response'];
+    }
+
+    public function payment($params, $brand)
+    {
+        if ($brand=='SR') {
+            $authkey = $this->login['security_key_sr'];
+        } else {
+            $authkey = $this->login['security_key_sb'];
+        }
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $this->_posturl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode($params),
+            CURLOPT_HTTPHEADER => [
+                "Authorization: {$authkey}",
+                "accept: application/json",
+                "content-type: application/json"
+            ],
+        ]);
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+        if ($err) {
+            return ['error'=> 1, 'message' => $err];
+        } else {
+            return ['error'=> 0, 'response' => json_decode($response,true)];
+        }
     }
 
 }
