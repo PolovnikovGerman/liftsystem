@@ -513,6 +513,7 @@ function init_leadpopupedit() {
         $.post(url, {'quote_id': quote}, function (response){
             if (response.errors=='') {
                 var newWin = window.open(response.data.docurl,"Quoute PDF","width=800,height=580,top=120,left=320,resizable=yes,scrollbars=yes,status=yes");
+                $(".leadquotetabl-quote[data-quote='"+quote+"']").find('div.leadquotetabl-quotebox').removeClass('quotepublish').removeClass('bluerelated').removeClass('blueactive').addClass(response.data.qnumclass);
             } else {
                 show_error(response);
             }

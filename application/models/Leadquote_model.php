@@ -1713,6 +1713,7 @@ class Leadquote_model extends MY_Model
             $this->db->set('items_subtotal', floatval($quote['items_subtotal']));
             $this->db->set('imprint_subtotal', floatval($quote['imprint_subtotal']));
             $this->db->set('quote_total', floatval($quote['quote_total']));
+            $this->db->set('pdf_publish', intval($quote['pdf_publish']));
             if ($quote['quote_id'] > 0 ) {
                 // Update
                 $this->db->where('quote_id', $quote['quote_id']);
@@ -1780,7 +1781,7 @@ class Leadquote_model extends MY_Model
                             $this->db->insert('ts_quote_itemcolors');
                         }
                     }
-                    $imprints = $item['imprints'];
+                    $imprints = ifset($item, 'imprints',[]);
                     foreach ($imprints as $imprint) {
                         if ($imprint['imprint_description']!=='&nbsp;') {
                             $this->db->set('imprint_description', $imprint['imprint_description']);
@@ -1796,7 +1797,7 @@ class Leadquote_model extends MY_Model
                             }
                         }
                     }
-                    $imprintdetails = $item['imprint_details'];
+                    $imprintdetails = ifset($item, 'imprint_details',[]);
                     foreach ($imprintdetails as $imprintdetail) {
                         $this->db->set('imprint_active', $imprintdetail['active']);
                         $this->db->set('imprint_type', $imprintdetail['imprint_type']);
@@ -2117,6 +2118,17 @@ class Leadquote_model extends MY_Model
         $this->db->where('q.quote_id', $quote_id);
         $quote = $this->db->get()->row_array();
         if (ifset($quote,'quote_id',0)==$quote_id) {
+            $this->db->where('quote_id', $quote['quote_id']);
+            $this->db->set('pdf_publish', 1);
+            $this->db->update('ts_quotes');
+            // New class
+            $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $quote['quote_id']);
+            $orddat = $this->db->get()->row_array();
+            $qnumclass = 'quotepublish';
+            if ($orddat['orders']>0) {
+                $qnumclass = 'blueactive';
+            }
+            $out['qnumclass'] = $qnumclass;
             $this->load->model('orders_model');
             $this->load->model('leadorder_model');
             $usrrepl = '';
@@ -3119,7 +3131,6 @@ class Leadquote_model extends MY_Model
         $this->db->select('count(q.quote_id) as cnt');
         $this->db->from('ts_quotes q');
         $this->db->join('ts_leads l','l.lead_id=q.lead_id');
-        $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
 
         if (ifset($options,'brand', 'ALL')!=='ALL') {
             if ($options['brand']=='SR') {
@@ -3129,6 +3140,7 @@ class Leadquote_model extends MY_Model
             }
         }
         if (ifset($options,'search','')!=='') {
+            $this->db->join("({$item_qry}) qitem",'qitem.quote_id=q.quote_id');
             $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number, qitem.quote_item)', $options['search']);
         }
         if (!empty(ifset($options,'replica',''))) {
@@ -3165,7 +3177,8 @@ class Leadquote_model extends MY_Model
         }
         if (ifset($options,'search','')!=='') {
             $this->db->like('concat(coalesce(l.lead_company,\'\'),coalesce(l.lead_customer,\'\'),coalesce(l.lead_phone,\'\'),q.quote_number, qitem.quote_item)', $options['search']);
-        } if (!empty(ifset($options,'replica',''))) {
+        }
+        if (!empty(ifset($options,'replica',''))) {
             $this->db->where('q.create_user', $options['replica']);
         }
         $limit = ifset($options, 'limit', 0);
@@ -4526,13 +4539,13 @@ class Leadquote_model extends MY_Model
             ];
             $quotes[] = $qrow;
             // Get All quotes
-            $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, sum(qc.item_qty) as item_qty');
+            $this->db->select('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, q.pdf_publish, sum(qc.item_qty) as item_qty');
             $this->db->select('group_concat(distinct(qc.item_description)) as item_name');
             $this->db->from('ts_quotes q');
             $this->db->join('ts_quote_items i','i.quote_id=q.quote_id','left ');
             $this->db->join('ts_quote_itemcolors qc','qc.quote_item_id=i.quote_item_id','left');
             $this->db->where('q.lead_id', $lead_id);
-            $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source');
+            $this->db->group_by('q.quote_id, q.quote_date, q.brand, q.quote_number, q.quote_total, q.quote_source, q.pdf_publish');
             $this->db->order_by('q.quote_date', 'desc');
             $lists = $this->db->get()->result_array();
             $yearlist = date('Y', $lists[0]['quote_date']);
@@ -4559,6 +4572,19 @@ class Leadquote_model extends MY_Model
                 $this->db->select('count(order_id) as orders')->from('ts_leadquote_orders')->where('quote_id', $list['quote_id']);
                 $orddat = $this->db->get()->row_array();
                 $list['orders'] = $orddat['orders'];
+                $qnumclass = '';
+                if ($list['pdf_publish']==1) {
+                    if ($list['orders']>0) {
+                        $qnumclass = 'blueactive';
+                    } else {
+                        $qnumclass = 'quotepublish';
+                    }
+                } else {
+                    if ($list['orders']>0) {
+                        $qnumclass = 'bluerelated';
+                    }
+                }
+                $list['qnumclass'] = $qnumclass;
                 $this->db->select('GROUP_CONCAT(qpd.num_colors) as impr');
                 $this->db->from('ts_quote_imprindetails qpd');
                 $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qpd.quote_item_id');
@@ -4931,5 +4957,49 @@ class Leadquote_model extends MY_Model
         }
         return $response;
     }
+
+    public function check_quoteitem_color()
+    {
+        $this->db->select('q.quote_number, q.brand, qi.inventory_item_id, qic.quote_itemcolor_id, qic.inventory_color_id, qic.item_description, qic.item_color, inv.color');
+        $this->db->from('ts_quote_itemcolors qic');
+        $this->db->join('ts_inventory_colors inv', 'inv.inventory_color_id=qic.inventory_color_id');
+        $this->db->join('ts_quote_items qi', 'qi.quote_item_id = qic.quote_item_id');
+        $this->db->join('ts_quotes q', 'q.quote_id = qi.quote_id');
+        $this->db->where('qic.inventory_color_id is not null');
+        $this->db->where('inv.color != qic.item_color');
+        $colors = $this->db->get()->result_array();
+        foreach ($colors as $color) {
+            $invcolor = $this->db->select('max(inventory_color_id) as inventory_color_id, count(inventory_color_id) as cnt')->from('ts_inventory_colors')->where('inventory_item_id', $color['inventory_item_id'])->where('color', $color['item_color'])->get()->row_array();
+            if ($invcolor['cnt']==1) {
+                // Found
+                $this->db->where('quote_itemcolor_id', $color['quote_itemcolor_id']);
+                $this->db->set('inventory_color_id', $invcolor['inventory_color_id']);
+                $this->db->update('ts_quote_itemcolors');
+            } else {
+                $invcolor = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $color['inventory_color_id'])->get()->row_array();
+                $this->db->where('quote_itemcolor_id', $color['quote_itemcolor_id']);
+                $this->db->set('item_color', $invcolor['color']);
+                $this->db->update('ts_quote_itemcolors');
+            }
+        }
+        echo 'Quotes updated successfully'.PHP_EOL;
+        // Orders
+        $this->db->select('o.order_num, o.brand , oi.inventory_item_id , oic.order_itemcolor_id , oic.inventory_color_id ,oic.item_description , oic.item_color , inv.color');
+        $this->db->from('ts_order_itemcolors oic');
+        $this->db->join('ts_inventory_colors inv', 'inv.inventory_color_id=oic.inventory_color_id');
+        $this->db->join('ts_order_items oi', 'oi.order_item_id = oic.order_item_id');
+        $this->db->join('ts_orders o', 'o.order_id = oi.order_id');
+        $this->db->where('oic.inventory_color_id is not null');
+        $this->db->where('inv.color != oic.item_color');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $invcolor = $this->db->select('color')->from('ts_inventory_colors')->where('inventory_color_id', $order['inventory_color_id'])->get()->row_array();
+            $this->db->where('order_itemcolor_id', $order['order_itemcolor_id']);
+            $this->db->set('item_color', $invcolor['color']);
+            $this->db->update('ts_order_itemcolors');
+        }
+        echo 'Orders updated successfully'.PHP_EOL;
+    }
+
 
 }

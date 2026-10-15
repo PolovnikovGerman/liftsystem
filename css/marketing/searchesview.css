@@ -448,17 +448,19 @@ input.customdateinpt {
     width: 51px;
 }
 .searchesdailydata {
-    width: 522px;
+    /*width: 522px;*/
+    width: 100%;
     margin-bottom: 20px;
     border-bottom: 1px solid #716f6f;
     max-height: 700px;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
+    scrollbar-width: none;
 }
-.searchesdailydata.short {
-    width: 508px;
-    overflow-y: hidden;
-}
-.searchesdailydata div {
+/*.searchesdailydata.short {*/
+/*    width: 508px;*/
+/*    overflow-y: hidden;*/
+/*}*/
+.searchesdailydata .datarow div {
     height: 28px;
     line-height: 28px;
     font-size: 15px;

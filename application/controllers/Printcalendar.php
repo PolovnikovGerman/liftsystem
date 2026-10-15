@@ -566,6 +566,7 @@ class Printcalendar extends MY_Controller
             $assigndate = ifset($postdata, 'assigndate', '');
             $showneedaction = ifset($postdata, 'showneedaction', 1);
             $shownotapproved = ifset($postdata, 'shownotapproved', 1);
+            $calendarprintdate = ifset($postdata, 'calendarprintdate', 0);
             if (!empty($assigndate) && !empty($order_id)) {
                 $newdate = strtotime($assigndate);
                 $res = $this->printcalendar_model->updateorder_printdate($order_id, $newdate);
@@ -595,9 +596,9 @@ class Printcalendar extends MY_Controller
                         $mdata['calendview'] = $this->load->view('printcalendar/rescheduler_dates_view', $calendoptions, true);
                     }
                     // Left Part
-                    $totals = $this->printcalendar_model->daylatedetails($olddate);
-                    $warnings = $this->printcalendar_model->get_printdate_warnings($olddate);
-                    $regul = $this->printcalendar_model->get_printdate_regulars($olddate);
+                    $totals = $this->printcalendar_model->daylatedetails($calendarprintdate); // $olddate
+                    $warnings = $this->printcalendar_model->get_printdate_warnings($calendarprintdate); // $olddate
+                    $regul = $this->printcalendar_model->get_printdate_regulars($calendarprintdate); // $olddate
                     $mdata['warningscnt'] = count($warnings) > 0 ? 1 : 0;
                     $warnings_view = '';
                     if ($mdata['warningscnt']>0) {

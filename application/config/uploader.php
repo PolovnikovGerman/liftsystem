@@ -90,5 +90,8 @@ $config['clay_models'] = BASEPATH.'../uploads/clays/';
 $config['clay_models_relative'] = '/uploads/clays/';
 $config['preview_pics'] = BASEPATH.'../uploads/previews/';
 $config['preview_pics_relative'] = '/uploads/previews/';
+// NET PO Art files
+$config['upload_netpoart'] = BASEPATH.'../uploads/netpoart/';
+$config['upload_netpoart_relative'] = '/uploads/netpoart/';
 /* End of file uploader.php */
 /* Location: ./application/config/uploader.php */

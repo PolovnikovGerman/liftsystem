@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html>
-<head>
-<?=$head_view?>
-</head>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head><?=$head_view?></head>
 <body>
 <header><?=$header_view?></header>
 <container class="container-fluid pl-0 pr-0">

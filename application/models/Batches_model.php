@@ -1666,4 +1666,52 @@ class Batches_model extends My_Model
         return $out;
 
     }
+
+    public function create_payments_report()
+    {
+        $start = strtotime('2022-01-01');
+        $this->db->select('o.order_id, o.order_num, o.order_date, b.batch_amount, b.batch_type, b.batch_date, o.customer_name, b.batch_received, o.brand');
+        $this->db->from('ts_order_batches b');
+        $this->db->join('ts_orders o', 'o.order_id=b.order_id');
+        $this->db->where('b.batch_date >= ', $start);
+        $this->db->where_in('b.batch_type', array('ACH', 'Check', 'Wire', 'WriteOFF'));
+        $payments = $this->db->get()->result_array();
+        $out = [];
+        foreach ($payments as $payment) {
+            // Add contacts
+            $this->db->select('GROUP_CONCAT(contact_name) as contact_name, GROUP_CONCAT(contact_phone) as contact_phone, GROUP_CONCAT(contact_emal) as contact_email');
+            $this->db->from('ts_order_contacts')->where('order_id', $payment['order_id'])->where('contact_name != ','');
+            $contacts = $this->db->get()->row_array();
+            $payment['contact_name']=$contacts['contact_name'];
+            $payment['contact_phone']=$contacts['contact_phone'];
+            $payment['contact_email']=$contacts['contact_email'];
+            // Add billing address
+            $this->db->select('b.address_1, b.address_2, c.country_name, c.country_iso_code_2, s.state_code, b.zip, b.customer_ponum,  b.city');
+            $this->db->from('ts_order_billings b');
+            $this->db->join('ts_countries c', 'c.country_id = b.country_id');
+            $this->db->join('ts_states s', 's.state_id = b.state_id', 'left');
+            $this->db->where('b.order_id', $payment['order_id']);
+            $addr = $this->db->get()->row_array();
+            $addrbil = $addr['address_1'];
+            if (!empty($addr['address_2'])) {
+                $addrbil.=' '.$addr['address_2'];
+            }
+            $addrbil.=PHP_EOL.$addr['city'].' ';
+            if (!empty($addr['state_code'])) {
+                $addrbil.=$addr['state_code'].' ';
+            }
+            $addrbil.=$addr['zip'].PHP_EOL.$addr['country_name'];
+//            if ($addr['country_iso_code_2']=='US' || $addr['country_iso_code_2']=='CA') {
+//                $addrbil.=' '.$addr['country_iso_code_2'].' ';
+//            } else {
+//                $addrbil.=' '.$addr['country_name'].' ';
+//            }
+            $payment['address'] = $addrbil;
+            if ($payment['brand']!='SR') {
+                $payment['brand'] = 'SB';
+            }
+            $out[] = $payment;
+        }
+        return $out;
+    }
 }

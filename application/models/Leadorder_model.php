@@ -5718,13 +5718,14 @@ Class Leadorder_model extends My_Model {
         $targpathsh = $this->config->item('orderattach_path');
         $targpathfull = $this->config->item('orderattach');
         createPath($targpathsh);
+        $numpp = 1;
         foreach ($shipdocs as $shipdoc) {
             if ($shipdoc['order_shipdoc_id']<0) {
                 // New file
                 $filesrc = str_replace($srcpathsh,'', $shipdoc['shipdoc_link']);
                 $srcfile = $srcpathfull.$filesrc;
                 $filedet = extract_filename($filesrc);
-                $newfile = 'shipdoc_'.$order_id.'_'.time().'.'.$filedet['ext'];
+                $newfile = 'shipdoc_'.$order_id.'_'.time().'_'.str_pad($numpp,2,'0',STR_PAD_LEFT).'.'.$filedet['ext'];
                 $targfile = $targpathfull.$newfile;
                 $cpres = @copy($srcfile, $targfile);
                 if ($cpres) {
@@ -5734,6 +5735,7 @@ Class Leadorder_model extends My_Model {
                     $this->db->insert('ts_order_shipdocs');
                 }
             }
+            $numpp++;
         }
         $res['result']=$this->success_result;
         return $res;
@@ -12255,11 +12257,13 @@ Class Leadorder_model extends My_Model {
             $title = 'Payment Due - '.MoneyOutput($message_options['balance']).' - '.$message_options['itemname'];
         }
         $this->email->subject($title);
-        if (isset($msgoptions['cc_email']) && valid_email_address($msgoptions['cc_email'])) {
-            $this->email->cc($msgoptions['cc_email']);
-        }
-        if (isset($msgoptions['bcc_email']) && valid_email_address($msgoptions['bcc_email'])) {
-            $this->email->bcc($msgoptions['bcc_email']);
+        if (intval($this->config->item('test_server'))==0) {
+            if (isset($msgoptions['cc_email']) && valid_email_address($msgoptions['cc_email'])) {
+                $this->email->cc($msgoptions['cc_email']);
+            }
+            if (isset($msgoptions['bcc_email']) && valid_email_address($msgoptions['bcc_email'])) {
+                $this->email->bcc($msgoptions['bcc_email']);
+            }
         }
         $mail_body = $this->load->view('messages/chekout_invitation_view', $message_options, TRUE);
         $this->email->message($mail_body);

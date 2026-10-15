@@ -11,7 +11,8 @@
     <?php if ($user_role=='masteradmin') { ?>
         <input type="text" class="input_border_gray rushpastvalue <?=$shipping['arriveclass']?> <?=isset($shipping['arrivedate_class']) ? $shipping['arrivedate_class'] : ''?>" readonly id="arrivedatepast" value="<?=empty($shipping['arrive_date']) ? '' : date('m/d/Y', $shipping['arrive_date']) ?>"/>
     <?php } else { ?>
-        <?=$shipping['out_arrivedate']?>
+        <?=empty($shipping['arrive_date']) ? '' : date('m/d/Y', $shipping['arrive_date']) ?>
+        <?php // $shipping['out_arrivedate']?>
     <?php } ?>
 </div>
 <div class="label eventdate">Event Date:</div>

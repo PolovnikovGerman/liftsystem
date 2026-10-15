@@ -72,6 +72,7 @@
             color: #02024f;
             font-size: 20px;
             line-height: 24px;
+            width: 9%;
         }
         .orderline-item {
             display: inline-flex;
@@ -80,6 +81,7 @@
             line-height: 24px;
             padding-left: 15px;
             text-align: right;
+            width: 91%;
         }
         .ordertotalline {
             width: 100%;

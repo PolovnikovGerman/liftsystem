@@ -373,7 +373,7 @@
 }
 .leads_selectreplarea {
     /* margin-left: 203px; */
-    margin-left: 20px;
+    /*margin-left: 20px;*/
 }
 .leads_selectreplarea label {
     height: 27px;
@@ -434,8 +434,9 @@ input.lead_searchinput {
     cursor: pointer;
     height: 27px;
     line-height: 27px !important;
-    float: right !important;
+    /*float: right !important;*/
     margin-right: 9px;
+    margin-left: 9px;
     font-size: 13px;
     /* color: #fff; */
     font-weight: bold;
@@ -705,4 +706,18 @@ input.lead_searchinput {
 .paginationview {
     float: right!important;
     min-height: 22px;
+}
+@media (max-width: 1536px) {
+    .leads_content {
+        width: 1512px;
+    }
+    .leads_content_left{
+        margin-right: 38px;
+    }
+    .leads_content_right {
+        width: 988px;
+    }
+    .leads_section_area {
+        margin-right: 20px;
+    }
 }

@@ -1987,7 +1987,6 @@ class Leads extends My_Controller {
         $datqs['total_rec']=$this->artproof_model->get_count_proofs($search);
         $content=$this->load->view('artrequest/page_view',$datqs,TRUE);
         return $content;
-
     }
 
     private function _prepare_questionslist_view($brand) {
@@ -2006,7 +2005,6 @@ class Leads extends My_Controller {
 
         $content=$this->load->view('leads/questions_view',$datqs,TRUE);
         return $content;
-
     }
 
     private function _prepare_attempts_view($brand) {
@@ -2038,7 +2036,6 @@ class Leads extends My_Controller {
 
         $content=$this->load->view('customsbforms/customform_view',$datqs,TRUE);
         return $content;
-
     }
 
     private function _prepare_leadquotes_view($brand) {
@@ -2109,7 +2106,6 @@ class Leads extends My_Controller {
         $view_options['bottom_view']=$this->load->view('accounting/admin_bottom_view',array('year'=>$years,'orders_cnttotal'=>$orders_cnttotal),TRUE);
 
         $content=$this->load->view('customorders/head_view',$view_options,TRUE);
-
         return $content;
     }
 

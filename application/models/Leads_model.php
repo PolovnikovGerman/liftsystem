@@ -616,7 +616,7 @@ Class Leads_model extends MY_Model
         return $out;
     }
     /* New Proof Number */
-    private function get_new_proofnum($brand) {
+    public function get_new_proofnum($brand) {
         $this->db->select('max(proof_num) as proof');
         $this->db->from('ts_emails');
         $this->db->where('email_type', 'Art_Submit');

@@ -1121,4 +1121,45 @@ class Exportexcell_model extends CI_Model
         return $filename;
     }
 
+    public function payments_report($payments)
+    {
+        ini_set("memory_limit",-1);
+        $namesheet = 'Payments 2022-2026';
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($namesheet);
+
+        $sheet->setCellValue('A1','Order #');
+        $sheet->setCellValue('B1','Amount');
+        $sheet->setCellValue('C1','Type of payment');
+        $sheet->setCellValue('D1','Date');
+        $sheet->setCellValue('E1','Company Name');
+        $sheet->setCellValue('F1','Contact name');
+        $sheet->setCellValue('G1','Phone');
+        $sheet->setCellValue('H1','Email');
+        $sheet->setCellValue('I1','Billing address');
+        $sheet->setCellValue('J1','Received');
+        $sheet->setCellValue('K1','Brand');
+        $j=2;
+        foreach ($payments as $payment) {
+            $sheet->setCellValue('A'.$j, $payment['order_num']);
+            $sheet->setCellValue('B'.$j, $payment['batch_amount']);
+            $sheet->setCellValue('C'.$j, $payment['batch_type']);
+            $sheet->setCellValue('D'.$j, date('m/d/Y', $payment['batch_date']));
+            $sheet->setCellValue('E'.$j, $payment['customer_name']);
+            $sheet->setCellValue('F'.$j, $payment['contact_name']);
+            $sheet->setCellValue('G'.$j, $payment['contact_phone']);
+            $sheet->setCellValue('H'.$j, $payment['contact_email']);
+            $sheet->setCellValue('I'.$j, $payment['address']);
+            $sheet->setCellValue('J'.$j, ($payment['batch_received']==1 ? 'YES' : 'NO'));
+            $sheet->setCellValue('K'.$j, $payment['brand']);
+            $j++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $report_name = 'paymentsrep_22-26'. '.xlsx';
+        $filename = $this->config->item('upload_path_preload') . $report_name;
+        $writer->save($filename);    // download file
+        return $filename;
+    }
+
 }
