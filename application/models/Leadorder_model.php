@@ -7338,10 +7338,10 @@ Class Leadorder_model extends My_Model {
             $out = array('result'=> $this->error_result, 'error_msg' => 'Payment Attempt Finished unsuccessfully');
             $this->load->library('Nmigw');
             $gw = new Nmigw();
-            $gw->setBilling($options['firstname'],$options['lastname'],($options['company']=='' ? 'na' : $options['company']),$options['address1'],$options['address2'], $options['city'],
+            $gw->setBilling($options['firstname'],$options['lastname'],($options['company']=='' ? 'na' : $options['company']),$options['address1'],($options['address2']=='' ? 'na' : $options['address2']), $options['city'],
                 $options['state'],$options['zip'],$cntcode,$options['phone'],"",$options['email'],
                 "");
-            $gw->setShipping($options['firstname'], $options['lastname'], ($options['company']=='' ? 'na' : $options['company']),$options['address1'],$options['address2'], $options['city'],
+            $gw->setShipping($options['firstname'], $options['lastname'], ($options['company']=='' ? 'na' : $options['company']),$options['address1'],($options['address2']=='' ? 'na' : $options['address2']), $options['city'],
                 $options['state'],$options['zip'],$cntcode, $options['email']);
             $order_descr = 'Custom printed stress balls';
             $gw->setOrder($options['order_id'],$order_descr,0, 0, $options['brand'].$options['order_num'],$this->input->server('REMOTE_ADDR'));
