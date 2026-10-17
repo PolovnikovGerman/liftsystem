@@ -4832,6 +4832,7 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $this->load->model('artlead_model');
         $this->load->model('artwork_model');
+        $this->load->model('orders_model');
         $order=$leadorder['order'];
         $savedorder_id=$order['order_id'];
         $artwork=$leadorder['artwork'];
@@ -4861,8 +4862,6 @@ Class Leadorder_model extends My_Model {
             $out['msg']=$chkres['msg'];
             return $out;
         }
-        $this->load->model('orders_model');
-        $this->load->model('artlead_model');
         if ($order['order_id']==0) {
             $oldorderddata=array(
                 'profit'=>0,

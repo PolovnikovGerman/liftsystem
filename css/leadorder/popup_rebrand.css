@@ -631,7 +631,7 @@ a.historydetailsview {
 }
 .tblitems_td {
     border-right: 1px solid #b5b5b5;
-    padding: 0 4px;
+    padding: 0 3px;
     font-size: 11px;
     color: #535050;
 }
@@ -660,6 +660,9 @@ a.historydetailsview {
     cursor: pointer;
     color: #a5a0a0;
 }
+.tblitems_itemnumber {
+    width: 53px;
+}
 .orderitemimprint {
     cursor: pointer;
 }
@@ -670,10 +673,10 @@ a.historydetailsview {
 /*    width: 100%;*/
 /*}*/
 .tblitems_descript {
-    width: 162px;
+    width: 157px;
 }
 .tblitems_color, .adddata_color {
-    width: 77px;
+    width: 71px;
 }
 span.addnewcolor {
     cursor: pointer;
@@ -746,8 +749,7 @@ li.select2-results__option {
 /* SELECT 2 for item select */
 .tblitems_inforow {
     padding-left: 10px;
-    /*width: 242px;*/
-    width: 239px;
+    width: 229px;
 }
 .textgreen {
     color: #026F11;

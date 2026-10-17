@@ -5653,7 +5653,8 @@ class Leadorder extends MY_Controller
             $leadorder=usersession($ordersession);
             if (!empty($leadorder)) {
                 $this->load->model('leadorder_model');
-
+                $tt = 1;
+                $this->ajaxResponse($mdata,'TEST SAVE');
                 $res=$this->leadorder_model->save_order($leadorder, $this->USR_ID, $ordersession);
                 $error=$res['msg'];
 

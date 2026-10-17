@@ -104,6 +104,11 @@ function init_closebutton() {
             }
         }
     });
+    if ($(".btnsbox-btnsave").length > 0) {
+        $(".btnsbox-btnsave").unbind('click').click(function () {
+            save_leadorderdata();
+        })
+    }
 }
 
 function init_leadorderparts_scrolls() {
@@ -1349,6 +1354,27 @@ function init_orderdata_change() {
             }
         },'json');
     });
+    $("textarea.ordercommondata").unbind('change').change(function() {
+        var fldname=$(this).data('field');
+        var params=new Array();
+        params.push({name: 'entity', value: $(this).data('entity')});
+        params.push({name: 'fldname', value: fldname});
+        params.push({name: 'newval', value: $(this).val()});
+        params.push({name: 'ordersession', value: $("input#ordersession").val()});
+        var url="/leadordernew/change_order_commondata";
+        $("#loader").show();
+        $.post(url, params, function(response) {
+            if (response.errors=='') {
+                // Update loc time
+                update_locperiod(response);
+                init_onlineleadorder_edit();
+                $("#loader").hide();
+            } else {
+                show_error(response);
+                $("#loader").hide();
+            }
+        },'json');
+    });
     $(".btn-update").unbind('click').click(function(){
         var params=new Array();
         params.push({name: 'entity', value: 'message'});
@@ -2544,6 +2570,50 @@ function copyOrderInputToClipboard(element) {
     } catch (err) {
         console.log('Oops, unable to copy');
     }
+}
+
+function save_leadorderdata() {
+    var url="/leadorder/leadorder_save";
+    var callpage=$("input#currentpage").val();
+    $("#loader").show();
+    // Get Lock ID
+    var params=new Array();
+    if ($("input#locrecid").length>0) {
+        // Clean locked record
+        params.push({name: 'locrecid', value: $("input#locrecid").val()});
+    }
+    params.push({name: 'ordersession', value: $("input#ordersession").val()});
+    params.push({name: 'callpage', value: callpage});
+    params.push({name: 'brand', value: $("#leadorderbrand").val()});
+    $.post(url,params,function(response){
+        if (response.errors=='') {
+            updorders = 1;
+            clearTimeout(timerId);
+            // Current page
+            $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
+            $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
+            // $("#modalLeadOrder").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#loader").hide();
+            if (parseInt(response.data.newplaceorder)==1) {
+                $("#flash").css('width','975');
+                if (parseInt(response.data.finerror)==0) {
+                    $("#flash").css('background-color','#2b34d1');
+                } else {
+                    $("#flash").css('background-color','#ff0000');
+                }
+                $.flash(response.data.popupmsg,7000);
+            }
+            if (callpage=='newquoteorder') {
+                // Close window
+                window.close();
+            } else {
+                navigation_init();
+            }
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
 }
 
 function create_editorder_timer() {
