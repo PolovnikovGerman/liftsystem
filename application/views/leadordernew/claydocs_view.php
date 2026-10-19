@@ -5,7 +5,7 @@
                 <input type="checkbox" class="" <?=$edit==0 ? 'disabled="disabled"' : ''?>>
             </div>
             <div class="claymodels_optn_title">Opt <?=$claydoc['clay_option']?></div>
-            <div class="claymodels_optn_star <?=$claydoc['approved']==1 ? 'approved' : 'unapproved'?>" data-section="<?=$claydoc['clay_option']?>">
+            <div class="<?=$edit==0 ? 'claymodels_optn_starview' : 'claymodels_optn_star'?> <?=$claydoc['approved']==1 ? 'approved' : 'unapproved'?>" data-section="<?=$claydoc['clay_option']?>">
                 <?php if ($claydoc['approved']==0) : ?>
                     <img src="/img/leadorder/star.svg">
                 <?php else: ?>

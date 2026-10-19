@@ -1815,14 +1815,14 @@ span.artproofs_remove {
     font-weight: bold;
     line-height: 18px;
 }
-.claymodels_optn_star {
+.claymodels_optn_star, .claymodels_optn_starview {
     margin-left: 2px;
     height: 14px;
     position: relative;
     top: -3px;
     cursor: pointer;
 }
-.claymodels_optn_star img {
+.claymodels_optn_star img, .claymodels_optn_starview img {
     height: 14px;
     width: auto;
 }
@@ -1912,14 +1912,14 @@ span.artproofs_remove {
     font-weight: bold;
     line-height: 18px;
 }
-.previewpict_optn_star {
+.previewpict_optn_star, .previewpict_optn_starview {
     margin-left: 2px;
     height: 14px;
     position: relative;
     top: -3px;
     cursor: pointer;
 }
-.previewpict_optn_star img {
+.previewpict_optn_star img, .previewpict_optn_starview img {
     height: 14px;
     width: auto;
 }

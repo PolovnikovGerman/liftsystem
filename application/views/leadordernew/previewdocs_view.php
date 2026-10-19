@@ -5,7 +5,7 @@
                 <input type="checkbox" class="" <?=$edit==0 ? 'disabled="disabled"' : ''?>>
             </div>
             <div class="previewpict_optn_title">Opt <?=$preview['preview_option']?></div>
-            <div class="previewpict_optn_star <?=$preview['approved']==1 ? 'approved' : 'unapproved'?>" data-section="<?=$preview['preview_option']?>">
+            <div class="<?=$edit==0 ? 'previewpict_optn_starview' : 'previewpict_optn_star'?> <?=$preview['approved']==1 ? 'approved' : 'unapproved'?>" data-section="<?=$preview['preview_option']?>">
                 <img src="/img/leadorder/star.svg">
             </div>
         </div>
