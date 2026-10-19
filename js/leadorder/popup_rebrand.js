@@ -2609,7 +2609,7 @@ function save_leadorderdata() {
                 window.close();
             } else {
                 // navigation_init();
-                $("#modalLeadOrder").modal('hide');
+                // $("#modalLeadOrder").modal('hide');
                 var newurl="/leadorder/leadorder_change_new";
                 var newparams = new Array();
                 newparams.push({name: 'order', value: response.data.order});
@@ -2618,8 +2618,8 @@ function save_leadorderdata() {
                 newparams.push({name: 'brand', value: orderbrand});
                 $.post(newurl, newparams, function(newresponse){
                     if (newresponse.errors=='') {
+                        $("#modalLeadOrder").find('div.modal-header').empty().html(newresponse.data.header);
                         $("#modalLeadOrder").find('div.modal-body').empty().html(newresponse.data.content);
-                        $("#modalLeadOrder").modal({backdrop: 'static', keyboard: false, show: true});
                         navigation_init();
                     } else {
                         show_error(newresponse);
