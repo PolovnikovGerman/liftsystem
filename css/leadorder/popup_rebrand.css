@@ -1531,14 +1531,14 @@ span.artproofs_remove {
     font-weight: bold;
     line-height: 18px;
 }
-.optn_star {
+.optn_star, .optn_star_view {
     margin-left: 2px;
     height: 14px;
     position: relative;
     top: -3px;
     cursor: pointer;
 }
-.optn_star img {
+.optn_star img, .optn_star_view img {
     height: 14px;
     width: auto;
 }

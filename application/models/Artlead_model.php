@@ -104,11 +104,14 @@ Class Artlead_model extends MY_Model
             );
             $row['rushchk']=$this->load->view('leadorderdetails/artlocs/artlocation_check_view', $inptopt, TRUE);
             // Add Source name and Vector name
-            $row['source_title'] = $row['vector_title'] = '';
+            // $row['source_title'] =
+            $row['vector_title'] = '';
             if ($row['art_type']=='Logo') {
                 if (!empty($row['logo_src'])) {
-                    $slashpos = strripos($row['logo_src'], '/');
-                    $row['source_title'] = substr($row['logo_src'], $slashpos+1);
+                    if (empty($row['source_title'])) {
+                        $slashpos = strripos($row['logo_src'], '/');
+                        $row['source_title'] = substr($row['logo_src'], $slashpos+1);
+                    }
                 }
                 if (!empty($row['logo_vectorized'])) {
                     $slashpos = strripos($row['logo_vectorized'], '/');
@@ -767,7 +770,7 @@ Class Artlead_model extends MY_Model
     }
 
     public function save_artproof($proofs, $artwork_id, $user_id) {
-        $out=array('result'=>$this->error_result);
+        $out = ['result' => $this->error_result];
         // Get OLD proofs
         $this->db->select('artwork_proof_id, approved, source_name');
         $this->db->from('ts_artwork_proofs');
@@ -943,6 +946,88 @@ Class Artlead_model extends MY_Model
         return $out;
     }
 
+    public function save_artproof_options($proofs, $artwork_id, $user_id)
+    {
+        $out = ['result' => $this->error_result];
+        $artsyncdoc=[];
+        if (isset($proofs['options']) && count($proofs['options'])>0) {
+            // Full and Short proofs
+            $fullpath=$this->config->item('artwork_proofs');
+            $shrtpath=$this->config->item('artwork_proofs_relative');
+            $shortpreload = $this->config->item('pathpreload');
+            $fullpreload=$this->config->item('upload_path_preload');
+            foreach ($proofs['options'] as $option) {
+                $docs = $option['data'];
+                foreach ($docs as $doc) {
+                    $upload = 0;
+                    if ($doc['artwork_proof_id']<0) {
+                        // New Doc
+                        $docdata = extract_filename($doc['src']);
+                        $proofdocsrc = str_replace($shortpreload, $fullpreload, $doc['src']);
+                        if (file_exists($proofdocsrc)) {
+                            $this->_artworkfolder($fullpath, $artwork_id);
+                            $mtime = microtime(true);
+                            $purename = $artwork_id.'_proof_'.str_replace('.','_', $mtime).'.'.$docdata['ext'];
+                            // $purename = ($orderdata['brand']=='SR' ? 'SR' : 'BT').$orderdata['order_num'].'_proof_'.str_pad($numpp,2,'0', STR_PAD_LEFT).'.'.$docdata['ext'];
+                            $target_file=$fullpath.$artwork_id.'/'.$purename;
+                            $cpres=@copy($proofdocsrc,$target_file);
+                            if ($cpres) {
+                                $upload = 1;
+                                $doc['src']=$shrtpath.$artwork_id.'/'.$purename;
+                            }
+                        }
+                    } else {
+                        $upload = 1;
+                    }
+                    if ($upload==1) {
+                        $this->db->set('updated_user',$user_id);
+                        $this->db->set('proof_ordnum',$doc['proof_ordnum']);
+                        if (isset($doc['src'])) {
+                            $this->db->set('proof_name',$doc['src']);
+                        }
+                        if (isset($doc['sended'])) {
+                            $this->db->set('sended',$doc['sended']);
+                        }
+                        if (isset($doc['sended_time'])) {
+                            $this->db->set('sended_time',$doc['sended_time']);
+                        }
+                        if (isset($doc['approved'])) {
+                            $this->db->set('approved',$doc['approved']);
+                        }
+                        if (isset($doc['approved_time'])) {
+                            $this->db->set('approved_time',$doc['approved_time']);
+                        }
+                        if (isset($doc['source_name'])) {
+                            $this->db->set('source_name', $doc['source_name']);
+                        }
+                        if (isset($doc['proofdoc_link']) && !empty($doc['proofdoc_link'])) {
+                            $this->db->set('proofdoc_link', $doc['proofdoc_link']);
+                        }
+                        $this->db->set('option', $option['option']);
+                        if ($doc['artwork_proof_id']<=0) {
+                            $this->db->set('artwork_id',$artwork_id);
+                            $this->db->set('created_user',$user_id);
+                            $this->db->set('created_time',date('Y-m-d H:i:s'));
+                            $this->db->insert('ts_artwork_proofs');
+                            $retval=$this->db->insert_id();
+                            $this->db->select('order_id');
+                            $this->db->from('ts_artworks');
+                            $this->db->where('artwork_id', $artwork_id);
+                            $insres=$this->db->get()->row_array();
+                        } else {
+                            $this->db->where('artwork_proof_id',$doc['artwork_proof_id']);
+                            $this->db->update('ts_artwork_proofs');
+                            $retval=$doc['artwork_proof_id'];
+                        }
+                    }
+                }
+            }
+        }
+        $out['artsyncdoc'] = $artsyncdoc;
+        $out['result']=$this->success_result;
+        return $out;
+    }
+
     private function _save_proofdoc($proofdoc, $artwork_id, $user_id) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->init_msg);
 
@@ -998,6 +1083,9 @@ Class Artlead_model extends MY_Model
             }
             if (isset($proofdoc['proofdoc_link']) && !empty($proofdoc['proofdoc_link'])) {
                 $this->db->set('proofdoc_link', $proofdoc['proofdoc_link']);
+            }
+            if (isset($proofdoc['option'])) {
+                $this->db->set('option', $proofdoc['option']);
             }
             if ($proofdoc['artwork_proof_id'] <= 0) {
                 $this->db->set('artwork_id', $artwork_id);
@@ -1075,6 +1163,7 @@ Class Artlead_model extends MY_Model
                             @copy($srcname,$destname);
                             $location['logo_src']=$path_sh.$artwork_id.'/'.$purefile;
                             $location['redraw_time']=time();
+                            $location['source_title'] = $loc['source_title'];
                             if ($loc['redrawvect']==0) {
                                 // Make source vectorized
                                 $location['logo_vectorized']=$path_sh.$artwork_id.'/'.$purefile;
@@ -1573,6 +1662,61 @@ Class Artlead_model extends MY_Model
         return $out;
     }
 
+    public function save_claymodels_options($claydocs, $artwork_id, $user_id)
+    {
+        $out=['result' => $this->error_result, 'msg' => $this->init_msg];
+        // Paths
+        $fullpath=$this->config->item('clay_models');
+        $shrtpath=$this->config->item('clay_models_relative');
+        $shortpreload = $this->config->item('pathpreload');
+        $fullpreload=$this->config->item('upload_path_preload');
+        if (createPath($shrtpath)) {
+            foreach ($claydocs['options'] as $option) {
+                $docs = $option['data'];
+                foreach ($docs as $claydoc) {
+                    $rowadd = 0;
+                    if ($claydoc['artwork_clay_id'] < 0) {
+                        $claydocname = str_replace($shortpreload, '', $claydoc['clay_link']);
+                        $docdata = extract_filename($claydoc['clay_link']);
+                        $filesrc = $fullpreload.$claydocname;
+                        $mtime = microtime(true);
+                        $targname = $artwork_id.'_clay_'.str_replace('.','_', $mtime).'.'.$docdata['ext'];
+                        $filetrg = $fullpath.$targname;
+                        $cpres = @copy($filesrc, $filetrg);
+                        if ($cpres) {
+                            $rowadd=1;
+                            $claydoc['clay_link'] = $shrtpath.$targname;
+                        }
+                    } else {
+                        $rowadd = 1;
+                    }
+                    if ($rowadd==1) {
+                        $this->db->set('numpp', $claydoc['numpp']);
+                        $this->db->set('clay_link', $claydoc['clay_link']);
+                        $this->db->set('clay_source', $claydoc['clay_source']);
+                        $this->db->set('clay_send', $claydoc['clay_send']);
+                        $this->db->set('clay_sendtime', $claydoc['clay_sendtime']);
+                        $this->db->set('clay_approved', $claydoc['clay_approved']);
+                        $this->db->set('clay_approvetime', $claydoc['clay_approvetime']);
+                        $this->db->set('clay_option', $option['clay_option']);
+                        if ($claydoc['artwork_clay_id'] < 0) {
+                            $this->db->set('add_user', $user_id);
+                            $this->db->set('add_time', date('Y-m-d H:i:s'));
+                            $this->db->set('artwork_id', $artwork_id);
+                            $this->db->insert('ts_artwork_clays');
+                        } else {
+                            $this->db->where('artwork_clay_id', $claydoc['artwork_clay_id']);
+                            $this->db->set('update_user', $user_id);
+                            $this->db->update('ts_artwork_clays');
+                        }
+                    }
+                }
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
     public function get_previews($artwork_id, $order_num) {
         $this->db->select('*');
         $this->db->from('ts_artwork_previews');
@@ -1717,6 +1861,61 @@ Class Artlead_model extends MY_Model
                             $this->db->update('ts_artwork_previews');
                         }
                         $numpp++;
+                    }
+                }
+            }
+            $out['result'] = $this->success_result;
+        }
+        return $out;
+    }
+
+    public function save_previewpics_options($previewdocs, $artwork_id, $user_id)
+    {
+        $out=['result' => $this->error_result, 'msg' => $this->init_msg];
+        // Paths
+        $fullpath=$this->config->item('preview_pics');
+        $shrtpath=$this->config->item('preview_pics_relative');
+        $shortpreload = $this->config->item('pathpreload');
+        $fullpreload=$this->config->item('upload_path_preload');
+        if (createPath($shrtpath)) {
+            foreach ($previewdocs['options'] as $option) {
+                $docs = $option['data'];
+                foreach ($docs as $previewdoc) {
+                    $rowadd = 0;
+                    if ($previewdoc['artwork_preview_id'] < 0) {
+                        $previewdocname = str_replace($shortpreload, '', $previewdoc['preview_link']);
+                        $docdata = extract_filename($previewdocname);
+                        $filesrc = $fullpreload.$previewdocname;
+                        $mtime = microtime(true);
+                        $targname = $artwork_id.'_preview_'.str_replace('.','_', $mtime).'.'.$docdata['ext'];
+                        $filetrg = $fullpath.$targname;
+                        $cpres = @copy($filesrc, $filetrg);
+                        if ($cpres) {
+                            $rowadd=1;
+                            $previewdoc['preview_link'] = $shrtpath.$targname;
+                        }
+                    } else {
+                        $rowadd = 1;
+                    }
+                    if ($rowadd==1) {
+                        $this->db->set('numpp', $previewdoc['numpp']);
+                        $this->db->set('preview_link', $previewdoc['preview_link']);
+                        $this->db->set('preview_source', $previewdoc['preview_source']);
+                        $this->db->set('preview_send', $previewdoc['preview_send']);
+                        $this->db->set('preview_sendtime', $previewdoc['preview_sendtime']);
+                        $this->db->set('preview_approved', $previewdoc['preview_approved']);
+                        $this->db->set('preview_approvetime', $previewdoc['preview_approvetime']);
+                        $this->db->set('preview_option', $option['preview_option']);
+                        if ($previewdoc['artwork_preview_id'] < 0) {
+                            $this->db->set('add_user', $user_id);
+                            $this->db->set('add_time', date('Y-m-d H:i:s'));
+                            $this->db->set('artwork_id', $artwork_id);
+                            $this->db->insert('ts_artwork_previews');
+                        } else {
+                            $this->db->where('artwork_preview_id', $previewdoc['artwork_preview_id']);
+                            $this->db->set('update_user', $user_id);
+                            $this->db->update('ts_artwork_previews');
+                        }
                     }
                 }
             }
@@ -1906,7 +2105,7 @@ Class Artlead_model extends MY_Model
     public function get_claymodelsnew($artwork_id)
     {
         $out = ['historical' => 0, 'options' => [], 'clays' => []];
-        $this->db->select('clay_option, count(artwork_clay_id) as cnt')->from('ts_artwork_clays')->where('artwork_id', $artwork_id)->having('cnt > ', 0)->order_by('clay_option','desc');
+        $this->db->select('clay_option, count(artwork_clay_id) as cnt, max(clay_approved) as approved')->from('ts_artwork_clays')->where('artwork_id', $artwork_id)->group_by('clay_option')->having('cnt > ', 0)->order_by('clay_option','desc');
         $options = $this->db->get()->result_array();
         if (count($options) > 0) {
             if ($options[0]['clay_option']==null) {
@@ -1952,7 +2151,7 @@ Class Artlead_model extends MY_Model
 
     public function get_previewsnew($artwork_id) {
         $out = ['historical' => 0, 'options' => [], 'previews' => []];
-        $this->db->select('preview_option, count(artwork_preview_id) as cnt')->from('ts_artwork_previews')->where('artwork_id', $artwork_id)->having('cnt > ', 0)->order_by('preview_option','desc');
+        $this->db->select('preview_option, count(artwork_preview_id) as cnt, max(preview_approved) as approved')->from('ts_artwork_previews')->where('artwork_id', $artwork_id)->group_by('preview_option')->having('cnt > ', 0)->order_by('preview_option','desc');
         $options = $this->db->get()->result_array();
         if (count($options) > 0) {
             if ($options[0]['preview_option']==null) {
@@ -2787,7 +2986,7 @@ Class Artlead_model extends MY_Model
             'clay_approved' => 0,
             'clay_approvetime' => 0,
             'clay_source' => $data['sourcename'],
-            'clay_link' => $this->config->item('pathpreload').$data['claydoc'],
+            'clay_link' => $data['claydoc'],
             'clay_option' => $data['section'],
         ];
         $docs[] = $newdoc;
@@ -2924,7 +3123,7 @@ Class Artlead_model extends MY_Model
         $docs[] = [
             'artwork_preview_id' => $newid,
             'numpp' => count($docs)+1,
-            'preview_link' => $this->config->item('pathpreload').$data['previewdoc'],
+            'preview_link' => $data['previewdoc'], // $this->config->item('pathpreload').
             'preview_source' => $data['sourcename'],
             'preview_send' => 0,
             'preview_sendtime' => 0,

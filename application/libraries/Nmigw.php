@@ -378,7 +378,6 @@ class Nmigw
                 }
                 return ['error'=> 1, 'message' => 'Invalid response'];
             } else {
-                // Temp
                 $errmsg = '';
                 if (isset($response['error_code'])) {
                     $errmsg = $response['error_code'];

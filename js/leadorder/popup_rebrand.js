@@ -57,7 +57,7 @@ function navigation_init() {
     init_payment_links();
     // Edit order
     $(".btnsbox-btnedit").unbind('click').click(function () {
-        // edit_currentorder();
+        edit_currentorder();
     })
 }
 
@@ -2573,8 +2573,9 @@ function copyOrderInputToClipboard(element) {
 }
 
 function save_leadorderdata() {
-    var url="/leadorder/leadorder_save";
+    var url="/leadordernew/leadorder_save";
     var callpage=$("input#currentpage").val();
+    var orderbrand = $("#leadorderbrand").val();
     $("#loader").show();
     // Get Lock ID
     var params=new Array();
@@ -2584,14 +2585,14 @@ function save_leadorderdata() {
     }
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     params.push({name: 'callpage', value: callpage});
-    params.push({name: 'brand', value: $("#leadorderbrand").val()});
+    params.push({name: 'brand', value: orderbrand});
     $.post(url,params,function(response){
         if (response.errors=='') {
             updorders = 1;
             clearTimeout(timerId);
             // Current page
-            $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
-            $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
+            // $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
+            // $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
             // $("#modalLeadOrder").modal({backdrop: 'static', keyboard: false, show: true});
             $("#loader").hide();
             if (parseInt(response.data.newplaceorder)==1) {
@@ -2607,7 +2608,56 @@ function save_leadorderdata() {
                 // Close window
                 window.close();
             } else {
-                navigation_init();
+                // navigation_init();
+                $("#modalLeadOrder").modal('hide');
+                var newurl="/leadorder/leadorder_change_new";
+                var newparams = new Array();
+                newparams.push({name: 'order', value: response.data.order});
+                newparams.push({name: 'page', value: callpage});
+                newparams.push({name: 'edit', value: 0});
+                newparams.push({name: 'brand', value: orderbrand});
+                $.post(newurl, newparams, function(newresponse){
+                    if (newresponse.errors=='') {
+                        $("#modalLeadOrder").find('div.modal-body').empty().html(newresponse.data.content);
+                        $("#modalLeadOrder").modal({backdrop: 'static', keyboard: false, show: true});
+                        navigation_init();
+                    } else {
+                        show_error(newresponse);
+                    }
+                },'json');
+            }
+        } else {
+            $("#loader").hide();
+            show_error(response);
+        }
+    },'json');
+}
+
+function edit_currentorder() {
+    var params=new Array();
+    params.push({name: 'ordersession', value: $("input#ordersession").val()});
+    params.push({name: 'order', value: $("input#leadorderdataid").val()});
+    params.push({name: 'page', value: $("input#currentpage").val()});
+    params.push({name: 'edit', value: 1});
+    var url="/leadorder/leadorder_change_new";
+    $("#loader").show();
+    $.post(url,params, function(response){
+        if (response.errors=='') {
+            $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
+            $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
+            $("#loader").hide();
+            clearTimeout(timerId);
+            init_onlineleadorder_edit();
+            init_rushpast();
+            if (parseInt($("#ordermapuse").val())==1) {
+                // Init billing autofill
+                if ($("#billorder_line1").length > 0) {
+                    initBillOrderAutocomplete();
+                }
+                // Init simple Shipping address
+                if ($("#shiporder_line1").length > 0) {
+                    initShipOrderAutocomplete();
+                }
             }
         } else {
             $("#loader").hide();

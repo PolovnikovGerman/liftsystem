@@ -1631,6 +1631,9 @@ Class Artwork_model extends MY_Model
             }
             if ($fl_upd==1) {
                 if ($loc['artwork_art_id']==0) {
+                    if (isset($loc['source_title']) && !empty($loc['source_title'])) {
+                        $this->db->set('source_title', $loc['source_title']);
+                    }
                     $this->db->insert('ts_artwork_arts');
                     $retval=$this->db->insert_id();
                 } else {
@@ -4725,6 +4728,7 @@ Class Artwork_model extends MY_Model
             $out['options'] = $options;
         }
         $out['head'] = $head;
+        $out['historical'] = 0;
         return $out;
     }
 }

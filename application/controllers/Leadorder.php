@@ -46,6 +46,16 @@ class Leadorder extends MY_Controller
                 // New Order
                 $res=$this->leadorder_model->add_newlead_order($this->USR_ID, $brand);
                 $edit=1;
+            } else {
+                // Get Order Data
+                $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
+                if ($res['result']==$this->success_result) {
+                }
+                $edit = ifset($postdata, 'edit', 0);
+            }
+            $error=$res['msg'];
+            if ($res['result']==$this->success_result) {
+                $error = '';
                 // Add items list
                 $this->load->model('orders_model');
                 $dboptions=array(
@@ -53,16 +63,6 @@ class Leadorder extends MY_Controller
                     'brand' => ($brand=='SR') ? 'SR' : 'BT',
                 );
                 $res['itemslist']=$this->orders_model->get_item_list($dboptions);
-            } else {
-                // Get Order Data
-                $res=$this->leadorder_model->get_leadorder($order, $this->USR_ID, $brand);
-                if ($res['result']==$this->success_result) {
-                }
-                $edit = 0;
-            }
-            $error=$res['msg'];
-            if ($res['result']==$this->success_result) {
-                $error = '';
                 // Temporary
                 $artwork_id = $res['artwork']['artwork_id'];
                 // Get new proofs
@@ -77,7 +77,8 @@ class Leadorder extends MY_Controller
                 $claydat = $this->artlead_model->get_claymodelsnew($artwork_id);
                 $res['claydocs'] = $claydat;
                 // End Temporary
-                $mdata['cancelorder'] = 0;
+                // $mdata['cancelorder'] = 0;
+                $mdata['cancelorder'] = $res['order']['is_canceled'];
                 $leadsession='leadorder'.uniq_link(15);
                 // Generate new session
                 $options = [];
@@ -104,8 +105,8 @@ class Leadorder extends MY_Controller
                     ];
                     $head_options['unlocked']=0;
                     $header = $this->load->view('leadordernew/header_view', $head_options, true);
-                    $mdata['cancelorder'] = $orddata['is_canceled'];
-                    $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
+                    // $mdata['cancelorder'] = $orddata['is_canceled'];
+                    // $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, $edit);
                     $locking='';
                 } else {
                     $head_options = [
@@ -120,12 +121,13 @@ class Leadorder extends MY_Controller
                         'order_num' => $orddata['order_num'],
                         'order_date' => $orddata['order_date'],
                         'order_confirm' => $orddata['order_confirmation'],
+                        'edit' => $edit,
                     ];
+                    $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order));
+                    $res['unlocked']=$engade_res['result'];
                     if ($edit==0) {
                         // View order
                         // Get Data about Engaded records
-                        $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order));
-                        $res['unlocked']=$engade_res['result'];
                         // Build Head
                         $head_options['unlocked']=$engade_res['result'];
                         if ($engade_res['result']==$this->error_result) {
@@ -139,16 +141,36 @@ class Leadorder extends MY_Controller
                             // $head_options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
                         }
                         $head_options['timeout'] = 0;
-                        $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,0);
                         $locking='';
                     } else {
                         $head_options['prvorder'] = $head_options['nxtorder'] = 0;
+                        $lockoptions=array(
+                            'entity'=>'ts_orders',
+                            'entity_id'=>$order,
+                            'user_id'=>$this->USR_ID,
+                        );
+                        $chklock=$this->engaded_model->check_engade($lockoptions);
+                        if ($chklock==$this->error_result) {
+                            $error='Order was locked for edit by other user. Try later';
+                            $this->ajaxResponse($mdata, $error);
+                        }
+                        $locking=$this->engaded_model->lockentityrec($lockoptions);
+                        // $res['locrecid']=$locking;
+                        $head_options['unlocked']=$engade_res['result'];
+                        if ($this->input->ip_address()=='127.0.0.1') {
+                            $head_options['timeout']=(time()+$this->config->item('loctimeout_local'))*1000;
+                        } else {
+                            $head_options['timeout']=(time()+$this->config->item('loctimeout'))*1000;
+                        }
+
                     }
                     $head_options['mapuse'] = empty($this->config->item('google_map_key')) ? 0 : 1;
                     $header = $this->load->view('leadordernew/header_view', $head_options, true);
                     $mdata['cancelorder'] = $orddata['is_canceled'];
                 }
+                $data=$this->template->_prepare_newleadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT,$edit);
                 $data['header'] = $header;
+
                 $content = $this->load->view('leadordernew/page_view', $data, true);
                 $mdata['content'] = $content;
                 $mdata['header'] = $header;
@@ -5653,8 +5675,6 @@ class Leadorder extends MY_Controller
             $leadorder=usersession($ordersession);
             if (!empty($leadorder)) {
                 $this->load->model('leadorder_model');
-                $tt = 1;
-                $this->ajaxResponse($mdata,'TEST SAVE');
                 $res=$this->leadorder_model->save_order($leadorder, $this->USR_ID, $ordersession);
                 $error=$res['msg'];
 
