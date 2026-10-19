@@ -13,7 +13,7 @@
             <ul>
                 <?php foreach ($preview['data'] as $previewdata) : ?>
                     <li>
-                        <span class="previewpicname" data-previewdoc="<?=$previewdata['artwork_preview_id']?>" data-event="hover" data-css="proofdetailsballonbox"
+                        <span class="previewpicname" data-link="<?=$previewdata['preview_link']?>" data-previewdoc="<?=$previewdata['artwork_preview_id']?>" data-event="hover" data-css="proofdetailsballonbox"
                         data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="left" data-textcolor="#000"
                         data-balloon="<?=$previewdata['preview_source']?>" data-timer="4000" data-delay="1000">preview_<?=str_pad($previewdata['numpp'],2,0,STR_PAD_LEFT)?></span>
                     <?php if ($edit==1) : ?>

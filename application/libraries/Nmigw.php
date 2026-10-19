@@ -379,11 +379,15 @@ class Nmigw
                 return ['error'=> 1, 'message' => 'Invalid response'];
             } else {
                 $errmsg = '';
-                foreach ($response as $key=>$value) {
-                    if ($key=='error_code') {
-                        $errmsg.= 'Error code: '.$value;
-                    } elseif ($key=='message') {
-                        $errmsg.= ' Message: '.$value;
+                if (isset($response['error_code'])) {
+                    $errmsg = $response['error_code'];
+                    if (isset($response['message'])) {
+                        $errmsg.= ' Message: '.$response['message'];
+                    }
+                } elseif (isset($response['response_code']) && $response['response_code'] != '100') {
+                    $errmsg = ' Error code: '.$response['response_code'];
+                    if (isset($response['response_text'])) {
+                        $errmsg.=' '.$response['response_text'];
                     }
                 }
                 if (!empty($errmsg)) {

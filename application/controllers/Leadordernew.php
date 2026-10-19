@@ -1920,6 +1920,113 @@ class Leadordernew extends MY_Controller
         show_404();
     }
 
+    public function leadorder_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $this->load->model('leadorder_model');
+                $res=$this->leadorder_model->save_order($leadorder, $this->USR_ID, $ordersession);
+                $error=$res['msg'];
+
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    if (isset($postdata['locrecid'])) {
+                        $this->engaded_model->clean_engade($postdata['locrecid']);
+                    }
+                    $callpage = 'leadorder';
+                    if (isset($postdata['callpage'])) {
+                        $callpage = $postdata['callpage'];
+                    }
+                    $mdata['color'] = 0;
+                    if ($callpage == 'inventory') {
+                        // Try to restore Printshop color
+                        $printshop = usersession('inventleadorder');
+                        if (!empty($printshop)) {
+                            $mdata['color'] = $printshop['inventcolor'];
+                        }
+                    }
+                    // Get Data about Engaded records
+                    $order_id = $res['order_id'];
+                    $mdata['newplaceorder'] = $res['newplaceorder'];
+                    if ($res['newplaceorder'] == 1) {
+                        $mdata['popupmsg'] = $res['popupmsg'];
+                        $mdata['finerror'] = $res['finerror'];
+                    }
+                    $mdata['order'] = $res['order_id'];
+//                    $brand = ifset($postdata,'brand', 'ALL');
+//                    $res=$this->leadorder_model->get_leadorder($order_id, $this->USR_ID, $brand);
+//                    $error=$res['msg'];
+//                    if ($res['result']==$this->success_result) {
+//                        $error='';
+//                        // Build Head
+//                        $engade_res=$this->engaded_model->check_engade(array('entity'=>'ts_orders','entity_id'=>$order_id));
+//                        $res['unlocked']=$engade_res['result'];
+//                        $orddata=$res['order'];
+//
+//                        // Build View
+//                        $data=$this->template->_prepare_leadorder_view($res, $this->USR_ID, $this->USR_ROLE, $this->USER_PAYMENT, 0);
+//
+//                        $order_data=$this->load->view('leadorderdetails/order_content_view', $data, TRUE);
+//                        // Build Content
+//                        $options['order_data']=$order_data;
+//                        $options['order_system']=$res['order_system_type'];
+//                        $options['leadsession']=$ordersession;
+//                        // $options['current_page']='orders';
+//                        $options['current_page'] = $callpage;
+//                        $options['unlocked'] = $engade_res['result'];
+//                        $mdata['content']=$this->load->view('leadorderdetails/top_menu_view',$options, TRUE);
+//                        $head_options = [
+//                            'order_head' => $this->load->view('leadorderdetails/head_order_view', $orddata,TRUE),
+//                            'prvorder' => $res['prvorder'],
+//                            'nxtorder' => $res['nxtorder'],
+//                            'order_id' => $orddata['order_id'],
+//                            'unlocked' => $engade_res['result'],
+//                            'brand' => $brand,
+//                        ];
+//                        if ($engade_res['result']==$this->error_result) {
+//                            $voptions=array(
+//                                'user'=>$engade_res['lockusr'],
+//                            );
+//                            // $options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+//                            $head_options['editbtnview']=$this->load->view('leadorderdetails/orderlocked_view', $voptions, TRUE);
+//                        } elseif ($orddata['is_canceled']==1) {
+//                            $head_options['unlocked']=$this->error_result;
+//                            $head_options['editbtnview']=$this->load->view('leadorderdetails/ordercanceled_view', array(), TRUE);
+//                        }
+//                        $head_options['order_dublcnum']=$orddata['order_num'];
+//                        $mdata['header'] = $this->load->view('leadorderdetails/head_view', $head_options, TRUE);
+//
+//                        /* Save to session */
+//                        $leadorder=array(
+//                            'order'=>$orddata,
+//                            'payments'=>$res['payments'],
+//                            'artwork'=>$res['artwork'],
+//                            'artlocations'=>$res['artlocations'],
+//                            'artproofs'=>$res['proofdocs'],
+//                            'message'=>$res['message'],
+//                            'contacts'=>$res['contacts'],
+//                            'order_items'=>$res['order_items'],
+//                            'order_system'=>$res['order_system_type'],
+//                            'shipping'=>$res['shipping'],
+//                            'shipping_address'=>$res['shipping_address'],
+//                            'billing'=>$res['order_billing'],
+//                            'charges'=>$res['charges'],
+//                        );
+//                        usersession($ordersession, $leadorder);
+
+//                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
     // Function update lock order
     private function _lockorder($leadorder) {
         $out=array('result'=>$this->error_result, 'msg'=>$this->locktimeout);

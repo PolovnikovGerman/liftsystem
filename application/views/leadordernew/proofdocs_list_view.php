@@ -11,7 +11,7 @@
                 <input type="checkbox" class="proofdocoption" data-proofopt="<?=$option['option']?>" <?=$edit==0 ? 'disabled="disabled"' : ''?>>
             </div>
             <div class="optn_title">Opt <?=$option['option']?></div>
-            <div class="optn_star" data-section="<?=$option['option']?>">
+            <div class="<?=$edit==0 ? 'optn_star_view' : 'optn_star'?>" data-section="<?=$option['option']?>">
                 <?php if ($option['aprt']==0) : ?>
                     <img src="/img/leadorder/star.svg">
                 <?php else: ?>

@@ -4846,6 +4846,7 @@ Class Leadorder_model extends My_Model {
         $out=array('result'=>$this->error_result, 'msg'=>$this->error_message);
         $this->load->model('artlead_model');
         $this->load->model('artwork_model');
+        $this->load->model('orders_model');
         $order=$leadorder['order'];
         $savedorder_id=$order['order_id'];
         $artwork=$leadorder['artwork'];
@@ -4875,8 +4876,6 @@ Class Leadorder_model extends My_Model {
             $out['msg']=$chkres['msg'];
             return $out;
         }
-        $this->load->model('orders_model');
-        $this->load->model('artlead_model');
         if ($order['order_id']==0) {
             $oldorderddata=array(
                 'profit'=>0,
@@ -5062,23 +5061,35 @@ Class Leadorder_model extends My_Model {
         }
 
         $proofs=$leadorder['artproofs'];
-        $res=$this->artlead_model->save_artproof($proofs, $artwork_id, $user_id);
+        if ($proofs['historical']==1) {
+            $res=$this->artlead_model->save_artproof($proofs, $artwork_id, $user_id);
+        } else {
+            $res = $this->artlead_model->save_artproof_options($proofs, $artwork_id, $user_id);
+        }
         $artsyncdoc=$res['artsyncdoc'];
         // Clay save
         if (!isset($leadorder['claydocs'])) {
             $leadorder['claydocs'] = [];
         }
         $claydocs = $leadorder['claydocs'];
-        if (count($claydocs)) {
-            $res=$this->artlead_model->save_claymodels($claydocs, $artwork_id, $user_id);
+        if (count($claydocs) > 0) {
+            if ($claydocs['historical']==1) {
+                $res=$this->artlead_model->save_claymodels($claydocs['clays'], $artwork_id, $user_id);
+            } else {
+                $res=$this->artlead_model->save_claymodels_options($claydocs, $artwork_id, $user_id);
+            }
         }
         // Preview save
         if (!isset($leadorder['previewdocs'])) {
             $leadorder['previewdocs'] = [];
         }
         $previewdocs = $leadorder['previewdocs'];
-        if (count($previewdocs)) {
-            $res=$this->artlead_model->save_previewpics($previewdocs, $artwork_id, $user_id);
+        if (count($previewdocs)>0) {
+            if ($previewdocs['historical']==0) {
+                $res=$this->artlead_model->save_previewpics_options($previewdocs, $artwork_id, $user_id);
+            } else {
+                $res=$this->artlead_model->save_previewpics($previewdocs['previews'], $artwork_id, $user_id);
+            }
         }
         // Save history and message
         $history=$leadorder['message']['history'];
@@ -6191,6 +6202,18 @@ Class Leadorder_model extends My_Model {
                 case 'item_color':
                     $this->db->where('order_itemcolor_id', $row['id']);
                     $this->db->delete('ts_order_itemcolors');
+                    break;
+                case 'claydocs':
+                    $this->db->where('artwork_clay_id', $row['id']);
+                    $this->db->delete('ts_artwork_clays');
+                    break;
+                case 'previews':
+                    $this->db->where('artwork_preview_id', $row['id']);
+                    $this->db->delete('ts_artwork_previews');
+                    break;
+                case 'artlocation':
+                    $this->db->where('artwork_art_id', $row['id']);
+                    $this->db->delete('ts_artwork_arts');
                     break;
             }
         }
