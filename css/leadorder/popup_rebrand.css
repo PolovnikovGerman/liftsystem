@@ -1462,7 +1462,7 @@ li.select2-results__option {
 }
 .artproofs_body {
     width: 308px;
-    height: 98px;
+    height: 85px;
     overflow-x: auto;
     padding: 4px 5px;
     display: flex;
@@ -3987,9 +3987,55 @@ input.paydatadetails.payamount {
     font-weight: 600;
 }
 
-.autocompleter,
-.autocompleter-closed {
+.autocompleter, .autocompleter-closed {
     top: 37px;
     max-width: 244px;
     margin-left: 66px;
+}
+
+/* Ship cost warning */
+.shipcostwarningarea {
+    position: absolute;
+    left: 219px;
+    bottom: 334px;
+    display: none;
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    z-index: 15;
+}
+.confirmshipcost_container {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 15px;
+    min-height: 97px;
+    width: 455px;
+}
+.confirmshipcost_container > .title {
+    text-align: center;
+    font-size: 14px;
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+}
+
+.confirmshipcost_container > .confirmshipcost_manage {
+    clear: both;
+    margin-top: 20px;
+}
+
+.confirmshipcost_container > .confirmshipcost_manage > .leavenewshipcost {
+    background: url(/img/leadorder/changeshipcost_btn.png) no-repeat transparent;
+    cursor: pointer;
+    margin-left: 73px;
+    height: 27px;
+    width: 147px;
+}
+
+.confirmshipcost_container > .confirmshipcost_manage > .restoreoldshipcost {
+    background: url(/img/leadorder/leaveshipcost_btn.png) no-repeat transparent;
+    cursor: pointer;
+    margin-left: 15px;
+    height: 27px;
+    width: 107px;
 }

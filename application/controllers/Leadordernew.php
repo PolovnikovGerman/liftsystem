@@ -24,6 +24,296 @@ class Leadordernew extends MY_Controller
 
     public function index() {}
 
+    // Prepare Send invoice form
+    public function leadorderinv_prepare() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $res=$this->leadorder_model->prepare_orderinvemail($leadorder, $this->USR_ID);
+                if ($res['result']==$this->error_result) {
+                    $error=$res['msg'];
+                } else {
+                    // $sender = $this->config->item('customer_notification_sender');
+                    $data=$res['data'];
+                    $sender = $data['sender'];
+                    $options = array(
+                        'order_id' => $data['order_id'],
+                        'from' => $sender,
+                        'tomail' => $data['contact_mail'],
+                        'subject' => $data['subject'],
+                        'message' => $data['message'],
+                    );
+                    $mdata['content'] = $this->load->view('leadordernew/invoice_sendemail_view', $options, TRUE);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Send Invoice
+    public function sendinvoice() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // $data = $this->input->post();
+                $res = $this->leadorder_model->send_invoicemail($postdata, $leadorder, $this->USR_ID, $ordersession);
+                if ($res['result'] == $this->error_result) {
+                    $error = $res['msg'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Prepare invoice PDF
+    public function prepare_invoice() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                $res=$this->leadorder_model->prepare_invoicedoc($leadorder, $this->USR_ID);
+                if ($res['result']==$this->error_result) {
+                    $error=$res['msg'];
+                } else {
+                    $mdata['docurl']=$res['html_path'];
+                    $mdata['balance_term'] = $leadorder['order']['balance_term'];
+                    $mdata['balance_due'] = $leadorder['order']['credit_appdue'];
+                }
+                $mdata['content'] = $res;
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // View Art Location source / ready image
+    public function artlocation_view() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+
+                $artwork_art_id=$this->input->post('artloc');
+                $doctype=$this->input->post('doctype');
+                $this->load->model('artlead_model');
+                $res = $this->artlead_model->show_artlocation($leadorder, $artwork_art_id, $ordersession);
+                if ($res['result'] == $this->error_result) {
+                    $error = $res['msg'];
+                } else {
+                    $location=$res['location'];
+                    if ($location['art_type']=='Repeat') {
+                        $mdata['arttype']='repeat';
+                        $locs=$this->artlead_model->show_artdata($location,$doctype);
+                        if ($locs['result']==$this->error_result) {
+                            $error=$locs['msg'];
+                        } else {
+                            $mdata['viewurls']=$locs['urls'];
+                        }
+                    } else {
+                        $mdata['arttype']='logo';
+                        if ($doctype=='source') {
+                            $artlocurl=str_replace('//','/',$location['logo_src']);
+                        } else {
+                            $artlocurl=str_replace('//','/',$location['logo_vectorized']);
+                        }
+                        if (substr($artlocurl,0,1)!=='/') {
+                            $artlocurl='/'.$artlocurl;
+                        }
+                        $mdata['artlocurl'] = $artlocurl;
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function art_showtemplates() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                $res=$this->leadorder_model->get_templates($leadorder);
+
+                $error=$res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error='';
+                    $templates=$res['templates'];
+                    $mdata['custom']=$res['custom'];
+                    if ($res['custom']==1) {
+                        $templates=$res['templates'];
+                        $templ_options=array();
+                        if (count($templates)==0) {
+                            $error='Empty list of Templates';
+                        } else {
+                            $templ_options['templates_list']=$this->load->view('artpage/templates_list_view',array('templates'=>$templates),TRUE);
+                            $mdata['content']=$this->load->view('artpage/item_templates_view',$templ_options,TRUE);
+                        }
+                    } else {
+                        if (count($templates)==0) {
+                            $error='Empty list of Templates';
+                        } else {
+                            $mdata['templates']=$templates;
+                        }
+
+                    }
+                }
+                $this->ajaxResponse($mdata, $error);
+
+            }
+        }
+    }
+
+    // Prepare message for online checkout
+    public function prepare_checkout_invite()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $res=$this->leadorder_model->prepare_checkout_invite($leadorder, $this->USR_ID, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $order = $res['order'];
+                    if ($order['brand']=='SR') {
+                        $finemail = $this->config->item('fin_srdept_email');
+                    } else {
+                        $finemail = $this->config->item('fin_sbdept_email');
+                    }
+                    $options = [
+                        'order' => $order['order_num'],
+                        'order_id' => $order['order_id'],
+                        'invite_name' => $res['invite_name'],
+                        'invite_email' => $res['invite_email'],
+                        'from' => $finemail,
+                        'subject' => $res['subject'],
+                    ];
+                    if ($res['count_contacts'] > 1) {
+                        $options['cc_name'] = $res['cc_name'];
+                        $options['cc_email'] = $res['cc_email'];
+                    }
+                    if ($res['count_contacts'] > 2) {
+                        $options['bcc_name'] = $res['bcc_name'];
+                        $options['bcc_email'] = $res['bcc_email'];
+                    }
+                    $mdata['content'] = $this->load->view('leadordernew/invite_checkout_view', $options, true);
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Change contact
+    public function change_contact() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+
+                if (!isset($postdata['fldname']) || !isset($postdata['contact']) || !isset($postdata['newval'])) {
+                    $error='Post Data Not Full';
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $contact_id=$postdata['contact'];
+                $fldname=$postdata['fldname'];
+                $newval=$postdata['newval'];
+                $res=$this->leadorder_model->edit_contact($leadorder, $contact_id, $fldname, $newval, $ordersession);
+                if ($res['result']==$this->error_result) {
+                    $error=$res['msg'];
+                } else {
+                    if ($fldname=='contact_emal') {
+                        if (empty($newval) || !valid_email_address($newval)) {
+                            $mdata['locstatus']=1;
+                        } else {
+                            $mdata['locstatus']=0;
+                        }
+                    }
+                    $leadorder=usersession($ordersession);
+                    $contacts=$leadorder['contacts'];
+                    $phone='';
+                    foreach ($contacts as $row) {
+                        if ($row['order_contact_id']==$contact_id) {
+                            $phone=$row['contact_phone'];
+                        }
+                    }
+                    $mdata['contact_phone']=$phone;
+                    $mdata['freshship'] = $mdata['freshbill'] = 0;
+                    if (isset($res['shipcontact'])) {
+                        $mdata['freshship'] = 1;
+                        $mdata['shipcontact'] = $res['shipcontact'];
+                    }
+                    if (isset($res['billcontact'])) {
+                        $mdata['freshbill'] = 1;
+                        $mdata['billcontact'] = $res['billcontact'];
+                    }
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Change common data - not need recalc, etc
     public function change_order_commondata()
     {
@@ -135,6 +425,106 @@ class Leadordernew extends MY_Controller
         $this->ajaxResponse($mdata, $error);
     }
 
+    // Inventory Item
+    public function inventoryitem()
+    {
+        if ($this->isAjax()) {
+            $mdata=[];
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                } else {
+                    $orderitem_id = ifset($postdata, 'orderitem_id',0);
+                    $itemstatus = ifset($postdata, 'itemstatus',0);
+                    if (empty($orderitem_id)) {
+                        $error = 'Select Order Item';
+                    } else {
+                        $res = $this->leadorder_model->orderiteminventory($leadorder, $orderitem_id, $ordersession);
+                        $error = $res['msg'];
+                        if ($res['result']==$this->success_result) {
+                            $error = '';
+                            $options = [
+                                'onboats' => $res['onboats'],
+                                'invents' => $res['invents'],
+                                'itemstatus' => $itemstatus,
+                            ];
+                            $mdata['content'] = $this->load->view('leadordernew/itemcolor_inventory_view', $options, TRUE);
+                        }
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function saveneworderitemparam()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession= ifset($postdata, 'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $orderitem_id = ifset($postdata, 'orderitem_id',0);
+                $paramname = ifset($postdata,'paramname','');
+                $newval = ifset($postdata, 'newval', '');
+                if (empty($orderitem_id)) {
+                    $error = 'Select Order Item';
+                } elseif (empty($paramname)) {
+                    $error = 'Empty Parameter';
+                } else {
+                    $res = $this->leadorder_model->saveneworderitemparam($leadorder, $orderitem_id, $paramname, $newval, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'order_item_id' => $orderitem_id,
+                            'item_id' => $res['item_id'],
+                            'item_color' => $res['color'],
+                            'colors' => $res['colors'],
+                            'qty' => $res['item_qty'],
+                            'price' => $res['base_price'],
+                        ];
+                        // if ($res['brand']=='SR') {
+                        if ($res['inventory']==1) {
+                            $mdata['outcolors'] = $this->load->view('leadordernew/sradditem_color_view', $options, true);
+                        } else {
+                            $mdata['outcolors'] = $this->load->view('leadordernew/item_color_choice', $options, true);
+                        }
+                        $mdata['qty'] = $this->load->view('leadordernew/additem_qty_view', $options, TRUE); // $item['item_qty']
+                        $mdata['price'] = $this->load->view('leadordernew/additem_price_view', $options, TRUE); // $item['base_price']
+                        $mdata['subtotal'] = MoneyOutput($res['item_subtotal']);
+                        $mdata['brand'] = $res['brand'];
+                        $mdata['inventory'] = $res['inventory'];
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
     // Imprints for new item
     public function neworderitemimprints()
     {
@@ -165,6 +555,132 @@ class Leadordernew extends MY_Controller
             $mdata['loctime']=$this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
 
+        }
+        show_404();
+    }
+
+    public function imprintdetails_blankorder() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $imprintdetails=$postdata['imprintsession'];
+                $imprint_details=usersession($imprintdetails);
+                if (empty($imprint_details)) {
+                    $error=$this->restore_orderdata_error;
+                } else {
+                    $newval=$this->input->post('newval');
+                    $res=$this->leadorder_model->imprintdetails_blankorder($imprint_details, $newval, $imprintdetails);
+                    if ($res['result']==$this->error_result) {
+                        $error=$res['msg'];
+                    }
+                }
+
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Save changes in Imprint Details
+    public function imprintdetails_change() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error=$this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+
+            if (!empty($leadorder)) {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $imprintdetails=$postdata['imprintsession'];
+                $imprint_details=usersession($imprintdetails);
+                $error=$this->restore_orderdata_error;
+                if (!empty($imprint_details)) {
+                    $error='Enter all Parameters for change';
+                    if (isset($postdata['details']) && !empty($postdata['details']) && isset($postdata['fldname']) && !empty($postdata['fldname'])) {
+                        $fldname=$postdata['fldname'];
+                        $order_imprindetail_id=$postdata['details'];
+                        $newval=$postdata['newval'];
+                        $res=$this->leadorder_model->change_imprint_details($imprint_details, $order_imprindetail_id, $fldname, $newval, $imprintdetails);
+                        $error=$res['msg'];
+                        if ($res['result']==$this->success_result) {
+                            $error='';
+                            $mdata['fldname']=$fldname;
+                            $mdata['details']=$order_imprindetail_id;
+                            $mdata['newval']=$newval;
+                            if ($fldname=='imprint_type') {
+                                $mdata['setup']=  number_format($res['setup'],2,'.','');
+                                if ($newval=='NEW') {
+                                } else {
+                                    $mdata['class']=$res['class'];
+                                }
+                            }
+                        }
+                        // Calc new period for lock
+                        $mdata['loctime'] = $this->_leadorder_locktime();
+                    }
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    // Save Repeat Note
+    public function repeatnote_save() {
+        if ($this->isAjax()) {
+            $mdata=array();
+            $error='';
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error=$this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $imprintdetails=$postdata['imprintsession'];
+                $imprint_details=usersession($imprintdetails);
+                if (empty($imprint_details)) {
+                    $error=$this->restore_orderdata_error;
+                } else {
+                    $detail_id=$postdata['detail_id'];
+                    $repeat_note=$postdata['repeat_note'];
+                    $res=$this->leadorder_model->save_repeat_note($imprint_details, $repeat_note, $detail_id, $imprintdetails);
+                    if ($res['result']==$this->error_result) {
+                        $error=$res['msg'];
+                    }
+                }
+            }
+            // Calc new period for lock
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
         }
         show_404();
     }
@@ -230,12 +746,50 @@ class Leadordernew extends MY_Controller
                     $shipstatus = $this->leadorder_model->_leadorderview_shipping_status($leadorder);
                     $mdata['tracking'] = $this->_prepare_tracking_content($leadorder['order_items'], $shipstatus, 1);
                     // Shipping dates
-                    $mdata['shipdata'] = $shipping['out_shipdate'];
-                    $mdata['arrivedate'] = $shipping['out_arrivedate'];
+                    $mdata['shipdata'] = (empty($shipping['shipdate']) ? '' : date('m/d/Y',$shipping['shipdate']));
+                    $mdata['arrivedate'] = empty($shipping['arrive_date']) ? '' : date('m/d/Y', $shipping['arrive_date']);
+                    $mdata['cntshipaddr'] = count($leadorder['shipping_address']);
+                    if ($mdata['cntshipaddr']==1) {
+                        $shipaddr = $leadorder['shipping_address'][0];
+                        $mdata['shipdateaddr'] = (empty($shipping['shipdate']) ? '' : date('M j',$shipping['shipdate']));
+                        //    empty($shipaddr['ship_date']) ? $this->emptycontent : date('M j', $shipaddr['ship_date']);
+                        $mdata['arrivdateaddr'] = empty($shipaddr['arrive_date']) ? $this->emptycontent : date('M j', $shipaddr['arrive_date']);
+                    }
                 }
             }
             // Calc new period for lock
             $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function showinventory()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $order_item_id = ifset($postdata,'item_id',0);
+                if (empty($order_item_id)) {
+                    $error = 'Empty Item';
+                } else {
+                    $res = $this->leadorder_model->show_iteminvent($leadorder, $order_item_id, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $options = [
+                            'onboats' => $res['onboats'],
+                            'invents' => $res['invents'],
+                            'itemstatus' => 1,
+                        ];
+                        $mdata['content'] = $this->load->view('leadordernew/itemcolor_inventory_view', $options, TRUE);
+                    }
+                }
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -367,6 +921,8 @@ class Leadordernew extends MY_Controller
                         $mdata['total_due']=$this->load->view('leadordernew/balancedue_view', ['order' => $order, 'checkoutlink' => $checkoutlink], TRUE);
                         // Tax
                         $mdata['tax']=MoneyOutput($order['tax']);
+                        // Shipping
+                        $mdata['shipping'] = $order['shipping'];
                         // Profit
                         $mdata['profit_content']=$this->_profit_data_view($order);
                         // Imprint details
@@ -395,7 +951,7 @@ class Leadordernew extends MY_Controller
                             // Prepare new view
                             $mdata['shipwarn']=$this->_shipwarning_confirm_view($options); // $oldshipcost, $order['shipping']
                         }
-
+                        $mdata['cntaddr'] = count($leadorder['shipping_address']);
                     }
                 }
             }
@@ -825,6 +1381,65 @@ class Leadordernew extends MY_Controller
                 }
             }
             $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function shipdocremove()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (!empty($leadorder)) {
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                }
+                $shipdoc = ifset($postdata,'shipdoc', 0);
+                if (!empty($shipdoc)) {
+                    $res = $this->leadorder_model->shipdocremove($shipdoc, $leadorder, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['content'] = $this->load->view('leadordernew/shipdocs_data_view', ['shipdocs' => $res['shipdocs'], 'edit' => 1], TRUE);
+                        $mdata['numdocs'] = count($res['shipdocs']);
+                    }
+                }
+            }
+            $mdata['loctime'] = $this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+    public function saveshipdocload()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = ifset($postdata,'ordersession','unkn');
+            $leadorder=usersession($ordersession);
+            if (!empty($ordersession)) {
+                $doclink = ifset($postdata, 'doclink','');
+                $docsource = ifset($postdata, 'docsource', '');
+                $error = 'Some parameters empty';
+                if (!empty($doclink) && !empty($docsource)) {
+                    $res = $this->leadorder_model->saveshipdocload($doclink, $docsource, $leadorder, $ordersession);
+                    $error = $res['msg'];
+                    if ($res['result']==$this->success_result) {
+                        $error = '';
+                        $mdata['content'] = $this->load->view('leadordernew/shipdocs_data_view', ['shipdocs' => $res['shipdocs'], 'edit' => 1], TRUE);
+                        $mdata['numdocs'] = count($res['shipdocs']);
+                    }
+                }
+            }
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
@@ -1809,6 +2424,30 @@ class Leadordernew extends MY_Controller
         }
         show_404();
     }
+
+    // Unlock Payment details
+    public function unlockpayparams()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $error = $this->restore_orderdata_error;
+            $postdata = $this->input->post();
+            $ordersession = (isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder = usersession($ordersession);
+            if (!empty($leadorder)) {
+                $res = $this->leadorder_model->unlock_payment_content($leadorder, $postdata, $ordersession);
+                $error = $res['msg'];
+                if ($res['result']==$this->success_result) {
+                    $error = '';
+                    $mdata['cardnum'] = $res['cardnum'];
+                    $mdata['cardcode'] = $res['cardcode'];
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     public function payment_save()
     {

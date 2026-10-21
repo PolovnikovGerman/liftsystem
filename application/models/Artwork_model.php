@@ -4700,7 +4700,7 @@ Class Artwork_model extends MY_Model
 
     public function get_artwork_proofnew($artwork_id)
     {
-        $out = ['head'=>[], 'options' => []];
+        $out = ['head'=>[], 'options' => [], 'proofs' => []];
         $head = [
             'status' => 'Not Approved',
             'class' => 'notapproval',
@@ -4719,16 +4719,22 @@ Class Artwork_model extends MY_Model
             // Get Options
             $this->db->select('option, count(*) as cnt, max(approved_time) as aprt, max(sended_time) as sendt')->from('ts_artwork_proofs')->where('artwork_id', $artwork_id)->group_by('option')->order_by('option','desc');
             $options = $this->db->get()->result_array();
-            $optidx = 0;
-            foreach ($options as $option) {
-                $proofs = $this->db->select('*')->from('ts_artwork_proofs')->where(['artwork_id' => $artwork_id, 'option' => $option['option']])->get()->result_array();
-                $options[$optidx]['data'] = $proofs;
-                $optidx++;
+            if ($options[0]['option']==null) {
+                $out['historical'] = 1;
+                $proofs = $this->db->select('*')->from('ts_artwork_proofs')->where(['artwork_id' => $artwork_id])->get()->result_array();
+                $out['proofs'] = $proofs;
+            } else {
+                $out['historical'] = 0;
+                $optidx = 0;
+                foreach ($options as $option) {
+                    $proofs = $this->db->select('*')->from('ts_artwork_proofs')->where(['artwork_id' => $artwork_id, 'option' => $option['option']])->get()->result_array();
+                    $options[$optidx]['data'] = $proofs;
+                    $optidx++;
+                }
+                $out['options'] = $options;
             }
-            $out['options'] = $options;
         }
         $out['head'] = $head;
-        $out['historical'] = 0;
         return $out;
     }
 }
