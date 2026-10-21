@@ -21,7 +21,7 @@
                     <input type="checkbox" class="proofdoccheck" data-proofdoc="<?=$proof['artwork_proof_id']?>" <?=$edit==0 ? 'disabled="disabled"' : ''?>/>
                 </div>
                 <?php if ($edit==1) : ?>
-                    <span class="artproofs_remove" data-proofdoc="<?=$proof['artwork_proof_id']?>" data-section="<?=$option['option']?>" data-proofname="<?=$proof['source_name']?>">
+                    <span class="artproofs_remove" data-proofdoc="<?=$proof['artwork_proof_id']?>" data-proofname="<?=$proof['source_name']?>">
                             [&mdash;]
                         </span>
                 <?php endif; ?>
