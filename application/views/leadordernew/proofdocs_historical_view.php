@@ -1,7 +1,7 @@
 <?php $nrow = 0; ?>
 <div class="proofdocsdataarea">
     <?php foreach ($proofs as $proof) : ?>
-        <?php if ($nrow%5 == 0) : ?>
+        <?php if ($nrow%4 == 0) : ?>
             <div class="proofdocsdatatable">
         <?php endif; ?>
         <div class="datarow proofdocdatarow">
@@ -28,11 +28,11 @@
             </div>
         </div>
         <?php $nrow++; ?>
-        <?php if ($nrow%5 == 0) : ?>
+        <?php if ($nrow%4 == 0) : ?>
             </div>
         <?php endif; ?>
     <?php endforeach; ?>
-    <?php if ($nrow%5 != 0) : ?>
+    <?php if ($nrow%4 != 0) : ?>
 </div>
 <?php endif; ?>
 </div>
