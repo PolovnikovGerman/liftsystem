@@ -213,6 +213,11 @@
                             <div class="artapprvl_colors">Colors: <?=$artwork['artcolors']?></div>
                             <div class="artapprvl_font">Font: <?=$artwork['artfonts']?></div>
                         </div>
+                    <?php else : ?>
+                        <div class="artapprvl_row">
+                            <div class="artapprvl_colors">Colors: </div>
+                            <div class="artapprvl_font">Font: </div>
+                        </div>
                     <?php endif; ?>
                     <div class="artapprvl_row">
                         <div class="artapprvl_subtitle">Art:</div>
