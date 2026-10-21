@@ -5370,4 +5370,50 @@ class Test extends CI_Controller
         $this->load->model('leadquote_model');
         $res = $this->leadquote_model->check_quoteitem_color();
     }
+
+    public function check_useremail() {
+        $this->load->model('user_model');
+        $user_id = 57;
+        $user = $this->user_model->get_user_data($user_id);
+        $this->load->library('email');
+        $send_smtp = intval($this->config->item('usercode_smtp'));
+        if ($send_smtp==1) {
+            $email_conf = [
+                'protocol'=>'smtp',
+                'smtp_host' => $this->config->item('sb_smtp_host'),
+                'smtp_port' => $this->config->item('sb_smtp_port'),
+                'smtp_crypto' => $this->config->item('sb_smtp_crypto'),
+                'charset'=>'utf-8',
+                'mailtype'=>'html',
+                'wordwrap'=>TRUE,
+                'newline' => "\r\n",
+                'smtp_user' => $this->config->item('usercode_user'),
+                'smtp_pass' => $this->config->item('usercode_pass'),
+            ];
+            $email_from = $email_conf['smtp_user'];
+        } else {
+            $email_conf = array(
+                'protocol' => 'sendmail',
+                'charset' => 'utf-8',
+                'wordwrap' => TRUE,
+                'mailtype' => 'html',
+            );
+            $email_from = 'admin@bluetrack.com';
+        }
+        var_dump($email_conf);
+        $this->email->initialize($email_conf);
+        $secret = $user['user_secret'];
+        $usrlogin = ifset($user, 'userlogin','');
+        if (empty($usrlogin)) {
+            $usrlogin = $user['user_email'];
+        }
+        $url = $ga->getUrl($usrlogin, 'lift.bluetrack.com', $secret);
+        $options = [
+            'user_name' => $user['user_name'],
+            'secret' => $secret,
+            'url' => $url,
+            'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
+        ];
+        var_dump($options);
+    }
 }
