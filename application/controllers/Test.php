@@ -5416,5 +5416,21 @@ class Test extends CI_Controller
             'manual_url' => 'https://support.google.com/accounts/answer/1066447?hl=en',
         ];
         var_dump($options);
+        $message_body = $this->load->view('messages/secret_update_view', $options, TRUE);
+        $mail_cc= [
+            $this->config->item('sean_email'),
+            $this->config->item('sage_email'),
+        ];
+        $this->email->to($user['user_email']);
+        $this->email->from($email_from);
+        $this->email->cc($mail_cc);
+        $mail_subj = 'Update account security - user '.$user['user_name'];
+        $this->email->subject($mail_subj);
+        $this->email->message($message_body);
+        $res = $this->email->send();
+        echo 'Send Result'.PHP_EOL;
+        var_dump($res);
+        $this->email->clear(TRUE);
+
     }
 }
