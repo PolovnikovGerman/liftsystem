@@ -13,5 +13,5 @@
 <div class="tblitems_td adddata_subtotal">
     <div class="items_content_addprint" data-orderitem="<?=$item['order_item_id']?>">Imprints</div>
 </div>
-<div class="tblitems_td adddata_cancel" data-orderitem="<?=$item['order_item_id']?>"><i class="fa fa-trash"></i></div>
+<!--<div class="tblitems_td adddata_cancel" data-orderitem="--><?php //=$item['order_item_id']?><!--"><i class="fa fa-trash"></i></div>-->
 <?php endforeach; ?>

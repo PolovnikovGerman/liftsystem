@@ -125,15 +125,36 @@
                         <div class="orddtls_dates">
                             <div class="ord_shipdate">
                                 <div class="ord_datetitle">Ship Date:</div>
-                                <div class="ord_datebox" data-fld="out_shipdate"><?=$shipping['out_shipdate']?></div>
+                                <?php if ($edit==0) : ?>
+                                    <div class="ord_datebox" data-fld="out_shipdate"><?=$shipping['out_shipdate']?></div>
+                                <?php else: ?>
+                                    <div class="ord_datebox">
+                                        <!--  data-fld="out_shipdate" -->
+                                        <input class="ord_datebox" data-fld="shipdate" id="shipdate" value="<?=empty($shipping['shipdate']) ? '' : date('m/d/Y', $shipping['shipdate'])?>">
+                                    </div>
+                                <?php endif; ?>
                             </div>
                             <div class="ord_arrivaldate">
                                 <div class="ord_datetitle">Arrival Date:</div>
+                                <?php if ($edit==0) : ?>
                                 <div class="ord_datebox" data-fld="out_arrivedate"><?=$shipping['out_arrivedate']?></div>
+                                <?php else: ?>
+                                    <div class="ord_datebox">
+                                        <!-- data-fld="out_arrivedate" -->
+                                        <input class="ord_datebox" data-fld="arrive_date" id="arrive_date" value="<?=empty($shipping['arrive_date']) ? '' : date('m/d/Y', $shipping['arrive_date'])?>">
+                                    </div>
+                                <?php endif; ?>
                             </div>
                             <div class="ord_eventdate">
                                 <div class="ord_datetitle">Event Date:</div>
+                                <?php if ($edit==0) : ?>
                                 <div class="ord_datebox" data-fld="out_eventdate"><?=$shipping['out_eventdate']?></div>
+                                <?php else: ?>
+                                    <div class="ord_datebox">
+                                        <!--  data-fld="out_eventdate" -->
+                                        <input class="ord_datebox" data-fld="event_date" id="event_date" value="<?=empty($shipping['event_date']) ? '' : date('m/d/Y', $shipping['event_date'])?>">
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="orddtls_ordtotal">
@@ -262,7 +283,7 @@
     <div class="sendcheckoutnotificationcontent">&nbsp;</div>
 </div>
 <div class="shipcostwarningarea">
-    <div class="shipcostwarningareaclosewin">
+    <div class="artpopupclosewin" id="shipcostwarningareaclose">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 847 847" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd"><g><path class="btn-closemodal-svg" d="M423 592l-196 196c-110,111 -279,-58 -169,-169l196 -196 -196 -196c-110,-110 59,-279 169,-169l196 196 196 -196c111,-110 280,59 169,169l-196 196 196 196c111,111 -58,280 -169,169l-196 -196z"></path></g></svg>
     </div>
     <div class="confirmshipcost_container">&nbsp;</div>

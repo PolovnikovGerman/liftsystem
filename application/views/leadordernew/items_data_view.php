@@ -15,7 +15,7 @@
                     <?=$item['item_number'] ?>
                 </div>
                 <?php if (!empty($orderitem['inventory_item_id'])) : ?>
-                    <div class="inventorycolorshow" data-item="<?=$orderitem['item_id']?>"><i class="fa fa-info-circle" aria-hidden="true"></i></div>
+                    <div class="inventorycolorshow" data-item="<?=$orderitem['order_item_id']?>"><i class="fa fa-info-circle" aria-hidden="true"></i></div>
                 <?php endif; ?>
             </div>
         <?php else: ?>
