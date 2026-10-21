@@ -1461,12 +1461,36 @@ li.select2-results__option {
     border-bottom: 1px solid #000;
 }
 .artproofs_body {
-    width: 308px;
-    height: 85px;
+    /*width: 308px;*/
+    /*height: 85px;*/
+    width: 314px;
+    height: 88px;
     overflow-x: auto;
-    padding: 4px 5px;
+    padding: 4px 9px 7px;
     display: flex;
     flex-wrap: nowrap;
+}
+.proofdocsdataarea {
+    border: 2px dashed #000;
+    border-radius: 4px;
+    padding: 4px 5px;
+    width: 100%;
+}
+.proofdocdatarow {
+    width: 100%;
+    padding-left: 5px;
+    border-bottom: 1px dotted #000000;
+}
+.proofdocname {
+    font-size: 12px;
+    line-height: 17px;
+    height: 17px;
+}
+.proofdocname_check {
+    margin-left: 5px;
+}
+.proofdocname_check input {
+    margin-top: 2px;
 }
 .artproofs_addoptn {
     width: 47px;
