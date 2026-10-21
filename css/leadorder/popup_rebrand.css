@@ -1461,14 +1461,24 @@ li.select2-results__option {
     border-bottom: 1px solid #000;
 }
 .artproofs_body {
-    /*width: 308px;*/
-    /*height: 85px;*/
+    /* width: 308px; */
+    /* height: 85px; */
     width: 314px;
     height: 88px;
     overflow-x: auto;
-    padding: 4px 9px 7px;
+    padding: 0 9px 7px;
     display: flex;
     flex-wrap: nowrap;
+}
+.proofhistory_openall {
+    height: 24px;
+    line-height: 24px;
+    float: right !important;
+    color: #0A0AFF;
+    font-size: 12px;
+    font-weight: normal;
+    cursor: pointer;
+    margin-right: 12px;
 }
 .proofdocsdataarea {
     border: 2px dashed #000;
@@ -1482,14 +1492,20 @@ li.select2-results__option {
     border-bottom: 1px dotted #000000;
 }
 .proof_approve_view {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     margin-right: 2px;
+}
+.proof_approve_view img {
+    position: relative;
+    top: -1px;
 }
 .proofdocname {
     font-size: 12px;
     line-height: 17px;
     height: 17px;
+    padding-right: 5px;
+    border-right: 1px solid #000;
 }
 .proofdocname_check {
     margin-left: 5px;
