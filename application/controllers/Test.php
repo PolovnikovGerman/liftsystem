@@ -5400,13 +5400,13 @@ class Test extends CI_Controller
             );
             $email_from = 'admin@bluetrack.com';
         }
-        var_dump($email_conf);
         $this->email->initialize($email_conf);
         $secret = $user['user_secret'];
         $usrlogin = ifset($user, 'userlogin','');
         if (empty($usrlogin)) {
             $usrlogin = $user['user_email'];
         }
+        $ga = new GoogleAuthenticator();
         $url = $ga->getUrl($usrlogin, 'lift.bluetrack.com', $secret);
         $options = [
             'user_name' => $user['user_name'],
