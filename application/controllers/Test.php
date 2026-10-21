@@ -5406,6 +5406,7 @@ class Test extends CI_Controller
         if (empty($usrlogin)) {
             $usrlogin = $user['user_email'];
         }
+        $this->load->library('GoogleAuthenticator');
         $ga = new GoogleAuthenticator();
         $url = $ga->getUrl($usrlogin, 'lift.bluetrack.com', $secret);
         $options = [
