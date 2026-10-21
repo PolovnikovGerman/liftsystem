@@ -4700,7 +4700,7 @@ Class Artwork_model extends MY_Model
 
     public function get_artwork_proofnew($artwork_id)
     {
-        $out = ['head'=>[], 'options' => [], 'proofs' => []];
+        $out = ['head'=>[], 'options' => [], 'proofs' => [], 'historical' => 0];
         $head = [
             'status' => 'Not Approved',
             'class' => 'notapproval',
@@ -4724,7 +4724,6 @@ Class Artwork_model extends MY_Model
                 $proofs = $this->db->select('*')->from('ts_artwork_proofs')->where(['artwork_id' => $artwork_id])->get()->result_array();
                 $out['proofs'] = $proofs;
             } else {
-                $out['historical'] = 0;
                 $optidx = 0;
                 foreach ($options as $option) {
                     $proofs = $this->db->select('*')->from('ts_artwork_proofs')->where(['artwork_id' => $artwork_id, 'option' => $option['option']])->get()->result_array();
