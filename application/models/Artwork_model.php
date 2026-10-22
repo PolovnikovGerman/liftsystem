@@ -4680,20 +4680,49 @@ Class Artwork_model extends MY_Model
 
     public function update_proof_options()
     {
-        $proofs = $this->db->select('*')->from('ts_artwork_proofs')->order_by('artwork_proof_id','desc')->get()->result_array();
-        foreach ($proofs as $proof) {
-            $file = $proof['source_name'];
-            $option = 'A';
-            if (!empty($file)) {
-                $optposit = stripos(strtoupper($file), '_OPT');
-                if ($optposit===false) {
-                } else {
-                    $option = strtoupper(substr($file, $optposit+4, 1));
+        $year = date('Y')-1;
+        $datebgn = $year.'-'.date('m-d');
+        $starttime = strtotime($datebgn);
+
+        $this->db->select('o.order_id, o.order_num, a.artwork_id, count(p.artwork_proof_id) as cnt');
+        $this->db->from('ts_artwork_proofs p');
+        $this->db->join('ts_artworks a','a.artwork_id=p.artwork_id');
+        $this->db->join('ts_orders o','o.order_id=a.order_id');
+        $this->db->where('o.order_date >=', $starttime);
+        $this->db->group_by('o.order_id, o.order_num, a.artwork_id');
+        $this->db->having('cnt > 0');
+        $orders = $this->db->get()->result_array();
+        foreach ($orders as $order) {
+            $proofs = $this->db->select('artwork_proof_id, source_name')->from('ts_artwork_proofs')->where('artwork_id', $order['artwork_id'])->get()->result_array();
+            foreach ($proofs as $proof) {
+                $file = $proof['source_name'];
+                $option = 'A';
+                if (!empty($file)) {
+                    $optposit = stripos(strtoupper($file), '_OPT');
+                    if ($optposit===false) {
+                    } else {
+                        $option = strtoupper(substr($file, $optposit+4, 1));
+                    }
+                }
+                $this->db->where('artwork_proof_id', $proof['artwork_proof_id']);
+                $this->db->set('option', $option);
+                $this->db->update('ts_artwork_proofs');
+            }
+            $options = $this->db->select('option, count(*) as cnt')->from('ts_artwork_proofs')->where('artwork_id', $order['artwork_id'])->group_by('option')->get()->result_array();
+            $historical = 0;
+            foreach ($options as $option) {
+                $dats = $this->db->select('approved, count(*) as cnt')->from('ts_artwork_proofs')->where(['artwork_id' => $order['artwork_id'], 'option' => $option['option']])->group_by('approved')->get()->result_array();
+                if (count($dats) > 1) {
+                    $historical = 1;
+                    break;
                 }
             }
-            $this->db->where('artwork_proof_id', $proof['artwork_proof_id']);
-            $this->db->set('option', $option);
-            $this->db->update('ts_artwork_proofs');
+            if ($historical==1) {
+                $this->db->where('artwork_id', $order['artwork_id']);
+                $this->db->set('option', NULL);
+                $this->db->update('ts_artwork_proofs');
+                echo 'Order '.$order['order_num'].' Historical '.PHP_EOL;
+            }
         }
         echo 'Proof Options entered '.PHP_EOL;
     }
