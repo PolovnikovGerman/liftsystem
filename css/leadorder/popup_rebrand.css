@@ -1491,12 +1491,13 @@ li.select2-results__option {
     padding-left: 5px;
     border-bottom: 1px dotted #000000;
 }
-.proof_approve_view {
+.proof_approve_view, .proof_approve {
     width: 14px;
     height: 14px;
     margin-right: 2px;
+    cursor: pointer;
 }
-.proof_approve_view img {
+.proof_approve_view img, .proof_approve img {
     position: relative;
     top: -1px;
 }
@@ -2619,6 +2620,17 @@ textarea.aprovemail_message {
     padding-left: 5px;
     border-bottom: 1px dotted #000000;
 }
+.clayapprov_view, .clayapprov, .previewpic_approv_view, .previewpic_approv {
+    width: 14px;
+    height: 14px;
+    margin-right: 2px;
+    cursor: pointer;
+}
+.clayapprov_view img, .clayapprov img, .previewpic_approv_view img, .previewpic_approv img {
+    position: relative;
+    top: -4px;
+}
+
 .claymodelname, .previewpicname {
     height: 17px;
     line-height: 17px;

@@ -173,7 +173,7 @@ class Leadorder extends MY_Controller
 
                 $content = $this->load->view('leadordernew/page_view', $data, true);
                 $mdata['content'] = $content;
-                $mdata['header'] = $header;
+                // $mdata['header'] = $header;
                 if ($res['order_system_type']=='old') {
                     $leadorder=array(
                         'order'=>$orddata,

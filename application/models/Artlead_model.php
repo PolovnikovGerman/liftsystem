@@ -792,37 +792,40 @@ Class Artlead_model extends MY_Model
         $fullpreload=$this->config->item('upload_path_preload');
         $numpp=1;
         foreach ($proofs as $row) {
-            if ($row['deleted']!='') {
-                if ($row['artwork_proof_id']>0) {
-                    // add data for delete
-                    $this->db->select('p.source_name, o.order_id');
-                    $this->db->from('ts_artwork_proofs p');
-                    $this->db->join('ts_artworks a','a.artwork_id=p.artwork_id');
-                    $this->db->join('ts_orders o','o.order_id=a.order_id');
-                    $this->db->where('p.artwork_proof_id', $row['artwork_proof_id']);
-                    $delres=$this->db->get()->row_array();
-                    if (isset($delres['order_id'])) {
-                        $artsyncdoc[]=array(
-                            'user_id'=>$user_id,
-                            'order_id'=>$delres['order_id'],
-                            'operation'=>'delete',
-                            'proofdoc_link'=>$delres['source_name'],
-                        );
-                    }
-                    $this->db->where('artwork_proof_id', $row['artwork_proof_id']);
-                    $this->db->delete('ts_artwork_proofs');
-                }
-            } else {
+//            if ($row['deleted']!='') {
+//                if ($row['artwork_proof_id']>0) {
+//                    // add data for delete
+//                    $this->db->select('p.source_name, o.order_id');
+//                    $this->db->from('ts_artwork_proofs p');
+//                    $this->db->join('ts_artworks a','a.artwork_id=p.artwork_id');
+//                    $this->db->join('ts_orders o','o.order_id=a.order_id');
+//                    $this->db->where('p.artwork_proof_id', $row['artwork_proof_id']);
+//                    $delres=$this->db->get()->row_array();
+//                    if (isset($delres['order_id'])) {
+//                        $artsyncdoc[]=array(
+//                            'user_id'=>$user_id,
+//                            'order_id'=>$delres['order_id'],
+//                            'operation'=>'delete',
+//                            'proofdoc_link'=>$delres['source_name'],
+//                        );
+//                    }
+//                    $this->db->where('artwork_proof_id', $row['artwork_proof_id']);
+//                    $this->db->delete('ts_artwork_proofs');
+//                }
+//            } else {
+
                 $saverow=0;
-                $docdata = extract_filename($row['src']);
                 if ($row['artwork_proof_id']<0) {
+                    $docdata = extract_filename($row['src']);
                     // Artwork Folder
                     $proofdocsrc = str_replace($shortpreload, $fullpreload, $row['src']);
                     if (file_exists($proofdocsrc)) {
                         $this->_artworkfolder($fullpath, $artwork_id);
                         // New Proof Doc
                         // $purename=  str_replace($fullpreload, '', $proofdocsrc);
-                        $purename = ($orderdata['brand']=='SR' ? 'SR' : 'BT').$orderdata['order_num'].'_proof_'.str_pad($numpp,2,'0', STR_PAD_LEFT).'.'.$docdata['ext'];
+//                        $purename = ($orderdata['brand']=='SR' ? 'SR' : 'BT').$orderdata['order_num'].'_proof_'.str_pad($numpp,2,'0', STR_PAD_LEFT).'.'.$docdata['ext'];
+                        $mtime = microtime(true);
+                        $purename = $artwork_id.'_proof_'.str_replace('.','_', $mtime).'.'.$docdata['ext'];
                         $target_file=$fullpath.$artwork_id.'/'.$purename;
                         $cpres=@copy($proofdocsrc,$target_file);
                         if ($cpres) {
@@ -831,18 +834,19 @@ Class Artlead_model extends MY_Model
                         }
                     }
                 } else {
-                    $newname = $artwork_id.'/'.($orderdata['brand']=='SR' ? 'SR' : 'BT').$orderdata['order_num'].'_proof_'.str_pad($numpp,2,'0', STR_PAD_LEFT).'.'.$docdata['ext'];
-                    if ($newname!==$row['proof_name']) {
-                        $proofdocsrc = str_replace($shrtpath, $fullpath, $row['src']);
-                        $target_file=$fullpath.$newname;
-                        $cpres=@copy($proofdocsrc,$target_file);
-                        if ($cpres) {
-                            $saverow=1;
-                            $row['src']=$shrtpath.$newname;
-                        }
-                    } else {
-                        $saverow=1;
-                    }
+                    $saverow=1;
+//                    $newname = $artwork_id.'/'.($orderdata['brand']=='SR' ? 'SR' : 'BT').$orderdata['order_num'].'_proof_'.str_pad($numpp,2,'0', STR_PAD_LEFT).'.'.$docdata['ext'];
+//                    if ($newname!==$row['proof_name']) {
+//                        $proofdocsrc = str_replace($shrtpath, $fullpath, $row['src']);
+//                        $target_file=$fullpath.$newname;
+//                        $cpres=@copy($proofdocsrc,$target_file);
+//                        if ($cpres) {
+//                            $saverow=1;
+//                            $row['src']=$shrtpath.$newname;
+//                        }
+//                    } else {
+//                        $saverow=1;
+//                    }
                 }
                 if ($saverow==1) {
                     $this->db->set('updated_user',$user_id);
@@ -885,7 +889,7 @@ Class Artlead_model extends MY_Model
                     }
                     $numpp++;
                 }
-            }
+            //}
         }
         $out['result']=$this->success_result;
         // Build ART Sync doc
@@ -2460,58 +2464,88 @@ Class Artlead_model extends MY_Model
 
     public function remove_newproofdocs($leadorder, $data, $ordersession)
     {
-        $out = ['result' => $this->error_result, 'msg' => $this->init_msg];
+        $out = ['result' => $this->error_result, 'msg' => 'Proof Num dosn\'t exist'];
         $artproofs = $leadorder['artproofs'];
         $deleted = $leadorder['delrecords'];
         $options = $artproofs['options'];
+        $historical = $artproofs['historical'];
         $found = 0;
-        $sectidx=0;
-        foreach ($options as $option) {
-            if ($option['option']==$data['section']) {
-                $found = 1;
-                break;
-            } else {
-                $sectidx++;
-            }
-        }
-        if ($found==1) {
-            $docs = $options[$sectidx]['data'];
-            $found = 0;
-            $newdocs = [];
-            $docnum = 1;
-            foreach ($docs as $doc) {
-                if ($doc['artwork_proof_id'] == $data['artproof']) {
+        if ($historical==1) {
+            $proofs = $artproofs['proofs'];
+            $newproofs = [];
+            $numpp = 1;
+            foreach ($proofs as $proof) {
+                if ($proof['artwork_proof_id'] == $data['artproof']) {
                     $found = 1;
                     if ($data['artproof'] > 0) {
                         $deleted[] = [
                             'entity' => 'proofdocs',
-                            'id' => $doc['artwork_proof_id'],
+                            'id' => $proof['artwork_proof_id'],
                         ];
                     }
                 } else {
-                    $doc['proof_ordnum'] = $docnum;
-                    $newdocs[] = $doc;
-                    $docnum++;
+                    $proof['proof_ordnum'] = $numpp;
+                    $newproofs[] = $proof;
+                    $numpp++;
                 }
             }
             if ($found==1) {
-                $options[$sectidx]['data'] = $newdocs;
-                if (count($newdocs)==0) {
-                    // Rebuild options
-                    $newoptions = [];
-                    foreach ($options as $option) {
-                        if ($option['option']!=$data['section']) {
-                            $newoptions[] = $option;
-                        }
-                    }
-                    $options = $newoptions;
-                }
-                $artproofs['options'] = $options;
+                $artproofs['proofs'] = $newproofs;
                 $leadorder['artproofs'] = $artproofs;
                 $leadorder['delrecords'] = $deleted;
                 // Save result
                 usersession($ordersession, $leadorder);
                 $out['result'] = $this->success_result;
+            }
+        } else {
+            $sectidx=0;
+            foreach ($options as $option) {
+                if ($option['option']==$data['section']) {
+                    $found = 1;
+                    break;
+                } else {
+                    $sectidx++;
+                }
+            }
+            if ($found==1) {
+                $docs = $options[$sectidx]['data'];
+                $found = 0;
+                $newdocs = [];
+                $docnum = 1;
+                foreach ($docs as $doc) {
+                    if ($doc['artwork_proof_id'] == $data['artproof']) {
+                        $found = 1;
+                        if ($data['artproof'] > 0) {
+                            $deleted[] = [
+                                'entity' => 'proofdocs',
+                                'id' => $doc['artwork_proof_id'],
+                            ];
+                        }
+                    } else {
+                        $doc['proof_ordnum'] = $docnum;
+                        $newdocs[] = $doc;
+                        $docnum++;
+                    }
+                }
+                if ($found==1) {
+                    $options[$sectidx]['data'] = $newdocs;
+                    if (count($newdocs)==0) {
+                        // Rebuild options
+                        $newoptions = [];
+                        foreach ($options as $option) {
+                            if ($option['option']!=$data['section']) {
+                                $newoptions[] = $option;
+                            }
+                        }
+                        $options = $newoptions;
+                    }
+                    $artproofs['options'] = $options;
+                    $leadorder['artproofs'] = $artproofs;
+                    $leadorder['delrecords'] = $deleted;
+                    // Save result
+                    usersession($ordersession, $leadorder);
+                    $out['result'] = $this->success_result;
+                }
             }
         }
         return $out;
