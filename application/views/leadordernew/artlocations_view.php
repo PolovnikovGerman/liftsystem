@@ -39,7 +39,7 @@
     </div>
 
 <?php endif; ?>
-<div id="artlocationsarea" class="artlocationsarea">
+<div id="artlocationsarea" class="artlocationsarea <?=$edit==1 ? 'editview' : ''?>">
 <?php foreach ($artlocations as $artlocation): ?>
 <div class="artapprvl_artbox <?=$edit==1 ? 'edit' : ''?>">
     <?php if ($artlocation['art_type'] == 'Logo'): ?>
