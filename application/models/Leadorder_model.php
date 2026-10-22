@@ -5048,7 +5048,7 @@ Class Leadorder_model extends My_Model {
 
         $proofs=$leadorder['artproofs'];
         if ($proofs['historical']==1) {
-            $res=$this->artlead_model->save_artproof($proofs, $artwork_id, $user_id);
+            $res=$this->artlead_model->save_artproof($proofs['proofs'], $artwork_id, $user_id);
         } else {
             $res = $this->artlead_model->save_artproof_options($proofs, $artwork_id, $user_id);
         }
@@ -6200,6 +6200,10 @@ Class Leadorder_model extends My_Model {
                 case 'artlocation':
                     $this->db->where('artwork_art_id', $row['id']);
                     $this->db->delete('ts_artwork_arts');
+                    break;
+                case 'proofdocs':
+                    $this->db->where('artwork_proof_id', $row['id']);
+                    $this->db->delete('ts_artwork_proofs');
                     break;
             }
         }

@@ -2829,7 +2829,7 @@ function edit_currentorder() {
     $("#loader").show();
     $.post(url,params, function(response){
         if (response.errors=='') {
-            $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
+            // $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
             $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
             $("#loader").hide();
             clearTimeout(timerId);
