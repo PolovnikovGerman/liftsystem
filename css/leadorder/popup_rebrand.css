@@ -1467,7 +1467,7 @@ li.select2-results__option {
     /* width: 308px; */
     /* height: 85px; */
     width: 314px;
-    height: 112px;
+    /*height: 112px;*/
     overflow-x: auto;
     padding: 0 9px 7px;
     display: flex;
@@ -1488,6 +1488,7 @@ li.select2-results__option {
     border-radius: 4px;
     padding: 4px 5px;
     width: 100%;
+    height: 84px;
 }
 .proofdocdatarow {
     width: 100%;
@@ -1531,7 +1532,7 @@ li.select2-results__option {
 }
 .artproofs_optn {
     width: 65px;
-    height: 75px;
+    /*height: 75px;*/
     margin: 7px 7px 0;
     flex: 0 0 auto;
 }
@@ -1544,7 +1545,7 @@ li.select2-results__option {
 .optn_box {
     /*width: 54px;*/
     width: 100%;
-    height: 70px;
+    height: 80px;
     border: 1px solid #c2c1c1;
     padding: 4px;
     overflow-y: auto;
@@ -1564,6 +1565,7 @@ li.select2-results__option {
 }
 span.artproofs_remove {
     color: #ff0000;
+    cursor: pointer;
 }
 .proofdetailsballonbox {
     font-size: 13px;
