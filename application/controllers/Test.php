@@ -81,8 +81,10 @@ class Test extends CI_Controller
         $pdf->Ln(5);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFont('Arial','',14);
-        $pdf->Text(15, 32, '855 Bloomfield Ave');
-        $pdf->Text(15, 40, 'Clifton, NJ 07012');
+//        $pdf->Text(15, 32, '855 Bloomfield Ave');
+//        $pdf->Text(15, 40, 'Clifton, NJ 07012');
+        $pdf->Text(15, 32, '1 Stewart Court');
+        $pdf->Text(15, 40, 'Denville, NJ 07834');
         $pdf->Text(15,48, 'Call Us at');
         $pdf->SetTextColor(0,0,255);
         $pdf->Text(38,48, '1-800-790-6090');

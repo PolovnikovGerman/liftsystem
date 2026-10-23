@@ -2152,7 +2152,8 @@ class Email_model extends My_Model
         $pdf->SetTextColor(255,255,255);
         $pdf->SetFillColor(26,26,255);
         $pdf->SetFont('Times','B',15);
-        $pdf->Cell(187, 12, 'STRESSBALLS.com, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA',0, 0,'C',1);
+        // $pdf->Cell(187, 12, 'STRESSBALLS.com, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA',0, 0,'C',1);
+        $pdf->Cell(187, 12, 'STRESSBALLS.com, Inc. - 1 Stewart Court - Denville, NJ 07834 - USA',0, 0,'C',1);
         // Prepare save
         $file_name = 'STRESSBALLS.com_Quote_'.date('ymd').$mail['email_id'].'.pdf';
         $file_out = $this->config->item('quotes') . $file_name;
