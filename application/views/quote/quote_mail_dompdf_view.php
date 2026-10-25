@@ -930,7 +930,7 @@
                 </table>
                 <table>
                     <tr>
-                        <td class="details-footer">STRESSBALLS.com, Inc. - 855 Bloomfield Ave - Clifton, NJ 07012 - USA</td>
+                        <td class="details-footer">STRESSBALLS.com, Inc. - 1 Stewart Court, Denville, NJ 07834 - USA</td>
                     </tr>
                 </table>
             </div>
