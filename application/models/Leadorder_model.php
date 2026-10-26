@@ -10597,16 +10597,20 @@ Class Leadorder_model extends My_Model {
         if ($brand=='SR') {
             $pdf->SetFont('','',12.046857);
             $pdf->Text(5, 30.88, 'ASI # 40694');
-            $pdf->Text(5, 36.88, '855 Bloomfield Ave');
-            $pdf->Text(5, 42.88, 'Clifton, NJ 07012');
+//            $pdf->Text(5, 36.88, '855 Bloomfield Ave');
+//            $pdf->Text(5, 42.88, 'Clifton, NJ 07012');
+            $pdf->Text(5, 36.88, '1 Stewart Court');
+            $pdf->Text(5, 42.88, 'Denville, NJ 07834');
             $pdf->Text(5,48.88, 'Call Us at');
             $pdf->SetTextColor(0,0,75);
             $pdf->Text(23,48.88, '1-800-370-3020');
             // $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
         } else {
             $pdf->SetFont('','',12.046857);
-            $pdf->Text(5, 35.88, '855 Bloomfield Ave');
-            $pdf->Text(5, 42.88, 'Clifton, NJ 07012');
+//            $pdf->Text(5, 35.88, '855 Bloomfield Ave');
+//            $pdf->Text(5, 42.88, 'Clifton, NJ 07012');
+            $pdf->Text(5, 35.88, '1 Stewart Court');
+            $pdf->Text(5, 42.88, 'Denville, NJ 07834');
             $pdf->SetTextColor(0,0,255);
             $pdf->Text(5, 48.88, '1-800-790-6090');
             $pdf->Text(42, 48.88,'www.stressballs.com'); // , 'www.bluetrack.com');

@@ -4,6 +4,9 @@
         <div class="artproofs_addoptn">+Add<br>Option</div>
     </div>
 <?php endif; ?>
+<?php if (count($options)==0) : ?>
+&nbsp;
+<?php else : ?>
 <?php foreach ($options as $option) : ?>
     <div class="artproofs_optn <?=$option['aprt']==0 ? '' : 'approved'?> <?=$edit==0 ? '' : 'edit'?>" data-section="<?=$option['option']?>">
         <div class="optn_header">
@@ -37,3 +40,4 @@
         </div>
     </div>
 <?php endforeach; ?>
+<?php endif; ?>

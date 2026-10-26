@@ -1417,6 +1417,50 @@ class Leadordernew extends MY_Controller
         }
         show_404();
     }
+    // Prepare Extend time form
+    public function extend_edittime() {
+        if ($this->isAjax()) {
+            // Extend Edit Time
+            $postdata = $this->input->post();
+            $ordersession=ifset($postdata, 'ordersession','defsession');
+            $leadorder=usersession($ordersession);
+            $mdata=[];
+            $error = $this->restore_orderdata_error;
+            if (!empty($leadorder)) {
+                $mdata['content']=$this->load->view('leadorderdetails/extent_edittime_view', array(),TRUE);
+                $error = '';
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+    }
+
+    // Extend Order Edit time
+    public function extendtime_order() {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession = ifset($postdata, 'ordersession', 'unkn');
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                $error=$locres['msg'];
+                if ($locres['result']==$this->error_result) {
+                    usersession($ordersession, NULL);
+                    $this->ajaxResponse($mdata, $error);
+                } else {
+                    $error = '';
+                    // Calc new period for lock
+                    $mdata['loctime'] = $this->_leadorder_locktime();
+                }
+            }
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
 
     public function saveshipdocload()
     {
@@ -1893,7 +1937,6 @@ class Leadordernew extends MY_Controller
                 if ($res['result']==$this->success_result) {
                     $error = '';
                     $mdata['approved'] = $postdata['newapprov'];
-                    $mdata['section'] = $postdata['section'];
                     $heads = $res['heads'];
                     $mdata['headclass'] = $heads['class'];
                     if (empty($heads['apprtime'])) {
@@ -1903,6 +1946,9 @@ class Leadordernew extends MY_Controller
                         $content.='<span>'.$heads['status'].'</span>';
                         $content.='<div class="artproofapprvl_days">'.$heads['apprtime'].'</div>';
                         $mdata['content'] = $content;
+                    }
+                    if (isset($postdata['section'])) {
+                        $mdata['section'] = $postdata['section'];
                     }
                 }
             }

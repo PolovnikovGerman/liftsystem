@@ -82,6 +82,7 @@ function navigation_init() {
 function init_closebutton() {
     $(".neworder_close").unbind("click").click(function () {
         $("#modalLeadOrder").modal("hide");
+        clearTimeout(timerId);
         if ($("input#currentpage").length>0) {
             var callpage=$("input#currentpage").val();
             if (callpage=='artorderlist') {
@@ -420,7 +421,6 @@ function order_navigate(order) {
     var url="/leadorder/leadorder_change_new";
     $.post(url, params, function(response) {
         if (response.errors=='') {
-            $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
             $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
             $("#modalLeadOrder").modal({backdrop: 'static', keyboard: false, show: true});
             // if (parseInt(response.data.cancelorder)===1) {
@@ -816,7 +816,9 @@ function init_artdata_show() {
             var url="/leadordernew/removeprofdoc";
             var params=new Array();
             params.push({name: 'artproof', value: $(this).data('proofdoc')});
-            params.push({name: 'section', value: $(this).data('section')});
+            // if ($(this).hasAttribute('section')) {
+                params.push({name: 'section', value: $(this).data('section')});
+            // }
             params.push({name: 'ordersession', value: $("input#ordersession").val()});
             $.post(url, params, function (response) {
                 if (response.errors=='') {
@@ -919,6 +921,42 @@ function init_artdata_show() {
             },'json');
         }
     });
+    // Proof docs - history view
+    // Approve
+    $(".proof_approve").unbind('click').click(function (){
+        var proofdoc = $(this).data('proofdoc');
+        var newapprov = 1;
+        var msg = 'Approve Proof Doc?'
+        if ($(this).hasClass('approved')) {
+            newapprov = 0;
+            msg = 'Redo Approve Proof Doc?';
+        }
+        if (confirm(msg)==true) {
+            var url="/leadordernew/profdocapprove";
+            var params=new Array();
+            params.push({name: 'proofdoc', value: proofdoc});
+            params.push({name: 'newapprov', value: newapprov});
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $(".artproofheader_apprvl").removeClass('approval').removeClass('notapproval').addClass(response.data.headclass);
+                    $(".artproofheader_apprvl").empty().html(response.data.content);
+                    if (newapprov==1) {
+                        $(".proof_approve[data-proofdoc='"+proofdoc+"']").addClass('approved');
+                        $(".proof_approve[data-proofdoc='"+proofdoc+"']").empty().html('<img src="/img/leadorder/star-yellow.svg" alt="Star yellow"/>');
+                    } else {
+                        $(".proof_approve[data-proofdoc='"+proofdoc+"']").removeClass('approved');
+                        $(".proof_approve[data-proofdoc='"+proofdoc+"']").empty().html('<img src="/img/leadorder/star.svg" alt="Star"/>');
+                    }
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+
 }
 
 function send_leadapprovemail() {
@@ -1326,13 +1364,13 @@ function init_onlineleadorder_edit() {
     init_fulfillment_history();
     init_artdata_show();
     // Edit
-    // create_editorder_timer();
     init_orderdata_change();
     init_contacts_change();
     init_addneworderitem();
     init_orderitem_manage();
     init_shipbill_manage();
     init_payment_links();
+    create_editorder_timer();
 }
 
 function init_orderdata_change() {
@@ -2638,7 +2676,7 @@ function init_shipdocupload() {
         onComplete: function(id, fileName, responseJSON){
             if (responseJSON.success==true) {
                 $(".qq-upload-list").hide();
-                var url='/leadorder/saveshipdocload';
+                var url='/leadordernew/saveshipdocload';
                 var params=new Array();
                 params.push({name: 'ordersession', value: $("input#ordersession").val()});
                 params.push({name: 'doclink', value: responseJSON.filename});
@@ -2777,9 +2815,8 @@ function save_leadorderdata() {
             updorders = 1;
             clearTimeout(timerId);
             // Current page
-            // $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
-            // $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
-            // $("#modalLeadOrder").modal({backdrop: 'static', keyboard: false, show: true});
+            $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
+            $("#modalLeadOrder").modal({backdrop: 'static', keyboard: false, show: true});
             $("#loader").hide();
             if (parseInt(response.data.newplaceorder)==1) {
                 $("#flash").css('width','975');
@@ -2804,7 +2841,6 @@ function save_leadorderdata() {
                 newparams.push({name: 'brand', value: orderbrand});
                 $.post(newurl, newparams, function(newresponse){
                     if (newresponse.errors=='') {
-                        $("#modalLeadOrder").find('div.modal-header').empty().html(newresponse.data.header);
                         $("#modalLeadOrder").find('div.modal-body').empty().html(newresponse.data.content);
                         navigation_init();
                     } else {
@@ -2829,7 +2865,6 @@ function edit_currentorder() {
     $("#loader").show();
     $.post(url,params, function(response){
         if (response.errors=='') {
-            // $("#modalLeadOrder").find('div.modal-header').empty().html(response.data.header);
             $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
             $("#loader").hide();
             clearTimeout(timerId);
@@ -2853,7 +2888,8 @@ function edit_currentorder() {
 }
 
 function create_editorder_timer() {
-    if (parseInt($("input#orderdataid").val())>0) {
+    if (parseInt($("input#leadorderdataid").val())>0) {
+        $(".timeroutarea").show();
         clearTimeout(timerId);
         timerId = setTimeout('timershow()', 1000);
     }
@@ -2865,32 +2901,33 @@ function timershow() {
         today = Math.floor((timeend-today)/1000);
         if (today<=0) {
             clearTimeout(timerId);
-            $("#artNextModal").modal('hide');
-            var order=$("input#orderdataid").val();
+            // $("#modalLeadOrder").modal("hide");
+            var order=$("input#leadorderdataid").val();
             var locrecid=$("input#locrecid").val();
-            var url="/leadorder/leadorder_change";
+            var url="/leadorder/leadorder_change_new";
             var params=new Array();
             params.push({name: 'order', value: order});
             params.push({name: 'locrecid', value: locrecid});
             params.push({name: 'edit', value: 0});
             $.post(url, params, function(response){
                 if (response.errors=='') {
-                    $("#artModalLabel").empty().html(response.data.header);
-                    $("#artModal").find('div.modal-body').empty().html(response.data.content);
+                    $("#modalLeadOrder").find('div.modal-body').empty().html(response.data.content);
                     navigation_init();
                     alert('Your Edit Time has expired prior to saving.  Please re-do any work you meant to do.');
+                    console.log('Restore content');
+                    return true;
                 } else {
                     show_error(response);
                 }
             },'json');
-        }
-        if (today==15) {
+        } else if (today==15) {
             // Call colorbox
             var params = new Array();
             params.push({name: 'ordersession', value: $("input#ordersession").val()});
-            var url='/leadorder/extend_edittime';
+            var url='/leadordernew/extend_edittime';
             $.post(url, params, function (response) {
                 if (response.errors=='') {
+                    clearTimeout(timerId);
                     $("#artNextModal").modal('hide');
                     $("#artNextModal").find('div.modal-dialog').css('width','440px');
                     $("#artNextModal").find('.modal-title').empty().html('Extend Edit Time');
@@ -2898,19 +2935,21 @@ function timershow() {
                     $("#artNextModal").modal({backdrop: 'static', keyboard: false, show: true});
                     $("#artNextModal").on('hidden.bs.modal', function (e) {
                         $(document.body).addClass('modal-open');
+                        create_editorder_timer();
                     })
                     init_extendtime();
                 } else {
                     show_error(response);
                 }
             },'json')
+        } else {
+            var tsec=today%60; today=Math.floor(today/60); if(tsec<10)tsec='0'+tsec;
+            var tmin=today%60; today=Math.floor(today/60); if(tmin<10)tmin='0'+tmin;
+            var timestr=tmin+":"+tsec;
+            $("div.timeroutarea").empty().html(timestr);
+            clearTimeout(timerId);
+            timerId = setTimeout('timershow()', 1000);
         }
-        var tsec=today%60; today=Math.floor(today/60); if(tsec<10)tsec='0'+tsec;
-        var tmin=today%60; today=Math.floor(today/60); if(tmin<10)tmin='0'+tmin;
-        var timestr=tmin+":"+tsec;
-        $("div.timeroutarea").empty().html(timestr);
-        clearTimeout(timerId);
-        timerId = setTimeout('timershow()', 1000);
     } else {
         clearTimeout(timerId);
     }
@@ -2918,7 +2957,7 @@ function timershow() {
 
 function init_extendtime() {
     $("div.extendtime_button").unbind('click').click(function(){
-        var url="/leadorder/extendtime_order";
+        var url="/leadordernew/extendtime_order";
         $.post(url, {ordersession: $("input#ordersession").val()}, function(response){
             if (response.errors=='') {
                 $("#artNextModal").modal('hide');

@@ -43,4 +43,5 @@
         <div class="ordnumberbox_code"><?=$order_confirm?></div>
     </div>
     <div class="whiteline_datebox"><?=date('D - M j, Y', $order_date)?></div>
+    <div class="timeroutarea"></div>
 </div>

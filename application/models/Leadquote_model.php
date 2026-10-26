@@ -2309,7 +2309,8 @@ class Leadquote_model extends MY_Model
         $pdf->SetFont('','',12.046857);
         $ourAddressY = 42.28;
         $pdf->SetXY($startPageX, $ourAddressY);
-        $pdf->Cell(88,6, '855 Bloomfield Ave Clifton, NJ 07012',0,0,'C');
+        // $pdf->Cell(88,6, '855 Bloomfield Ave Clifton, NJ 07012',0,0,'C');
+        $pdf->Cell(88,6, '1 Stewart Court, Denville, NJ 07834',0,0,'C');
         $ourAddressY += 6.4;
         $pdf->SetXY($startPageX, $ourAddressY);
         // $pdf->Text($startPageX, $ourAddressY, 'Clifton, NJ 07012');
@@ -2737,9 +2738,11 @@ class Leadquote_model extends MY_Model
         // Our Address
         $pdf->SetFont('','',12.046857);
         $ourAddressY = 39.68;
-        $pdf->Text($startPageX, $ourAddressY, '855 Bloomfield Ave');
+        // $pdf->Text($startPageX, $ourAddressY, '855 Bloomfield Ave');
+        $pdf->Text($startPageX, $ourAddressY, '1 Stewart Court');
         $ourAddressY += 5.8;
-        $pdf->Text($startPageX, $ourAddressY, 'Clifton, NJ 07012');
+        // $pdf->Text($startPageX, $ourAddressY, 'Clifton, NJ 07012');
+        $pdf->Text($startPageX, $ourAddressY, 'Denville, NJ 07834');
         $ourAddressY += 5.8;
         // $pdf->Text($startPageX,$ourAddressY, 'Call Us at');
         $pdf->SetTextColor(0,0,255);

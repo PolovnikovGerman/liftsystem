@@ -6,7 +6,7 @@
         <?php endif; ?>
         <div class="datarow proofdocdatarow">
             <div class="proofdocname">
-                <div class="<?=$edit==1 ? 'proof_approve' : 'proof_approve_view'?>" data-proofdoc="<?=$proof['artwork_proof_id']?>">
+                <div class="<?=$edit==1 ? 'proof_approve' : 'proof_approve_view'?> <?=$proof['approved']==1 ? 'approved' : ''?>" data-proofdoc="<?=$proof['artwork_proof_id']?>">
                     <?php if ($proof['approved']==1) : ?>
                         <img src="/img/leadorder/star-yellow.svg" alt="Star yellow"/>
                     <?php else: ?>

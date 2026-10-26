@@ -1,8 +1,8 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /* Shipping Parameters */
 $config['country_code']='US';
-$config['zip']='07012';
-$config['city']='Clifton';
+$config['zip']='07834';
+$config['city']='Denville';
 $config['ship_service_code']='00';
 $config['rate_char']='Regular+Daily+Pickup';
 $config['ups_resident']='01';
@@ -56,7 +56,7 @@ $config['ups_shiper'] = array(
     "ShipperNumber" => $config['ups_account_number'],
     "Address" => array(
         "AddressLine" => array(
-            "855 Bloomfield Ave"
+            "1 Stewart Court"
         ),
         "City" => $config['city'],
         "StateProvinceCode" => "NJ",
