@@ -816,7 +816,9 @@ function init_artdata_show() {
             var url="/leadordernew/removeprofdoc";
             var params=new Array();
             params.push({name: 'artproof', value: $(this).data('proofdoc')});
-            params.push({name: 'section', value: $(this).data('section')});
+            // if ($(this).hasAttribute('section')) {
+                params.push({name: 'section', value: $(this).data('section')});
+            // }
             params.push({name: 'ordersession', value: $("input#ordersession").val()});
             $.post(url, params, function (response) {
                 if (response.errors=='') {
@@ -919,6 +921,42 @@ function init_artdata_show() {
             },'json');
         }
     });
+    // Proof docs - history view
+    // Approve
+    $(".proof_approve").unbind('click').click(function (){
+        var proofdoc = $(this).data('proofdoc');
+        var newapprov = 1;
+        var msg = 'Approve Proof Doc?'
+        if ($(this).hasClass('approved')) {
+            newapprov = 0;
+            msg = 'Redo Approve Proof Doc?';
+        }
+        if (confirm(msg)==true) {
+            var url="/leadordernew/profdocapprove";
+            var params=new Array();
+            params.push({name: 'proofdoc', value: proofdoc});
+            params.push({name: 'newapprov', value: newapprov});
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            $.post(url, params, function (response) {
+                if (response.errors=='') {
+                    $(".artproofheader_apprvl").removeClass('approval').removeClass('notapproval').addClass(response.data.headclass);
+                    $(".artproofheader_apprvl").empty().html(response.data.content);
+                    if (newapprov==1) {
+                        $(".proof_approve[data-proofdoc='"+proofdoc+"']").addClass('approved');
+                        $(".proof_approve[data-proofdoc='"+proofdoc+"']").empty().html('<img src="/img/leadorder/star-yellow.svg" alt="Star yellow"/>');
+                    } else {
+                        $(".proof_approve[data-proofdoc='"+proofdoc+"']").removeClass('approved');
+                        $(".proof_approve[data-proofdoc='"+proofdoc+"']").empty().html('<img src="/img/leadorder/star.svg" alt="Star"/>');
+                    }
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+
 }
 
 function send_leadapprovemail() {
@@ -2886,7 +2924,7 @@ function timershow() {
             // Call colorbox
             var params = new Array();
             params.push({name: 'ordersession', value: $("input#ordersession").val()});
-            var url='/leadorder/extend_edittime';
+            var url='/leadordernew/extend_edittime';
             $.post(url, params, function (response) {
                 if (response.errors=='') {
                     clearTimeout(timerId);

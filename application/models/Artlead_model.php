@@ -2556,65 +2556,118 @@ Class Artlead_model extends MY_Model
         $artproofs = $leadorder['artproofs'];
         $options = $artproofs['options'];
         $found = 0;
-        $sectidx=0;
-        foreach ($options as $option) {
-            if ($option['option']==$data['section']) {
-                $found = 1;
-                break;
-            } else {
-                $sectidx++;
-            }
-        }
-        if ($found==1) {
-            $docs = $options[$sectidx]['data'];
-            $docidx = 0;
-            foreach ($docs as $doc) {
-                if ($data['newapprov']==1) {
-                    $docs[$docidx]['approved'] = 1;
-                    $docs[$docidx]['approved_time'] = time();
-                } else {
-                    $docs[$docidx]['approved'] = 0;
-                    $docs[$docidx]['approved_time'] = 0;
-                }
-                $docidx++;
-            }
-            $options[$sectidx]['data'] = $docs;
-            if ($data['newapprov']==1) {
-                $options[$sectidx]['aprt'] = time();
-            } else {
-                $options[$sectidx]['aprt'] = 0;
-            }
-            $artproofs['options'] = $options;
-            $heads = $artproofs['head'];
-            $docsappr = 0;
-            $mintime = 0;
-            foreach ($options as $option) {
-                if ($option['aprt'] > 0) {
-                    $docsappr = 1;
-                    if ($mintime==0) {
-                        $mintime = $option['aprt'];
+        if ($artproofs['historical']==1) {
+            $proofs = $artproofs['proofs'];
+            $proofidx = 0;
+            foreach ($proofs as $proof) {
+                if ($proof['artwork_proof_id'] == $data['proofdoc']) {
+                    $found = 1;
+                    if ($data['newapprov']==1) {
+                        $proofs[$proofidx]['approved'] = 1;
+                        $proofs[$proofidx]['approved_time'] = time();
                     } else {
-                        if ($mintime > $option['aprt']) {
-                            $mintime = $option['aprt'];
+                        $proofs[$proofidx]['approved'] = 0;
+                        $proofs[$proofidx]['approved_time'] = 0;
+                    }
+                    break;
+                } else {
+                    $proofidx++;
+                }
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $heads = $artproofs['head'];
+                $docsappr = 0;
+                $mintime = 0;
+                foreach ($proofs as $proof) {
+                    if ($proof['approved_time'] > 0) {
+                        $docsappr = 1;
+                        if ($mintime==0) {
+                            $mintime = $proof['approved_time'];
+                        } else {
+                            if ($mintime > $proof['approved_time']) {
+                                $mintime = $proof['approved_time'];
+                            }
                         }
                     }
                 }
+                if ($docsappr==1) {
+                    $heads['status'] = 'Approved';
+                    $heads['class'] = 'approval';
+                    $dtime = (time() - $mintime) / (24*60*60);
+                    $heads['apprtime'] = round($dtime, 0, PHP_ROUND_HALF_DOWN).'d';
+                } else {
+                    $heads['status'] = 'Not Approved';
+                    $heads['class'] = 'notapproval';
+                    $heads['apprtime'] = '';
+                }
+                $artproofs['head'] = $heads;
+                $artproofs['proofs'] = $proofs;
+                $leadorder['artproofs'] = $artproofs;
+                usersession($ordersession, $leadorder);
+                $out['heads'] = $heads;
             }
-            if ($docsappr==1) {
-                $heads['status'] = 'Approved';
-                $heads['class'] = 'approval';
-                $dtime = (time() - $mintime) / (24*60*60);
-                $heads['apprtime'] = round($dtime, 0, PHP_ROUND_HALF_DOWN).'d';
-            } else {
-                $heads['status'] = 'Not Approved';
-                $heads['class'] = 'notapproval';
-                $heads['apprtime'] = '';
+        } else {
+            $sectidx=0;
+            foreach ($options as $option) {
+                if ($option['option']==$data['section']) {
+                    $found = 1;
+                    break;
+                } else {
+                    $sectidx++;
+                }
             }
-            $artproofs['head'] = $heads;
-            $leadorder['artproofs'] = $artproofs;
-            $out['result'] = $this->success_result;
-            $out['heads'] = $heads;
-            usersession($ordersession, $leadorder);
+            if ($found==1) {
+                $docs = $options[$sectidx]['data'];
+                $docidx = 0;
+                foreach ($docs as $doc) {
+                    if ($data['newapprov']==1) {
+                        $docs[$docidx]['approved'] = 1;
+                        $docs[$docidx]['approved_time'] = time();
+                    } else {
+                        $docs[$docidx]['approved'] = 0;
+                        $docs[$docidx]['approved_time'] = 0;
+                    }
+                    $docidx++;
+                }
+                $options[$sectidx]['data'] = $docs;
+                if ($data['newapprov']==1) {
+                    $options[$sectidx]['aprt'] = time();
+                } else {
+                    $options[$sectidx]['aprt'] = 0;
+                }
+                $artproofs['options'] = $options;
+                $heads = $artproofs['head'];
+                $docsappr = 0;
+                $mintime = 0;
+                foreach ($options as $option) {
+                    if ($option['aprt'] > 0) {
+                        $docsappr = 1;
+                        if ($mintime==0) {
+                            $mintime = $option['aprt'];
+                        } else {
+                            if ($mintime > $option['aprt']) {
+                                $mintime = $option['aprt'];
+                            }
+                        }
+                    }
+                }
+                if ($docsappr==1) {
+                    $heads['status'] = 'Approved';
+                    $heads['class'] = 'approval';
+                    $dtime = (time() - $mintime) / (24*60*60);
+                    $heads['apprtime'] = round($dtime, 0, PHP_ROUND_HALF_DOWN).'d';
+                } else {
+                    $heads['status'] = 'Not Approved';
+                    $heads['class'] = 'notapproval';
+                    $heads['apprtime'] = '';
+                }
+                $artproofs['head'] = $heads;
+                $leadorder['artproofs'] = $artproofs;
+                $out['result'] = $this->success_result;
+                $out['heads'] = $heads;
+                usersession($ordersession, $leadorder);
+            }
         }
         return $out;
     }
