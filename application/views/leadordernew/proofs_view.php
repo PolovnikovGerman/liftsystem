@@ -11,7 +11,7 @@
         <?php endif; ?>
     </div>
     <div class="artproofheader_open"><span>Open</span><span><img src="/img/leadorder/icon-link.svg"></span></div>
-    <div class="artproofheader_send <?=$edit==0 ? '' : 'active'?>">Send<span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></div>
+    <div class="artproofheader_send <?=$proofs['historical']==1 ? 'proofhistory' : ''?> <?=$edit==0 ? '' : 'active'?>">Send<span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></div>
 </div>
 <?php if ($proofs['historical']==1) : ?>
     <div class="datarow">

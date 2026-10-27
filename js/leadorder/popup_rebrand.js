@@ -816,9 +816,7 @@ function init_artdata_show() {
             var url="/leadordernew/removeprofdoc";
             var params=new Array();
             params.push({name: 'artproof', value: $(this).data('proofdoc')});
-            // if ($(this).hasAttribute('section')) {
-                params.push({name: 'section', value: $(this).data('section')});
-            // }
+            params.push({name: 'section', value: $(this).data('section')});
             params.push({name: 'ordersession', value: $("input#ordersession").val()});
             $.post(url, params, function (response) {
                 if (response.errors=='') {
@@ -897,7 +895,14 @@ function init_artdata_show() {
     });
     // Send Email
     $(".artproofheader_send.active").unbind('click').click(function (){
-        var cnt = $(".proofdocoption[type='checkbox']:checked").length;
+        var cnt = 0;
+        var historical = 0;
+        if ($(this).hasClass('proofhistory')) {
+            cnt = $(".proofdoccheck[type='checkbox']:checked").length;
+            historical = 1;
+        } else {
+            cnt = $(".proofdocoption[type='checkbox']:checked").length;
+        }
         if (parseInt(cnt) > 0) {
             var url="/leadordernew/prepare_profdocemail";
             var params=new Array();
@@ -911,7 +916,7 @@ function init_artdata_show() {
                         init_onlineleadorder_edit();
                     });
                     $("div.approvemail_send").click(function(){
-                        send_leadapprovemail();
+                        send_leadapprovemail(historical);
                     });
                     $("input#loctimeout").val(response.data.loctime);
                     init_onlineleadorder_edit();
@@ -959,12 +964,20 @@ function init_artdata_show() {
 
 }
 
-function send_leadapprovemail() {
+function send_leadapprovemail(historical) {
     var artwork=$("input#artwork_id").val();
     var options = '';
-    $(".proofdocoption[type='checkbox']:checked").each(function () {
-        options+=$(this).data('proofopt')+'|';
-    });
+    if (historical==0) {
+        $(".proofdocoption[type='checkbox']:checked").each(function () {
+            options+=$(this).data('proofopt')+'|';
+        });
+    }
+    var proofdocs = '';
+    if (historical==1) {
+        $(".proofdoccheck[type='checkbox']:checked").each(function () {
+            proofdocs+=$(this).data('proofdoc')+'|';
+        })
+    }
     var params=new Array();
     params.push({name:'artwork_id',value: artwork});
     params.push({name:'from',value: $("input#approvemail_from").val()});
@@ -978,6 +991,8 @@ function send_leadapprovemail() {
     }
     params.push({name:'cc', value:bccmail});
     params.push({name: 'sections', value: options});
+    params.push({name: 'proofdocs', value: proofdocs});
+    params.push({name: 'historical', value: historical});
     params.push({name: 'ordersession', value: $("input#ordersession").val()});
     var url="/leadordernew/sendproofs";
     $.post(url, params, function(response){
