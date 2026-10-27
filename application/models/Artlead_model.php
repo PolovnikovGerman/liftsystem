@@ -3318,53 +3318,82 @@ Class Artlead_model extends MY_Model
     {
         $out = ['result' => $this->error_result, 'msg' => 'Option Not Found'];
         $previedat = $leadorder['previewdocs'];
-        $previews = $previedat['options'];
-        $deleted = $leadorder['delrecords'];
         $found = 0;
-        $optidx = 0;
-        foreach ($previews as $preview) {
-            if ($preview['preview_option']==$data['section']) {
-                $found = 1;
-                break;
-            } else {
-                $optidx++;
-            }
-        }
-        if ($found==1) {
-            $out['msg'] = 'Priveiew Picture Not found';
-            $docs = $previews[$optidx]['data'];
-            $found = 0;
-            $newdocs = [];
-            $numpp = 1;
-            foreach ($docs as $doc) {
-                if ($doc['artwork_preview_id']==$data['previewdoc']) {
+        $deleted = $leadorder['delrecords'];
+        $historical = $previedat['historical'];
+        if ($historical==0) {
+            $previews = $previedat['options'];
+            $optidx = 0;
+            foreach ($previews as $preview) {
+                if ($preview['preview_option']==$data['section']) {
                     $found = 1;
-                    if ($data['previewdoc'] > 0) {
+                    break;
+                } else {
+                    $optidx++;
+                }
+            }
+            if ($found==1) {
+                $out['msg'] = 'Priveiew Picture Not found';
+                $docs = $previews[$optidx]['data'];
+                $found = 0;
+                $newdocs = [];
+                $numpp = 1;
+                foreach ($docs as $doc) {
+                    if ($doc['artwork_preview_id']==$data['previewdoc']) {
+                        $found = 1;
+                        if ($data['previewdoc'] > 0) {
+                            $deleted[] = [
+                                'entity' => 'previews',
+                                'id' => $data['previewdoc'],
+                            ];
+                        }
+                    } else {
+                        $doc['numpp'] = $numpp;
+                        $newdocs[] = $doc;
+                        $numpp++;
+                    }
+                }
+                if ($found==1) {
+                    $out['result'] = $this->success_result;
+                    $previews[$optidx]['data']=$newdocs;
+                    if (count($newdocs)==0) {
+                        // Remove option
+                        $newoptions = [];
+                        foreach ($previews as $preview) {
+                            if ($preview['preview_option']!=$data['section']) {
+                                $newoptions[] = $preview;
+                            }
+                        }
+                        $previews = $newoptions;
+                    }
+                    $previedat['options'] = $previews;
+                    $leadorder['previewdocs'] = $previedat;
+                    $leadorder['delrecords'] = $deleted;
+                    usersession($ordersession, $leadorder);
+                }
+            }
+        } else {
+            $previews = $previedat['previews'];
+            $numpp = 1;
+            $newdocs = [];
+            foreach ($previews as $preview) {
+                if ($preview['artwork_preview_id']==$data['previewdoc']) {
+                    if ($preview['artwork_preview_id']>0) {
                         $deleted[] = [
                             'entity' => 'previews',
-                            'id' => $data['claydoc'],
+                            'id' => $preview['artwork_preview_id'],
                         ];
+                        $found = 1;
                     }
                 } else {
-                    $doc['numpp'] = $numpp;
-                    $newdocs[] = $doc;
+                    $preview['numpp'] = $numpp;
+                    $newdocs[] = $preview;
                     $numpp++;
                 }
             }
             if ($found==1) {
                 $out['result'] = $this->success_result;
-                $previews[$optidx]['data']=$newdocs;
-                if (count($newdocs)==0) {
-                    // Remove option
-                    $newoptions = [];
-                    foreach ($previews as $preview) {
-                        if ($preview['preview_option']!=$data['section']) {
-                            $newoptions[] = $preview;
-                        }
-                    }
-                    $previews = $newoptions;
-                }
-                $previedat['options'] = $previews;
+                $previedat['previews'] = $newdocs;
                 $leadorder['previewdocs'] = $previedat;
                 $leadorder['delrecords'] = $deleted;
                 usersession($ordersession, $leadorder);
@@ -3377,29 +3406,50 @@ Class Artlead_model extends MY_Model
     {
         $out = ['result' => $this->error_result, 'msg' => 'Clay Model Not Found'];
         $previedat = $leadorder['previewdocs'];
-        $previews = $previedat['options'];
         $found = 0;
-        $optidx = 0;
-        foreach ($previews as $preview) {
-            if ($preview['preview_option']==$data['section']) {
-                $found = 1;
-                $previews[$optidx]['approved'] = ($data['newapprove']==1 ? 1 : 0);
-                $docidx = 0;
-                $docs = $previews[$optidx]['data'];
-                foreach ($docs as $doc) {
-                    $docs[$docidx]['preview_approved'] = ($data['newapprove']==1 ? 1 : 0);
-                    $docs[$docidx]['preview_approvetime'] = ($data['newapprove']==1 ? time() : 0);
-                    $docidx++;
+        $historical = $previedat['historical'];
+        if ($historical==1) {
+            $previews = $previedat['previews'];
+            $previewidx = 0;
+            foreach ($previews as $preview) {
+                if ($preview['artwork_preview_id']==$data['preview']) {
+                    $previews[$previewidx]['preview_approved'] = ($data['newapprove']==1 ? 1 : 0);
+                    $previews[$previewidx]['preview_approvetime'] = ($data['newapprove']==1 ? time() : 0);
+                    $found = 1;
+                    break;
                 }
-                $previews[$optidx]['data'] = $docs;
+                $previewidx++;
             }
-            $optidx++;
-        }
-        if ($found==1) {
-            $out['result'] = $this->success_result;
-            $previedat['options'] = $previews;
-            $leadorder['previewdocs'] = $previedat;
-            usersession($ordersession, $leadorder);
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $previedat['previews'] = $previews;
+                $leadorder['previewdocs'] = $previedat;
+                usersession($ordersession, $leadorder);
+            }
+        } else {
+            $previews = $previedat['options'];
+            $optidx = 0;
+            foreach ($previews as $preview) {
+                if ($preview['preview_option']==$data['section']) {
+                    $found = 1;
+                    $previews[$optidx]['approved'] = ($data['newapprove']==1 ? 1 : 0);
+                    $docidx = 0;
+                    $docs = $previews[$optidx]['data'];
+                    foreach ($docs as $doc) {
+                        $docs[$docidx]['preview_approved'] = ($data['newapprove']==1 ? 1 : 0);
+                        $docs[$docidx]['preview_approvetime'] = ($data['newapprove']==1 ? time() : 0);
+                        $docidx++;
+                    }
+                    $previews[$optidx]['data'] = $docs;
+                }
+                $optidx++;
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $previedat['options'] = $previews;
+                $leadorder['previewdocs'] = $previedat;
+                usersession($ordersession, $leadorder);
+            }
         }
         return $out;
     }

@@ -350,10 +350,13 @@ function init_claypreview_tabs() {
                     $("#previewdocsviewarea").empty().html(response.data.content);
                     $("input#loctimeout").val(response.data.loctime);
                     init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
                 }
             },'json');
         }
     });
+    // Preview pic - approve
     $(".previewpict_optn_star").unbind('click').click(function (){
         var newappr = 1;
         if ($(this).hasClass("approved")) {
@@ -377,6 +380,59 @@ function init_claypreview_tabs() {
                     } else {
                         $(".previewpict_optn_star[data-section='"+section+"']").removeClass('approved').addClass('unapproved').empty().html('<img src="/img/leadorder/star.svg">');
                     }
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // Preview pic historic - remove
+    $(".previewremove").unbind('click').click(function (){
+        var msg = 'Remove '+$(this).data('previewname')+'?';
+        if (confirm(msg)==true) {
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'previewdoc', value: $(this).data('previewdoc')});
+            var url='/leadordernew/artpreview_remove';
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $("#previewdocsviewarea").empty().html(response.data.content);
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // Preview pic history - approve/redo
+    $(".previewpic_approv").unbind('click').click(function (){
+        var newappr = 1;
+        if ($(this).hasClass("approved")) {
+            newappr = 0;
+        }
+        var msg = 'Approve Preview pic?';
+        if (newappr==0) {
+            msg = 'Redo Approving Preview pic?';
+        }
+        if (confirm(msg)==true) {
+            var preview = $(this).data('previewpic');
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'preview', value: preview});
+            params.push({name: 'newapprove', value: newappr });
+            var url='/leadordernew/artpreview_approve';
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    if (newappr == 1) {
+                        $(".previewpic_approv[data-previewpic='"+preview+"']").addClass('approved').empty().html('<img src="/img/leadorder/star-yellow.svg">');
+                    } else {
+                        $(".previewpic_approv[data-previewpic='"+preview+"']").removeClass('approved').empty().html('<img src="/img/leadorder/star.svg">');
+                    }
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
                 } else {
                     show_error(response);
                 }
