@@ -1972,6 +1972,11 @@ span.artproofs_remove {
     color: #ff0000;
     cursor: pointer;
 }
+.previewremove {
+    color: #ff0000;
+    cursor: pointer;
+    margin-right: 3px;
+}
 .previewpict_optn_checkbox {
     margin-right: 3px;
 }
@@ -2638,7 +2643,7 @@ textarea.aprovemail_message {
     /*border-top: 1px solid #000000;*/
 }
 .previewpicsdatatable {
-    width: 80px;
+    /*width: 80px;*/
 }
 .claymodeldatarow, .previewpicdatarow {
     width: 100%;

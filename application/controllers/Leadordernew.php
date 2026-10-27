@@ -2232,7 +2232,12 @@ class Leadordernew extends MY_Controller
                     $previews=$leadorder['previewdocs'];
                     $artwork = $leadorder['artwork'];
                     $artwork_id = $artwork['artwork_id'];
-                    $mdata['content'] = $this->load->view('leadordernew/previewdocs_view', ['previews' => $previews['options'], 'artwork' => $artwork_id, 'edit' => 1], TRUE);
+                    if ($previews['historical']==1) {
+                        $previewdats = $previews['previews'];
+                        $mdata['content'] = $this->load->view('leadordernew/previewdocs_history_view', ['previews' => $previewdats, 'artwork' => $artwork_id, 'edit' => 1], TRUE);
+                    } else {
+                        $mdata['content'] = $this->load->view('leadordernew/previewdocs_view', ['previews' => $previews['options'], 'artwork' => $artwork_id, 'edit' => 1], TRUE);
+                    }
                 }
             }
             // Calc new period for lock
@@ -2259,6 +2264,7 @@ class Leadordernew extends MY_Controller
                     $error = '';
                 }
             }
+            $mdata['loctime'] = $this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();
