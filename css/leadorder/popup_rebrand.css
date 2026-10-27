@@ -1869,6 +1869,12 @@ span.artproofs_remove {
     color: #ff0000;
     cursor: pointer;
 }
+.claydocremove {
+    font-weight: 500;
+    color: #ff0000;
+    cursor: pointer;
+    margin-right: 3px;
+}
 .claymodels_optn_checkbox {
     margin-right: 3px;
 }
@@ -2627,7 +2633,7 @@ textarea.aprovemail_message {
     width: calc(100% - 18px);
 }
 .claymodelsdatatable, .previewpicsdatatable {
-    width: 65px;
+    /*width: 65px;*/
     border-right: 1px solid #000000;
     /*border-top: 1px solid #000000;*/
 }
@@ -2656,6 +2662,7 @@ textarea.aprovemail_message {
     color: #0000ff;
     font-size: 11px;
     cursor: pointer;
+    margin-right: 3px;
 }
 /* Invertory popup */
 .orderitem_inventoryview {

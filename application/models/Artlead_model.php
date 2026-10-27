@@ -3123,55 +3123,83 @@ Class Artlead_model extends MY_Model
     public function remove_newclaydocs($leadorder, $data, $ordersession) {
         $out = ['result' => $this->error_result, 'msg' => 'Clay Model Not Found'];
         $claydocs = $leadorder['claydocs'];
-        $claydatas = $claydocs['options'];
         $deleted = $leadorder['delrecords'];
-        $optidx = 0;
+        $historical = $claydocs['historical'];
         $find = 0;
-        foreach ($claydatas as $claydoc) {
-            if ($claydoc['clay_option']==$data['section']) {
-                $find = 1;
-                break;
-            } else {
-                $optidx++;
-            }
-        }
-        if ($find==1) {
-            $docs = $claydatas[$optidx]['data'];
+        if ($historical==1) {
+            $clays = $claydocs['clays'];
             $newdocs = [];
             $numpp = 1;
-            $found = 0;
-            foreach ($docs as $doc) {
-                if ($doc['artwork_clay_id'] == $data['claydoc']) {
-                    $found = 1;
-                    if ($data['claydoc'] > 0) {
+            foreach ($clays as $clay) {
+                if ($clay['artwork_clay_id'] == $data['claydoc']) {
+                    $find = 1;
+                    if ($clay['artwork_clay_id'] > 0) {
                         $deleted[] = [
                             'entity' => 'claydocs',
-                            'id' => $data['claydoc'],
+                            'id' => $clay['artwork_clay_id'],
                         ];
                     }
                 } else {
-                    $doc['numpp'] = $numpp;
-                    $newdocs[] = $doc;
+                    $clay['numpp'] = $numpp;
                     $numpp++;
+                    $newdocs[] = $clay;
                 }
             }
-            if ($found==1) {
+            if ($find == 1) {
                 $out['result'] = $this->success_result;
-                $claydatas[$optidx]['data'] = $newdocs;
-                if (count($newdocs)==0) {
-                    // Hide option
-                    $newoptions = [];
-                    foreach ($claydatas as $claydoc) {
-                        if ($claydoc['clay_option']!=$data['section']) {
-                            $newoptions[] = $claydoc;
-                        }
-                    }
-                    $claydatas = $newoptions;
-                }
-                $claydocs['options'] = $claydatas;
+                $claydocs['clays'] = $newdocs;
                 $leadorder['claydocs'] = $claydocs;
-                $leadorder['delrecords'] = $deleted;
                 usersession($ordersession, $leadorder);
+            }
+        } else {
+            $claydatas = $claydocs['options'];
+            $optidx = 0;
+            foreach ($claydatas as $claydoc) {
+                if ($claydoc['clay_option']==$data['section']) {
+                    $find = 1;
+                    break;
+                } else {
+                    $optidx++;
+                }
+            }
+            if ($find==1) {
+                $docs = $claydatas[$optidx]['data'];
+                $newdocs = [];
+                $numpp = 1;
+                $found = 0;
+                foreach ($docs as $doc) {
+                    if ($doc['artwork_clay_id'] == $data['claydoc']) {
+                        $found = 1;
+                        if ($data['claydoc'] > 0) {
+                            $deleted[] = [
+                                'entity' => 'claydocs',
+                                'id' => $data['claydoc'],
+                            ];
+                        }
+                    } else {
+                        $doc['numpp'] = $numpp;
+                        $newdocs[] = $doc;
+                        $numpp++;
+                    }
+                }
+                if ($found==1) {
+                    $out['result'] = $this->success_result;
+                    $claydatas[$optidx]['data'] = $newdocs;
+                    if (count($newdocs)==0) {
+                        // Hide option
+                        $newoptions = [];
+                        foreach ($claydatas as $claydoc) {
+                            if ($claydoc['clay_option']!=$data['section']) {
+                                $newoptions[] = $claydoc;
+                            }
+                        }
+                        $claydatas = $newoptions;
+                    }
+                    $claydocs['options'] = $claydatas;
+                    $leadorder['claydocs'] = $claydocs;
+                    $leadorder['delrecords'] = $deleted;
+                    usersession($ordersession, $leadorder);
+                }
             }
         }
         return $out;
@@ -3181,29 +3209,56 @@ Class Artlead_model extends MY_Model
     {
         $out = ['result' => $this->error_result, 'msg' => 'Clay Model Not Found'];
         $claydata = $leadorder['claydocs'];
-        $claydocs = $claydata['options'];
+        $historical = $claydata['historical'];
         $found = 0;
-        $optidx = 0;
-        foreach ($claydocs as $claydoc) {
-            if ($claydoc['clay_option']==$data['section']) {
-                $found = 1;
-                $claydocs[$optidx]['approved'] = ($data['newappr']==1 ? 1 : 0);
-                $docidx = 0;
-                $docs = $claydocs[$optidx]['data'];
-                foreach ($docs as $doc) {
-                    $docs[$docidx]['clay_approved'] = ($data['newappr']==1 ? 1 : 0);
-                    $docs[$docidx]['clay_approvetime'] = ($data['newappr']==1 ? time() : 0);
-                    $docidx++;
+        if ($historical==1) {
+            $clays = $claydata['clays'];
+            $clayidx = 0;
+            foreach ($clays as $clay) {
+                if ($clay['artwork_clay_id']==$data['claydoc']) {
+                    $found = 1;
+                    if ($data['newappr']==1) {
+                        $clays[$clayidx]['clay_approved'] = 1;
+                        $clays[$clayidx]['clay_approvetime'] = time();
+                    } else {
+                        $clays[$clayidx]['clay_approved'] = 0;
+                        $clays[$clayidx]['clay_approvetime'] = 0;
+                    }
+                    break;
+                } else {
+                    $clayidx++;
                 }
-                $claydocs[$optidx]['data'] = $docs;
             }
-            $optidx++;
-        }
-        if ($found==1) {
-            $out['result'] = $this->success_result;
-            $claydata['options'] = $claydocs;
-            $leadorder['claydocs'] = $claydata;
-            usersession($ordersession, $leadorder);
+            if ($found==1) {
+                $claydata['clays'] = $clays;
+                $leadorder['claydocs'] = $claydata;
+                $out['result'] = $this->success_result;
+                usersession($ordersession, $leadorder);
+            }
+        } else {
+            $claydocs = $claydata['options'];
+            $optidx = 0;
+            foreach ($claydocs as $claydoc) {
+                if ($claydoc['clay_option']==$data['section']) {
+                    $found = 1;
+                    $claydocs[$optidx]['approved'] = ($data['newappr']==1 ? 1 : 0);
+                    $docidx = 0;
+                    $docs = $claydocs[$optidx]['data'];
+                    foreach ($docs as $doc) {
+                        $docs[$docidx]['clay_approved'] = ($data['newappr']==1 ? 1 : 0);
+                        $docs[$docidx]['clay_approvetime'] = ($data['newappr']==1 ? time() : 0);
+                        $docidx++;
+                    }
+                    $claydocs[$optidx]['data'] = $docs;
+                }
+                $optidx++;
+            }
+            if ($found==1) {
+                $out['result'] = $this->success_result;
+                $claydata['options'] = $claydocs;
+                $leadorder['claydocs'] = $claydata;
+                usersession($ordersession, $leadorder);
+            }
         }
         return $out;
     }
