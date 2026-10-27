@@ -2793,7 +2793,13 @@ Class Artlead_model extends MY_Model
         }
         $this->load->model('user_model');
         $this->load->model('artwork_model');
-        $sections = explode('|', $data['sections']);
+        $sections = [];
+        $proofdocs = [];
+        if (intval($data['historical'])==1) {
+            $proofdocs = explode('|', $data['proofdocs']);
+        } else {
+            $sections = explode('|', $data['sections']);
+        }
         /* Check Data */
         if (empty($data['from'])) {
             $out['msg']='Enter Sender Email';
@@ -2830,26 +2836,54 @@ Class Artlead_model extends MY_Model
         $attachments = array();
         $attachlink = array();
         $proofurl = $this->config->item('newprooflnk');
-        $options = $artproofs['options'];
-        foreach ($sections as $section) {
-            foreach ($options as $option) {
-                if ($option['option']==$section) {
-                    $docs = $option['data'];
-                    foreach ($docs as $doc) {
-                        $row['sended']=1;
-                        $row['sended_time']=time();
-                        $row['proofdoc_link']=(empty($row['proofdoc_link']) ? uniq_link(20) : $row['proofdoc_link']);
-                        $res=$this->_save_optionproofdoc($row, $artwork_id, $user_id);
+        if (intval($data['historical'])==1) {
+            $proofs = $artproofs['proofs'];
+            foreach ($proofdocs as $proofdoc) {
+                foreach ($proofs as $proof) {
+                    if ($proof['artwork_proof_id']==$proofdoc) {
+                        $proof['sended']=1;
+                        $proof['sended_time']=time();
+                        $proof['proofdoc_link']=(empty($proof['proofdoc_link']) ? uniq_link(20) : $proof['proofdoc_link']);
+                        $res=$this->_save_optionproofdoc($proof, $artwork_id, $user_id);
+                        $srcpath = ($proof['artwork_proof_id'] > 0 ? $proof['proof_name'] : $proof['src']);
                         if ($res['result']==$this->error_result) {
-                            $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $row['src'], $row['source_name'], 'Lost Upload');
+                            $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $srcpath, $proof['source_name'], 'Lost Upload');
                         } else {
-                            if ($row['senddoc']==1) {
-                                $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $row['src'], $row['source_name'], 'Send Proof');
-                                array_push($attachlink, $row['proofdoc_link']);
-                                $attachsrc = $row['proofdoc_link'];
-                                $attachments[] = $proofurl . $attachsrc;
+                            // if ($proof['senddoc']==1) {
+                            $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $srcpath, $proof['source_name'], 'Send Proof');
+                            array_push($attachlink, $proof['proofdoc_link']);
+                            $attachsrc = $proof['proofdoc_link'];
+                            $attachments[] = $proofurl . $attachsrc;
+//                            } else {
+//                                $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $row['src'], $row['source_name'], 'Save Proof');
+//                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            $options = $artproofs['options'];
+            foreach ($sections as $section) {
+                foreach ($options as $option) {
+                    if ($option['option']==$section) {
+                        $docs = $option['data'];
+                        foreach ($docs as $row) {
+                            $row['sended']=1;
+                            $row['sended_time']=time();
+                            $row['proofdoc_link']=(empty($row['proofdoc_link']) ? uniq_link(20) : $row['proofdoc_link']);
+                            $res=$this->_save_optionproofdoc($row, $artwork_id, $user_id);
+                            $srcpath = ($row['artwork_proof_id']>0 ? $row['proof_name'] : $row['src']);
+                            if ($res['result']==$this->error_result) {
+                                $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $srcpath, $row['source_name'], 'Lost Upload');
                             } else {
-                                $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $row['src'], $row['source_name'], 'Save Proof');
+//                                if ($row['senddoc']==1) {
+                                    $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $srcpath, $row['source_name'], 'Send Proof');
+                                    array_push($attachlink, $row['proofdoc_link']);
+                                    $attachsrc = $row['proofdoc_link'];
+                                    $attachments[] = $proofurl . $attachsrc;
+//                                } else {
+//                                    $this->artproof_model->add_proofdoc_log($artwork_id, $user_id, $row['src'], $row['source_name'], 'Save Proof');
+//                                }
                             }
                         }
                     }
