@@ -2133,8 +2133,14 @@ class Leadordernew extends MY_Controller
                     $claydocs = $leadorder['claydocs'];
                     $artwork = $leadorder['artwork'];
                     $artwork_id = $artwork['artwork_id'];
-                    $mdata['content'] = $this->load->view('leadordernew/claydocs_view', ['claydocs' => $claydocs['options'], 'artwork' => $artwork_id, 'edit' => 1], TRUE);
+                    $historical = $claydocs['historical'];
+                    if ($historical==0) {
+                        $mdata['content'] = $this->load->view('leadordernew/claydocs_view', ['claydocs' => $claydocs['options'], 'artwork' => $artwork_id, 'edit' => 1], TRUE);
+                    } else {
+                        $mdata['content'] = $this->load->view('leadordernew/claydocs_history_view', ['claydocs' => $claydocs['clays'], 'artwork' => $artwork_id, 'edit' => 1], TRUE);
+                    }
                 }
+                $mdata['loctime'] = $this->_leadorder_locktime();
             }
             $this->ajaxResponse($mdata, $error);
         }
@@ -2158,6 +2164,7 @@ class Leadordernew extends MY_Controller
                     $error = '';
                 }
             }
+            $mdata['loctime'] = $this->_leadorder_locktime();
             $this->ajaxResponse($mdata, $error);
         }
         show_404();

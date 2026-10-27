@@ -32,13 +32,13 @@
     <?php if ($edit==1 && $clayhistory==0) : ?>
         <div class="claymodels_addoptn">+Add<br>Option</div>
     <?php endif; ?>
+    <div id="claydocsviewarea" class="datarow">
     <?php if ($clayhistory==1) : ?>
         <?php $this->load->view('leadordernew/claydocs_history_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
     <?php else : ?>
-        <div id="claydocsviewarea">
-            <?php $this->load->view('leadordernew/claydocs_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
-        </div>
+        <?php $this->load->view('leadordernew/claydocs_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
     <?php endif; ?>
+    </div>
 </div>
 <div class="leadorderpreviewcontent">
     <?php if ($previewhistory==1) : ?>
@@ -50,11 +50,11 @@
     <?php if ($edit==1 && $previewhistory==0) : ?>
         <div class="previewpict_addoptn">+Add<br>Option</div>
     <?php endif; ?>
+    <div id="previewdocsviewarea" class="datarow">
     <?php if ($previewhistory==1) : ?>
         <?php $this->load->view('leadordernew/previewdocs_history_view', ['previews' => $previews, 'artwork' => $artwork, 'edit' => $edit]);?>
     <?php else: ?>
-        <div id="previewdocsviewarea">
             <?php $this->load->view('leadordernew/previewdocs_view', ['previews' => $previews, 'artwork' => $artwork, 'edit' => $edit]);?>
-        </div>
     <?php endif; ?>
+    </div>
 </div>

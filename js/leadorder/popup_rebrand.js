@@ -214,6 +214,7 @@ function init_claypreview_tabs() {
             }
         },'json');
     });
+    // Remove Clay model
     $(".claydoc_remove").unbind('click').click(function (){
         var msg = 'Remove Clay Model '+$(this).data('clayname')+'?';
         if (confirm(msg)==true) {
@@ -259,6 +260,60 @@ function init_claypreview_tabs() {
                     }
                     $("input#loctimeout").val(response.data.loctime);
                     init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // Approve / Redo Hitorical clay
+    $(".clayapprov").unbind('click').click(function (){
+        var newappr = 1;
+        if ($(this).hasClass("approved")) {
+            newappr = 0;
+        }
+        var clay = $(this).data('clay');
+        var msg = 'Approve Clay ?';
+        if (newappr == 0) {
+            msg = 'Redo Approving Clay ?';
+        }
+        if (confirm(msg)==true) {
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'claydoc', value: clay});
+            params.push({name: 'newappr', value: newappr});
+            var url='/leadordernew/artclay_approve';
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    if (newappr == 1) {
+                        $(".clayapprov[data-clay='"+clay+"']").addClass('approved').empty().html('<img src="/img/leadorder/star-yellow.svg">');
+                    } else {
+                        $(".clayapprov[data-clay='"+clay+"']").removeClass('approved').empty().html('<img src="/img/leadorder/star.svg">');
+                    }
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
+                }
+            },'json');
+        }
+    });
+    // Remove Historical clay
+    $(".claydocremove").unbind('click').click(function (){
+        var msg = 'Remove Clay Model '+$(this).data('clayname')+'?';
+        if (confirm(msg)==true) {
+            var params = new Array();
+            params.push({name: 'ordersession', value: $("input#ordersession").val()});
+            params.push({name: 'section', value: $(this).data('section')});
+            params.push({name: 'claydoc', value: $(this).data('claydoc')});
+            var url='/leadordernew/artclay_remove';
+            $.post(url, params, function(response){
+                if (response.errors=='') {
+                    $("#claydocsviewarea").empty().html(response.data.content);
+                    $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
+                } else {
+                    show_error(response);
                 }
             },'json');
         }
