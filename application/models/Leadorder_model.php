@@ -10543,18 +10543,18 @@ Class Leadorder_model extends My_Model {
         $pdf->SetTextColor(0,0,255);
         $pdf->Cell(35.9,8,$options['balance'],0,1);
         // Bottom message
-        $noteXPos = 35;
+        $noteXPos = 30;
         $noteYPos = $pdf->GetY()+10;
-        $noteWidth = 145;
+        $noteWidth = 155;
         $noteHeght = 16;
         $pdf->SetLineWidth(0.5);
         $pdf->Rect($noteXPos, $noteYPos, $noteWidth, $noteHeght);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY($noteXPos+0.5,$noteYPos+0.5);
         $pdf->SetFont('','',13);
-        $pdf->Cell(145, 8, 'All check payments should be sent to:  BLUETRACK or Stressballs.com',0, 0,'C');
+        $pdf->Cell(155, 8, 'All check payments should be sent to:',0, 0,'C');
         $pdf->SetXY($noteXPos+0.5,$noteYPos+7.5);
-        $pdf->Cell(145, 8, 'PO Box 8000006, Buffalo, NY 14267-0002',0, 0,'C');
+        $pdf->Cell(155, 8, 'BLUETRACK or Stressballs.com, PO Box 8000006, Buffalo, NY 14267-0002',0, 0,'C');
 
         // Save file
         $pdf->Output('F', $file_out);
