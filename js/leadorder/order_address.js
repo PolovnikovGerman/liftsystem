@@ -164,8 +164,19 @@ function updateOrderAddress(address_type, address1, city, state, postcode, count
                 if (response.data.taxview.length>0) {
                     $(".infoshiptax_area[data-address='"+shipadr+"']").empty().html(response.data.taxview);
                 }
-                // // Shipping Dates
+                // Shipping Dates
                 // $("div.shippingdatesarea").empty().html(response.data.shipdates_content);
+                if (parseInt(response.data.cntshipadrr)==1) {
+                    $(".groupdates_box[data-fld='shipdate']").empty().html(response.data.adrshipdate);
+                    $(".groupdates_box[data-fld='arrive_date']").empty().html(response.data.adrarivedate);
+                }
+                if (parseInt(response.data.shipadmin)==1) {
+                    $("#shipdate").val(response.data.ordshipdate);
+                    $("#arrive_date").val(response.data.ordarivedate);
+                } else {
+                    $(".ord_datebox[data-fld='out_shipdate']").empty().html(response.data.ordshipdate);
+                    $(".ord_datebox[data-fld='out_arrivedate']").empty().html(response.data.ordarivedate);
+                }
                 // init_rushpast();
             }
             $("#loader").hide();

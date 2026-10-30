@@ -1370,6 +1370,11 @@ class Template
         $this->CI->load->model('leadorder_model');
         // User Data
         $usrdat=$this->CI->user_model->get_user_data($user_id);
+        $data['usrdat'] = [
+            'user_role' => $user_role,
+            'user_id' => $user_id,
+            'user_payment' => $user_payment,
+        ];
         // Messages
         $message = $res['message'];
         $message['edit']=$edit;
@@ -1459,8 +1464,6 @@ class Template
         $country_id = $billing['country_id'];
         $states=$this->CI->shipping_model->get_country_states($country_id);
         $checkoutlink = ($res['order']['brand']=='SR' ? $this->CI->config->item('srcheckoutlink') : $this->CI->config->item('btcheckoutlink')).$res['order']['checkout_link'];
-        $user = usersession('usr_data');
-        $payusr = intval(ifset($user, 'user_payuser',0));
 
         $payoptions = [
             'billing' => $billing,
@@ -1472,8 +1475,8 @@ class Template
             'edit' => $edit,
             'billingaddress' => $this->CI->shipping_model->prepare_billaddress($billing),
             'checkoutlink' => $checkoutlink,
-            'finuser' => $user['finuser'],
-            'payment_user' => $payusr,
+//            'finuser' => $user['finuser'],
+            'payment_user' => $user_payment,
         ];
         $data['paymentsview'] = $this->CI->load->view('leadordernew/payment_view', $payoptions, TRUE);
         // Fullfilment

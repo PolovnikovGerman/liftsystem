@@ -11,7 +11,7 @@ class Leadordernew extends MY_Controller
     protected $NO_ART_REMINDER='Need Art Reminder';
     protected $ART_PROOF='Art Proof';
     protected $NEED_APPROVE_REMINDER='Need Approval Reminder';
-
+    protected $adminrole = 'masteradmin';
     private $emptycontent = '&nbsp;';
 
 
@@ -425,6 +425,77 @@ class Leadordernew extends MY_Controller
         $this->ajaxResponse($mdata, $error);
     }
 
+    public function saveneworderitem()
+    {
+        if ($this->isAjax()) {
+            $mdata = [];
+            $postdata=$this->input->post();
+            $ordersession=(isset($postdata['ordersession']) ? $postdata['ordersession'] : 0);
+            $leadorder=usersession($ordersession);
+            if (empty($leadorder)) {
+                $error = $this->restore_orderdata_error;
+            } else {
+                // Lock Edit Record
+                $locres=$this->_lockorder($leadorder);
+                if ($locres['result']==$this->error_result) {
+                    $leadorder=usersession($ordersession, NULL);
+                    $error=$locres['msg'];
+                    $this->ajaxResponse($mdata, $error);
+                } else {
+                    $orderitem_id = ifset($postdata, 'orderitem_id',0);
+                    $item_id = ifset($postdata, 'item_id', 0);
+                    if (empty($item_id)) {
+                        $error = 'Select Item';
+                    } elseif (empty($orderitem_id)) {
+                        $error = 'Select Order Item';
+                    } else {
+                        $res = $this->leadorder_model->saveneworderitem($leadorder, $item_id, $orderitem_id, $ordersession);
+                        $error = $res['msg'];
+                        if ($res['result']==$this->success_result) {
+                            $error = '';
+                            $item = $res['item'];
+                            // Prepare out
+                            $special = 0;
+                            if ($item['item_id']<0) {
+                                $special = 1;
+                            }
+                            $mdata['special'] = $special;
+                            $options = [
+                                'order_item_id' => $orderitem_id,
+                                'item_id' => $item_id,
+                                'item_color' => $item['items'][0]['item_color'],
+                                'colors' => $item['colors'],
+                                'qty' => $item['item_qty'],
+                                'price' => $item['base_price'],
+                            ];
+                            if ($special==0) {
+                                // if ($res['brand']=='SR') {
+                                if ($res['inventoryitem']==1) {
+                                    $mdata['outcolors'] = $this->load->view('leadordernew/sradditem_color_view', $options, true);
+                                } else {
+                                    $mdata['outcolors'] = $this->load->view('leadordernew/item_color_choice', $options, true);
+                                }
+                            } else {
+                                $mdata['outcolors'] = '&nbsp;';
+                            }
+                            $mdata['qty'] = $this->load->view('leadordernew/additem_qty_view', $options, TRUE); // $item['item_qty']
+                            $mdata['price'] = $this->load->view('leadordernew/additem_price_view', $options, TRUE); // $item['base_price']
+                            $mdata['subtotal'] = MoneyOutput($item['item_subtotal']);
+                            $mdata['brand'] = $res['brand'];
+                            $mdata['inventoryitem'] = $res['inventoryitem'];
+                            $mdata['mischrg_label1'] = $res['mischrg_label1'];
+                            $mdata['mischrg_value1'] = $res['mischrg_value1'];
+                        }
+                    }
+                }
+            }
+            $mdata['loctime']=$this->_leadorder_locktime();
+            $this->ajaxResponse($mdata, $error);
+        }
+        show_404();
+    }
+
+
     // Inventory Item
     public function inventoryitem()
     {
@@ -746,8 +817,15 @@ class Leadordernew extends MY_Controller
                     $shipstatus = $this->leadorder_model->_leadorderview_shipping_status($leadorder);
                     $mdata['tracking'] = $this->_prepare_tracking_content($leadorder['order_items'], $shipstatus, 1);
                     // Shipping dates
-                    $mdata['shipdata'] = (empty($shipping['shipdate']) ? '' : date('m/d/Y',$shipping['shipdate']));
-                    $mdata['arrivedate'] = empty($shipping['arrive_date']) ? '' : date('m/d/Y', $shipping['arrive_date']);
+                    if ($this->USR_ROLE==$this->adminrole) {
+                        $mdata['shipdata'] = (empty($shipping['shipdate']) ? '' : date('m/d/Y',$shipping['shipdate']));
+                        $mdata['arrivedate'] = empty($shipping['arrive_date']) ? '' : date('m/d/Y', $shipping['arrive_date']);
+                        $mdata['shipadmin'] = 1;
+                    } else {
+                        $mdata['shipdata'] = (empty($shipping['shipdate']) ? '' : date('m/d/y',$shipping['shipdate']));
+                        $mdata['arrivedate'] = empty($shipping['arrive_date']) ? '' : date('m/d/y', $shipping['arrive_date']);
+                        $mdata['shipadmin'] = 0;
+                    }
                     $mdata['cntshipaddr'] = count($leadorder['shipping_address']);
                     if ($mdata['cntshipaddr']==1) {
                         $shipaddr = $leadorder['shipping_address'][0];
@@ -1261,6 +1339,17 @@ class Leadordernew extends MY_Controller
 //                            if ($fldname=='country_id') {
 //                                $mdata['addressline'] = $this->load->view('leadorderdetails/shipaddresline_view', ['shipadr' => $shipaddr], true);
 //                            }
+                            $mdata['adrshipdate'] = (empty($shipping['shipdate']) ? $this->emptycontent : date('M j', $shipping['shipdate']));
+                            $mdata['adrarrivdate'] = (empty($shipping['arrive_date']) ? $this->emptycontent : date('M j', $shipping['arrive_date']));
+                        }
+                        if ($this->USR_ROLE==$this->adminrole) {
+                            $mdata['shipadmin'] = 1;
+                            $mdata['ordshipdate'] = (empty($shipping['shipdate']) ? '' : date('m/d/Y', $shipping['shipdate']));
+                            $mdata['ordarrivdate'] = (empty($shipping['arrive_date']) ? '' : date('m/d/Y', $shipping['arrive_date']));
+                        } else {
+                            $mdata['shipadmin'] = 0;
+                            $mdata['ordshipdate'] = (empty($shipping['shipdate']) ? $this->emptycontent : date('m/d/y', $shipping['shipdate']));
+                            $mdata['ordarrivdate'] = (empty($shipping['arrive_date']) ? $this->emptycontent : date('m/d/y', $shipping['arrive_date']));
                         }
                         $dateoptions=array(
                             'edit'=>1,
@@ -1370,13 +1459,24 @@ class Leadordernew extends MY_Controller
                                 'edit' => 1,
                             ];
                             $mdata['taxview'] = $this->load->view('leadordernew/tax_data_view', $taxoptions, TRUE);
+                            $mdata['adrshipdate'] = (empty($shipping['shipdate']) ? $this->emptycontent : date('M j', $shipping['shipdate']));
+                            $mdata['adrarivedate'] = (empty($shipping['arrive_date']) ? $this->emptycontent : date('M j', $shipping['arrive_date']));
                         }
-                        $dateoptions = array(
-                            'edit' => 1,
-                            'shipping' => $shipping,
-                            'user_role' => $this->USR_ROLE,
-                        );
-                        $mdata['shipdates_content'] = $this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
+//                        $dateoptions = array(
+//                            'edit' => 1,
+//                            'shipping' => $shipping,
+//                            'user_role' => $this->USR_ROLE,
+//                        );
+//                        $mdata['shipdates_content'] = $this->load->view('leadorderdetails/shipping_dates_edit', $dateoptions, TRUE);
+                        if ($this->USR_ROLE == $this->adminrole) {
+                            $mdata['shipadmin'] = 1;
+                            $mdata['ordshipdate'] = (empty($shipping['shipdate']) ? $this->emptycontent : date('m/d/Y', $shipping['shipdate']));
+                            $mdata['ordarivedate'] = (empty($shipping['arrive_date']) ? $this->emptycontent : date('m/d/Y', $shipping['arrive_date']));
+                        } else {
+                            $mdata['shipadmin'] = 0;
+                            $mdata['ordshipdate'] = (empty($shipping['shipdate']) ? $this->emptycontent : date('m/d/y', $shipping['shipdate']));
+                            $mdata['ordarivedate'] = (empty($shipping['arrive_date']) ? $this->emptycontent : date('m/d/y', $shipping['arrive_date']));
+                        }
                     }
                 }
             }

@@ -807,6 +807,7 @@ li.select2-results__option {
     border: 1px solid #ACACAC;
     resize: none;
     padding: 3px 5px;
+    font-size: 11px;
 }
 .itemsfooter_message textarea:read-only {
     background: #DADADA;
