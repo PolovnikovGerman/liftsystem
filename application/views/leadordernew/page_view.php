@@ -125,25 +125,31 @@
                         <div class="orddtls_dates">
                             <div class="ord_shipdate">
                                 <div class="ord_datetitle">Ship Date:</div>
+                                <div class="ord_datebox" data-fld="out_shipdate">
                                 <?php if ($edit==0) : ?>
-                                    <div class="ord_datebox" data-fld="out_shipdate"><?=$shipping['out_shipdate']?></div>
+                                    <?=$shipping['out_shipdate']?>
                                 <?php else: ?>
-                                    <div class="ord_datebox">
-                                        <!--  data-fld="out_shipdate" -->
-                                        <input class="ord_datebox" data-fld="shipdate" id="shipdate" value="<?=empty($shipping['shipdate']) ? '' : date('m/d/Y', $shipping['shipdate'])?>">
-                                    </div>
+                                    <?php if ($usrdat['user_role']=='masteradmin') : ?>
+                                        <input class="ord_datebox" data-fld="shipdate" id="shipdate" value="<?=empty($shipping['shipdate']) ? '' : date('m/d/Y', $shipping['shipdate'])?>"/>
+                                    <?php else : ?>
+                                        <?=$shipping['out_shipdate']?>
+                                    <?php endif; ?>
                                 <?php endif; ?>
+                                </div>
                             </div>
                             <div class="ord_arrivaldate">
                                 <div class="ord_datetitle">Arrival Date:</div>
-                                <?php if ($edit==0) : ?>
-                                <div class="ord_datebox" data-fld="out_arrivedate"><?=$shipping['out_arrivedate']?></div>
-                                <?php else: ?>
-                                    <div class="ord_datebox">
-                                        <!-- data-fld="out_arrivedate" -->
-                                        <input class="ord_datebox" data-fld="arrive_date" id="arrive_date" value="<?=empty($shipping['arrive_date']) ? '' : date('m/d/Y', $shipping['arrive_date'])?>">
-                                    </div>
-                                <?php endif; ?>
+                                <div class="ord_datebox" data-fld="out_arrivedate">
+                                    <?php if ($edit==0) : ?>
+                                        <?=$shipping['out_arrivedate']?>
+                                    <?php else: ?>
+                                        <?php if ($usrdat['user_role']=='masteradmin') : ?>
+                                            <input class="ord_datebox" data-fld="arrive_date" id="arrive_date" value="<?=empty($shipping['arrive_date']) ? '' : date('m/d/Y', $shipping['arrive_date'])?>"/>
+                                        <?php else : ?>
+                                            <?=$shipping['out_arrivedate']?>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                             <div class="ord_eventdate">
                                 <div class="ord_datetitle">Event Date:</div>

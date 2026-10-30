@@ -2120,8 +2120,13 @@ function save_imprint_details() {
             $("#ordertotalprofit").empty().html(response.data.profitview);
             $("#trackcodesarea").empty().html(response.data.tracking);
             // ship date
-            $("#arrive_date").val(response.data.arrivedate);
-            $("#shipdate").val(response.data.shipdata);
+            if (parseInt(response.data.shipadmin)==1) {
+                $("#arrive_date").val(response.data.arrivedate);
+                $("#shipdate").val(response.data.shipdata);
+            } else {
+                $(".ord_datebox[data-fld='out_shipdate']").empty().html(response.data.shipdata);
+                $(".ord_datebox[data-fld='out_arrivedate']").empty().html(response.data.arrivedate);
+            }
             // dates
             if (parseInt(response.data.cntshipaddr)==1) {
                 $(".groupdates_box[data-fld='shipdate']").empty().html(response.data.shipdateaddr);
@@ -2446,7 +2451,9 @@ function init_confirmshipcost(content) {
                     $.post(cityurl, paramcity, function(response) {
                         if (response.errors=='') {
                             $(".ship_tax_input1[data-shipadr='"+$("#citychangevalid").val()+"']").val($("select.validcity").val());
+                            // ??? Other parameters
                             $("input#loctimeout").val(response.data.loctime);
+                            init_onlineleadorder_edit();
                         }
                     },'json');
                 }
@@ -2489,7 +2496,9 @@ function init_confirmshipcost(content) {
             $.post(cityurl, paramcity, function(response) {
                 if (response.errors=='') {
                     $(".ship_tax_input1[data-shipadr='"+$("#citychangevalid").val()+"']").val($("select.validcity").val());
+                    // ?? Other parameters
                     $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
                 }
             },'json');
         }
@@ -2521,7 +2530,9 @@ function init_confirmshipcost(content) {
             $.post(cityurl, paramcity, function(response) {
                 if (response.errors=='') {
                     $(".ship_tax_input1[data-shipadr='"+$("#citychangevalid").val()+"']").val($("select.validcity").val());
+                    // ?? other parameters
                     $("input#loctimeout").val(response.data.loctime);
+                    init_onlineleadorder_edit();
                 }
             },'json');
         }
@@ -2604,9 +2615,22 @@ function init_shipbill_manage() {
                 // Country code
                 if (parseInt(response.data.cntshipadrr)==1) {
                     $("#shipordercntcode").val(response.data.countrycode);
-                    initShipOrderAutocomplete();
+                    if (parseInt($("#ordermapuse").val())==1) {
+                        initShipOrderAutocomplete();
+                    }
+                    // Update address dates
+                    $(".groupdates_box[data-fld='shipdate']").empty().html(response.data.adrshipdate);
+                    $(".groupdates_box[data-fld='arrive_date']").empty().html(response.data.adrarrivdate);
+                }
+                if (parseInt(response.data.shipadmin)==1) {
+                    $("input#shipdate").val(response.data.ordshipdate);
+                    $("input#arrive_date").val(response.data.ordarrivdate);
+                } else {
+                    $(".ord_datebox[data-fld='out_shipdate']").empty().html(response.data.ordshipdate);
+                    $(".ord_datebox[data-fld='out_arrivedate']").empty().html(response.data.ordarrivdate);
                 }
                 $("#loader").hide();
+                update_locperiod(response);
                 init_onlineleadorder_edit();
             } else {
                 show_error(response);
@@ -2648,6 +2672,19 @@ function init_shipbill_manage() {
                 if (parseInt(response.data.city_refresh)==1) {
                     $("input.inpt_addressarea[data-address='"+shipaddr+"'][data-fld='city']").val(response.data.city);
                 }
+                if (parseInt(response.data.cntshipadrr)==1) {
+                    // Update address dates
+                    $(".groupdates_box[data-fld='shipdate']").empty().html(response.data.adrshipdate);
+                    $(".groupdates_box[data-fld='arrive_date']").empty().html(response.data.adrarrivdate);
+                }
+                if (parseInt(response.data.shipadmin)==1) {
+                    $("input#shipdate").val(response.data.ordshipdate);
+                    $("input#arrive_date").val(response.data.ordarrivdate);
+                } else {
+                    $(".ord_datebox[data-fld='out_shipdate']").empty().html(response.data.ordshipdate);
+                    $(".ord_datebox[data-fld='out_arrivedate']").empty().html(response.data.ordarrivdate);
+                }
+                update_locperiod(response);
                 init_onlineleadorder_edit();
                 $("#loader").hide();
             } else {
@@ -2681,10 +2718,20 @@ function init_shipbill_manage() {
                 $("input[data-address='"+shipaddr+"'][data-fld='shipping']").val(response.data.shipping);
                 $("input[data-fld='rush_price']").val(response.data.rush_price);
                 $("input[data-address='"+shipaddr+"'][data-fld='sales_tax']").val(response.data.tax);
+                if (parseInt(response.data.cntshipadrr)==1) {
+                    $(".groupdates_box[data-fld='shipdate']").empty().html(response.data.adrshipdate);
+                    $(".groupdates_box[data-fld='arrive_date']").empty().html(response.data.adrarrivdate);
+                }
+                if (parseInt(response.data.shipadmin)==1) {
+                    $("input#shipdate").val(response.data.ordshipdate);
+                    $("input#arrive_date").val(response.data.ordarrivdate);
+                } else {
+                    $(".ord_datebox[data-fld='out_shipdate']").empty().html(response.data.ordshipdate);
+                    $(".ord_datebox[data-fld='out_arrivedate']").empty().html(response.data.ordarrivdate);
+                }
+                update_locperiod(response);
                 init_onlineleadorder_edit();
                 $("#loader").hide();
-                $("input#loctimeout").val(response.data.loctime);
-                init_onlineleadorder_edit();
             } else {
                 $("#loader").hide();
                 show_error(response);
