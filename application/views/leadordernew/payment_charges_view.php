@@ -1,5 +1,5 @@
 <?php foreach ($charges as $charge): ?>
-    <div class="paymentbox_card">
+    <div class="paymentbox_card" data-payid="<?=$charge['order_payment_id']?>">
         <input class="chargeinput paymentcard_price" type="text" name="amount"  data-charge="<?=$charge['order_payment_id'] ?>" data-fld="amount" placeholder="$0.00" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['amount']?>"/>
         <input class="chargeinput paymentcard_number" type="text" name="cardnum_view" data-charge="<?=$charge['order_payment_id'] ?>" data-fld="cardnum" placeholder="XXXX-XXXX-XXXX-XXXX" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['cardnum_view']?>"/>
         <input class="chargeinput paymentcard_date" type="text" name="exp_month" data-charge="<?=$charge['order_payment_id'] ?>" data-fld="exp_month" placeholder="MM" <?=$edit==0 ? 'readonly' : ''?> value="<?=$charge['exp_month']?>"/>

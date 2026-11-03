@@ -32,13 +32,15 @@
     <?php if ($edit==1 && $clayhistory==0) : ?>
         <div class="claymodels_addoptn">+Add<br>Option</div>
     <?php endif; ?>
-    <div id="claydocsviewarea" class="datarow">
     <?php if ($clayhistory==1) : ?>
+        <div id="claydocsviewarea" class="datarow">
         <?php $this->load->view('leadordernew/claydocs_history_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
+        </div>
     <?php else : ?>
+        <div id="claydocsviewarea">
         <?php $this->load->view('leadordernew/claydocs_view', ['claydocs' => $claydocs, 'artwork' => $artwork, 'edit' => $edit])?>
+        </div>
     <?php endif; ?>
-    </div>
 </div>
 <div class="leadorderpreviewcontent">
     <?php if ($previewhistory==1) : ?>
