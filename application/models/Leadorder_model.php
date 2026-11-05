@@ -8630,9 +8630,10 @@ Class Leadorder_model extends My_Model {
             );
         }
         $detcnt=count($item_details)+$adrcnt;
-        if ($detcnt<15) {
+        // Empty Rows for 15 - now for 10
+        if ($detcnt<10) {
             // $numv=count($item_details);
-            for ($i=$detcnt; $i<15; $i++) {
+            for ($i=$detcnt; $i<10; $i++) {
                 $item_details[]=array(
                     'item_num'=>'',
                     'item_description'=>'',
@@ -9443,7 +9444,7 @@ Class Leadorder_model extends My_Model {
         } elseif ($balance!=0) {
             $payment_due = date('m/d/y', $order['order_date']);
         }
-        $options=array(
+        $options = [
             'order_num'=>$invnum,
             'invoice_message'=>$order['invoice_message'],
             'order_date'=>date('m/d/Y',$order['order_date']),
@@ -9465,15 +9466,78 @@ Class Leadorder_model extends My_Model {
             'tax_term'=>($order['order_date']<=$this->config->item('datenewtax') ? $this->config->item('salestax') : $this->config->item('salesnewtax')),
             'brand' => $order['brand'],
             'shipblind' => $shipblind,
-        );
+            'balancetotal' => floatval($balance),
+        ];
+
+        if ($balance > 0) {
+            // QR code
+            $this->load->library('ciqrcode');
+            $qrcode = uniq_link(15) . '.png';
+            if ($order['brand']=='SR') {
+                $checkoutlink = $this->config->item('srcheckoutlink').'cc/'.$order['checkout_link'];
+            } else {
+                $checkoutlink = $this->config->item('btcheckoutlink').'cc/'.$order['checkout_link'];;
+            }
+            $params = [
+                'data' => $checkoutlink,
+                'level' => 'H',
+                'size' => 3,
+                'savename' => $this->config->item('upload_path_preload') . $qrcode,
+            ];
+            $this->ciqrcode->generate($params);
+            $qrsrc = '';
+            if (file_exists($params['savename'])) {
+                $qrsrc = $this->config->item('pathpreload') . $qrcode;
+            }
+            $options['cclink'] = $checkoutlink;
+            $options['ccqrcode'] = empty($qrsrc) ? '' : $qrsrc;
+            // Wire
+            if ($order['brand']=='SR') {
+                $checkoutlink = $this->config->item('srcheckoutlink').'wire/'.$order['checkout_link'];
+            } else {
+                $checkoutlink = $this->config->item('btcheckoutlink').'wire/'.$order['checkout_link'];;
+            }
+            $params = [
+                'data' => $checkoutlink,
+                'level' => 'H',
+                'size' => 3,
+                'savename' => $this->config->item('upload_path_preload') . $qrcode,
+            ];
+            $this->ciqrcode->generate($params);
+            $qrsrc = '';
+            if (file_exists($params['savename'])) {
+                $qrsrc = $this->config->item('pathpreload') . $qrcode;
+            }
+            $options['wirelink'] = $checkoutlink;
+            $options['wireqrcode'] = empty($qrsrc) ? '' : $qrsrc;
+            // Check
+            if ($order['brand']=='SR') {
+                $checkoutlink = $this->config->item('srcheckoutlink').'check/'.$order['checkout_link'];
+            } else {
+                $checkoutlink = $this->config->item('btcheckoutlink').'check/'.$order['checkout_link'];;
+            }
+            $params = [
+                'data' => $checkoutlink,
+                'level' => 'H',
+                'size' => 3,
+                'savename' => $this->config->item('upload_path_preload') . $qrcode,
+            ];
+            $this->ciqrcode->generate($params);
+            $qrsrc = '';
+            if (file_exists($params['savename'])) {
+                $qrsrc = $this->config->item('pathpreload') . $qrcode;
+            }
+            $options['checklink'] = $checkoutlink;
+            $options['checkqrcode'] = empty($qrsrc) ? '' : $qrsrc;
+        }
 
         // $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
 
         $file_name='invoice_'.$order['order_confirmation'].'_'.str_replace(array(' ', '/',',','\n','%','#'),'',strtolower($order['order_items'])).'.pdf';
         $file_out = $this->config->item('upload_path_preload') . $file_name;
 
-        $this->_invoice_pdfdoc_create($options, $file_out);
-        // pdf_create($html, $file_out, true);
+        // $this->_invoice_pdfdoc_create($options, $file_out);
+        $this->_invoice_pdfletter_create($options, $file_out);
         if (file_exists($file_out)) {
             $out['result']=$this->success_result;
             $out['html_path']=$this->config->item('pathpreload').$file_name.'?t='.time();
@@ -10811,18 +10875,18 @@ Class Leadorder_model extends My_Model {
         $pdf->SetTextColor(0,0,255);
         $pdf->Cell(35.9,8,$options['balance'],0,1);
         // Bottom message
-        $noteXPos = 35;
+        $noteXPos = 30;
         $noteYPos = $pdf->GetY()+10;
-        $noteWidth = 145;
+        $noteWidth = 155;
         $noteHeght = 16;
         $pdf->SetLineWidth(0.5);
         $pdf->Rect($noteXPos, $noteYPos, $noteWidth, $noteHeght);
         $pdf->SetTextColor(0,0,0);
         $pdf->SetXY($noteXPos+0.5,$noteYPos+0.5);
         $pdf->SetFont('','',13);
-        $pdf->Cell(145, 8, 'All check payments should be sent to:  BLUETRACK or Stressballs.com',0, 0,'C');
+        $pdf->Cell(155, 8, 'All check payments should be sent to:',0, 0,'C');
         $pdf->SetXY($noteXPos+0.5,$noteYPos+7.5);
-        $pdf->Cell(145, 8, 'PO Box 8000006, Buffalo, NY 14267-0002',0, 0,'C');
+        $pdf->Cell(155, 8, 'BLUETRACK or Stressballs.com, PO Box 8000006, Buffalo, NY 14267-0002',0, 0,'C');
 
         // Save file
         $pdf->Output('F', $file_out);
@@ -13212,6 +13276,438 @@ Class Leadorder_model extends My_Model {
             $out['addressfull'] = $billing;
         }
         return $out;
+    }
+
+    private function _invoice_pdfletter_create($options, $file_out)
+    {
+        define('FPDF_FONTPATH', FCPATH.'font');
+        $this->load->library('fpdf/fpdfeps');
+        $brand = ifset($options,'brand', 'SB');
+        // Prepare
+        if ($brand=='SR') {
+            $logoFile = FCPATH."/img/invoicesr/sr-logos-2.eps";
+            $logoWidth = 187.844;
+            $logoHeight = 22.855;
+            $logoYPos = 5;
+        } else {
+            $logoFile = FCPATH."/img/invoice/logos-2-upd6.eps";
+            $logoWidth = 86.4;
+            $logoHeight = 20;
+            $logoYPos = 10;
+        }
+        $logoXPos = 5;
+        $logoType = 'JPG';
+
+        if ($brand=='SR') {
+            $invnumImg = FCPATH.'/img/invoicesr/sr-invoice_num.eps';
+        } else {
+            $invnumImg = FCPATH.'/img/invoice/invoice_num.eps';
+        }
+        $invnumXPos = 125; // 120;
+        $invnumYPos = 10;
+        $invnumWidth = 0;
+        $invnumHeigth = 16.5;
+
+        if ($brand=='SR') {
+            $dateImage = FCPATH.'/img/invoicesr/sr-date_bg-3.eps';
+            $dateYPos = 33.7;
+        } else {
+            $dateImage = FCPATH.'/img/invoice/date_bg-3.eps';
+            $dateYPos = 28.7;
+        }
+
+        $dateXPos = 163;
+        $dateWidth = 0;
+        $dateHeight = 9;
+
+        if ($brand=='SR') {
+            $ponumImage = FCPATH.'/img/invoicesr/sr-customer_code_bg-2.eps';
+            $ponumYPos = 33.7;
+            $ponumXPos = 70;
+        } else {
+            $ponumImage = FCPATH.'/img/invoice/customer_code_bg.eps';
+            $ponumYPos = 28.7;
+            $ponumXPos = 90;
+        }
+        $ponumWidth = 0;
+        $ponumHeight = 9;
+
+
+        $invoiceimgHeadType = 'PNG';
+        $invoiceimgHeadHeight = 8.5;
+
+        $termsImage = FCPATH.'/img/invoice/terms_head_bg.eps';
+        $termsXPos = 5;
+        $termsYPos = 52;
+        $termsWidth = 0;
+
+        $paydueImage = FCPATH.'/img/invoice/paymentdue_head_bg.eps';
+        $paydueXPos = 53.5;
+        $paydueYPos = 52;
+        $paydueWidth = 0;
+
+        $shipdateImage = FCPATH.'/img/invoice/shipdate_head_bg.eps';
+        $shipdateXPos = 117;
+        $shipdateYPos = 52;
+        $shipdateWidth = 0;
+
+        $arivdateImage = FCPATH.'/img/invoice/deliverydate_head_bg.eps';
+        $arivdateXPos = 165;
+        $arivdateYPos = 52;
+        $arivdateWidth = 0;
+
+        $billadrImage = FCPATH.'/img/invoice/billto_head_bg.eps';
+        $billadrXPos = 5;
+        $billadrYPos = 71;
+        $billadrWidth = 0;
+
+        if (ifset($options,'shipblind',0)==1) {
+            $shipadrImage = FCPATH.'/img/invoice/shipblindto_head_bg.eps';
+        } else {
+            $shipadrImage = FCPATH.'/img/invoice/shipto_head_bg.eps';
+        }
+
+        $shipadrXPos = 117;
+        $shipadrYPos = 71;
+        $shipadrWidth = 0;
+
+        $pdf = new FPDFEPS('P','mm','Letter');
+        $pdf->AddPage();
+        $pdf->SetFont('Times','',9.035143);
+        $pdf->SetXY(0,0);
+        $pdf->SetTextColor(65, 65, 65);
+        // Logo
+        $pdf->ImageEps( $logoFile, $logoXPos, $logoYPos, $logoWidth, $logoHeight );
+        // Inv #
+        $pdf->ImageEps($invnumImg, $invnumXPos, $invnumYPos, $invnumWidth, $invnumHeigth);
+        // $pdf->SetXY(167, 10.8);
+        $pdf->SetXY(172, 10.8);
+        $pdf->SetFont('','B',16.564429);
+        if ($brand=='SR') {
+            $pdf->SetTextColor(0,0,75);
+        } else {
+            $pdf->SetTextColor(0, 0, 255);
+        }
+        $pdf->Cell(35.8,16,$options['order_num'],0,0,'C');
+        $pdf->SetTextColor(0,0,0);
+        // Address
+        if ($brand=='SR') {
+            $pdf->SetFont('','',12.046857);
+            $pdf->Text(5, 30.88, 'ASI # 40694');
+            $pdf->Text(5, 36.88, '1 Stewart Court');
+            $pdf->Text(5, 42.88, 'Denville, NJ 07834');
+            $pdf->Text(5,48.88, 'Call Us at');
+            $pdf->SetTextColor(0,0,75);
+            $pdf->Text(23,48.88, '1-800-370-3020');
+            // $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
+        } else {
+            $pdf->SetFont('','',12.046857);
+            $pdf->Text(5, 35.88, '1 Stewart Court');
+            $pdf->Text(5, 42.88, 'Denville, NJ 07834');
+            $pdf->SetTextColor(0,0,255);
+            $pdf->Text(5, 48.88, '1-800-790-6090');
+            $pdf->Text(42, 48.88,'www.stressballs.com'); // , 'www.bluetrack.com');
+        }
+        // Order Date
+        $pdf->SetTextColor(65, 65, 65);
+        $pdf->ImageEps($dateImage, $dateXPos, $dateYPos, $dateWidth, $dateHeight);
+        $pdf->SetTextColor(0,0,0);
+        $pdf->SetFont('', '', 13.552714);
+        if ($brand=='SR') {
+            // $pdf->SetXY(177, 34);
+            $pdf->SetXY(182, 34);
+        } else {
+            // $pdf->SetXY(177, 29);
+            $pdf->SetXY(182, 29);
+        }
+        $pdf->Cell(27, 8, $options['order_date'],0,0, 'C');
+        // PO Number
+        if (!empty($options['customer_code'])) {
+            $pdf->ImageEps($ponumImage, $ponumXPos, $ponumYPos, $ponumWidth, $ponumHeight);
+            if ($brand=='SR') {
+                $pdf->SetXY(117,34);
+            } else {
+                $pdf->SetXY(127,29);
+            }
+            $pdf->SetFont('','B');
+            $pdf->Cell(27,8,$options['customer_code'],0,0,'C');
+        }
+        $pdf->SetFont('','', 12.046857);
+        $pdf->SetTextColor(65, 65, 65);
+        // Terms
+        $pdf->ImageEps($termsImage, $termsXPos, $termsYPos, $termsWidth, $invoiceimgHeadHeight);
+        $pdf->SetXY(5, 61);
+        if (!empty($options['terms'])) {
+            // $pdf->Ceil(26,73, $options['terms']);
+            $pdf->Cell(44,8,$options['terms'],0,0,'C');
+        }
+        // Payment Due
+        $pdf->ImageEps($paydueImage, $paydueXPos, $paydueYPos, $paydueWidth, $invoiceimgHeadHeight);
+        $pdf->SetX(53.5);
+        $pdf->Cell(44, 8, $options['payment_due'],0,0,'C');
+        // Ship Date
+        $pdf->ImageEps($shipdateImage, $shipdateXPos, $shipdateYPos, $shipdateWidth, $invoiceimgHeadHeight);
+        $pdf->SetX(117);
+        $pdf->Cell(44,8, $options['shipdate'],0,0,'C');
+        // Delivery Date
+        $pdf->ImageEps($arivdateImage, $arivdateXPos, $arivdateYPos, $arivdateWidth, $invoiceimgHeadHeight, $invoiceimgHeadType);
+        $pdf->SetX(164);
+        $pdf->Cell(44,8, $options['arrive'],0,0,'C');
+        // Billing Address
+        $pdf->SetFont('','', 12.046857);
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->ImageEps($billadrImage, $billadrXPos, $billadrYPos, $billadrWidth, $invoiceimgHeadHeight);
+        $pdf->SetXY(7, 80.8);
+        foreach ($options['billing'] as $biladrrow) {
+            $pdf->SetX(7);
+            $pdf->Cell(91,5.5, $biladrrow,0,1,'L');
+        }
+        // Shipping Address
+        $pdf->ImageEps($shipadrImage, $shipadrXPos, $shipadrYPos, $shipadrWidth, $invoiceimgHeadHeight);
+        $pdf->SetXY(117, 80.8);
+        foreach ($options['shipping'] as $shipadrrow) {
+            $pdf->SetX(119);
+            $pdf->Cell(91,5.5, $shipadrrow,0,1,'L');
+        }
+        // Items / Imprint Table head
+        $tableHeadYPos = 110;
+        $itemnumImage = FCPATH.'/img/invoice/itemnum_head_bg.eps';
+        $itemnumXPos = 5;
+        $itemnumWidth = 0;
+
+        $descripImage = FCPATH.'/img/invoice/itemdescript_head_bg_3.eps';
+        $descripXPos = 38;
+        $descripWidth = 0;
+
+        $itemqtyImage = FCPATH.'/img/invoice/itemqty_head_bg2.eps';
+        $itemqtyXPos = 131; // 126;
+        $itemqtyWidth = 0;
+
+        $priceImage = FCPATH.'/img/invoice/priceeach_head_bg-2.eps';
+        $priceXPos = 151; // 146;
+        $priceWidth = 0;
+
+        $totalImage = FCPATH.'/img/invoice/subtotal_head_bg.eps';
+        $totalXPos = 180; // 175;
+        $totalWidth = 0;
+
+        $pdf->ImageEps($itemnumImage, $itemnumXPos, $tableHeadYPos, $itemnumWidth, $invoiceimgHeadHeight);
+        $pdf->ImageEps($descripImage, $descripXPos, $tableHeadYPos, $descripWidth, $invoiceimgHeadHeight);
+        $pdf->ImageEps($itemqtyImage, $itemqtyXPos, $tableHeadYPos, $itemqtyWidth, $invoiceimgHeadHeight);
+        $pdf->ImageEps($priceImage, $priceXPos, $tableHeadYPos, $priceWidth, $invoiceimgHeadHeight);
+        $pdf->ImageEps($totalImage, $totalXPos, $tableHeadYPos, $totalWidth, $invoiceimgHeadHeight);
+        // Table Data
+        $tableWidths = [
+            33,
+            93, //88,
+            18,
+            29,
+            32.5,
+        ];
+        // Items / Imprint Table body
+        $numpp = 1;
+        $pdf->SetFillColor(225, 225, 225);
+        $pdf->SetXY(0, 118.7);
+        $numrow = 0;
+        foreach ($options['details'] as $detail) {
+            $fillcell = ($numpp%2==1 ? true:  false);
+            if ($detail['item_color']=='#ff0000') {
+                $pdf->SetTextColor(255,0,0);
+            } else {
+                $pdf->SetTextColor(0,0,0);
+            }
+            $pdf->SetX(5);
+            $pdf->Cell($tableWidths[0], 7, $detail['item_num'], 0, 0,'C', $fillcell); //
+            if ($detail['item']==1) {
+                $pdf->Cell($tableWidths[1], 7, substr($detail['item_description'],0,45),0,0,'L',$fillcell);
+            } else {
+                $pdf->Cell($tableWidths[1], 7, '  '.substr($detail['item_description'],0,45),0,0,'L',$fillcell);
+            }
+
+            $pdf->Cell($tableWidths[2], 7, $detail['item_qty']==0 ? '' : QTYOutput($detail['item_qty']),0, 0, 'C', $fillcell);
+            $pdf->Cell($tableWidths[3], 7, $detail['item_price'],0,0,'C', $fillcell);
+            $pdf->Cell($tableWidths[4], 7, $detail['item_subtotal'],0, 1,'C', $fillcell);
+            $numpp++;
+            $numrow = $pdf->GetY();
+            // Broke page
+            if ($numrow >= 260 && $numpp < count($options['details'])) {
+                $pdf->AddPage();
+                $pdf->SetXY(5, 15);
+                $numrow = 0;
+                $tableHeadYPos = 15;
+                $pdf->ImageEps($itemnumImage, $itemnumXPos, $tableHeadYPos, $itemnumWidth, $invoiceimgHeadHeight);
+                $pdf->ImageEps($descripImage, $descripXPos, $tableHeadYPos, $descripWidth, $invoiceimgHeadHeight);
+                $pdf->ImageEps($itemqtyImage, $itemqtyXPos, $tableHeadYPos, $itemqtyWidth, $invoiceimgHeadHeight);
+                $pdf->ImageEps($priceImage, $priceXPos, $tableHeadYPos, $priceWidth, $invoiceimgHeadHeight);
+                $pdf->ImageEps($totalImage, $totalXPos, $tableHeadYPos, $totalWidth, $invoiceimgHeadHeight);
+                // Table Data
+                $pdf->SetFillColor(225, 225, 225);
+                $pdf->SetXY(5, 24.7);
+            }
+        }
+
+        // Totals && message
+        $totalbgn = $pdf->GetY();
+        if ($totalbgn >= 260) {
+            $pdf->AddPage();
+            $pdf->SetXY(5, 15);
+            $totalbgn = 15;
+        }
+        // Invoice message
+        if (!empty($options['invoice_message'])) {
+            $pdf->SetXY(5,$totalbgn+5.5);
+            $pdf->SetFont('','',13);
+            // $pdf->Cell(105, 0, $options['invoice_message'],1);
+            $pdf->MultiCell(75, 6, $options['invoice_message'], 1, 'L', FALSE);
+
+        }
+        // Totals && Payments
+        $invtotalXPos = 95;
+        $invtotalYPos = $totalbgn+5;
+        $invtotalWidth = 115;
+        $invtotalHeght = 26 + 8*$options['payments_count'];
+        $pdf->Rect($invtotalXPos, $invtotalYPos, $invtotalWidth, $invtotalHeght);
+        $pdf->SetTextColor(0,0,0);
+        $pdf->SetXY(96,$totalbgn+5.5);
+        $pdf->SetFont('','',13);
+        // $pdf->Cell(75, 8, 'NJ '.$options['tax_term'].'% Sales Tax '.$options['tax'],0,1);
+        $pdf->Cell(77, 8, 'NJ '.$options['tax_term'].'% Sales Tax ',0, 0);
+        $pdf->Cell(35.9, 8, $options['tax'],0,1);
+
+        $pdf->SetX(96);
+        $pdf->SetFont('','B');
+        $pdf->Cell(77, 8, 'Total',0, 0);
+        $pdf->SetTextColor(8,0,255);
+        $pdf->Cell(35.9, 8, $options['total'],0,1);
+
+        if ($options['payments_count'] > 0) {
+            foreach ($options['payments_detail'] as $payments_detail) {
+                $pdf->SetX(95.5);
+                $pdf->SetTextColor(0,0,0);
+                $pdf->SetFont('','B');
+                $pdf->Cell(77.4, 8, $payments_detail['label'],0,0,'L',true);
+                if ($payments_detail['type']=='refund') {
+                    $pdf->Cell(35.9, 8,'+'.$payments_detail['value'],0,1,'L',true);
+                } else {
+                    $pdf->SetTextColor(255,0,0);
+                    $pdf->Cell(35.9, 8,'-'.$payments_detail['value'],0,1,'L',true);
+                    $pdf->SetTextColor(0,0,0);
+                }
+            }
+        }
+        $pdf->SetX(95.5);
+        $pdf->SetFont('','B');
+        $pdf->Cell(77,8,'Balance Due',0,0);
+        $pdf->SetTextColor(0,0,255);
+        $pdf->Cell(35.9,8,$options['balance'],0,1);
+        // Bottom message
+        if ($options['balancetotal'] > 0) {
+            $botmessagebgn = $pdf->GetY()+10;
+            if ($botmessagebgn >= 260) {
+                $pdf->AddPage();
+                $pdf->SetXY(5, 15);
+                $botmessagebgn = 15;
+            }
+            $noteXPos = 15;
+            $noteYPos = $botmessagebgn;
+            $noteWidth = 186;
+            $noteHeght = 17;
+            $pdf->SetLineWidth(0.5);
+            $pdf->Rect($noteXPos, $noteYPos, $noteWidth, $noteHeght);
+            $pdf->SetTextColor(0,0,0);
+            $pdf->SetFont('','',11);
+            $QRWidth = 0;
+            $QRHeight = 16;
+            $msgX = $noteXPos+0.5;
+            $msgY = $noteYPos+0.5;
+            // Credit card Link
+            if (!empty($options['ccqrcode'])) {
+                $QRImage = FCPATH.$options['ccqrcode'];
+                $QRXPos = $msgX;
+                $QRYPos = $msgY;
+                $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
+            } else {
+                $pdf->SetXY($msgX, $msgY);
+                $pdf->Cell(16, 16, '',0, 0);
+            }
+            $msgX = $msgX+16.5;
+            $pdf->SetXY($msgX, $msgY);
+            $nblines = $pdf->NbLines(45, $options['cclink']);
+            if ($nblines==1) {
+                $startY=$msgY+5;
+                $pdf->SetXY($msgX, $startY);
+            } elseif ($nblines==2) {
+                $startY=$msgY+2.5;
+                $pdf->SetXY($msgX, $startY);
+            }
+            $pdf->MultiCell(45, 5, $options['cclink']);
+            $msgX+=45.5;
+            $pdf->SetXY($msgX, $msgY);
+            // ACH/Wire Link
+            if (!empty($options['wireqrcode'])) {
+                $QRImage = FCPATH.$options['wireqrcode'];
+                $QRXPos = $pdf->GetX();
+                $QRYPos = $pdf->GetY();
+                $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
+            } else {
+                $pdf->Cell(16, 16, '',0, 0);
+            }
+            $msgX+=16.5;
+            $pdf->SetXY($msgX, $msgY);
+            $nblines = $pdf->NbLines(45, $options['wirelink']);
+            if ($nblines==1) {
+                $startY=$msgY+5;
+                $pdf->SetXY($msgX, $startY);
+            } elseif ($nblines==2) {
+                $startY=$msgY+2.5;
+                $pdf->SetXY($msgX, $startY);
+            }
+            $pdf->MultiCell(45, 5, $options['wirelink']);
+            $msgX+=45.5;
+            $pdf->SetXY($msgX, $msgY);
+            // Check Link
+            if (!empty($options['checkqrcode'])) {
+                $QRImage = FCPATH.$options['checkqrcode'];
+                $QRXPos = $pdf->GetX();
+                $QRYPos = $pdf->GetY();
+                $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
+            } else {
+                $pdf->Cell(16, 16, '',0, 0);
+            }
+            $msgX+=16.5;
+            $pdf->SetXY($msgX, $msgY);
+            $nblines = $pdf->NbLines(45, $options['wirelink']);
+            if ($nblines==1) {
+                $startY=$msgY+5;
+                $pdf->SetXY($msgX, $startY);
+            } elseif ($nblines==2) {
+                $startY=$msgY+2.5;
+                $pdf->SetXY($msgX, $startY);
+            }
+            $pdf->MultiCell(45, 5, $options['checklink']);
+        }
+//        $botmessagebgn = $pdf->GetY()+10;
+//        if ($botmessagebgn >= 260) {
+//            $pdf->AddPage();
+//            $pdf->SetXY(5, 15);
+//            $botmessagebgn = 15;
+//        }
+//        $noteXPos = 30;
+//        $noteYPos = $botmessagebgn;
+//        $noteWidth = 155;
+//        $noteHeght = 16;
+//        $pdf->SetLineWidth(0.5);
+//        $pdf->Rect($noteXPos, $noteYPos, $noteWidth, $noteHeght);
+//        $pdf->SetTextColor(0,0,0);
+//        $pdf->SetXY($noteXPos+0.5,$noteYPos+0.5);
+//        $pdf->SetFont('','',13);
+//        $pdf->Cell(155, 8, 'All check payments should be sent to:',0, 0,'C');
+//        $pdf->SetXY($noteXPos+0.5,$noteYPos+7.5);
+//        $pdf->Cell(155, 8, 'BLUETRACK or Stressballs.com, PO Box 8000006, Buffalo, NY 14267-0002',0, 0,'C');
+        // Save file
+        $pdf->Output('F', $file_out);
+        return TRUE;
+
     }
 }
 /* End of file leadorder_model.php */
