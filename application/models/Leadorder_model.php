@@ -12746,108 +12746,81 @@ Class Leadorder_model extends My_Model {
         $pdf->Cell(35.9,8,$options['balance'],0,1);
         // Bottom message
         if ($options['balancetotal'] > 0) {
-            $botmessagebgn = $pdf->GetY()+10;
+            $botmessagebgn = $pdf->GetY() + 10;
             if ($botmessagebgn >= 260) {
                 $pdf->AddPage();
                 $pdf->SetXY(5, 15);
                 $botmessagebgn = 15;
             }
-            $noteXPos = 15;
-            $noteYPos = $botmessagebgn;
-            $noteWidth = 186;
-            $noteHeght = 17;
-            $pdf->SetLineWidth(0.5);
-            $pdf->Rect($noteXPos, $noteYPos, $noteWidth, $noteHeght);
+            $msgX = 18;
+            $msgY = $botmessagebgn;
             $pdf->SetTextColor(0,0,0);
-            $pdf->SetFont('','',11);
-            $QRWidth = 0;
-            $QRHeight = 16;
-            $msgX = $noteXPos+0.5;
-            $msgY = $noteYPos+0.5;
-            // Credit card Link
+            $pdf->SetXY($msgX, $msgY);
+            $pdf->Cell(185,6, 'Payment Options:',0,0,'C');
+            $msgY+=8;
+            $boxHeight = 18;
+            $boxWidth = 55;
+            $QRWidth = 17;
+            $QRHeight = 17;
+            // Credit card box
+            $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
             if (!empty($options['ccqrcode'])) {
                 $QRImage = FCPATH.$options['ccqrcode'];
-                $QRXPos = $msgX;
-                $QRYPos = $msgY;
+                $QRXPos = $msgX+0.5;
+                $QRYPos = $msgY+0.5;
                 $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
             } else {
-                $pdf->SetXY($msgX, $msgY);
-                $pdf->Cell(16, 16, '',0, 0);
+                $pdf->Cell($boxHeight, $boxHeight, '');
             }
-            $msgX = $msgX+16.5;
+            $msgX+=19;
+            $pdf->SetXY($msgX+0.5, $msgY);
+            $pdf->SetTextColor(0,0,0);
+            $pdf->SetFont('','B','11');
+            $pdf->Cell(36, 8, 'Credit Card');
+            $pdf->SetXY($msgX+0.5, $msgY+6);
+            $pdf->SetTextColor(0,0,255);
+            $pdf->Cell(36,8,'Or Click for details',0,0,'L',0,$options['cclink']);
+            $msgX+=46;
             $pdf->SetXY($msgX, $msgY);
-            $nblines = $pdf->NbLines(45, $options['cclink']);
-            if ($nblines==1) {
-                $startY=$msgY+5;
-                $pdf->SetXY($msgX, $startY);
-            } elseif ($nblines==2) {
-                $startY=$msgY+2.5;
-                $pdf->SetXY($msgX, $startY);
-            }
-            $pdf->MultiCell(45, 5, $options['cclink']);
-            $msgX+=45.5;
-            $pdf->SetXY($msgX, $msgY);
-            // ACH/Wire Link
-            if (!empty($options['wireqrcode'])) {
-                $QRImage = FCPATH.$options['wireqrcode'];
-                $QRXPos = $pdf->GetX();
-                $QRYPos = $pdf->GetY();
-                $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
-            } else {
-                $pdf->Cell(16, 16, '',0, 0);
-            }
-            $msgX+=16.5;
-            $pdf->SetXY($msgX, $msgY);
-            $nblines = $pdf->NbLines(45, $options['wirelink']);
-            if ($nblines==1) {
-                $startY=$msgY+5;
-                $pdf->SetXY($msgX, $startY);
-            } elseif ($nblines==2) {
-                $startY=$msgY+2.5;
-                $pdf->SetXY($msgX, $startY);
-            }
-            $pdf->MultiCell(45, 5, $options['wirelink']);
-            $msgX+=45.5;
-            $pdf->SetXY($msgX, $msgY);
-            // Check Link
+            // Check
+            $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
             if (!empty($options['checkqrcode'])) {
                 $QRImage = FCPATH.$options['checkqrcode'];
-                $QRXPos = $pdf->GetX();
-                $QRYPos = $pdf->GetY();
+                $QRXPos = $msgX+0.5;
+                $QRYPos = $msgY+0.5;
                 $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
             } else {
-                $pdf->Cell(16, 16, '',0, 0);
+                $pdf->Cell($boxHeight, $boxHeight, '');
             }
-            $msgX+=16.5;
+            $msgX+=19;
+            $pdf->SetXY($msgX+0.5, $msgY);
+            $pdf->SetTextColor(0,0,0);
+            $pdf->SetFont('','B','11');
+            $pdf->Cell(36, 8, 'Check');
+            $pdf->SetXY($msgX+0.5, $msgY+6);
+            $pdf->SetTextColor(0,0,255);
+            $pdf->Cell(36,8,'Or Click for details',0,0,'L',0,$options['checklink']);
+            $msgX+=46;
             $pdf->SetXY($msgX, $msgY);
-            $nblines = $pdf->NbLines(45, $options['wirelink']);
-            if ($nblines==1) {
-                $startY=$msgY+5;
-                $pdf->SetXY($msgX, $startY);
-            } elseif ($nblines==2) {
-                $startY=$msgY+2.5;
-                $pdf->SetXY($msgX, $startY);
+            // ACH/wire
+            $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
+            if (!empty($options['wireqrcode'])) {
+                $QRImage = FCPATH.$options['wireqrcode'];
+                $QRXPos = $msgX+0.5;
+                $QRYPos = $msgY+0.5;
+                $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
+            } else {
+                $pdf->Cell($boxHeight, $boxHeight, '');
             }
-            $pdf->MultiCell(45, 5, $options['checklink']);
+            $msgX+=19;
+            $pdf->SetXY($msgX+0.5, $msgY);
+            $pdf->SetTextColor(0,0,0);
+            $pdf->SetFont('','B','11');
+            $pdf->Cell(36, 8, 'Wire/ACH');
+            $pdf->SetXY($msgX+0.5, $msgY+6);
+            $pdf->SetTextColor(0,0,255);
+            $pdf->Cell(36,8,'Or Click for details',0,0,'L',0,$options['wirelink']);
         }
-//        $botmessagebgn = $pdf->GetY()+10;
-//        if ($botmessagebgn >= 260) {
-//            $pdf->AddPage();
-//            $pdf->SetXY(5, 15);
-//            $botmessagebgn = 15;
-//        }
-//        $noteXPos = 30;
-//        $noteYPos = $botmessagebgn;
-//        $noteWidth = 155;
-//        $noteHeght = 16;
-//        $pdf->SetLineWidth(0.5);
-//        $pdf->Rect($noteXPos, $noteYPos, $noteWidth, $noteHeght);
-//        $pdf->SetTextColor(0,0,0);
-//        $pdf->SetXY($noteXPos+0.5,$noteYPos+0.5);
-//        $pdf->SetFont('','',13);
-//        $pdf->Cell(155, 8, 'All check payments should be sent to:',0, 0,'C');
-//        $pdf->SetXY($noteXPos+0.5,$noteYPos+7.5);
-//        $pdf->Cell(155, 8, 'BLUETRACK or Stressballs.com, PO Box 8000006, Buffalo, NY 14267-0002',0, 0,'C');
         // Save file
         $pdf->Output('F', $file_out);
         return TRUE;
