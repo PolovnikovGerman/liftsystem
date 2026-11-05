@@ -13614,7 +13614,7 @@ Class Leadorder_model extends My_Model {
             $pdf->SetXY($msgX, $msgY);
             $pdf->Cell(185,6, 'Payment Options:',0,0,'C');
             $msgY+=8;
-            $boxHeight = 18;
+            $boxHeight = 19;
             $boxWidth = 55;
             $QRWidth = 17;
             $QRHeight = 17;
@@ -13622,8 +13622,8 @@ Class Leadorder_model extends My_Model {
             $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
             if (!empty($options['ccqrcode'])) {
                 $QRImage = FCPATH.$options['ccqrcode'];
-                $QRXPos = $msgX+0.5;
-                $QRYPos = $msgY+0.5;
+                $QRXPos = $msgX+1;
+                $QRYPos = $msgY+1;
                 $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
             } else {
                 $pdf->Cell($boxHeight, $boxHeight, '');
@@ -13631,9 +13631,10 @@ Class Leadorder_model extends My_Model {
             $msgX+=19;
             $pdf->SetXY($msgX+0.5, $msgY);
             $pdf->SetTextColor(0,0,0);
-            $pdf->SetFont('','B','11');
+            $pdf->SetFont('','B','12');
             $pdf->Cell(36, 8, 'Credit Card');
             $pdf->SetXY($msgX+0.5, $msgY+6);
+            $pdf->SetFont('','','11');
             $pdf->SetTextColor(0,0,255);
             $pdf->Cell(36,8,'Or Click for details',0,0,'L',0,$options['cclink']);
             $msgX+=46;
@@ -13642,8 +13643,8 @@ Class Leadorder_model extends My_Model {
             $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
             if (!empty($options['checkqrcode'])) {
                 $QRImage = FCPATH.$options['checkqrcode'];
-                $QRXPos = $msgX+0.5;
-                $QRYPos = $msgY+0.5;
+                $QRXPos = $msgX+1;
+                $QRYPos = $msgY+1;
                 $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
             } else {
                 $pdf->Cell($boxHeight, $boxHeight, '');
@@ -13651,10 +13652,11 @@ Class Leadorder_model extends My_Model {
             $msgX+=19;
             $pdf->SetXY($msgX+0.5, $msgY);
             $pdf->SetTextColor(0,0,0);
-            $pdf->SetFont('','B','11');
+            $pdf->SetFont('','B','12');
             $pdf->Cell(36, 8, 'Check');
             $pdf->SetXY($msgX+0.5, $msgY+6);
             $pdf->SetTextColor(0,0,255);
+            $pdf->SetFont('','','11');
             $pdf->Cell(36,8,'Or Click for details',0,0,'L',0,$options['checklink']);
             $msgX+=46;
             $pdf->SetXY($msgX, $msgY);
@@ -13662,8 +13664,8 @@ Class Leadorder_model extends My_Model {
             $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
             if (!empty($options['wireqrcode'])) {
                 $QRImage = FCPATH.$options['wireqrcode'];
-                $QRXPos = $msgX+0.5;
-                $QRYPos = $msgY+0.5;
+                $QRXPos = $msgX+1;
+                $QRYPos = $msgY+1;
                 $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
             } else {
                 $pdf->Cell($boxHeight, $boxHeight, '');
@@ -13671,9 +13673,10 @@ Class Leadorder_model extends My_Model {
             $msgX+=19;
             $pdf->SetXY($msgX+0.5, $msgY);
             $pdf->SetTextColor(0,0,0);
-            $pdf->SetFont('','B','11');
+            $pdf->SetFont('','B','12');
             $pdf->Cell(36, 8, 'Wire/ACH');
             $pdf->SetXY($msgX+0.5, $msgY+6);
+            $pdf->SetFont('','','11');
             $pdf->SetTextColor(0,0,255);
             $pdf->Cell(36,8,'Or Click for details',0,0,'L',0,$options['wirelink']);
         }
