@@ -273,6 +273,18 @@ function ImageEps ($file, $x, $y, $w=0, $h=0, $link='', $useBoundingBox=true){
 		return $nl;
 	}
 
+	function CheckPageBreak($h)
+	{
+		$newPage =0;
+		// If the height h would cause an overflow, add a new page immediately
+		if($this->GetY()+$h>$this->PageBreakTrigger) {
+			$this->AddPage($this->CurOrientation);
+			$newPage = 1;
+		}
+		return $newPage;
+	}
+
+
 }# END CLASS
 
 ?>

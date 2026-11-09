@@ -13529,9 +13529,10 @@ Class Leadorder_model extends My_Model {
             $pdf->Cell($tableWidths[4], 7, $detail['item_subtotal'],0, 1,'C', $fillcell);
             $numpp++;
             $numrow = $pdf->GetY();
+            if ($pdf->CheckPageBreak(9)==1) {
             // Broke page
-            if ($numrow >= 260 && $numpp < count($options['details'])) {
-                $pdf->AddPage();
+            //if ($numrow >= 260 && $numpp < count($options['details'])) {
+                // $pdf->AddPage();
                 $pdf->SetXY(5, 15);
                 $numrow = 0;
                 $tableHeadYPos = 15;
@@ -13548,8 +13549,10 @@ Class Leadorder_model extends My_Model {
 
         // Totals && message
         $totalbgn = $pdf->GetY();
-        if ($totalbgn >= 260) {
-            $pdf->AddPage();
+        $totalHeight = (5+$options['payments_count'])*9;
+        if ($pdf->CheckPageBreak($totalHeight)) {
+        // if ($totalbgn >= 260) {
+            // $pdf->AddPage();
             $pdf->SetXY(5, 15);
             $totalbgn = 15;
         }
@@ -13603,8 +13606,10 @@ Class Leadorder_model extends My_Model {
         // Bottom message
         if ($options['balancetotal'] > 0) {
             $botmessagebgn = $pdf->GetY() + 10;
-            if ($botmessagebgn >= 260) {
-                $pdf->AddPage();
+            $messageHeight = 30;
+            if ($pdf->CheckPageBreak($messageHeight)==1) {
+            // if ($botmessagebgn >= 260) {
+            //    $pdf->AddPage();
                 $pdf->SetXY(5, 15);
                 $botmessagebgn = 15;
             }
