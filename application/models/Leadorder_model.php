@@ -9242,14 +9242,14 @@ Class Leadorder_model extends My_Model {
             'balancetotal' => floatval($balance),
         ];
 
-        if ($balance > 0) {
+        // if ($balance > 0) {
             // QR code
             $this->load->library('ciqrcode');
             $qrcode = uniq_link(15) . '.png';
             if ($order['brand']=='SR') {
-                $checkoutlink = $this->config->item('srcheckoutlink').'cc/'.$order['checkout_link'];
+                $checkoutlink = $this->config->item('srcheckoutlink').$order['checkout_link'];
             } else {
-                $checkoutlink = $this->config->item('btcheckoutlink').'cc/'.$order['checkout_link'];;
+                $checkoutlink = $this->config->item('btcheckoutlink').$order['checkout_link'];;
             }
             $params = [
                 'data' => $checkoutlink,
@@ -9264,44 +9264,48 @@ Class Leadorder_model extends My_Model {
             }
             $options['cclink'] = $checkoutlink;
             $options['ccqrcode'] = empty($qrsrc) ? '' : $qrsrc;
-            // Wire
-            if ($order['brand']=='SR') {
-                $checkoutlink = $this->config->item('srcheckoutlink').'wire/'.$order['checkout_link'];
-            } else {
-                $checkoutlink = $this->config->item('btcheckoutlink').'wire/'.$order['checkout_link'];;
-            }
-            $params = [
-                'data' => $checkoutlink,
-                'level' => 'H',
-                'size' => 3,
-                'savename' => $this->config->item('upload_path_preload') . $qrcode,
-            ];
-            $this->ciqrcode->generate($params);
-            $qrsrc = '';
-            if (file_exists($params['savename'])) {
-                $qrsrc = $this->config->item('pathpreload') . $qrcode;
-            }
-            $options['wirelink'] = $checkoutlink;
-            $options['wireqrcode'] = empty($qrsrc) ? '' : $qrsrc;
-            // Check
-            if ($order['brand']=='SR') {
-                $checkoutlink = $this->config->item('srcheckoutlink').'check/'.$order['checkout_link'];
-            } else {
-                $checkoutlink = $this->config->item('btcheckoutlink').'check/'.$order['checkout_link'];;
-            }
-            $params = [
-                'data' => $checkoutlink,
-                'level' => 'H',
-                'size' => 3,
-                'savename' => $this->config->item('upload_path_preload') . $qrcode,
-            ];
-            $this->ciqrcode->generate($params);
-            $qrsrc = '';
-            if (file_exists($params['savename'])) {
-                $qrsrc = $this->config->item('pathpreload') . $qrcode;
-            }
-            $options['checklink'] = $checkoutlink;
-            $options['checkqrcode'] = empty($qrsrc) ? '' : $qrsrc;
+//            // Wire
+//            if ($order['brand']=='SR') {
+//                $checkoutlink = $this->config->item('srcheckoutlink').'wire/'.$order['checkout_link'];
+//            } else {
+//                $checkoutlink = $this->config->item('btcheckoutlink').'wire/'.$order['checkout_link'];;
+//            }
+//            $params = [
+//                'data' => $checkoutlink,
+//                'level' => 'H',
+//                'size' => 3,
+//                'savename' => $this->config->item('upload_path_preload') . $qrcode,
+//            ];
+//            $this->ciqrcode->generate($params);
+//            $qrsrc = '';
+//            if (file_exists($params['savename'])) {
+//                $qrsrc = $this->config->item('pathpreload') . $qrcode;
+//            }
+//            $options['wirelink'] = $checkoutlink;
+//            $options['wireqrcode'] = empty($qrsrc) ? '' : $qrsrc;
+//            // Check
+//            if ($order['brand']=='SR') {
+//                $checkoutlink = $this->config->item('srcheckoutlink').'check/'.$order['checkout_link'];
+//            } else {
+//                $checkoutlink = $this->config->item('btcheckoutlink').'check/'.$order['checkout_link'];;
+//            }
+//            $params = [
+//                'data' => $checkoutlink,
+//                'level' => 'H',
+//                'size' => 3,
+//                'savename' => $this->config->item('upload_path_preload') . $qrcode,
+//            ];
+//            $this->ciqrcode->generate($params);
+//            $qrsrc = '';
+//            if (file_exists($params['savename'])) {
+//                $qrsrc = $this->config->item('pathpreload') . $qrcode;
+//            }
+//            $options['checklink'] = $checkoutlink;
+//            $options['checkqrcode'] = empty($qrsrc) ? '' : $qrsrc;
+        // }
+        $options['termorder'] = 0;
+        if ($order['balance_manage']==3) {
+            $options['termorder'] = 1;
         }
 
         // $html=$this->load->view('leadorderdetails/docs/invoice_view', $options, TRUE);
@@ -12539,18 +12543,18 @@ Class Leadorder_model extends My_Model {
             $pdf->SetFont('','',12.046857);
             $pdf->Text(5, 30.88, 'ASI # 40694');
             $pdf->Text(5, 36.88, '1 Stewart Court');
-            $pdf->Text(5, 42.88, 'Denville, NJ 07834');
-            $pdf->Text(5,48.88, 'Call Us at');
+            $pdf->Text(5, 41.88, 'Denville, NJ 07834');
+            $pdf->Text(5,47.88, 'Call Us at');
             $pdf->SetTextColor(0,0,75);
-            $pdf->Text(23,48.88, '1-800-370-3020');
+            $pdf->Text(23,47.88, '1-800-370-3020');
             // $pdf->Text(5,45.88,'www.stressrelievers.com'); // , 'http://www.bluetrack.com');
         } else {
             $pdf->SetFont('','',12.046857);
             $pdf->Text(5, 35.88, '1 Stewart Court');
-            $pdf->Text(5, 42.88, 'Denville, NJ 07834');
+            $pdf->Text(5, 41.88, 'Denville, NJ 07834');
             $pdf->SetTextColor(0,0,255);
-            $pdf->Text(5, 48.88, '1-800-790-6090');
-            $pdf->Text(42, 48.88,'www.stressballs.com'); // , 'www.bluetrack.com');
+            $pdf->Text(5, 47.88, '1-800-790-6090');
+            $pdf->Text(42, 47.88,'www.stressballs.com'); // , 'www.bluetrack.com');
         }
         // Order Date
         $pdf->SetTextColor(65, 65, 65);
@@ -12748,27 +12752,53 @@ Class Leadorder_model extends My_Model {
         $pdf->SetTextColor(0,0,255);
         $pdf->Cell(35.9,8,$options['balance'],0,1);
         // Bottom message
-        if ($options['balancetotal'] > 0) {
-            $botmessagebgn = $pdf->GetY() + 10;
-            $messageHeight = 30;
-            if ($pdf->CheckPageBreak($messageHeight)==1) {
-            // if ($botmessagebgn >= 260) {
-            //    $pdf->AddPage();
-                $pdf->SetXY(5, 15);
-                $botmessagebgn = 15;
-            }
-            $msgX = 18;
-            $msgY = $botmessagebgn;
-            $pdf->SetTextColor(0,0,0);
-            $pdf->SetXY($msgX, $msgY);
-            $pdf->Cell(185,6, 'Payment Options:',0,0,'C');
-            $msgY+=8;
+        // if ($options['balancetotal'] > 0) {
+        $botmessagebgn = $pdf->GetY() + 10;
+        $messageHeight = 30;
+        if ($pdf->CheckPageBreak($messageHeight)==1) {
+            $pdf->SetXY(5, 15);
+            $botmessagebgn = 15;
+        }
+        $msgX = 18;
+        $msgY = $botmessagebgn;
+        $pdf->SetTextColor(0,0,0);
+        $pdf->SetXY($msgX, $msgY);
+        $pdf->Cell(185,6, 'Payment Options:',0,0,'C');
+        $msgY+=8;
+        if ($options['termorder']==0) {
             $boxHeight = 19;
-            $boxWidth = 55;
+            $boxWidth = 32;
+            $msgX = 56;
             $QRWidth = 17;
             $QRHeight = 17;
             // Credit card box
             $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
+            $pdf->SetXY($msgX, $msgY+2);
+            $pdf->SetFont('','B','12');
+            $pdf->Cell(32,9,'Credit Card',0,0,'C');
+            $pdf->SetXY($msgX, $msgY+7);
+            $pdf->Cell(32,9,'eCheck/ACH',0,0,'C');
+            $msgX+=32;
+            $pdf->SetXY($msgX, $msgY);
+            $boxWidth = 78;
+            $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
+            $pdf->SetTextColor(0,0,255);
+            $pdf->SetFont('','','11');
+            $pdf->SetXY($msgX, $msgY+2);
+            $pdf->Cell(29, 9,'Click for',0,0,'C',0,$options['cclink']);
+            $pdf->SetXY($msgX, $msgY+6.4);
+            $pdf->Cell(29, 9, 'Secure Portal',0,0,'C',0,$options['cclink']);
+            $pdf->SetTextColor(0,0,0);
+            $msgX+=30;
+            $pdf->SetXY($msgX, $msgY);
+            $pdf->Cell(12,19,'Or',0,0,'C');
+            $msgX+=15;
+            $pdf->SetXY($msgX,$msgY+2);
+            $pdf->Cell(10,9,'Scan',0,0,'C');
+            $pdf->SetXY($msgX, $msgY+6.4);
+            $pdf->Cell(10,9,'Code:',0,0,'C');
+            $msgX+=12;
+            $pdf->SetXY($msgX, $msgY);
             if (!empty($options['ccqrcode'])) {
                 $QRImage = FCPATH.$options['ccqrcode'];
                 $QRXPos = $msgX+1;
@@ -12777,57 +12807,64 @@ Class Leadorder_model extends My_Model {
             } else {
                 $pdf->Cell($boxHeight, $boxHeight, '');
             }
-            $msgX+=19;
-            $pdf->SetXY($msgX+0.5, $msgY);
+        } else {
+            // Tems Order
+            // CC box
+            $msgX = 28;
+            $boxHeight = 19;
+            $boxWidth = 66;
+            $QRWidth = 17;
+            $QRHeight = 17;
+            // Credit card box
+            $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
+            $pdf->SetXY($msgX+0.5, $msgY+3.7);
             $pdf->SetTextColor(0,0,0);
             $pdf->SetFont('','B','12');
-            $pdf->Cell(36, 8, 'Credit Card');
-            $pdf->SetXY($msgX+0.5, $msgY+6);
+            $pdf->Cell(42, 8, 'Credit Card / eCheck',0,0,'C');
+            $pdf->SetXY($msgX+0.5, $msgY+8);
             $pdf->SetFont('','','11');
             $pdf->SetTextColor(0,0,255);
-            $pdf->Cell(36,8,'Or Click for details',0,0,'L',0,$options['cclink']);
-            $msgX+=46;
-            $pdf->SetXY($msgX, $msgY);
-            // Check
-            $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
-            if (!empty($options['checkqrcode'])) {
-                $QRImage = FCPATH.$options['checkqrcode'];
-                $QRXPos = $msgX+1;
+            $pdf->Cell(42,8,'Click here or scan',0,0,'C',0,$options['cclink']);
+            $pdf->SetXY($msgX+46, $msgY);
+            $pdf->SetTextColor(0,0,0);
+            if (!empty($options['ccqrcode'])) {
+                $QRImage = FCPATH.$options['ccqrcode'];
+                $QRXPos = $msgX+47;
                 $QRYPos = $msgY+1;
                 $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
             } else {
                 $pdf->Cell($boxHeight, $boxHeight, '');
             }
-            $msgX+=19;
-            $pdf->SetXY($msgX+0.5, $msgY);
-            $pdf->SetTextColor(0,0,0);
-            $pdf->SetFont('','B','12');
-            $pdf->Cell(36, 8, 'Check');
-            $pdf->SetXY($msgX+0.5, $msgY+6);
-            $pdf->SetTextColor(0,0,255);
-            $pdf->SetFont('','','11');
-            $pdf->Cell(36,8,'Or Click for details',0,0,'L',0,$options['checklink']);
-            $msgX+=46;
-            $pdf->SetXY($msgX, $msgY);
-            // ACH/wire
+            // Paper checks box
+            $msgX+=76;
+            $boxWidth = 44;
             $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
-            if (!empty($options['wireqrcode'])) {
-                $QRImage = FCPATH.$options['wireqrcode'];
-                $QRXPos = $msgX+1;
-                $QRYPos = $msgY+1;
-                $pdf->Image($QRImage, $QRXPos, $QRYPos, $QRWidth, $QRHeight);
+            $pdf->SetXY($msgX, $msgY);
+            $pdf->Cell($boxWidth,6,'Checks Mailed to:');
+            $pdf->SetXY($msgX, $msgY+4.6);
+            if ($brand=='SR') {
+                $company = 'StressRelievers';
             } else {
-                $pdf->Cell($boxHeight, $boxHeight, '');
+                $company = 'Bluetrack';
             }
-            $msgX+=19;
-            $pdf->SetXY($msgX+0.5, $msgY);
-            $pdf->SetTextColor(0,0,0);
-            $pdf->SetFont('','B','12');
-            $pdf->Cell(36, 8, 'Wire/ACH');
-            $pdf->SetXY($msgX+0.5, $msgY+6);
-            $pdf->SetFont('','','11');
+            $pdf->Cell($boxWidth,6,$company);
+            $pdf->SetXY($msgX, $msgY+9.2);
+            $pdf->Cell($boxWidth,6,'PO BOX 8000006');
+            $pdf->SetXY($msgX, $msgY+13.8);
+            $pdf->Cell($boxWidth,6,'Buffalo, NY 14267-0007');
+            $msgX+=$boxWidth+10;
+            // ACH / Wire request
+            $boxWidth = 36;
+            $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
+            $pdf->SetXY($msgX, $msgY+2);
+            $pdf->Cell($boxWidth,6, 'Wire / ACH');
+            $pdf->SetXY($msgX, $msgY+6.6);
             $pdf->SetTextColor(0,0,255);
-            $pdf->Cell(36,8,'Or Click for details',0,0,'L',0,$options['wirelink']);
+            $subject = htmlspecialchars('ACH / Wire Info Request');
+            $pdf->Cell($boxWidth,6, 'Click to request',0,0,'L',0,'mailto:finance@bluetrack.com?subject='.$subject);
+            $pdf->SetTextColor(0,0,0);
+            $pdf->SetXY($msgX, $msgY+11.2);
+            $pdf->Cell($boxWidth,6, 'our Wire / ACH info');
         }
         // Save file
         $pdf->Output('F', $file_out);
