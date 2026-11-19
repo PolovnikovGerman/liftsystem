@@ -12839,31 +12839,31 @@ Class Leadorder_model extends My_Model {
             $msgX+=76;
             $boxWidth = 44;
             $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
-            $pdf->SetXY($msgX, $msgY);
+            $pdf->SetXY($msgX+0.5, $msgY);
             $pdf->Cell($boxWidth,6,'Checks Mailed to:');
-            $pdf->SetXY($msgX, $msgY+4.6);
+            $pdf->SetXY($msgX+0.5, $msgY+4.6);
             if ($brand=='SR') {
                 $company = 'StressRelievers';
             } else {
                 $company = 'Bluetrack';
             }
             $pdf->Cell($boxWidth,6,$company);
-            $pdf->SetXY($msgX, $msgY+9.2);
+            $pdf->SetXY($msgX+0.5, $msgY+9.2);
             $pdf->Cell($boxWidth,6,'PO BOX 8000006');
-            $pdf->SetXY($msgX, $msgY+13.8);
+            $pdf->SetXY($msgX+0.5, $msgY+13.8);
             $pdf->Cell($boxWidth,6,'Buffalo, NY 14267-0007');
             $msgX+=$boxWidth+10;
             // ACH / Wire request
             $boxWidth = 36;
             $pdf->Rect($msgX, $msgY, $boxWidth, $boxHeight);
-            $pdf->SetXY($msgX, $msgY+2);
+            $pdf->SetXY($msgX+0.5, $msgY+2);
             $pdf->Cell($boxWidth,6, 'Wire / ACH');
-            $pdf->SetXY($msgX, $msgY+6.6);
+            $pdf->SetXY($msgX+0.5, $msgY+6.6);
             $pdf->SetTextColor(0,0,255);
             $subject = htmlspecialchars('ACH / Wire Info Request');
             $pdf->Cell($boxWidth,6, 'Click to request',0,0,'L',0,'mailto:finance@bluetrack.com?subject='.$subject);
             $pdf->SetTextColor(0,0,0);
-            $pdf->SetXY($msgX, $msgY+11.2);
+            $pdf->SetXY($msgX+0.5, $msgY+11.2);
             $pdf->Cell($boxWidth,6, 'our Wire / ACH info');
         }
         // Save file
