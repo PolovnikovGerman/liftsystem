@@ -1934,6 +1934,7 @@ Class Artlead_model extends MY_Model
                             $this->db->set('po_ship_date', strtotime($order['po_ship_date']));
                         }
                         $this->db->set('po_ship_act', $order['po_ship_act']);
+                        $this->db->set('po_shipbt_act', $order['po_shipbt_act']);
                         $this->db->set('po_vendor_msg', $order['po_vendor_msg']);
                         $this->db->insert('ts_netdata_orders');
                         $netorder_id = $this->db->insert_id();
