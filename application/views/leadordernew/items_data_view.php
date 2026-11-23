@@ -22,8 +22,8 @@
             <div class="tblitems_td tblitems_item">&nbsp;</div>
         <?php endif; ?>
         <?php if ($orderitem['item_id']>0) : ?>
-            <div class="tblitems_td tblitems_descript"><?=$itemrow==0 ? $item['item_description'] : '&nbsp;'?></div>
-            <div class="tblitems_td tblitems_color"><?=$item['item_color']?></div>
+            <div class="tblitems_td tblitems_descript truncateoverflowtext"><?=$itemrow==0 ? $item['item_description'] : '&nbsp;'?></div>
+            <div class="tblitems_td tblitems_color truncateoverflowtext"><?=$item['item_color']?></div>
         <?php else : ?>
             <div class="tblitems_td tblitems_customdescript truncateoverflowtext"><?=$item['item_description']?></div>
         <?php endif; ?>
