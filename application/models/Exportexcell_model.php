@@ -1162,4 +1162,35 @@ class Exportexcell_model extends CI_Model
         return $filename;
     }
 
+    public function export_customquote_order($emails)
+    {
+        ini_set("memory_limit",-1);
+        $namesheet = 'Custom Quote - Orders';
+        $spreadsheet = new Spreadsheet(); // instantiate Spreadsheet
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($namesheet);
+
+        $sheet->setCellValue('A1','Email');
+        $sheet->setCellValue('B1','Orders');
+        $sheet->setCellValue('A2','');
+        $sheet->setCellValue('B2','2023');
+        $sheet->setCellValue('C2','2024');
+        $sheet->setCellValue('D2','2025');
+        $sheet->setCellValue('E2','2026');
+        $j=3;
+        foreach ($emails as $email) {
+            $sheet->setCellValue('A'.$j, $email['email']);
+            $sheet->setCellValue('B'.$j, empty($email['2023']) ? '' : $email['2023']);
+            $sheet->setCellValue('C'.$j, empty($email['2024']) ? '' : $email['2024']);
+            $sheet->setCellValue('D'.$j, empty($email['2025']) ? '' : $email['2025']);
+            $sheet->setCellValue('E'.$j, empty($email['2026']) ? '' : $email['2026']);
+            $j++;
+        }
+        $writer = new Xlsx($spreadsheet); // instantiate Xlsx
+        $report_name = 'customquote_orders.xlsx';
+        $filename = $this->config->item('upload_path_preload') . $report_name;
+        $writer->save($filename);    // download file
+        return $filename;
+    }
+
 }
