@@ -645,10 +645,12 @@ function init_fulfillment_history() {
                 $(".btbox").removeClass('btbox_open');
                 $(".btbox_arrow").empty().html('<i class="fa fa-caret-right" aria-hidden="true"></i>');
                 $(".btbox_body").removeClass('btbox_open');
+                $(".btshipact").removeClass('btbox_open');
             } else {
                 $(".btbox").removeClass('btbox_open');
                 $(".btbox_arrow").empty().html('<i class="fa fa-caret-right" aria-hidden="true"></i>');
                 $(".btbox_body").removeClass('btbox_open');
+                $(".btshipact").removeClass('btbox_open');
                 $(".btbox[data-btbox='"+order+"']").addClass('btbox_open');
                 $(".btbox_arrow[data-btbox='"+order+"']").empty().html('<i class="fa fa-caret-down" aria-hidden="true"></i>');
                 $(".btbox_body[data-btbox='"+order+"']").addClass('btbox_open');
@@ -656,6 +658,7 @@ function init_fulfillment_history() {
                 $(".shipaddrs_body").removeClass('active');
                 $(".btbox_body[data-btbox='"+order+"']").find('div.shipaddrs_tab:first').addClass('active');
                 $(".btbox_body[data-btbox='"+order+"']").find('div.shipaddrs_body:first').addClass('active');
+                $(".btshipact[data-btbox='"+order+"']").addClass('btbox_open');
             }
         });
         $(".shipaddrs_tab").unbind('click').click(function(){

@@ -1,5 +1,5 @@
 <div class="fulfillm_historical">
-    <div class="fulfillm_hist_title">HISTORICAL</div>
+    <div class="fulfillm_hist_title">HISTORICAL (.net)</div>
     <div class="btbox_list">
         <?php foreach ($orders as $order) : ?>
         <div class="btbox" data-btbox="<?=$order['netdata_order_id']?>">
@@ -11,7 +11,7 @@
             <div class="btbox_icon" data-url="<?=$order['po_attach_path']?>" data-file="<?=$order['po_attach_name']?>" title="<?=$order['po_attach_name']?>">
                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
             </div>
-            <div class="btbox_net">.net</div>
+<!--            <div class="btbox_net">.net</div>-->
             <?php endif; ?>
             <div class="btbox_body" data-btbox="<?=$order['netdata_order_id']?>">
                 <div class="btbox_bodyrow">
@@ -101,6 +101,15 @@
                 </div>
             </div>
         </div>
+        <?php if (!empty($order['po_shipbt_act'])) : ?>
+            <div class="btshipact" data-btbox="<?=$order['netdata_order_id']?>">
+                <span>Internal Tracking # to Bluetrack</span>
+                <div class="btshipact_number"><?=$order['po_shipbt_act']?></div>
+                <div class="btshipact_numbercopy truncateoverflowtext" data-btbox="<?=$order['netdata_order_id']?>">
+                    <i class="fa fa-clone" aria-hidden="true"></i>
+                </div>
+            </div>
+        <?php endif; ?>
         <?php endforeach; ?>
     </div>
 </div>

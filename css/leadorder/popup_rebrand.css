@@ -3376,6 +3376,39 @@ select.imprintlocationchoice {
     width: 43px;
     text-align: center;
 }
+/* Inner Track # */
+.btshipact {
+    width: 100%;
+    display: none;
+    margin-bottom: 3px;
+}
+.btshipact.btbox_open {
+    display: block;
+}
+.btshipact span {
+    font-size: 12px;
+    font-weight: 600;
+    float: left;
+}
+.btshipact_number {
+    height: 14px;
+    padding: 0 3px;
+    border: 1px solid #000000;
+    color: #0A0AD4;
+    font-size: 11px;
+    margin-left: 5px;
+    width: 100px;
+}
+.btshipact_numbercopy {
+    background: #000000;
+    color: #ffffff;
+    font-size: 9px;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    text-align: center;
+    line-height: 14px;
+}
 .boldtxt {
     font-weight: bold;
 }
