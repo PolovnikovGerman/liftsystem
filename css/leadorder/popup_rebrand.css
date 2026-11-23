@@ -3391,23 +3391,24 @@ select.imprintlocationchoice {
     float: left;
 }
 .btshipact_number {
-    height: 14px;
+    height: 16px;
     padding: 0 3px;
     border: 1px solid #000000;
     color: #0A0AD4;
-    font-size: 11px;
+    font-size: 12px;
     margin-left: 5px;
     width: 100px;
+    line-height: 16px;
 }
 .btshipact_numbercopy {
     background: #000000;
     color: #ffffff;
-    font-size: 9px;
+    font-size: 10px;
     cursor: pointer;
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     text-align: center;
-    line-height: 14px;
+    line-height: 16px;
 }
 .boldtxt {
     font-weight: bold;
