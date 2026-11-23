@@ -5373,4 +5373,15 @@ class Test extends CI_Controller
         $res = $this->leadquote_model->check_quoteitem_color();
     }
 
+    public function customquote_order_report()
+    {
+        $this->load->model('leadquote_model');
+        $res = $this->leadquote_model->customquote_order_report();
+        if ($res['result']==0) {
+            echo 'Error ';
+        } else {
+            echo 'Report '.$res['url'].PHP_EOL;
+        }
+    }
+
 }
