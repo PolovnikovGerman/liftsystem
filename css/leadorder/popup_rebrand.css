@@ -696,7 +696,7 @@ span.addnewcolor {
     cursor: pointer;
 }
 .tblitems_customdescript {
-    width: 239px;
+    width: 229px;
 }
 .tblitems_qty, .adddata_qty  {
     width: 47px;
@@ -1108,7 +1108,7 @@ li.select2-results__option {
     background: #fff;
     border: 1px solid #1A1AD5;
     font-size: 11px;
-    font-weight: bold;
+    /*font-weight: bold;*/
     text-align: center;
     line-height: 13px;
 }
@@ -1735,7 +1735,7 @@ span.artproofs_remove {
 }
 .fulflm_profit {
     float: right !important;
-    width: 288px;
+    width: 316px;
     /* background: #001072; */
     border: 1px solid #001072;
     border-radius: 5px;
@@ -1744,7 +1744,7 @@ span.artproofs_remove {
     margin-bottom: 7px;
 }
 .fulflmprofit_price {
-    width: 85px;
+    width: 105px;
     padding-right: 7px;
     text-align: right;
     height: 24px;
@@ -3182,24 +3182,24 @@ select.imprintlocationchoice {
 .fulfillm_historical {
     position: relative;
     width: 100%;
-    border: 2px dashed #000;
-    border-radius: 4px;
+    border: 1.5px dashed #000;
+    border-radius: 0 4px 4px 4px;
     padding: 8px 7px 4px;
-    background: #ececec;
+    background: #fff;
 }
 .fulfillm_hist_title {
     position: absolute;
     top: -9px;
-    left: 10px;
+    left: -1px;
     font-size: 12px;
     font-weight: bold;
-    background: #ececec;
-    padding: 0 5px;
+    background: #fff;
+    padding: 0 8px;
     color: #000;
-    border: 2px dashed #000;
+    border: 1.5px dashed #000;
     border-bottom: none;
     height: 9px;
-    border-radius: 4px;
+    border-radius: 4px 4px 0 0;
 }
 .btbox_list {
     width: 100%;
@@ -3228,13 +3228,13 @@ select.imprintlocationchoice {
     cursor: pointer;
 }
 .btbox_title {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: bold;
     line-height: 17px;
     margin-right: 4px;
 }
 .btbox_info {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 17px;
 }
 .btbox_icon {
@@ -3263,21 +3263,21 @@ select.imprintlocationchoice {
 }
 .btbox_status {
     width: 75px;
-    font-size: 10px;
+    font-size: 11px;
 }
 .btbox_billmethod {
     width: 126px;
-    font-size: 10px;
+    font-size: 11px;
 }
 .btbox_rep {
     width: 80px;
-    font-size: 10px;
+    font-size: 11px;
 }
 .btbox_shipdate {}
 .btbox_shipdate_label,
 .btbox_shipact_label,
 .btbox_messagevendor_label {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 14px;
     color: #3736FE;
     font-weight: bold;
@@ -3478,7 +3478,7 @@ select.imprintlocationchoice {
 .shipaddrs_billdate input {
     float: left;
     width: 50px;
-    height: 13px;
+    height: 14px;
     line-height: 14px;
     background: #fff;
     border: 1px solid #BDBDBD;

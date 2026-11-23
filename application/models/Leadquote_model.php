@@ -5146,5 +5146,46 @@ class Leadquote_model extends MY_Model
         echo 'Orders updated successfully'.PHP_EOL;
     }
 
-
+    public function customquote_order_report()
+    {
+        $out = ['result' => $this->error_result, 'msg' => 'error'];
+        $this->db->select('cq.customer_email, DATE_FORMAT(FROM_UNIXTIME(o.order_date),\'%Y\') as repyear, count(o.order_id) as cnt');
+        $this->db->from('ts_orders o');
+        $this->db->join('ts_leadquote_orders lo', 'lo.order_id=o.order_id');
+        $this->db->join('ts_quotes q', 'q.quote_id = lo.quote_id');
+        $this->db->join('ts_leads l', 'l.lead_id=q.lead_id');
+        $this->db->join('ts_lead_emails le', 'le.lead_id = l.lead_id');
+        $this->db->join('ts_custom_quotes cq', 'cq.custom_quote_id = le.custom_quote_id');
+        $this->db->where('o.is_canceled', 0);
+        $this->db->group_by('cq.customer_email, repyear');
+        $results = $this->db->get()->result_array();
+        $emails = [];
+        $curmail = '';
+        $newdata = [];
+        foreach ($results as $result) {
+            if ($result['customer_email']!=$curmail) {
+                if (!empty($curmail)) {
+                    $emails[] = $newdata;
+                }
+                $newdata = [
+                    'email' => $result['customer_email'],
+                    '2023' => 0,
+                    '2024' => 0,
+                    '2025' => 0,
+                    '2026' => 0,
+                ];
+                $curmail = $result['customer_email'];
+            }
+            $newdata[$result['repyear']] = $result['cnt'];
+        }
+        if (!empty($curmail)) {
+            $emails[] = $newdata;
+        }
+        $this->load->model('exportexcell_model');
+        $filename = $this->exportexcell_model->export_customquote_order($emails);
+        $url=$this->config->item('pathpreload').$filename;
+        $out['url']=$url;
+        $out['result']=$this->success_result;
+        return $out;
+    }
 }
