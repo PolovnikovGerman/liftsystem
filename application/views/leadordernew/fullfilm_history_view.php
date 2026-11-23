@@ -104,8 +104,8 @@
         <?php if (!empty($order['po_shipbt_act'])) : ?>
             <div class="btshipact" data-btbox="<?=$order['netdata_order_id']?>">
                 <span>Internal Tracking # to Bluetrack</span>
-                <div class="btshipact_number"><?=$order['po_shipbt_act']?></div>
-                <div class="btshipact_numbercopy truncateoverflowtext" data-btbox="<?=$order['netdata_order_id']?>">
+                <div class="btshipact_number truncateoverflowtext"><?=$order['po_shipbt_act']?></div>
+                <div class="btshipact_numbercopy" data-btbox="<?=$order['netdata_order_id']?>">
                     <i class="fa fa-clone" aria-hidden="true"></i>
                 </div>
             </div>
