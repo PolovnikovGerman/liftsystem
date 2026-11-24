@@ -1,5 +1,5 @@
 <?php $nrow = 0; ?>
-<?php  $maxcnt = ceil(count($proofs)/3);?>
+<?php  $maxcnt = ceil(count($proofs)/2);?>
 <div class="proofdocsdataarea">
     <?php foreach ($proofs as $proof) : ?>
         <?php if ($nrow%$maxcnt == 0) : ?>

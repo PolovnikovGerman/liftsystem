@@ -1,6 +1,10 @@
 <?php $nrow = 0; ?>
+<?php if ($edit==0) : ?>
 <?php $maxcnt = ceil(count($previews)/3); ?>
-<div class="previewpicsdataarea">
+<?php else : ?>
+<?php $maxcnt = ceil(count($previews)/2); ?>
+<?php endif; ?>
+<div class="previewpicsdataarea historyview" id="previewpicshistoryview">
     <?php foreach ($previews as $preview) : ?>
         <?php if ($nrow%$maxcnt == 0) : ?>
             <div class="previewpicsdatatable">

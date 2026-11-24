@@ -118,6 +118,7 @@ input.namecustomer {
     width: 240px;
     padding-left: 4px;
     color: #000;
+    margin-top: -1px;
 }
 .neworder_whiteline {
     width: calc(100% - 2px);
@@ -900,7 +901,7 @@ li.select2-results__option {
 }
 .infoshiptax_pricebox {
     float: right !important;
-    width: 60px;
+    width: 65px;
     height: 16px;
     background: #fff;
     border: 1px solid #BCBBBB;
@@ -1479,12 +1480,11 @@ li.select2-results__option {
     border-bottom: 1px solid #000;
 }
 .artproofs_body {
-    /* width: 308px; */
-    /* height: 85px; */
     width: 314px;
-    /*height: 112px;*/
-    overflow-x: auto;
     padding: 0 9px 7px;
+}
+.artproofs_body.optionsview {
+    overflow-x: auto;
     display: flex;
     flex-wrap: nowrap;
 }
@@ -1504,6 +1504,7 @@ li.select2-results__option {
     padding: 4px 5px;
     width: 100%;
     height: 84px;
+    overflow-y: auto;
 }
 .proofdocdatarow {
     width: 100%;
@@ -1581,6 +1582,7 @@ li.select2-results__option {
 span.artproofs_remove {
     color: #ff0000;
     cursor: pointer;
+    margin-left: 5px;
 }
 .proofdetailsballonbox {
     font-size: 13px;
@@ -1736,11 +1738,9 @@ span.artproofs_remove {
 .fulflm_profit {
     float: right !important;
     width: 316px;
-    /* background: #001072; */
     border: 1px solid #001072;
     border-radius: 5px;
-    /* margin-top: 277px; */
-    margin-top: 10px;
+    margin-top: 19px;
     margin-bottom: 7px;
 }
 .fulflmprofit_price {
@@ -1977,6 +1977,7 @@ span.artproofs_remove {
     color: #ff0000;
     cursor: pointer;
     margin-right: 3px;
+    margin-left: 5px;
 }
 .previewpict_optn_checkbox {
     margin-right: 3px;
@@ -2630,14 +2631,20 @@ textarea.aprovemail_message {
 }
 /* Clay Model history */
 .claymodelsdataarea, .previewpicsdataarea {
-    overflow-x: auto;
     margin-top: 2px;
     margin-left: 9px;
     border: 2px dashed #000;
     padding: 5px 7px;
     border-radius: 4px;
     width: calc(100% - 18px);
-    max-height: 100px;
+    max-height: 104px;
+}
+.claymodelsdataarea.historyview, .previewpicsdataarea.historyview {
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.claymodelsdataarea.optionsview, .previewpicsdataarea.optionsview {
+    overflow-x: auto;
 }
 .claymodelsdatatable, .previewpicsdatatable {
     /*width: 65px;*/

@@ -19,7 +19,7 @@
         <div class="proofhistory_openall">[open all]</div>
     </div>
 <?php endif ?>
-<div class="artproofs_body">
+<div class="artproofs_body <?=$proofs['historical']==1 ? '' : 'optionsview'?>">
     <?=$prooflist?>
 </div>
 <div class="proofdocsuploads">

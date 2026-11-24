@@ -161,6 +161,8 @@ function init_leadorderparts_scrolls() {
             new SimpleBar(document.getElementById(boxid), {autoHide: false});
         })
     }
+    new SimpleBar(document.getElementById('claymodelshistory'), {autoHide: false});
+    new SimpleBar(document.getElementById('previewpicshistoryview'), {autoHide: false});
 }
 
 // Switch Clay / Preview Tabs
