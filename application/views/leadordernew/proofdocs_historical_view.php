@@ -1,7 +1,8 @@
 <?php $nrow = 0; ?>
+<?php  $maxcnt = ceil(count($proofs)/3);?>
 <div class="proofdocsdataarea">
     <?php foreach ($proofs as $proof) : ?>
-        <?php if ($nrow%4 == 0) : ?>
+        <?php if ($nrow%$maxcnt == 0) : ?>
             <div class="proofdocsdatatable">
         <?php endif; ?>
         <div class="datarow proofdocdatarow">
@@ -28,11 +29,11 @@
             </div>
         </div>
         <?php $nrow++; ?>
-        <?php if ($nrow%4 == 0) : ?>
+        <?php if ($nrow%$maxcnt == 0) : ?>
             </div>
         <?php endif; ?>
     <?php endforeach; ?>
-    <?php if ($nrow%4 != 0) : ?>
+    <?php if ($nrow%$maxcnt != 0) : ?>
 </div>
 <?php endif; ?>
 </div>
