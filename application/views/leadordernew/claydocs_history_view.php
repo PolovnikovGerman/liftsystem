@@ -1,7 +1,8 @@
 <?php $nrow = 0; ?>
+<?php $maxcnt = ceil(count($claydocs)/4); ?>
 <div class="claymodelsdataarea">
     <?php foreach ($claydocs as $claydoc) : ?>
-        <?php if ($nrow%5 == 0) : ?>
+        <?php if ($nrow%$maxcnt == 0) : ?>
             <div class="claymodelsdatatable">
         <?php endif; ?>
         <div class="datarow claymodeldatarow">
@@ -15,18 +16,18 @@
             <div class="claymodelname" data-link="<?=$claydoc['clay_link']?>" data-title="<?=$claydoc['out_proofname']?>"
                  data-event="hover" data-css="proofdetailsballonbox"
                  data-bgcolor="#FFFFFF" data-bordercolor="#000" data-position="left" data-textcolor="#000"
-                 data-balloon="<?=$claydoc['clay_source']?>" data-timer="4000" data-delay="1000">clay_<?=str_pad($claydoc['numpp'],2, '0', STR_PAD_LEFT)?></div>
+                 data-balloon="<?=$claydoc['clay_source']?>" data-timer="4000" data-delay="1000">clay_<?=str_pad($claydoc['numpp'],2, '0', STR_PAD_LEFT)?>
             </div>
             <?php if ($edit==1) : ?>
                 <div class="claydocremove" data-claydoc="<?=$claydoc['artwork_clay_id']?>" data-clayname="<?=$claydoc['clay_source']?>">[&mdash;]</div>
             <?php endif; ?>
         </div>
         <?php $nrow++; ?>
-        <?php if ($nrow%5 == 0) : ?>
+        <?php if ($nrow%$maxcnt == 0) : ?>
             </div>
         <?php endif; ?>
     <?php endforeach; ?>
-    <?php if ($nrow%5 != 0) : ?>
+    <?php if ($nrow%$maxcnt != 0) : ?>
 </div>
 <?php endif; ?>
 </div>

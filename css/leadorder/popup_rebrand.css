@@ -2637,6 +2637,7 @@ textarea.aprovemail_message {
     padding: 5px 7px;
     border-radius: 4px;
     width: calc(100% - 18px);
+    max-height: 100px;
 }
 .claymodelsdatatable, .previewpicsdatatable {
     /*width: 65px;*/

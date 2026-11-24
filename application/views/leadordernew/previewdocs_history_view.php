@@ -1,7 +1,8 @@
 <?php $nrow = 0; ?>
+<?php $maxcnt = ceil(count($previews)/3); ?>
 <div class="previewpicsdataarea">
     <?php foreach ($previews as $preview) : ?>
-        <?php if ($nrow%5 == 0) : ?>
+        <?php if ($nrow%$maxcnt == 0) : ?>
             <div class="previewpicsdatatable">
         <?php endif; ?>
         <div class="datarow previewpicdatarow">
@@ -20,11 +21,11 @@
             <?php endif; ?>
         </div>
         <?php $nrow++; ?>
-        <?php if ($nrow%5 == 0) : ?>
+        <?php if ($nrow%$maxcnt == 0) : ?>
             </div>
         <?php endif; ?>
     <?php endforeach; ?>
-    <?php if ($nrow%5 != 0) : ?>
+    <?php if ($nrow%$maxcnt != 0) : ?>
 </div>
 <?php endif; ?>
 </div>
