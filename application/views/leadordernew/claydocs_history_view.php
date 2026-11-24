@@ -1,6 +1,10 @@
 <?php $nrow = 0; ?>
-<?php $maxcnt = ceil(count($claydocs)/4); ?>
-<div class="claymodelsdataarea">
+<?php if ($edit==0) : ?>
+    <?php $maxcnt = ceil(count($claydocs)/4); ?>
+<?php else : ?>
+    <?php $maxcnt = ceil(count($claydocs)/3); ?>
+<?php endif; ?>
+<div class="claymodelsdataarea historyview" id="claymodelshistory">
     <?php foreach ($claydocs as $claydoc) : ?>
         <?php if ($nrow%$maxcnt == 0) : ?>
             <div class="claymodelsdatatable">
